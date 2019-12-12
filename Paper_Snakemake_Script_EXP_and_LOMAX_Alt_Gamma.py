@@ -347,9 +347,9 @@ rule Set_Genetic_Distance:
 			x=cor_rr
 			shell("""awk '{{print $1,$2, $3=$4*{x}, $4}}' {input} | sed '{{s/ /\t/g}}' > {output} """)
 		elif str(master['Recombination_Map'][0]) == 'True' and str(master['Recombination_Map'][2]) == 'AAMap_correction':
-			shell("""Rscript /r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Check_Cox_2019_Paper/AAMap_interpolation.R {input[0]} "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Check_Cox_2019_Paper/Recombination_Maps/Scaled_Genetic_AAMap.txt" {output[0]}""")
+			shell("""Rscript /r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper_Scripts/AAMap_interpolation.R {input[0]} "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Check_Cox_2019_Paper/Recombination_Maps/Scaled_Genetic_AAMap.txt" {output[0]}""")
 		elif str(master['Recombination_Map'][0]) == 'True' and str(master['Recombination_Map'][2]) == 'HapMap_correction':
-			shell("""Rscript /r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Check_Cox_2019_Paper/HapMap_interpolation.R {input[0]} "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Recombination_Maps/Scaled_HapMap.txt" {output[0]}""")
+			shell("""Rscript /r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper_Scripts/HapMap_interpolation.R {input[0]} "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Recombination_Maps/Scaled_HapMap.txt" {output[0]}""")
 
 
 
