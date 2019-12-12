@@ -221,7 +221,7 @@ Sim_name=config['MASTER']['%s' % master_Scenario[0]]['simulation']
 rule alle:
 	input:
 		expand("{Result_Folder}/Result_file_SIM_Raw_ALDER-Fit-{Set_name}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt",master_name=config['CONTROL']['%s' % Set_name],number=range(replicates),Set_name=Set_name,GF_Model=config['MASTER']['%s' % master_Scenario[0]]['GF_Model'][0],Result_Folder=Result_Folder,Folder_name=Folder_name,min_dist_Fit=config['MASTER']['%s' % master_Scenario[0]]['min_dist_Fit']
-,Ascertainment=config['MASTER']['%s' % master_Scenario[0]]['ascertainment'],Recomb_correction=config['MASTER']['%s' % master_Scenario[0]]['Recombination_Map'][2]),
+,Ascertainment=config['MASTER']['%s' % master_Scenario[0]]['ascertainment'],Recomb_correction=config['MASTER']['%s' % master_Scenario[0]]['Recombination_Correction']),
 		#expand("{Folder_name}/Raw_ALDER_output-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}-{Recomb_correction}.txt",master_name=config['CONTROL']['%s' % Set_name],number=range(replicates),Set_name=Set_name,GF_Model=config['MASTER']['%s' % master_Scenario[0]]['GF_Model'][0],Result_Folder=Result_Folder,Folder_name=Folder_name,min_dist_Fit=config['MASTER']['%s' % master_Scenario[0]]['min_dist_Fit']
 #,Ascertainment=config['MASTER']['%s' % master_Scenario[0]]['ascertainment'],Recomb_correction=config['MASTER']['%s' % master_Scenario[0]]['Recombination_Map'][2]),
 
@@ -341,14 +341,14 @@ rule Set_Genetic_Distance:
 			x=float(params['recombination_rate'])
 			print(x)
 			shell("""awk '{{print $1,$2, $3=$4*{x}, $4}}' {input} | sed '{{s/ /\t/g}}' > {output} """)
-		elif str(master['Recombination_Map'][0]) == 'True' and str(master['Recombination_Map'][2]) == 'No_correction':
+		elif str(master['Recombination_Map'][0]) == 'True' and wildcards.Recomb_correction == 'No_correction':
 			cor_rr=get_recomb_rate_for_correctio(wildcards.master_name)
 			print(cor_rr)
 			x=cor_rr
 			shell("""awk '{{print $1,$2, $3=$4*{x}, $4}}' {input} | sed '{{s/ /\t/g}}' > {output} """)
-		elif str(master['Recombination_Map'][0]) == 'True' and str(master['Recombination_Map'][2]) == 'AAMap_correction':
+		elif str(master['Recombination_Map'][0]) == 'True' and wildcards.Recomb_correction == 'AAMap_correction':
 			shell("""Rscript /r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper_Scripts/AAMap_interpolation.R {input[0]} "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Check_Cox_2019_Paper/Recombination_Maps/Scaled_Genetic_AAMap.txt" {output[0]}""")
-		elif str(master['Recombination_Map'][0]) == 'True' and str(master['Recombination_Map'][2]) == 'HapMap_correction':
+		elif str(master['Recombination_Map'][0]) == 'True' and wildcards.Recomb_correction == 'HapMap_correction':
 			shell("""Rscript /r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper_Scripts/HapMap_interpolation.R {input[0]} "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Recombination_Maps/Scaled_HapMap.txt" {output[0]}""")
 
 
