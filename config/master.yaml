@@ -1,0 +1,407 @@
+MASTER:
+      _Default_Scenario_:
+             alder: '_ALDER_1_'
+             ascertainment: 0
+             max_dist_Fit: 1
+             Inferred_Demographies: [False,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
+             Recombination_Map: [False,Recombination_Maps/Scaled_Genetic_AAMap.txt,No_correction]
+      _Scenario_1_:
+             simulation: '_MS_fixed_Var_1_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_I,0]
+             ascertainment: 0
+      _Scenario_2_:
+             simulation: '_MS_fixed_Var_2_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_I,0]
+             ascertainment: 0
+      _Scenario_3_:
+             simulation: '_MS_fixed_Var_3_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_I,0]
+             ascertainment: 0
+      _Scenario_4_:
+             simulation: '_MS_fixed_Var_4_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_I,0]
+             ascertainment: 0
+      _Scenario_5_:
+             simulation: '_MS_fixed_Var_5_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_I,0]
+             ascertainment: 0
+      _Scenario_6_:
+             simulation: '_MS_fixed_Var_1_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+      _Scenario_7_:
+             simulation: '_MS_fixed_Var_2_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+      _Scenario_8_:
+             simulation: '_MS_fixed_Var_3_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+      _Scenario_9_:
+             simulation: '_MS_fixed_Var_4_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+      _Scenario_10_:
+             simulation: '_MS_fixed_Var_5_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+      _Scenario_11_:
+             simulation: '_MS_fixed_mean_0_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+      _Scenario_12_:
+             simulation: '_MS_fixed_mean_1_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+      _Scenario_13_:
+             simulation: '_MS_fixed_mean_2_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+      _Scenario_14_:
+             simulation: '_MS_fixed_mean_3_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+      _Scenario_15_:
+             simulation: '_MS_fixed_mean_4_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+      _Scenario_16_:
+             simulation: '_MS_fixed_mean_5_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+      _Scenario_17_:
+             simulation: '_MS_fixed_mean_0_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 1
+      _Scenario_18_:
+             simulation: '_MS_fixed_mean_5_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 1
+      _Inferred_Demographies_Scenario_1_:
+             simulation: '_MS_fixed_mean_0_Inf'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             Inferred_Demographies: [True,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
+      _Inferred_Demographies_Scenario_2_:
+             simulation: '_MS_fixed_mean_0_Inf'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 1
+             Inferred_Demographies: [True,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
+      _Inferred_Demographies_Scenario_3_:
+             simulation: '_MS_fixed_mean_5_Inf'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             Inferred_Demographies: [True,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
+      _Inferred_Demographies_Scenario_4_:
+             simulation: '_MS_fixed_mean_5_Inf'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 1
+             Inferred_Demographies: [True,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
+      _Recombination_Map_Scenario_0_:
+             simulation: '_MS_fixed_mean_0_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             Recombination_Map: [False,Recombination_Maps/Scaled_Genetic_AAMap.txt]
+      _Recombination_Map_Scenario_1_:
+             simulation: '_MS_fixed_mean_0_'
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             Recombination_Map: [True,Recombination_Maps/Scaled_Genetic_AAMap.txt]
+      _Recombination_Map_Scenario_2_:
+             simulation: '_MS_fixed_mean_0_'
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 1
+             Recombination_Map: [True,Recombination_Maps/Scaled_Genetic_AAMap.txt]
+      _Recombination_Map_Scenario_3_:
+             simulation: '_MS_fixed_mean_5_'
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             Recombination_Map: [True,Recombination_Maps/Scaled_Genetic_AAMap.txt]
+      _Recombination_Map_Scenario_4_:
+             simulation: '_MS_fixed_mean_5_'
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 1
+             Recombination_Map: [True,Recombination_Maps/Scaled_Genetic_AAMap.txt]
+      _Recombination_Map_and_Inferred_Demographies_Scenario_1_:
+             simulation: '_MS_fixed_mean_0_Inf'
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             Recombination_Map: [True,Recombination_Maps/Scaled_Genetic_AAMap.txt]
+             Inferred_Demographies: [True,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
+      _Recombination_Map_and_Inferred_Demographies_Scenario_2_:
+             simulation: '_MS_fixed_mean_0_Inf'
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 1
+             Recombination_Map: [True,Recombination_Maps/Scaled_Genetic_AAMap.txt]
+             Inferred_Demographies: [True,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
+      _Recombination_Map_and_Inferred_Demographies_Scenario_3_:
+             simulation: '_MS_fixed_mean_5_Inf'
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             Recombination_Map: [True,Recombination_Maps/Scaled_Genetic_AAMap.txt]
+             Inferred_Demographies: [True,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
+      _Recombination_Map_and_Inferred_Demographies_Scenario_4_:
+             simulation: '_MS_fixed_mean_5_Inf'
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 1
+             Recombination_Map: [True,Recombination_Maps/Scaled_Genetic_AAMap.txt]
+             Inferred_Demographies: [True,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
+      Close_to_End_recent_GF_0:
+             simulation: 'Close_to_End_Recent_GF_fixed_mean_0_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 10
+             Recombination_Map: [False,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction
+      Close_to_End_recent_GF_1:
+             simulation: 'Close_to_End_Recent_GF_fixed_mean_1_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 4
+             Recombination_Map: [False,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction
+      Close_to_End_recent_GF_2:
+             simulation: 'Close_to_End_Recent_GF_fixed_mean_2_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 3
+             Recombination_Map: [False,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction
+      Close_to_End_recent_GF_3:
+             simulation: 'Close_to_End_Recent_GF_fixed_mean_3_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 2
+             Recombination_Map: [False,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction
+      Close_to_End_recent_GF_4:
+             simulation: 'Close_to_End_Recent_GF_fixed_mean_4_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 1
+             Recombination_Map: [False,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction
+      Close_to_End_recent_GF_5:
+             simulation: 'Close_to_End_Recent_GF_fixed_mean_5_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 1
+             Recombination_Map: [False,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction
+      Close_to_End_recent_GF_0_Recomb_Map:
+             simulation: 'Close_to_End_Recent_GF_fixed_mean_0_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 10
+             correction_recomb_rate: 1.549e-8
+             Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction,
+                                       HapMap_correction,
+                                       AAMap_correction
+      Close_to_End_recent_GF_1_Recomb_Map:
+             simulation: 'Close_to_End_Recent_GF_fixed_mean_1_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 4
+             correction_recomb_rate: 1.549e-8
+             Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction,
+                                       HapMap_correction,
+                                       AAMap_correction
+      Close_to_End_recent_GF_2_Recomb_Map:
+             simulation: 'Close_to_End_Recent_GF_fixed_mean_2_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 3
+             correction_recomb_rate: 1.549e-8
+             Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction,
+                                       HapMap_correction,
+                                       AAMap_correction
+      Close_to_End_recent_GF_3_Recomb_Map:
+             simulation: 'Close_to_End_Recent_GF_fixed_mean_3_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 2
+             correction_recomb_rate: 1.549e-8
+             Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction,
+                                       HapMap_correction,
+                                       AAMap_correction
+      Close_to_End_recent_GF_4_Recomb_Map:
+             simulation: 'Close_to_End_Recent_GF_fixed_mean_4_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 1
+             correction_recomb_rate: 1.549e-8
+             Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction,
+                                       HapMap_correction,
+                                       AAMap_correction
+      Close_to_End_recent_GF_5_Recomb_Map:
+             simulation: 'Close_to_End_Recent_GF_fixed_mean_5_'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 1
+             correction_recomb_rate: 1.549e-8
+             Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction,
+                                       HapMap_correction,
+                                       AAMap_correction
+      50_Gen_from_GF_continuous_800:
+             simulation: '50_Gen_from_GF_continuous_800'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 3
+             Recombination_Map: [False,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction
+      100_Gen_from_GF_continuous_800:
+             simulation: '100_Gen_from_GF_continuous_800'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 2
+             Recombination_Map: [False,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction
+      200_Gen_from_GF_continuous_800:
+             simulation: '200_Gen_from_GF_continuous_800'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 1
+             Recombination_Map: [False,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction
+      400_Gen_from_GF_continuous_800:
+             simulation: '400_Gen_from_GF_continuous_800'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 1
+             Recombination_Map: [False,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction
+      800_Gen_from_GF_continuous_800:
+             simulation: '800_Gen_from_GF_continuous_800'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 1
+             Recombination_Map: [False,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction
+      1000_Gen_from_GF_continuous_800:
+             simulation: '1000_Gen_from_GF_continuous_800'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 1
+             Recombination_Map: [False,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction
+      50_Gen_from_GF_continuous_800_Recomb_Map:
+             simulation: '50_Gen_from_GF_continuous_800'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 3
+             correction_recomb_rate: 1.549e-8
+             Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction,
+                                       HapMap_correction,
+                                       AAMap_correction
+      100_Gen_from_GF_continuous_800_Recomb_Map:
+             simulation: '100_Gen_from_GF_continuous_800'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 2
+             correction_recomb_rate: 1.549e-8
+             Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction,
+                                       HapMap_correction,
+                                       AAMap_correction
+      200_Gen_from_GF_continuous_800_Recomb_Map:
+             simulation: '200_Gen_from_GF_continuous_800'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 1
+             correction_recomb_rate: 1.549e-8
+             Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction,
+                                       HapMap_correction,
+                                       AAMap_correction
+      400_Gen_from_GF_continuous_800_Recomb_Map:
+             simulation: '400_Gen_from_GF_continuous_800'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 1
+             correction_recomb_rate: 1.549e-8
+             Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction,
+                                       HapMap_correction,
+                                       AAMap_correction
+      800_Gen_from_GF_continuous_800_Recomb_Map:
+             simulation: '800_Gen_from_GF_continuous_800'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 1
+             correction_recomb_rate: 1.549e-8
+             Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction,
+                                       HapMap_correction,
+                                       AAMap_correction
+      1000_Gen_from_GF_continuous_800_Recomb_Map:
+             simulation: '1000_Gen_from_GF_continuous_800'
+             min_dist_Fit: 0.05
+             GF_Model: [GF_Model_IV,0]
+             ascertainment: 0
+             max_dist_Fit: 1
+             correction_recomb_rate: 1.549e-8
+             Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
+             Recombination_Correction: No_correction,
+                                       HapMap_correction,
+                                       AAMap_correction

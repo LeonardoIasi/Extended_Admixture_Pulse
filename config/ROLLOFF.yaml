@@ -1,0 +1,10 @@
+ROLLOFF:
+      _ROLLOFF_default_:
+                admixlist:        Non_Africans
+                poplistname:        [Africans,Neandertals]
+                checkmap:        NO
+                binsize:        0.001
+                maxdis:        0.1
+      _ROLLOFF_1_:
+                binsize:        0.00001
+                maxdis:        0.1

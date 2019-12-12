@@ -1,0 +1,226 @@
+sim_parameters:
+        _MS_default_:
+              N_Africans: 10000
+              sample_Africans: 352
+              sample_Africans_at: 0
+              N_non_Africans: 10000
+              sample_non_Africans: 340
+              sample_non_Africans_at: 0
+              N_Neandertals: 10000
+              sample_Neandertals_at: 0
+              sample_Neandertals: 6
+              recombination_rate: 1e-08
+              mutation_rate: 2e-08
+              chr_length: 150e06
+              num_chr: 20
+              split_time_Neandertals: 10000
+              split_time_non_Africans: 2550
+              m: 0.0
+              migration_rate_GF: 0.03
+              GF_start: 0
+              GF_stop: 0
+              EUR_AFR_migration_rate_GF: 0.0
+              GAMMA: 'Normal'
+        _MS_fixed_Var_1_:
+              GF_start: 188
+              GF_stop: 312
+        _MS_fixed_Var_2_:
+              GF_start: 375
+              GF_stop: 625
+        _MS_fixed_Var_3_:
+              GF_start: 750
+              GF_stop: 1250
+        _MS_fixed_Var_4_:
+              GF_start: 1125
+              GF_stop: 1875
+        _MS_fixed_Var_5_:
+              GF_start: 1500
+              GF_stop: 2500
+        _MS_fixed_mean_0_:
+              GF_start: 1500
+              GF_stop: 1501
+        _MS_fixed_mean_0_1_:
+              GF_start: 1499
+              GF_stop: 1501
+        _MS_fixed_mean_0_2_:
+              GF_start: 1447
+              GF_stop: 1503
+        _MS_fixed_mean_0_3_:
+              GF_start: 1495
+              GF_stop: 1505
+        _MS_fixed_mean_0_4_:
+              GF_start: 1490
+              GF_stop: 1510
+        _MS_fixed_mean_0_5_:
+              GF_start: 1475
+              GF_stop: 1525
+        _MS_fixed_mean_0_6_:
+              GF_start: 1450
+              GF_stop: 1550
+        _MS_fixed_mean_1_:
+              GF_start: 1400
+              GF_stop: 1600
+        _MS_fixed_mean_2_:
+              GF_start: 1300
+              GF_stop: 1700
+        _MS_fixed_mean_3_:
+              GF_start: 1100
+              GF_stop: 1900
+        _MS_fixed_mean_4_:
+              GF_start: 1000
+              GF_stop: 2000
+        _MS_fixed_mean_5_:
+              GF_start: 750
+              GF_stop: 2250
+        _MS_fixed_mean_0_Inf:
+              GF_start: 1500
+              GF_stop: 1501
+              sample_Neandertals_at: 750
+        _MS_fixed_mean_5_Inf:
+              GF_start: 750
+              GF_stop: 2250
+              sample_Neandertals_at: 750
+        _Recent_GF_fixed_mean_0_:
+              GF_start: 800
+              GF_stop: 801
+        _Recent_GF_fixed_mean_1_:
+              GF_start: 700
+              GF_stop: 900
+        _Recent_GF_fixed_mean_2_:
+              GF_start: 600
+              GF_stop: 1000
+        _Recent_GF_fixed_mean_3_:
+              GF_start: 400
+              GF_stop: 1200
+        _Recent_GF_fixed_mean_4_:
+              GF_start: 300
+              GF_stop: 1300
+        _Recent_GF_fixed_mean_5_:
+              GF_start: 50
+              GF_stop: 1550
+        _Ancient_sampling_fixed_mean_0_:
+              GF_start: 1500
+              GF_stop: 1501
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 700
+        _Ancient_sampling_fixed_mean_1_:
+              GF_start: 1400
+              GF_stop: 1600
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 700
+        _Ancient_sampling_fixed_mean_2_:
+              GF_start: 1300
+              GF_stop: 1700
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 700
+        _Ancient_sampling_fixed_mean_3_:
+              GF_start: 1100
+              GF_stop: 1900
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 700
+        _Ancient_sampling_fixed_mean_4_:
+              GF_start: 1000
+              GF_stop: 2000
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 700
+        _Ancient_sampling_fixed_mean_5_:
+              GF_start: 750
+              GF_stop: 2250
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 700
+        Close_to_End_GF_Ancient_sampling_fixed_mean_0_:
+              GF_start: 1500
+              GF_stop: 1501
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 1450
+        Close_to_End_GF_Ancient_sampling_fixed_mean_1_:
+              GF_start: 1400
+              GF_stop: 1600
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 1350
+        Close_to_End_GF_Ancient_sampling_fixed_mean_2_:
+              GF_start: 1300
+              GF_stop: 1700
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 1250
+        Close_to_End_GF_Ancient_sampling_fixed_mean_3_:
+              GF_start: 1100
+              GF_stop: 1900
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 1050
+        Close_to_End_GF_Ancient_sampling_fixed_mean_4_:
+              GF_start: 1000
+              GF_stop: 2000
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 950
+        Close_to_End_GF_Ancient_sampling_fixed_mean_5_:
+              GF_start: 750
+              GF_stop: 2250
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 700
+        Close_to_End_Recent_GF_fixed_mean_0_:
+              GF_start: 50
+              GF_stop: 51
+        Close_to_End_Recent_GF_fixed_mean_1_:
+              GF_start: 50
+              GF_stop: 250
+        Close_to_End_Recent_GF_fixed_mean_2_:
+              GF_start: 50
+              GF_stop: 450
+        Close_to_End_Recent_GF_fixed_mean_3_:
+              GF_start: 50
+              GF_stop: 850
+        Close_to_End_Recent_GF_fixed_mean_4_:
+              GF_start: 50
+              GF_stop: 1050
+        Close_to_End_Recent_GF_fixed_mean_5_:
+              GF_start: 50
+              GF_stop: 1550
+        50_Gen_from_GF_continuous_800:
+              GF_start: 50
+              GF_stop: 850
+        100_Gen_from_GF_continuous_800:
+              GF_start: 100
+              GF_stop: 900
+        200_Gen_from_GF_continuous_800:
+              GF_start: 200
+              GF_stop: 1000
+        400_Gen_from_GF_continuous_800:
+              GF_start: 400
+              GF_stop: 1200
+        800_Gen_from_GF_continuous_800:
+              GF_start: 800
+              GF_stop: 1600
+        1000_Gen_from_GF_continuous_800:
+              GF_start: 1000
+              GF_stop: 1800
+        Ancient_Sampling_50_Gen_from_GF_continuous_800:
+              GF_start: 1000
+              GF_stop: 1800
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 950
+        Ancient_Sampling_100_Gen_from_GF_continuous_800:
+              GF_start: 1000
+              GF_stop: 1800
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 900
+        Ancient_Sampling_200_Gen_from_GF_continuous_800:
+              GF_start: 1000
+              GF_stop: 1800
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 800
+        Ancient_Sampling_400_Gen_from_GF_continuous_800:
+              GF_start: 1000
+              GF_stop: 1800
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 600
+        Ancient_Sampling_800_Gen_from_GF_continuous_800:
+              GF_start: 1000
+              GF_stop: 1800
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 200
+        Ancient_Sampling_1000_Gen_from_GF_continuous_800:
+              GF_start: 1000
+              GF_stop: 1800
+              sample_Neandertals_at: 750
+              sample_non_Africans_at: 0
