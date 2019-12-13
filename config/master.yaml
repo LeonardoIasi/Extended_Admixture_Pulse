@@ -233,9 +233,7 @@ MASTER:
              max_dist_Fit: 10
              correction_recomb_rate: 1.549e-8
              Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
-             Recombination_Correction: No_correction,
-                                       HapMap_correction,
-                                       AAMap_correction
+             Recombination_Correction: ['No_correction','HapMap_correction','AAMap_correction']
       Close_to_End_recent_GF_1_Recomb_Map:
              simulation: 'Close_to_End_Recent_GF_fixed_mean_1_'
              min_dist_Fit: 0.05
@@ -244,9 +242,7 @@ MASTER:
              max_dist_Fit: 4
              correction_recomb_rate: 1.549e-8
              Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
-             Recombination_Correction: No_correction,
-                                       HapMap_correction,
-                                       AAMap_correction
+             Recombination_Correction: ['No_correction','HapMap_correction','AAMap_correction']
       Close_to_End_recent_GF_2_Recomb_Map:
              simulation: 'Close_to_End_Recent_GF_fixed_mean_2_'
              min_dist_Fit: 0.05
@@ -255,9 +251,7 @@ MASTER:
              max_dist_Fit: 3
              correction_recomb_rate: 1.549e-8
              Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
-             Recombination_Correction: No_correction,
-                                       HapMap_correction,
-                                       AAMap_correction
+             Recombination_Correction: ['No_correction','HapMap_correction','AAMap_correction']
       Close_to_End_recent_GF_3_Recomb_Map:
              simulation: 'Close_to_End_Recent_GF_fixed_mean_3_'
              min_dist_Fit: 0.05
@@ -266,9 +260,7 @@ MASTER:
              max_dist_Fit: 2
              correction_recomb_rate: 1.549e-8
              Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
-             Recombination_Correction: No_correction,
-                                       HapMap_correction,
-                                       AAMap_correction
+             Recombination_Correction: ['No_correction','HapMap_correction','AAMap_correction']
       Close_to_End_recent_GF_4_Recomb_Map:
              simulation: 'Close_to_End_Recent_GF_fixed_mean_4_'
              min_dist_Fit: 0.05
@@ -277,9 +269,7 @@ MASTER:
              max_dist_Fit: 1
              correction_recomb_rate: 1.549e-8
              Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
-             Recombination_Correction: No_correction,
-                                       HapMap_correction,
-                                       AAMap_correction
+             Recombination_Correction: ['No_correction','HapMap_correction','AAMap_correction']
       Close_to_End_recent_GF_5_Recomb_Map:
              simulation: 'Close_to_End_Recent_GF_fixed_mean_5_'
              min_dist_Fit: 0.05
@@ -288,9 +278,7 @@ MASTER:
              max_dist_Fit: 1
              correction_recomb_rate: 1.549e-8
              Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
-             Recombination_Correction: No_correction,
-                                       HapMap_correction,
-                                       AAMap_correction
+             Recombination_Correction: ['No_correction','HapMap_correction','AAMap_correction']
       50_Gen_from_GF_continuous_800:
              simulation: '50_Gen_from_GF_continuous_800'
              min_dist_Fit: 0.05
@@ -347,9 +335,7 @@ MASTER:
              max_dist_Fit: 3
              correction_recomb_rate: 1.549e-8
              Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
-             Recombination_Correction: No_correction,
-                                       HapMap_correction,
-                                       AAMap_correction
+             Recombination_Correction: ['No_correction','HapMap_correction','AAMap_correction']
       100_Gen_from_GF_continuous_800_Recomb_Map:
              simulation: '100_Gen_from_GF_continuous_800'
              min_dist_Fit: 0.05
@@ -358,9 +344,7 @@ MASTER:
              max_dist_Fit: 2
              correction_recomb_rate: 1.549e-8
              Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
-             Recombination_Correction: No_correction,
-                                       HapMap_correction,
-                                       AAMap_correction
+             Recombination_Correction: ['No_correction','HapMap_correction','AAMap_correction']
       200_Gen_from_GF_continuous_800_Recomb_Map:
              simulation: '200_Gen_from_GF_continuous_800'
              min_dist_Fit: 0.05
@@ -369,9 +353,7 @@ MASTER:
              max_dist_Fit: 1
              correction_recomb_rate: 1.549e-8
              Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
-             Recombination_Correction: No_correction,
-                                       HapMap_correction,
-                                       AAMap_correction
+             Recombination_Correction: ['No_correction','HapMap_correction','AAMap_correction']
       400_Gen_from_GF_continuous_800_Recomb_Map:
              simulation: '400_Gen_from_GF_continuous_800'
              min_dist_Fit: 0.05
@@ -380,9 +362,7 @@ MASTER:
              max_dist_Fit: 1
              correction_recomb_rate: 1.549e-8
              Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
-             Recombination_Correction: No_correction,
-                                       HapMap_correction,
-                                       AAMap_correction
+             Recombination_Correction: ['No_correction','HapMap_correction','AAMap_correction']
       800_Gen_from_GF_continuous_800_Recomb_Map:
              simulation: '800_Gen_from_GF_continuous_800'
              min_dist_Fit: 0.05
@@ -391,9 +371,7 @@ MASTER:
              max_dist_Fit: 1
              correction_recomb_rate: 1.549e-8
              Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
-             Recombination_Correction: No_correction,
-                                       HapMap_correction,
-                                       AAMap_correction
+             Recombination_Correction: ['No_correction','HapMap_correction','AAMap_correction']
       1000_Gen_from_GF_continuous_800_Recomb_Map:
              simulation: '1000_Gen_from_GF_continuous_800'
              min_dist_Fit: 0.05
@@ -402,6 +380,4 @@ MASTER:
              max_dist_Fit: 1
              correction_recomb_rate: 1.549e-8
              Recombination_Map: [True,Recombination_Maps/Scaled_HapMap.txt]
-             Recombination_Correction: No_correction,
-                                       HapMap_correction,
-                                       AAMap_correction
+             Recombination_Correction: ['No_correction','HapMap_correction','AAMap_correction']
