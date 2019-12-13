@@ -15,7 +15,7 @@ input <- as.character(snakemake@input[[1]]) 		# output from rollof
 Snake_output_One <- as.character(snakemake@output[[1]])  		# output of expfit log file
 lval <- as.numeric(snakemake@wildcards[['min_dist_Fit']])		# lower value of dist to use
 hval <- as.numeric(snakemake@params[['max_dist']])		# higher value of dist to use  
-
+iterations=10
 Get_points <- function(input,lval,hval,log){
   # Read input file
   data <- read.table(input, header = F)
