@@ -170,7 +170,6 @@ Fit_Lomax_multiple_times <- function(iterations,xdata,affine=T,Expo_s){
 options(warn = 1)
 Best_fitting_Lomax_model <-  try(Fit_Lomax_multiple_times(iterations,xdata,affine=T,Expo_s=s_exp_est),silent = FALSE)
 if (inherits(Best_fitting_Lomax_model, "try-error")){
-  print('mega Fail')
   A_exp_est <- as.numeric(coef(Fit_Exp)[1])
   s_exp_est <- as.numeric(coef(Fit_Exp)[2])  	# rate of decay of exponential
   C_exp_est <- as.numeric(coef(Fit_Exp)[3])
@@ -184,7 +183,7 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
   capture.output(Test_Sig, file = outlog, append = TRUE)
   cat(paste("A, s, c, RSS_Expo, AIC_Expo, A, s, w,c, RSS_Lomax, AIC_Lomax, F_Test:","\t",A_exp_est,"\t",s_exp_est,"\t",C_exp_est,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\n",sep = ""), file=outlog, append=TRUE)
   
-} else{print('Hello all good')
+} else{
   
   Test_Sig=anova(Fit_Exp,Best_fitting_Lomax_model,test="F")
   AIC_Test <- AICtab(Fit_Exp,Best_fitting_Lomax_model)
