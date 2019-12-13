@@ -16,8 +16,6 @@ Snake_output_One <- as.character(snakemake@output[[1]])  		# output of expfit lo
 lval <- as.numeric(snakemake@wildcards[['min_dist_Fit']])		# lower value of dist to use
 hval <- as.numeric(snakemake@params[['max_dist']])		# higher value of dist to use  
 
-print(lval)
-print(hval)
 Get_points <- function(input,lval,hval,log){
   # Read input file
   data <- read.table(input, header = F)
@@ -122,12 +120,53 @@ Fit_Lomax_fn <- function(Data,affine,Expo_s){
 
 
 xdata <- Get_points(input,lval,hval,log = F)
-Fit_Exp <- Fit_Exp_fn(xdata,affine = T)
-s_exp_est <- as.numeric(coef(Fit_Exp)[2]) 
-Fit_Lomax <- Fit_Lomax_fn(xdata,affine = T,Expo_s=s_exp_est)
 
-Test_Sig=anova(Fit_Exp,Fit_Lomax,test="F")
-AIC_Test <- AICtab(Fit_Exp,Fit_Lomax)
+Fit_Exp <- Fit_Exp_fn(xdata,affine = T)
+
+s_exp_est <- as.numeric(coef(Fit_Exp)[2]) 
+
+
+
+
+Fit_name <- c()
+for(i in 1:iterations){
+  alternativeFunction <- function(xx){return(NA)}
+  options(warn = 1)
+  End_Fit=Fit_x <-  try(Fit_Lomax_fn(xdata,affine = T,Expo_s=s_exp_est),silent = FALSE)
+  if (inherits(Fit_x, "try-error")) End_Fit=alternativeFunction(xdata)
+  
+  assign(paste("Fit_", i, sep = ""),End_Fit )
+  print(paste('Fit itaration :',i,sep = " "))
+  Fit_name_x <- c(paste("Fit_",i,sep=""))
+  Fit_name <- c(Fit_name,Fit_name_x)
+}
+
+# create a list based on models names provided
+list_Fits = lapply(Fit_name, get)
+
+# set names
+names(list_Fits) = Fit_name
+
+# Calculat RSS for every fit
+RSS_comparison <- c()
+for(i in 1:iterations){
+  RSS <- sum(resid(list_Fits[[i]])^2)
+  xx <- cbind(paste("Fit_",i,sep=""),as.numeric(as.character(RSS)))
+  RSS_comparison <- rbind(RSS_comparison,xx)
+}
+
+RSS_comparison <- as.data.frame(RSS_comparison)
+RSS_comparison$V2 <- as.numeric(as.character(RSS_comparison$V2))
+RSS_comparison$V1 <- as.character(RSS_comparison$V1)
+
+#Choose the fit with the smallest RSS
+xx=RSS_comparison$V1[RSS_comparison$V2==min(RSS_comparison$V2)]
+Best_fitting_Lomax_model <- list_Fits[[xx[1]]]
+
+
+
+Test_Sig=anova(Fit_Exp,Best_fitting_Lomax_model,test="F")
+AIC_Test <- AICtab(Fit_Exp,Best_fitting_Lomax_model)
 select.exp=attr(AIC_Test,'row.names')=="Fit_Exp"
 if (select.exp[1]==T){
   Expo.AIC=AIC_Test$dAIC[1]
@@ -142,10 +181,10 @@ A_exp_est <- as.numeric(coef(Fit_Exp)[1])
 s_exp_est <- as.numeric(coef(Fit_Exp)[2])  	# rate of decay of exponential
 C_exp_est <- as.numeric(coef(Fit_Exp)[3])
 
-A_lomax_est <- as.numeric(coef(Fit_Lomax)[3])
-s_lomax_est <- as.numeric(coef(Fit_Lomax)[2])  	# rate of decay of exponential
-w_lomax_est <- as.numeric(coef(Fit_Lomax)[1])
-C_lomax_est <- as.numeric(coef(Fit_Lomax)[4])
+A_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[3])
+s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[2])  	# rate of decay of exponential
+w_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[1])
+C_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[4])
 
 #print output
 outlog <- paste(Snake_output_One)
