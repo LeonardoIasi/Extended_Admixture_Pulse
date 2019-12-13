@@ -2,8 +2,8 @@ configfile:	"config/control.yaml"
 configfile:	"config/master.yaml"
 configfile:	"config/sim_parameters_new.yaml"
 configfile:	"config/ALDER.yaml"
-import msprime
 import pandas as pd
+import msprime
 import numpy as np
 from random import randint
 from scipy import stats
@@ -200,16 +200,16 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 
 ############################################################################################
 # Choose which Set to process by giving Set_name the name of the Set to be processed #
-Set_name='Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map'
+Set_name='Close_to_GF_End_Recent_GF'
 
 # Choose number of replicates #
-replicates=10
+replicates=50
 
 # Choose Folder #
-Folder_name='Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map'
+Folder_name='../Close_to_GF_End_Recent_GF'
 
 # Choose Result Folder Name #
-Result_Folder='Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map/Result_both_Fit'
+Result_Folder='../Close_to_GF_End_Recent_GF/Result_both_Fit'
 ############################################################################################
 
 
@@ -393,7 +393,7 @@ rule fit_Curve:
 		"{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
 		#"{Folder_name}/Model_Fit/Plot-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.pdf",
 	script:
-		"/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Fit_Exponential_and_Lomax_Snake.R"
+		"/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Fit_Exponential_and_Lomax_Snake.R"
 		#"/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Fit_Exponential_and_Lomax_Snake_fix_S.R"
 
 
@@ -410,13 +410,16 @@ rule grep_results_and_merge_with_Scenarios:
 awk '{{print $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24="{wildcards.master_name}",$25="{params[GF_start]}",$26="{params[GF_stop]}",$27="{master[ascertainment]}",$28="{master[min_dist_Fit]}",$29="{master[GF_Model][0]}"}}' > {output} """)
 
 
-
+def merge_all_files(wildcards):
+	files = expand("{Folder_name}/Result-Fit_Output-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt",master_name=config['CONTROL']['%s' % Set_name],
+	number=range(replicates),Set_name=Set_name,Folder_name=Folder_name,GF_Model=config['MASTER']['%s' % master_Scenario[0]]['GF_Model'][0],min_dist_Fit=config['MASTER']['%s' % master_Scenario[0]]['min_dist_Fit'],
+	Ascertainment=config['MASTER']['%s' % master_Scenario[0]]['ascertainment'],Recomb_correction=wildcards.Recomb_correction)
+	return files
 
 rule merge_all_files:
 	input:
-		expand("{Folder_name}/Result-Fit_Output-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt",master_name=config['CONTROL']['%s' % Set_name],
-number=range(replicates),Set_name=Set_name,Folder_name=Folder_name,GF_Model=config['MASTER']['%s' % master_Scenario[0]]['GF_Model'][0],min_dist_Fit=config['MASTER']['%s' % master_Scenario[0]]['min_dist_Fit'],
-Ascertainment=config['MASTER']['%s' % master_Scenario[0]]['ascertainment'],Recomb_correction=config['MASTER']['%s' % master_Scenario[0]]['Recombination_Map'][2])
+		merge_all_files
+
 	output:
 		"{Result_Folder}/Result_file_SIM_Raw_ALDER-Fit-{Set_name}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt"
 	run:
