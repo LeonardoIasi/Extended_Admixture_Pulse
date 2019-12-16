@@ -117,14 +117,6 @@ Fit_Lomax_fn <- function(Data,affine,Expo_s){
   return(fit1_lomax)
 }
 
-
-
-xdata <- Get_points(input,lval,hval,log = F)
-
-Fit_Exp <- Fit_Exp_fn(xdata,affine = T)
-
-s_exp_est <- as.numeric(coef(Fit_Exp)[2]) 
-
 Fit_Lomax_multiple_times <- function(iterations,xdata,affine=T,Expo_s){
   list_Fits <- list()
   Fit_name <- c()
@@ -165,6 +157,14 @@ Fit_Lomax_multiple_times <- function(iterations,xdata,affine=T,Expo_s){
   Best_fitting_Lomax_model <- list_Fits[[xx[1]]]
   return(Best_fitting_Lomax_model)
 }
+
+xdata <- Get_points(input,lval,hval,log = F)
+
+Fit_Exp <- Fit_Exp_fn(xdata,affine = T)
+
+s_exp_est <- as.numeric(coef(Fit_Exp)[2]) 
+
+
 
 
 options(warn = 1)
