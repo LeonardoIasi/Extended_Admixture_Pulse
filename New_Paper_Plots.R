@@ -149,10 +149,10 @@ ggdata_t.GF_50 <- melt(Plot.data_50,measure.vars =  c('mean_GF_exp'),id.vars = c
 ggdata_l.GF_50 <- melt(Plot.data_50,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
 
 Plot.data_varying<-rbind(
-  Recent_varying_constant<- Result.Table.fn(Result.Table.path_Recent_Varying,c(rep(50,10),rep(100,10),rep(200,10),rep(400,10),rep(800,10),rep(1000,10)),'Recent_50_constant'),
-  Recent_varying_HapMap_no_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_no_correction,c(rep(50,10),rep(100,10),rep(200,10),rep(400,10),rep(800,10),rep(1000,10)),'Recent_50_HapMap_no_correction'),
-  Recent_varying_HapMap_AAMap_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction,c(rep(50,10),rep(100,10),rep(200,10),rep(400,10),rep(800,10),rep(1000,10)),'Recent_50_HapMap_AAMap_correction'),
-  Recent_varying_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction,c(rep(50,10),rep(100,10),rep(200,10),rep(400,10),rep(800,10),rep(1000,10)),'Recent_50_HapMap_HapMap_correction')
+  Recent_varying_constant<- Result.Table.fn(Result.Table.path_Recent_Varying,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_constant'),
+  Recent_varying_HapMap_no_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_no_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_no_correction'),
+  Recent_varying_HapMap_AAMap_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_AAMap_correction'),
+  Recent_varying_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_HapMap_correction')
 )
 
 ggdata_t.GF_varying <- melt(Plot.data_varying,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
