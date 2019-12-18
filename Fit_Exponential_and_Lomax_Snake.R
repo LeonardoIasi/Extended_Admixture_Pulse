@@ -217,10 +217,10 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
       s_exp_est <- as.numeric(coef(Fit_Exp)[2])  	# rate of decay of exponential
       C_exp_est <- as.numeric(coef(Fit_Exp)[3])
       
-      A_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[3])
-      s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[2])  	# rate of decay of exponential
-      w_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[1])
-      C_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[4])
+      A_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[3])
+      s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[2])  	# rate of decay of exponential
+      w_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[1])
+      C_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[4])
       
       #print output
       outlog <- paste(Snake_output_One)
@@ -233,7 +233,67 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
       
     }
   }
-  if(hval > 1) {
+  if(hval == 10) {
+    xdata <- Get_points(input,lval,hval-1,log = F)
+    print(" inside hval == 1")
+    Fit_Exp <- Fit_Exp_fn(xdata,affine = T)
+    
+    s_exp_est <- as.numeric(coef(Fit_Exp)[2]) 
+    
+    options(warn = 1)
+    Best_fitting_Lomax_model_varying_hval <-  try(Fit_Lomax_multiple_times(iterations,xdata,affine=T,Expo_s=s_exp_est),silent = FALSE)
+    if (inherits(Best_fitting_Lomax_model_varying_hval, "try-error")){
+      A_exp_est <- as.numeric(coef(Fit_Exp)[1])
+      s_exp_est <- as.numeric(coef(Fit_Exp)[2])  	# rate of decay of exponential
+      C_exp_est <- as.numeric(coef(Fit_Exp)[3])
+      Test_Sig=NA
+      
+      #print output
+      outlog <- paste(Snake_output_One)
+      cat("Summary of fit:\n", file=outlog, append = FALSE)
+      
+      # Convert distance in Morgans
+      capture.output(Test_Sig, file = outlog, append = TRUE)
+      cat(paste("A, s, c, RSS_Expo, AIC_Expo, A, s, w,c, RSS_Lomax, AIC_Lomax, F_Test:","\t",A_exp_est,"\t",s_exp_est,"\t",C_exp_est,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\n",sep = ""), file=outlog, append=TRUE)
+      
+    } else{
+      
+      
+      #Test_Sig=anova(Fit_Exp,Best_fitting_Lomax_model,test="F")
+      Test_Sig=NA
+      
+      #AIC_Test <- AICtab(Fit_Exp,Best_fitting_Lomax_model)
+      #select.exp=attr(AIC_Test,'row.names')=="Fit_Exp"
+      #if (select.exp[1]==T){
+      #  Expo.AIC=AIC_Test$dAIC[1]
+      #  Lomax.AIC=AIC_Test$dAIC[2]
+      #}else {
+      #   Expo.AIC=AIC_Test$dAIC[2]
+      #  Lomax.AIC=AIC_Test$dAIC[1]
+      # }
+      
+      
+      A_exp_est <- as.numeric(coef(Fit_Exp)[1])
+      s_exp_est <- as.numeric(coef(Fit_Exp)[2])  	# rate of decay of exponential
+      C_exp_est <- as.numeric(coef(Fit_Exp)[3])
+      
+      A_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[3])
+      s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[2])  	# rate of decay of exponential
+      w_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[1])
+      C_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[4])
+      
+      #print output
+      outlog <- paste(Snake_output_One)
+      cat("Summary of fit:\n", file=outlog, append = FALSE)
+      
+      # Convert distance in Morgans
+      capture.output(Test_Sig, file = outlog, append = TRUE)
+      cat(paste("A, s, c, RSS_Expo, AIC_Expo, A, s, w,c, RSS_Lomax, AIC_Lomax, F_Test:","\t",A_exp_est,"\t",s_exp_est,"\t",C_exp_est,"\t",NA,"\t",NA,"\t",A_lomax_est,"\t",s_lomax_est,"\t",w_lomax_est,"\t",C_lomax_est,"\t",NA,"\t",NA,"\t",NA,"\n",sep = ""), file=outlog, append=TRUE)
+      
+      
+    }
+  }
+  if(hval > 1 && hval < 10) {
     print(" inside hval > 1")
     Fit_all_using_diff_hval <- function(iterations,input,lval,hval,log,affine=T){
       
@@ -299,6 +359,7 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
     options(warn = 1)
     Best_fitting_Lomax_model_varying_hval <-  try(Fit_all_using_diff_hval(iterations,input,lval,hval,log=F,affine=T),silent = FALSE)
     if (inherits(Best_fitting_Lomax_model_varying_hval, "try-error")){
+      print("Error")
       A_exp_est <- as.numeric(coef(Fit_Exp)[1])
       s_exp_est <- as.numeric(coef(Fit_Exp)[2])  	# rate of decay of exponential
       C_exp_est <- as.numeric(coef(Fit_Exp)[3])
@@ -313,6 +374,7 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
       cat(paste("A, s, c, RSS_Expo, AIC_Expo, A, s, w,c, RSS_Lomax, AIC_Lomax, F_Test:","\t",A_exp_est,"\t",s_exp_est,"\t",C_exp_est,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\t",NA,"\n",sep = ""), file=outlog, append=TRUE)
       
     } else{
+      print("no error")
       
       #Test_Sig=anova(Fit_Exp,Best_fitting_Lomax_model,test="F")
       Test_Sig=NA
@@ -332,10 +394,10 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
       s_exp_est <- as.numeric(coef(Fit_Exp)[2])  	# rate of decay of exponential
       C_exp_est <- as.numeric(coef(Fit_Exp)[3])
       
-      A_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[3])
-      s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[2])  	# rate of decay of exponential
-      w_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[1])
-      C_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[4])
+      A_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[3])
+      s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[2])  	# rate of decay of exponential
+      w_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[1])
+      C_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[4])
       
       #print output
       outlog <- paste(Snake_output_One)
