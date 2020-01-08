@@ -65,12 +65,13 @@ This study aims to evaluate admixture time estimates, whereby we focus on a well
 
 ##Simulations
 
-Simulations were carried out using the msprime coalescent simulator [@kelleher_efficient_2016] with sample sizes chosen to reflect presently available data: We simulate 176  diploid African individuals and  170 diploid non-Africans, corresponding to the number of haploid Yoruba (YRI) and Central Europeans from Utah (CEU) sequences in the 1000 Genomes project phase 3 data [@the_1000_genomes_project_consortium_global_2015]. Since 3 high coverage Neandertal sequences are available [@prufer_complete_2013][@prufer_high-coverage_2017] we choose to simulate  3 diploid genomes. For each individual we simulated 20 chromosomes with a length of 150 Mb each.The mutation rate was set for all simulations to 2x10-8 per base per generation. The recombination rate was set to 1x10-8  per base pair per generation unless specified otherwise. The demographic parameters are either based on previous studies “simple” [@sankararaman_date_2012][@fu_genome_2014][@moorjani_genetic_2016]. In the “simple” model, the  effective population size is assumed constant at Ne=10000 for all populations, the split time between modern humans and Neandertals 10000 generations ago and a split time between Africans and non-Africans of 2550 generations ago. The migration rate from Neandertals into non-Africans was set to zero before the split from Africans, to ensure no Neandertal ancestry in Africans.
+Simulations were carried out using the msprime coalescent simulator [@kelleher_efficient_2016] with sample sizes chosen to reflect presently available data: We simulate 176  diploid African individuals and  170 diploid non-Africans, corresponding to the number of haploid Yoruba (YRI) and Central Europeans from Utah (CEU) sequences in the 1000 Genomes project phase 3 data [@the_1000_genomes_project_consortium_global_2015]. Since 3 high coverage Neandertal sequences are available [@prufer_complete_2013][@prufer_high-coverage_2017] we choose to simulate  3 diploid genomes. For each individual we simulated 20 chromosomes with a length of 150 Mb each.The mutation rate was set for all simulations to 2x10-8 per base per generation. The recombination rate was set to 1x10-8  per base pair per generation unless specified otherwise. The demographic parameters are based on previous studies [@sankararaman_date_2012][@fu_genome_2014][@moorjani_genetic_2016]. In the “simple” model, the  effective population size is assumed constant at Ne=10000 for all populations, the split time between modern humans and Neandertals 10000 generations ago and a split time between Africans and non-Africans of 2550 generations ago. The migration rate from Neandertals into non-Africans was set to zero before the split from Africans, to ensure no Neandertal ancestry in Africans.
 
 
 ###Gene Flow
 
-In the simple model, gene flow is a one generation pulse resulting in an exponentially distributed admixture-induced linkage disequilibrium (ALD) decay curve (Eq. \ref{eq:1}), with $\lambda$ as the rate parameter of the exponential distribution holding the inverse of time since the admixture event as a function of genetic distance, 
+<!-- Maybe one should harmonize the equations with Ben's -->
+In the simple model, gene flow is a one generation pulse resulting in an exponentially distributed admixture-induced linkage disequilibrium (ALD) decay curve (Eq. \ref{eq:1}), with $\lambda = -dt$ as the rate parameter of the exponential distribution holding the inverse of time since the admixture event $t$ as a function of genetic distance $d$, 
 
 \begin{equation}
 \label{eq:1}
@@ -81,31 +82,31 @@ The migration rate for continuous admixture was modeled as a gamma distribution 
 
 \begin{equation}
 \label{eq:2}
-migration \: rate \sim \Gamma(k,\frac{1}{\theta})
+migration \: rate \sim \Gamma(k+1,\frac{1}{\theta})
 \end{equation}
 
 Where k is the shape and theta the rate parameter. The parameter values are chosen such that the mean length $\frac{1}{\lambda}$ of the exponentially distributed ALD decay curve resulting from the one generation admixture pulse, is equal to the mean length of a ALD decay curve, as a result of continuous migration with the same total amount of migrants, modeled using a Lomax distribution (Eq. \ref{eq:3})
 
 \begin{equation}
 \label{eq:3}
-continuous \: ALD \sim Lomax(k_{L},\theta)
+continuous \: ALD \sim Lomax(k,\theta)
 \end{equation}
 
 \begin{equation}
 \label{eq:4}
-\lambda=\frac{k_{L}-1}{\theta}
+\lambda=\frac{k}{\theta}
 \end{equation}
 
 \begin{equation*}
 \nonumber
-where \qquad k_{L}-1=k=E[x] \, \theta+1 \qquad and \qquad \theta=\frac{E[x]}{Var[x]}
+where \qquad k=E[x] \, \theta \qquad and \qquad \theta=\frac{E[x]}{Var[x]}
 \end{equation*}
 
 Equation (Eq. \ref{eq:4}) shows the relationships between the distribution parameters such that the resulting decay mean length are equal. Here E[x] is mean admixture time in generations and Var[x] is one fourth of the length of admixture time in generations squared, with x as the number of generations of admixture between two populations.
 
 ###Recombination map
 
-To investigate the effect of a more realistic recombination frequency we simulated using a recombination map. We used the African-American-Map [@hinch_landscape_2011]  for simulations under a variable recombination rate, for simplicity, we used the same recombination map (150 Mb of chromosome 1, excluding the first 10 Mb) for all simulated chromosomes.  The mean recombination rate was calculated from the 150 Mb map ($1.843*10^{-8} \frac{M}{bp}$) and we used linear interpolation to calculate the genetic position from the physical position between SNPs.
+To investigate the effect of a more realistic recombination frequency we simulated using a recombination map. We either used the African-American-Map [@hinch_landscape_2011] or the HapMap phase 3 [@noauthor_second_2007] for simulations under a variable recombination rate, for simplicity, we used the same recombination map (150 Mb of chromosome 1, excluding the first 10 Mb) for all simulated chromosomes.  The mean recombination rate was calculated from the 150 Mb map ($1.843*10^{-8} \frac{M}{bp}$) and we used linear interpolation to calculate the genetic position from the physical position between SNPs. For correcting the genetic distance we interpolated the SNPs genetic distance by the map used for correction.
 
 ###Inferred demography
 
@@ -145,7 +146,7 @@ For this purpose, we assume that the lengths of introgressed tracts are perfectl
 L_i \sim EXP[{\lambda t}]
 \end{equation}
 
-where $t$ is the time when the fragment entered the population, and $\lambda$ is a parameter that depends on the model assumptions and recombination rate [@liang_lengths_2014]. E.g under the SMC, $\lambda = (1-m)r$, and under the SMC', $\lambda = 2N(1-m)(1-exp^{-t/2N})r$. For Neandertal admixture where $m$, the admixture fraction, is typically low, the exponential assumption is satisfied [@liang_lengths_2014]. For scenarios where the length of admixture tracts is not exponential, e.g. because admixture is recent or very old, our results do not apply. 
+where $t$ is the time when the fragment entered the population, and $\lambda$ is a parameter that depends on the model assumptions and recombination rate $r$ [@liang_lengths_2014]. E.g under the SMC, $\lambda = (1-m)r$, and under the SMC' allowing for back coalescences, $\lambda = 2N(1-m)(1-exp^{-t/2N})r$. For Neandertal admixture where $m$, the admixture fraction, is typically low, the exponential assumption is satisfied [@liang_lengths_2014]. For scenarios where the length of admixture tracts is not exponential, e.g. because admixture is recent or very old, our results do not apply. 
 
 <!-- SMC' lambda under the assumption that 2N fixed and T -> inf otherwise it is 2N(1-m)(1-e^(-t/2N)) -->
 <!-- m is the admixture proportion and r is the genetic distance -->
@@ -168,7 +169,9 @@ Using this model we i) examining the effect of continouos admixture on the admix
 
 ##The effect on continuous admixture on the admixture time estimates
 
-To asses the effect of different types of ancient gene flow on the admixture time estimates calculated from modern human populations, we compared two models of gene flow between Neandertals and non-Africans. The simplified model of  a pulse like gene flow and a continuous admixture event with several generations of gene flow. The total amount of gene flow from Neandertals into non-Africans in the two models is equal. Coalescent simulations were carried out simulating 176 Africans, 170 non-African and 3 Neandertal diploid genomes, corresponding to the number of YRI and CEU in the 1000 Genomes project phase 3 and the three available high-coverage Neandertal genomes. Each individual contains 20 chromosomes with a sequence length of 150 Mb, respectively. The total amount of non-symmetric gene flow from Neandertals into non-Africans is set to 3 %. Gene flow is modeled using a Gamma distribution  (Eq. \ref{eq:2}) holding the migration rate per generation for different length of continuous gene flow (Figure \ref{fig:fig1} A). The shape and scale parameter of the Gamma distribution are chosen such that the resulting weighted LD decay curves as functions of genetic distance share the same mean for a pulse (Eq. \ref{eq:1}) and a continuous admixture (Eq. \ref{eq:3}).  Sites informative for Neandertal introgression into non-Africans where enriched  using the lower-enrichment ascertainment scheme filtering for SNPs ancestral in all Africans and polymorphic in Neandertals. The pairwise weighted LD between the ascertained SNPs was computed using the ALDER program. Figure 1 B shows the resulting log weighted LD for a pulse admixture and the most extreme simulated scenario of 1500 generations of continuous admixture, visualizing the similarity on LD decay levels of those two different scenarios. To estimate admixture time, the weighted LD as a function of genetic distance d is fitted using an exponential distribution holding the time since the admixture event $t_{GF}$, (Eq. \ref{eq:5}). Comparing estimates for different mean admixture times ranging from 250 generations ago to 2000 generations ago, simulated either with a pulse or a continuous admixture with a length of 50 % of the mean admixture time, reveals no considerable deviations between the two scenarios and the true admixture time. Estimates for mean admixture times older than 1000 generations show a slight overestimation, which is lesser for the estimates of simulations under a continuous gene flow (Figure \ref{fig:fig1} C). The slight overestimation is consistent with the findings of previews studies estimating ancient admixture times using modern admixed populations [[@sankararaman_date_2012],[@fu_genome_2014,@moorjani_genetic_2016]. To further investigate the effect of  pulse and continuous gene flow on the admixture time estimates, we compared different durations of continuous gene flow simulated under a fixed mean time of admixture of 1500 generations ago, displayed in Figure \ref{fig:fig1} D. Estimates between pulse and continuous gene flow start to deviate for 800 generations of continuous admixture, with increasingly lower estimates for simulations under continuous gene flow compared to simulations under a pulse like gene flow per increase of gene flow duration. This bias is likely caused by the differences in LD between sites entered in the tails of the gamma distribution. LD between sites arising from early admixture events, simulated by the right tail of the gamma distribution, is not detected anymore, while LD between sites from late admixture is still present, biasing the estimate towards younger dates. However, deviations in estimates between the two scenarios of ~100 generations in the most extreme case are moderate compared to the mean admixture time of 1500 generations, making admixture time estimates for long continuous gene flow compatible with the used method and hardly distinguishable from a pulse model. 
+To asses the effect of continuous ancient admixture on the admixture time estimates calculated from modern human populations, we compared two models of admixture between Neandertals and non-Africans. The simplified model of a pulse like gene flow and a continuous admixture event with several generations of gene flow. The total amount of gene flow $m$ from Neandertals into non-Africans in the two models is equal. Coalescent simulations were carried out simulating 176 Africans, 170 non-African and 3 Neandertal diploid genomes, corresponding to the number of YRI and CEU in the 1000 Genomes project phase 3 and the three available high-coverage Neandertal genomes. Each individual contains 20 chromosomes with a sequence length of 150 Mb, respectively. The total amount of non-symmetric gene flow from Neandertals into non-Africans is set to 3 %. Gene flow is modeled using a Gamma distribution  (Eq. \ref{eq:2}) holding the migration rate per generation for different length of continuous gene flow (Figure \ref{fig:fig1} A). The shape and scale parameter of the Gamma distribution are chosen such that the resulting weighted LD decay curves as functions of genetic distance share the same mean for a pulse (Eq. \ref{eq:1}) and a continuous admixture (Eq. \ref{eq:3}).  Sites informative for Neandertal introgression into non-Africans where enriched  using the lower-enrichment ascertainment scheme filtering for SNPs ancestral in all Africans and polymorphic in Neandertals. The pairwise weighted LD between the ascertained SNPs was computed using the ALDER program. Figure 1 B shows the resulting log weighted LD for a pulse admixture and the most extreme simulated scenario of 1500 generations of continuous admixture.
+<!-- visualizing the similarity on LD decay levels of those two different scenarios? or the differnce?  -->
+To estimate admixture times, the weighted LD as a function of genetic distance $d$ is fitted using an exponential distribution holding the time since the admixture event $t_{GF}$, (Eq. \ref{eq:5}). Comparing estimates for different mean admixture times ranging from 250 generations ago to 2000 generations ago, simulated either with a pulse or a continuous admixture with a length of 50 % of the mean admixture time, reveals no considerable deviations between the two scenarios and the true admixture time. Estimates for mean admixture times older than 1000 generations show a slight overestimation, which is lesser for the estimates of simulations under a continuous gene flow (Figure \ref{fig:fig1} C). The slight overestimation is consistent with the findings of previews studies estimating ancient admixture times using modern admixed populations [[@sankararaman_date_2012],[@fu_genome_2014,@moorjani_genetic_2016]. To further investigate the effect of  pulse and continuous gene flow on the admixture time estimates, we compared different durations of continuous gene flow simulated under a fixed mean time of admixture of 1500 generations ago, displayed in Figure \ref{fig:fig1} D. Estimates between pulse and continuous gene flow start to deviate for 800 generations of continuous admixture, with increasingly lower estimates for simulations under continuous gene flow compared to simulations under a pulse like gene flow per increase of gene flow duration. This bias is likely caused by the differences in LD between sites entered in the tails of the gamma distribution. LD between sites arising from early admixture events, simulated by the right tail of the gamma distribution, is not detected anymore, while LD between sites from late admixture is still present, biasing the estimate towards younger dates. However, deviations in estimates between the two scenarios of ~100 generations in the most extreme case are moderate compared to the mean admixture time of 1500 generations, making admixture time estimates for long continuous gene flow compatible with the used method.
 
 ```{r fig1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=7,fig.height=8,fig.cap="\\label{fig:fig1} A) Migration rate per generation modeled as a gamma distribution for different length of continuous gene flow. B) Comparison of the log decay curves of a 1 generation pulse and a 1500 generation long gene flow. C) Comparison of mean admixture time estimates between pulse and continuous gene flow for different time points. The length of continuous gene flow corresponds to 50% of the mean admixture time, black line indicates true mean admixture time. D) Comparison between mean admixture estimates for simulations under a fixed mean time of admixture but varying  length of gene flow."}
 #Code for figure 1
@@ -541,9 +544,9 @@ annotate_figure(Figure_2_X,bottom = text_grob("Predictor combination"),left = te
 
 ##Estimating the Lomax-parameters under different conditions
 
-New analysis fitting a Lomax
+We investigated the effect of continuous admixture in compariosn to other parameters on the admixture time estimates of a model only considering a single generation pulse. The continuous admixture reveald to have the smallest effect, wheareas the recombination rate shows a sever underestimation of the admixture time. Building on the previous result we want to find out the conditions to retreave the Lomax parameters i.e. the duration of gene flow. We simulated an admixture scenario under a simple demography with variing duration of contnuous admixture and sampled the population at differnt time points since the end of the gen flow. Doing so allows us to examine how close one has to sample form the end of a continuous admixture to still accuratly estimate its duration. Moreover, since the recombination map is highly influencial we test the duration estimates under a constant and variable recombination using the HapMap genetic map, wherby we correct the genetic distance by: assuming a constant rate, using the AAMap or the HapMap. We used the LES ascerteinem scheme in combination with a minimal distance of 0.05 cM. To fit the Lomax we can take advantage of the fact that the bias of the mean time estimates using the simplified one generation pulse model is pretty accurate. We can thus estimate lambda first by fitting an exponential and in a second step estimating k using a Lomax distribution with a starting parameter for lambda receved form the exponential fit. Figure \ref{fig:fig3} A shows the 
 
-```{r, echo=F, message=F,warning=F}
+```{r message=FALSE, echo=FALSE,warning=FALSE,fig3,fig3.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig3} Retreaving the Lomax parameter"}
 #### New Figure for Paper using recent sampling (50 gen): constant RR, RM no correction, RM diff RM correction, RM correction same RM ####
 
 library(ggplot2)
@@ -690,7 +693,9 @@ Plot.data_50<-rbind(
   Recent_50_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction,50,'Recent_50_HapMap_HapMap_correction')
 )
 
+
 ggdata_t.GF_50 <- melt(Plot.data_50,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_t.GF_50_lomax <- melt(Plot.data_50,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name'))
 ggdata_l.GF_50 <- melt(Plot.data_50,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
 
 Plot.data_varying<-rbind(
@@ -701,17 +706,24 @@ Plot.data_varying<-rbind(
 )
 
 ggdata_t.GF_varying <- melt(Plot.data_varying,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_t.GF_varying_lomax <- melt(Plot.data_varying,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
 ggdata_l.GF_varying <- melt(Plot.data_varying,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
 
 New.P1 <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50,cbPalette_viridis)
+New.P1.2 <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_lomax,cbPalette_viridis)
 New.P2 <- Plot_sampling_50_gen_GF_Length(ggdata_l.GF_50,cbPalette_viridis)
 New.P3 <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying,cbPalette_viridis)
+New.P3.2 <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_lomax,cbPalette_viridis)
 New.P4 <- Plot_sampling_varying_gen_GF_Length(ggdata_l.GF_varying,cbPalette_viridis)
 
 
-ggarrange(New.P1,New.P2,New.P3,New.P4,
-                   labels = c("A","B","C","D"),
-                   ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
+#ggarrange(New.P1,New.P2,New.P3,New.P4,
+#                   labels = c("A","B","C","D"),
+#                   ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
+
+ggarrange(New.P1,New.P1.2,New.P2,New.P3,New.P3.2,New.P4,
+                   labels = c("A","B","C","D","E","F"),
+                   ncol = 3, nrow = 2,common.legend = T,legend = 'bottom')
 
 
 ```
