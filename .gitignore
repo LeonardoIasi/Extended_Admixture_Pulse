@@ -2,3 +2,4 @@
 .snakemake/
 Test_Fitting_Multiple_times.R 
 .gitignore 
+.RData
