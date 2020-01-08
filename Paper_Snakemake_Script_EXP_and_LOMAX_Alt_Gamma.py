@@ -200,16 +200,16 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 
 ############################################################################################
 # Choose which Set to process by giving Set_name the name of the Set to be processed #
-Set_name='Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map'
+Set_name='Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map'
 
 # Choose number of replicates #
 replicates=100
 
 # Choose Folder #
-Folder_name='../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map'
+Folder_name='../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map'
 
 # Choose Result Folder Name #
-Result_Folder='../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map/Result_both_Fit_fixed_Lambda'
+Result_Folder='../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map/Result_both_Fit_fixed_Lambda'
 
 # Choose if lambda chould be fixed or variable while fitting the AIC_Lomax
 Fix_lambda=True
