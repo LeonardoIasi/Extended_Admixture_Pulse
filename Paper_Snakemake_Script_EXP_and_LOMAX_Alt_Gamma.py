@@ -200,16 +200,19 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 
 ############################################################################################
 # Choose which Set to process by giving Set_name the name of the Set to be processed #
-Set_name='Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map'
+Set_name='Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map'
 
 # Choose number of replicates #
 replicates=100
 
 # Choose Folder #
-Folder_name='../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map'
+Folder_name='../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map'
 
 # Choose Result Folder Name #
-Result_Folder='../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map/Result_both_Fit'
+Result_Folder='../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map/Result_both_Fit_fixed_Lambda'
+
+# Choose if lambda chould be fixed or variable while fitting the AIC_Lomax
+Fix_lambda=True
 ############################################################################################
 
 
@@ -388,9 +391,11 @@ rule fit_Curve:
     input:
         "{Folder_name}/Raw_ALDER_output-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}-{Recomb_correction}.txt"
     params:
-        max_dist=get_max_length
+        max_dist=get_max_length,
+        Fix_lambda=Fix_lambda
     output:
-        "{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
+        #"{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
+        "{Folder_name}/Model_Fit_fixed_Lambda/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
         #"{Folder_name}/Model_Fit/Plot-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.pdf",
     script:
         "/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Fit_Exponential_and_Lomax_Snake.R"
@@ -399,7 +404,8 @@ rule fit_Curve:
 
 rule grep_results_and_merge_with_Scenarios:
     input:
-        "{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
+        #"{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
+        "{Folder_name}/Model_Fit_fixed_Lambda/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
     output:
         temp("{Folder_name}/Result-Fit_Output-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt")
 
