@@ -133,10 +133,21 @@ Result.Table.path_Recent_50_Recomb_Map_no_correction <-'Close_to_GF_End_Recent_G
 Result.Table.path_Recent_50_Recomb_Map_AAMap_correction <-'Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map/Result_both_Fit/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
 Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction <-'Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map/Result_both_Fit/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
 
+Result.Table.path_Recent_50_fixed_Lambda <-'Close_to_GF_End_Recent_GF/Result_both_Fit_fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_no_correction_fixed_Lambda <-'Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map/Result_both_Fit_fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_AAMap_correction_fixed_Lambda <-'Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map/Result_both_Fit_fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda <-'Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map/Result_both_Fit_fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+
 Result.Table.path_Recent_Varying <-'Variyng_Time_of_Recent_sampling_GF_l_fixed/Result_both_Fit/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
 Result.Table.path_Recent_Varying_Recomb_Map_no_correction <-'Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map/Result_both_Fit/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
 Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction <-'Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map/Result_both_Fit/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
 Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction <-'Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map/Result_both_Fit/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+
+Result.Table.path_Recent_Varying_fixed_Lambda <-'Variyng_Time_of_Recent_sampling_GF_l_fixed/Result_both_Fit_fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_no_correction_fixed_Lambda <-'Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map/Result_both_Fit_fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction_fixed_Lambda <-'Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map/Result_both_Fit_fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda <-'Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map/Result_both_Fit_fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+
 
 Plot.data_50<-rbind(
   Recent_50_constant<- Result.Table.fn(Result.Table.path_Recent_50,50,'Recent_50_constant'),
@@ -148,6 +159,16 @@ Plot.data_50<-rbind(
 ggdata_t.GF_50 <- melt(Plot.data_50,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name'))
 ggdata_l.GF_50 <- melt(Plot.data_50,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
 
+Plot.data_50_fixed_Lambda<-rbind(
+  Recent_50_constant_fixed_Lambda<- Result.Table.fn(Result.Table.path_Recent_50_fixed_Lambda,50,'Recent_50_constant'),
+  Recent_50_HapMap_no_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_no_correction_fixed_Lambda,50,'Recent_50_HapMap_no_correction'),
+  Recent_50_HapMap_AAMap_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_AAMap_correction_fixed_Lambda,50,'Recent_50_HapMap_AAMap_correction'),
+  Recent_50_HapMap_HapMap_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda,50,'Recent_50_HapMap_HapMap_correction')
+)
+
+ggdata_t.GF_50_fixed_Lambda <- melt(Plot.data_50_fixed_Lambda,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_l.GF_50_fixed_Lambda <- melt(Plot.data_50_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+
 Plot.data_varying<-rbind(
   Recent_varying_constant<- Result.Table.fn(Result.Table.path_Recent_Varying,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_constant'),
   Recent_varying_HapMap_no_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_no_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_no_correction'),
@@ -158,16 +179,34 @@ Plot.data_varying<-rbind(
 ggdata_t.GF_varying <- melt(Plot.data_varying,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
 ggdata_l.GF_varying <- melt(Plot.data_varying,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
 
+Plot.data_varying_fixed_Lambda<-rbind(
+  Recent_varying_constant_fixed_Lambda<- Result.Table.fn(Result.Table.path_Recent_Varying_fixed_Lambda,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_constant'),
+  Recent_varying_HapMap_no_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_no_correction_fixed_Lambda,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_no_correction'),
+  Recent_varying_HapMap_AAMap_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction_fixed_Lambda,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_AAMap_correction'),
+  Recent_varying_HapMap_HapMap_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_HapMap_correction')
+)
+
+ggdata_t.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_l.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+
+
 New.P1 <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50,cbPalette_viridis)
 New.P2 <- Plot_sampling_50_gen_GF_Length(ggdata_l.GF_50,cbPalette_viridis)
 New.P3 <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying,cbPalette_viridis)
 New.P4 <- Plot_sampling_varying_gen_GF_Length(ggdata_l.GF_varying,cbPalette_viridis)
 
+New.P1_fixed_Lambda <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_fixed_Lambda,cbPalette_viridis)
+New.P2_fixed_Lambda <- Plot_sampling_50_gen_GF_Length(ggdata_l.GF_50_fixed_Lambda,cbPalette_viridis)
+New.P3_fixed_Lambda <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_fixed_Lambda,cbPalette_viridis)
+New.P4_fixed_Lambda <- Plot_sampling_varying_gen_GF_Length(ggdata_l.GF_varying_fixed_Lambda,cbPalette_viridis)
 
 New.Fig <- ggarrange(New.P1,New.P2,New.P3,New.P4,
                    labels = c("A","B","C","D"),
                    ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
 
+New.Fig_fixed_Lambda <- ggarrange(New.P1_fixed_Lambda,New.P2_fixed_Lambda,New.P3_fixed_Lambda,New.P4_fixed_Lambda,
+                     labels = c("A","B","C","D"),
+                     ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
 
 pdf('~/Desktop/Diff_Sampling_ATE/All_plot_together.pdf',width = 12)
 annotate_figure(New.Fig,
