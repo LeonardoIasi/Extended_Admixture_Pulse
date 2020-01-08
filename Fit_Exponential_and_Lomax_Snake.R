@@ -15,6 +15,8 @@ input <- as.character(snakemake@input[[1]]) 		# output from rollof
 Snake_output_One <- as.character(snakemake@output[[1]])  		# output of expfit log file
 lval <- as.numeric(snakemake@wildcards[['min_dist_Fit']])		# lower value of dist to use
 hval <- as.numeric(snakemake@params[['max_dist']])		# higher value of dist to use  
+Fix_lambda <- as.logical(snakemake@params[['Fix_lambda']])		# higher value of dist to use 
+
 
 iterations=10
 Get_points <- function(input,lval,hval,log){
@@ -89,42 +91,69 @@ Fit_Exp_fn <- function(Data,affine){
 
 
 
-Fit_Lomax_fn <- function(Data,affine,Expo_s){
+Fit_Lomax_fn <- function(Data,affine,Expo_s,Fix_lambda){
   xx=Data
   
   dist=xx$dist
   wcorr=xx$wcorr
-  if(affine){
-    fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + (x[1]*(dist/100) /  x[2])))^(1/x[1])
-    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
-    fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1e-6,Expo_s,0,0), upper=c(100,Expo_s,1,1), control=list(trace=FALSE))
-    
-    par1_lomax <- fm3_DEoptim$optim$bestmem
-    par1_lomax <- c(par1_lomax[1],Expo_s,par1_lomax[3],par1_lomax[4])
-    names(par1_lomax) <- c("w","s","A","c")
-    fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((w*(dist/100)) / s)))^(1/w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
-    
-  } else {
-    fm1_lomax <- function(x)  x[3]* (1/(1 + (x[1]*(dist/100) /  x[2])))^(1/x[1])
-    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
-    fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1e-6,Expo_s/2,0), upper=c(100,Expo_s*2,1), control=list(trace=FALSE))
-    
-    par1_lomax <- fm3_DEoptim$optim$bestmem
-    par1_lomax <- c(par1_lomax[1],Expo_s,par1_lomax[3])
-    names(par1_lomax) <- c("w","s","A")
-    fit1_lomax <- nls(wcorr ~ A*(1/(1  + ((w*(dist/100)) / s)))^(1/w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+  if(Fix_lambda){
+    if(affine){
+      fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + (x[1]*(dist/100) /  x[2])))^(1/x[1])
+      fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
+      fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1e-6,Expo_s,0,0), upper=c(100,Expo_s,1,1), control=list(trace=FALSE))
+      
+      par1_lomax <- fm3_DEoptim$optim$bestmem
+      par1_lomax <- c(par1_lomax[1],par1_lomax[3],par1_lomax[4])
+      names(par1_lomax) <- c("w","A","c")
+      fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((w*(dist/100)) / Expo_s)))^(1/w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+      
+    } else {
+      fm1_lomax <- function(x)  x[3]* (1/(1 + (x[1]*(dist/100) /  x[2])))^(1/x[1])
+      fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
+      fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1e-6,Expo_s,0), upper=c(100,Expo_s,1), control=list(trace=FALSE))
+      
+      par1_lomax <- fm3_DEoptim$optim$bestmem
+      par1_lomax <- c(par1_lomax[1],par1_lomax[3])
+      names(par1_lomax) <- c("w","A")
+      fit1_lomax <- nls(wcorr ~ A*(1/(1  + ((w*(dist/100)) / Expo_s)))^(1/w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+      
+    }
+  }
+  else{
+    if(affine){
+      fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + (x[1]*(dist/100) /  x[2])))^(1/x[1])
+      fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
+      fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1e-6,Expo_s,0,0), upper=c(100,Expo_s,1,1), control=list(trace=FALSE))
+      
+      par1_lomax <- fm3_DEoptim$optim$bestmem
+      par1_lomax <- c(par1_lomax[1],Expo_s,par1_lomax[3],par1_lomax[4])
+      names(par1_lomax) <- c("w","s","A","c")
+      fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((w*(dist/100)) / s)))^(1/w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+      
+    } else {
+      fm1_lomax <- function(x)  x[3]* (1/(1 + (x[1]*(dist/100) /  x[2])))^(1/x[1])
+      fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
+      fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1e-6,Expo_s/2,0), upper=c(100,Expo_s*2,1), control=list(trace=FALSE))
+      
+      par1_lomax <- fm3_DEoptim$optim$bestmem
+      par1_lomax <- c(par1_lomax[1],Expo_s,par1_lomax[3])
+      names(par1_lomax) <- c("w","s","A")
+      fit1_lomax <- nls(wcorr ~ A*(1/(1  + ((w*(dist/100)) / s)))^(1/w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+      
+    }
     
   }
+
   return(fit1_lomax)
 }
 
-Fit_Lomax_multiple_times <- function(iterations,xdata,affine=T,Expo_s){
+Fit_Lomax_multiple_times <- function(iterations,xdata,affine=T,Expo_s,Fix_lambda){
   list_Fits <- list()
   Fit_name <- c()
   for(i in 1:iterations){
     alternativeFunction <- function(xx){return(list(NA))}
     options(warn = 1)
-    End_Fit<-  try(Fit_Lomax_fn(Data = xdata,affine = affine,Expo_s=Expo_s),silent = FALSE)
+    End_Fit<-  try(Fit_Lomax_fn(Data = xdata,affine = affine,Expo_s=Expo_s,Fix_lambda),silent = FALSE)
     if (inherits(End_Fit, "try-error")) End_Fit=alternativeFunction(xdata)
     list_Fits[[i]] <- End_Fit
     print(paste('Fit iteration :',i,sep = " "))
@@ -171,7 +200,7 @@ s_exp_est <- as.numeric(coef(Fit_Exp)[2])
 
 
 options(warn = 1)
-Best_fitting_Lomax_model <-  try(Fit_Lomax_multiple_times(iterations,xdata,affine=T,Expo_s=s_exp_est),silent = FALSE)
+Best_fitting_Lomax_model <-  try(Fit_Lomax_multiple_times(iterations,xdata,affine=T,Expo_s=s_exp_est,Fix_lambda),silent = FALSE)
 if (inherits(Best_fitting_Lomax_model, "try-error")){ 
   if(hval == 1) {
     xdata <- Get_points(input,lval,hval+1,log = F)
@@ -181,7 +210,7 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
     s_exp_est <- as.numeric(coef(Fit_Exp)[2]) 
     
     options(warn = 1)
-    Best_fitting_Lomax_model_varying_hval <-  try(Fit_Lomax_multiple_times(iterations,xdata,affine=T,Expo_s=s_exp_est),silent = FALSE)
+    Best_fitting_Lomax_model_varying_hval <-  try(Fit_Lomax_multiple_times(iterations,xdata,affine=T,Expo_s=s_exp_est,Fix_lambda),silent = FALSE)
     if (inherits(Best_fitting_Lomax_model_varying_hval, "try-error")){
       A_exp_est <- as.numeric(coef(Fit_Exp)[1])
       s_exp_est <- as.numeric(coef(Fit_Exp)[2])  	# rate of decay of exponential
@@ -218,7 +247,8 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
       C_exp_est <- as.numeric(coef(Fit_Exp)[3])
       
       A_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[3])
-      s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[2])  	# rate of decay of exponential
+      if(Fix_lambda){s_lomax_est <- as.numeric(coef(Fit_Exp)[2])}
+      else{s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[2])}
       w_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[1])
       C_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[4])
       
@@ -241,7 +271,7 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
     s_exp_est <- as.numeric(coef(Fit_Exp)[2]) 
     
     options(warn = 1)
-    Best_fitting_Lomax_model_varying_hval <-  try(Fit_Lomax_multiple_times(iterations,xdata,affine=T,Expo_s=s_exp_est),silent = FALSE)
+    Best_fitting_Lomax_model_varying_hval <-  try(Fit_Lomax_multiple_times(iterations,xdata,affine=T,Expo_s=s_exp_est,Fix_lambda),silent = FALSE)
     if (inherits(Best_fitting_Lomax_model_varying_hval, "try-error")){
       A_exp_est <- as.numeric(coef(Fit_Exp)[1])
       s_exp_est <- as.numeric(coef(Fit_Exp)[2])  	# rate of decay of exponential
@@ -278,7 +308,8 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
       C_exp_est <- as.numeric(coef(Fit_Exp)[3])
       
       A_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[3])
-      s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[2])  	# rate of decay of exponential
+      if(Fix_lambda){s_lomax_est <- as.numeric(coef(Fit_Exp)[2])}
+      else{s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[2])}
       w_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[1])
       C_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[4])
       
@@ -295,7 +326,7 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
   }
   if(hval > 1 && hval < 10) {
     print(" inside hval > 1")
-    Fit_all_using_diff_hval <- function(iterations,input,lval,hval,log,affine=T){
+    Fit_all_using_diff_hval <- function(iterations,input,lval,hval,log,affine=T,Fix_lambda){
       
       xdata <- Get_points(input,lval,hval+1,log = F)
       Fit_Exp <- Fit_Exp_fn(xdata,affine = T)
@@ -306,7 +337,7 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
       for(i in 1:(iterations/2)){
         alternativeFunction <- function(xx){return(list(NA))}
         options(warn = 1)
-        End_Fit<-  try(Fit_Lomax_fn(Data = xdata,affine = affine,Expo_s=s_exp_est),silent = FALSE)
+        End_Fit<-  try(Fit_Lomax_fn(Data = xdata,affine = affine,Expo_s=s_exp_est,Fix_lambda),silent = FALSE)
         if (inherits(End_Fit, "try-error")) End_Fit=alternativeFunction(xdata)
         list_Fits[[i]] <- End_Fit
         print(paste('Fit iteration :',i,sep = " "))
@@ -321,7 +352,7 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
       for(i in 1:(iterations/2)){
         alternativeFunction <- function(xx){return(list(NA))}
         options(warn = 1)
-        End_Fit<-  try(Fit_Lomax_fn(Data = xdata,affine = affine,Expo_s=s_exp_est),silent = FALSE)
+        End_Fit<-  try(Fit_Lomax_fn(Data = xdata,affine = affine,Expo_s=s_exp_est,Fix_lambda),silent = FALSE)
         if (inherits(End_Fit, "try-error")) End_Fit=alternativeFunction(xdata)
         list_Fits[[(i+(iterations/2))]] <- End_Fit
         print(paste('Fit iteration :',i,sep = " "))
@@ -357,7 +388,7 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
       return(Best_fitting_Lomax_model)
     }
     options(warn = 1)
-    Best_fitting_Lomax_model_varying_hval <-  try(Fit_all_using_diff_hval(iterations,input,lval,hval,log=F,affine=T),silent = FALSE)
+    Best_fitting_Lomax_model_varying_hval <-  try(Fit_all_using_diff_hval(iterations,input,lval,hval,log=F,affine=T,Fix_lambda),silent = FALSE)
     if (inherits(Best_fitting_Lomax_model_varying_hval, "try-error")){
       print("Error")
       A_exp_est <- as.numeric(coef(Fit_Exp)[1])
@@ -395,7 +426,8 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
       C_exp_est <- as.numeric(coef(Fit_Exp)[3])
       
       A_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[3])
-      s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[2])  	# rate of decay of exponential
+      if(Fix_lambda){s_lomax_est <- as.numeric(coef(Fit_Exp)[2])}
+      else{s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[2])}
       w_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[1])
       C_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model_varying_hval)[4])
       
@@ -432,7 +464,10 @@ if (inherits(Best_fitting_Lomax_model, "try-error")){
     C_exp_est <- as.numeric(coef(Fit_Exp)[3])
     
     A_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[3])
-    s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[2])  	# rate of decay of exponential
+    if(Fix_lambda)
+      {s_lomax_est <- as.numeric(coef(Fit_Exp)[2])}
+    else 
+      {s_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[2])}
     w_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[1])
     C_lomax_est <- as.numeric(coef(Best_fitting_Lomax_model)[4])
     
