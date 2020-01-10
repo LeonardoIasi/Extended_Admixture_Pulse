@@ -123,7 +123,7 @@ Ascertainment schemes are used to select certain variable positions of interest 
 
 ###ALD calculation and curve fitting
 
-The pairwise weighted LD between the ascertained SNPs was calculated using ALDER [@loh_inferring_2013]. A minimal genetic distance $d_0$ between SNPs is set either to 0.02 cM and 0.05 cM. To obtain the mean time estimates the data is fitted an exponential distribution shown in equation \ref{eq:5}, using a non-linear least-square optimization algorithm implemented in R [@R_Core_Team_2019]. Where *A* is the intercept, $\frac{1}{s} = t$ the time since the admixture event in generations, *d* the genetic distance in cM and *c* is a constant modeling background LD. The model was fitted following Moorjani et al 2016 [@moorjani_genetic_2016]. The duration of continuous admixture is modeled using the Lomax fit shown in Eq. \ref{eq:6}. We used the particularization from Kozubowski et al. 2008 [@Kozubowski_2008_TestingEV], here $k = \frac{1}{w}$. The starting value of $s$ is taken from the exponential fit to ensure convergence of the model. Model validity diagnostics like distribution of residuals, residuals plotted against fitted values and model stability diagnostics like dfbetas were checked for selected simulations and showed no obvious deviations from the model assumptions [@quinn_experimental_2002].
+The pairwise weighted LD between the ascertained SNPs was calculated using ALDER [@loh_inferring_2013]. A minimal genetic distance $d_0$ between SNPs is set either to 0.02 cM and 0.05 cM. To obtain the mean time estimates the data is fitted an exponential distribution shown in equation \ref{eq:5}, using a non-linear least-square optimization algorithm implemented in R [@R_Core_Team_2019]. Where *A* is the intercept, $\frac{1}{s} = t$ the time since the admixture event in generations, *d* the genetic distance in cM and *c* is a constant modeling background LD. The model was fitted following Moorjani et al 2016 [@moorjani_genetic_2016]. The duration of continuous admixture is modeled using the Lomax fit shown in Eq. \ref{eq:6}. We used the particularization from Kozubowski et al. 2008 [@Kozubowski_2008_TestingEV], here $k = \frac{1}{w}$. The starting value of $s$ is taken from the exponential fit to ensure convergence of the model. Model validity diagnostics like distribution of residuals, residuals plotted against fitted values and model stability diagnostics like dfbetas were checked for selected simulations and showed no obvious deviations from the model assumptions [@quinn_experimental_2002]. To compare the two nested models we used Akaike's information critartion (AIC) measuring the goodness of fit while penalising the addition of new parameters $p$ and thus controling for under- and overfitting (Eq. \ref{eq:7}).
 
 \begin{equation}
 \label{eq:5}
@@ -133,6 +133,11 @@ ALD \sim\ A\,e^{-\frac{d}{s}}+c
 \begin{equation}
 \label{eq:6}
 ALD \sim\ A\,\left( \frac{1}{1 + \frac{wd}{s}}\right) ^\frac{1}{w}+c
+\end{equation}
+
+\begin{equation}
+\label{eq:7}
+AIC = 2p - 2\ln(\hat{L})
 \end{equation}
 
 ###Modeling parameter effect sizes
@@ -476,7 +481,7 @@ To asses the effect of continuous ancient admixture on the admixture time estima
 To estimate admixture times, the weighted LD as a function of genetic distance $d$ is fitted using an exponential distribution holding the time since the admixture event $t_{GF}$, (Eq. \ref{eq:5}). Comparing estimates for different mean admixture times ranging from 250 generations ago to 2000 generations ago, simulated either with a pulse or a continuous admixture with a length of 50 % of the mean admixture time, reveals no considerable deviations between the two scenarios and the true admixture time. Estimates for mean admixture times older than 1000 generations show a slight overestimation, which is lesser for the estimates of simulations under a continuous gene flow (Figure \ref{fig:fig2} C). The slight overestimation is consistent with the findings of previews studies estimating ancient admixture times using modern admixed populations [[@sankararaman_date_2012],[@fu_genome_2014,@moorjani_genetic_2016]. To further investigate the effect of  pulse and continuous gene flow on the admixture time estimates, we compared different durations of continuous gene flow simulated under a fixed mean time of admixture of 1500 generations ago, displayed in Figure \ref{fig:fig2} D. Estimates between pulse and continuous gene flow start to deviate for 800 generations of continuous admixture, with increasingly lower estimates for simulations under continuous gene flow compared to simulations under a pulse like gene flow per increase of gene flow duration. This bias is likely caused by the differences in LD between sites entered in the tails of the gamma distribution. LD between sites arising from early admixture events, simulated by the right tail of the gamma distribution, is not detected anymore, while LD between sites from late admixture is still present, biasing the estimate towards younger dates. However, deviations in estimates between the two scenarios of ~100 generations in the most extreme case are moderate compared to the mean admixture time of 1500 generations, making admixture time estimates for long continuous gene flow compatible with the used method.
 
 
-```{r fig2,message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=7,fig.height=8,fig.cap="\\label{fig:fig2} A) Comparison of mean admixture time estimates between pulse and continuous gene flow for different admixture times. The length of continuous gene flow corresponds to 50% of the mean admixture time, black line indicates true mean admixture time. B) Comparison of mean admixture time estimates for simulations with a  mean time of admixture of 1500 generations ago, at a varying length of gene flow. Boxplot created from 100 simulation replicates, respectively."}
+```{r fig2,message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=8,fig.height=8,fig.cap="\\label{fig:fig2} A) Comparison of mean admixture time estimates between pulse and continuous gene flow for different admixture times. The length of continuous gene flow corresponds to 50% of the mean admixture time, black line indicates true mean admixture time. B) Comparison of mean admixture time estimates for simulations with a  mean time of admixture of 1500 generations ago, at a varying length of gene flow. Boxplot created from 100 simulation replicates, respectively."}
 
 ### Plot in one window
 
@@ -681,19 +686,7 @@ annotate_figure(Figure_2_X,bottom = text_grob("Predictor combination"),left = te
 
 ##Estimating the Lomax-parameters under different conditions
 
-We investigated the effect of continuous admixture in comparison to other parameters on the admixture time estimates of a model only considering a single generation pulse. The continuous admixture revealed to have the smallest effect, whereas the recombination rate shows a sever underestimation of the admixture time. Building on the previous result we want to find out the conditions to retrieve the Lomax parameters i.e. the duration of gene flow. We simulated an admixture scenario under a simple demography with varying duration of continuous admixture and sampled the population at different time points since the end of the gen flow. Doing so allows us to examine how close one has to sample form the end of a continuous admixture to still accurately estimate its duration. Moreover, since the recombination map is highly influential we test the duration estimates under a constant and variable recombination using the HapMap genetic map, whereby we correct the genetic distance by: assuming a constant rate, using the AAMap or the HapMap itself. We used the LES ascertainment scheme in combination with a minimal distance of 0.05 cM. To fit the Lomax we can take advantage of the fact that the bias of the mean time estimates using the simplified one generation pulse model is pretty accurate. We can thus estimate lambda first by fitting an exponential and in a second step estimating k using a Lomax distribution with a starting parameter for lambda received form the exponential fit. Figure \ref{fig:fig4} A and C show the mean time estimates received from the Exponential fit. A shows estimates for different durations of continuous admixture with all populations sampled 50 generations after the end of gene flow. C shows estimates for a 800 generation long continuous admixture sampled after different times after the end of the gene flow. In both scenarios, for simulations under a constant recombination the mean time can be estimated confidently with only slight underestimation for long continuous gene flow of 1500. Estimates for simulation under a recombination map only assuming a constant rate when calculating the LD results in severely underestimation of the mean time estimates. Using the AAMap yields results closer to the true value and less downwards biased, however only using the exact same genetic map gives unbiased results. Figure \ref{fig:fig4} B and D shows the corresponding duration estimates by the Lomax fit. Accurate estimates can be obtained throughout the different gene flow length under a constant recombination rate, when sampled recent from the end of the continuous admixture. The further away one samples form the end of the admixture event the less accurate the estimates. All simulations using a recombination map show a much higher variance in the estimates, especially for a gene flow length longer then 800 generations or sampled later then 50 generations away from the end of gene flow the estimates are not reliably. If no precise genetic map is used to inferred the genetic distance between SNPs, no accurate duration estimates can be obtained. The mean duration over all replicates for the simulation corrected by the exact same map seems relatively unbiased for a recent gene flow with a duration shorter 1000 generations. Under a realistic scenario with a varying recombination rate, the duration can only be accurately estimated with a highly precise map for recent continuous admixture events not longer then 400 generations. 
-
-Conclusion:
-  - even under a constant rate the signal of continuous gene flow for scenarios of Neandertal admixture are probbably not detactable any more since one samples to far away from the end of the gene flow event.
-  - the ALD decay is approximated assuming a constant rate of recombination, this works fairly well for mean time estimates with a precise map but duration estimates are very sensitive to this vialation.
-
-
-
-<!-- To get a duration under realistic scenario on needs a highly precise map and genflow has to be shorter then 400 generation and recently in the past. -->
-
-<!-- Maybe call it inferring the genetic distance rather than correctin -->
-
-```{r fig4,message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig4} Retreaving the Lomax parameter"}
+```{r message=FALSE, echo=FALSE,warning=FALSE}
 #### New Figure for Paper using recent sampling (50 gen): constant RR, RM no correction, RM diff RM correction, RM correction same RM ####
 
 library(ggplot2)
@@ -894,6 +887,58 @@ New.P1_fixed_Lambda <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_fixed_Lambda,cbP
 New.P2_fixed_Lambda <- Plot_sampling_50_gen_GF_Length(ggdata_l.GF_50_fixed_Lambda,cbPalette_viridis)
 New.P3_fixed_Lambda <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_fixed_Lambda,cbPalette_viridis)
 New.P4_fixed_Lambda <- Plot_sampling_varying_gen_GF_Length(ggdata_l.GF_varying_fixed_Lambda,cbPalette_viridis)
+```
+
+
+
+We investigated the effect of continuous admixture in comparison to other parameters on the admixture time estimates of a model only considering a single generation pulse. The continuous admixture revealed to have the smallest effect, whereas the recombination rate shows a sever underestimation of the admixture time. Building on the previous result we want to find out the conditions to retrieve the Lomax parameters i.e. the duration of gene flow. We simulated an admixture scenario under a simple demography with varying duration of continuous admixture and sampled the population at different time points since the end of the gen flow. Doing so allows us to examine how close one has to sample form the end of a continuous admixture to still accurately estimate its duration. Moreover, since the recombination map is highly influential we test the duration estimates under a constant and variable recombination using the HapMap genetic map, whereby we correct the genetic distance by: assuming a constant rate, using the AAMap or the HapMap itself. We used the LES ascertainment scheme in combination with a minimal distance of 0.05 cM. To fit the Lomax we can take advantage of the fact that the bias of the mean time estimates using the simplified one generation pulse model is pretty accurate. We can thus estimate lambda first by fitting an exponential and in a second step estimating k using a Lomax distribution with a starting parameter for lambda received form the exponential fit. Figure \ref{fig:fig4} A and C show the mean time estimates received from the Exponential fit. A shows estimates for different durations of continuous admixture with all populations sampled 50 generations after the end of gene flow. C shows estimates for a 800 generation long continuous admixture sampled after different times after the end of the gene flow. In both scenarios, for simulations under a constant recombination the mean time can be estimated confidently with only slight underestimation for long continuous gene flow of 1500 generations. Estimates for simulation under a recombination map only assuming a constant rate when calculating the LD results in severely underestimation of the mean time estimates. Using the AAMap yields results closer to the true value and less downwards biased, however only using the exact same genetic map gives unbiased results. Figure \ref{fig:fig4} B and D shows the corresponding duration estimates by the Lomax fit. Accurate estimates can be obtained throughout the different gene flow length under a constant recombination rate, when sampled recent from the end of the continuous admixture. The further away one samples form the end of the admixture event the less accurate the estimates. All simulations using a recombination map show a much higher variance in the estimates, especially for a gene flow length longer then 800 generations or sampled later then 50 generations away from the end of gene flow the estimates are not reliably. If no precise genetic map is used to inferred the genetic distance between SNPs, no accurate duration estimates can be obtained. The mean duration over all replicates for the simulation corrected by the exact same map seems relatively unbiased for a recent gene flow with a duration shorter 1000 generations. Under a realistic scenario with a varying recombination rate, the duration can only be accurately estimated with a highly precise map for recent continuous admixture events not longer then 400 generations. With regard to scenarios of Neandertal admixture, accuratly estimating the duration of possible continous admixture from present day human genomes even under a constant rate is probbably is underpowerd. The time since the end of the gene flow when using present day human genome is to far away such that the signal of continous gene flow, even under simple simulation scenarios using a constant recombination rate, is not strong enough. 
+
+
+
+```{r message=FALSE, echo=FALSE,warning=FALSE}
+Get_model_selection <- function(Data,GF_length,Sim_Scenario){
+  if (GF_length==1){
+    xx <- Data[Data$True_GF_length==GF_length,]
+  } else {
+    xx <- Data[Data$True_GF_length>=GF_length,]
+  }
+
+  xx <- xx[xx$Name==Sim_Scenario,]
+  
+  
+  Expo_prefered <- xx[xx$AIC_Expo<xx$AIC_Lomax,]
+  
+  Lomax_prefered <- length(xx$A.exp)-length(Expo_prefered$A.exp)
+  
+  Model_select <- cbind(length(Expo_prefered$A.exp),Lomax_prefered)
+  colnames(Model_select) <- c("Expo_prefered","Lomax_prefered")
+
+  return(Model_select)
+}
+
+Pulse_model_selction <- Get_model_selection(Plot.data_50,1,'Recent_50_constant')
+Continuous_model_selection <- Get_model_selection(Plot.data_50,2,'Recent_50_constant')
+```
+
+
+To distinguish a pulse like admixture event resulting in an exponetially distributed ALD decay from a Lomax distributed ALD decay accosiated with a continuous admixture, we compared the two model via goodness-of-fit to the ALD data. Therefore we used Akaike's information criterion comparing the exponetial model nested in the Lomax. We expect that, since the AIC is penalizing extra parameter, that a Lomax fit to a pulse like simulation scenario should be rejected, wheres for all the other scenarios the Lomax would be prefered. However, for the simplified simulation scenarios under a constant recombination rate were we obtained the best results the Lomax displayes a lower AIC in `r Pulse_model_selction[,2]` fits out of 100 replications. Model comparison for scenarios of true continuous admixture always resuted in the Lomax having a lower AIC. The AIC reject the null hypotithis to often and thus seem to be a to liberal test.
+<!-- does on call a a statistical test rejecting the H0 to often liberal? -->
+
+
+
+
+
+Conclusion:
+  - even under a constant rate the signal of continuous gene flow for scenarios of Neandertal admixture are probbably not detactable any more since one samples to far away from the end of the gene flow event.
+  - the ALD decay is approximated assuming a constant rate of recombination, this works fairly well for mean time estimates with a precise map but duration estimates are very sensitive to this violation.
+  - Comparisons between the two nested models via Akaike's infromation criterion always preferes the Lomax fit, even in the pulse admixture scenario, where the Lomax reflects the exponantial distribution and thus the extra parameter in the Lomax should be punished. 
+
+<!-- To get a duration under realistic scenario on needs a highly precise map and genflow has to be shorter then 400 generation and recently in the past. -->
+
+<!-- Maybe call it inferring the genetic distance rather than correcting -->
+
+``` {r fig4, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig4} ll"}
+
 
 New.Fig <- ggarrange(New.P1,New.P2,New.P3,New.P4,
                    labels = c("A","B","C","D"),
@@ -902,12 +947,11 @@ New.Fig <- ggarrange(New.P1,New.P2,New.P3,New.P4,
 New.Fig_fixed_Lambda <- ggarrange(New.P1_fixed_Lambda,New.P2_fixed_Lambda,New.P3_fixed_Lambda,New.P4_fixed_Lambda,
                      labels = c("A","B","C","D"),
                      ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
-
 New.Fig
+
 #New.Fig_fixed_Lambda
-
-
 ```
+
 
 #Discussion
 
@@ -941,7 +985,7 @@ Plot_Fig_2_A <- function(Data,x.axes.lables){
     theme(axis.text.x = element_text(angle = 0))+
     scale_x_discrete(labels= x.axes.lables)+
     scale_color_manual("Gene Flow Model",
-                       values = c("#56B4E9","#D55E00"),
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[6]),
                        labels = c("Pulse","Continuous"))
   return(Px)
   
