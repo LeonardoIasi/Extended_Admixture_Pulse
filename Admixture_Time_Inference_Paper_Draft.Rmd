@@ -30,8 +30,9 @@ header-includes:
 - \usepackage{graphicx}
 - \usepackage{float}
 - \floatplacement{figure}{H}
-csl: /home/leonardo_iasi/Citation_Styles/plos-biology.csl
-bibliography: /home/leonardo_iasi/My_Library.bib
+
+csl: References/plos-biology.csl
+bibliography: References/My_Library_ATE.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -928,11 +929,6 @@ To distinguish a pulse like admixture event resulting in an exponetially distrib
 
 
 
-Conclusion:
-  - even under a constant rate the signal of continuous gene flow for scenarios of Neandertal admixture are probbably not detactable any more since one samples to far away from the end of the gene flow event.
-  - the ALD decay is approximated assuming a constant rate of recombination, this works fairly well for mean time estimates with a precise map but duration estimates are very sensitive to this violation.
-  - Comparisons between the two nested models via Akaike's infromation criterion always preferes the Lomax fit, even in the pulse admixture scenario, where the Lomax reflects the exponantial distribution and thus the extra parameter in the Lomax should be punished. 
-
 <!-- To get a duration under realistic scenario on needs a highly precise map and genflow has to be shorter then 400 generation and recently in the past. -->
 
 <!-- Maybe call it inferring the genetic distance rather than correcting -->
@@ -955,7 +951,15 @@ New.Fig
 
 #Discussion
 
-Write sth
+Conclusions:
+\begin{itemize}
+	\item The mean time of gene flow can be reliably estimated with a pulse model even if the gene flow is actually continuous.
+  \item Technical model variables (ascertainment scheme, minimal distance, demography and recombination map) outweigh the effect of continuous gene flow.
+  \item The Lomax model is underpowered to infering continuous admixture for parameters relevant for Neandertal admixture.
+  \item Estimating the the mean time and espacially the duration of gene flow is only possibl with a highly precise genetic map.
+  \item The signal of continuous gene flow is hard to detect if the gene flow is not long enough or to far in the past.
+  \item Reliably destinguishing the models is difficult.
+\end{itemize}
 
 #Refereces
 
