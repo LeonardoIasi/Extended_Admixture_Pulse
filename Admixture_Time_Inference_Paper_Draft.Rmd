@@ -55,7 +55,7 @@ text-align: justify}
 
 #Introduction
 
-Detecting admixture, i.e. gene flow between previously isolated populations can shed light into the complex evolutionary history of  populations. The sequencing of the Neandertal [@green_draft_2010] and Denisovan [@reich_genetic_2010] genome revealed admixture events between Neandertals and  modern humans outside of Africa  [@green_draft_2010; @prufer_complete_2013; @fu_early_2015; @fu_genome_2014; @sankararaman_genomic_2014], as well as an independent admixture event between Denisovans and Asian populations[@reich_genetic_2010; @meyer_high-coverage_2012; @sankararaman_combined_2016; @vernot_excavating_2016]. 
+Detecting admixture, i.e. gene flow between previously isolated populations can shed light into the complex evolutionary history of populations. The sequencing of the Neandertal [@green_draft_2010] and Denisovan [@reich_genetic_2010] genome revealed admixture events between Neandertals and  modern humans outside of Africa  [@green_draft_2010; @prufer_complete_2013; @fu_early_2015; @fu_genome_2014; @sankararaman_genomic_2014], as well as an independent admixture event between Denisovans and Asian populations[@reich_genetic_2010; @meyer_high-coverage_2012; @sankararaman_combined_2016; @vernot_excavating_2016]. 
 
 
 ##Admixture on the genomic level and basic idea how to date it
