@@ -19,7 +19,12 @@ sim_parameters:
               migration_rate_GF: 0.03
               GF_start: 0
               GF_stop: 0
+              Substructure_end: 2550
+              Substructure_mig_start: 2550
+              Substructure_mig_rate: 0.0
               EUR_AFR_migration_rate_GF: 0.0
+              EUR_AFR_migration_start: 50
+              EUR_AFR_migration_end: 200
               GAMMA: 'Normal'
         _MS_fixed_Var_1_:
               GF_start: 188
@@ -80,6 +85,24 @@ sim_parameters:
               GF_start: 750
               GF_stop: 2250
               sample_Neandertals_at: 750
+        _MS_fixed_mean_0_Complex:
+              GF_start: 1500
+              GF_stop: 1501
+              N_Africans: 18296
+              sample_Neandertals_at: 750
+              Substructure_mig_rate: 0.001
+              EUR_AFR_migration_rate_GF: 0.01
+              Substructure_mig_start: 3200
+              split_time_non_Africans: 3550
+        _MS_fixed_mean_5_Complex:
+              GF_start: 750
+              GF_stop: 2250
+              sample_Neandertals_at: 750
+              N_Africans: 18296
+              Substructure_mig_rate: 0.001
+              EUR_AFR_migration_rate_GF: 0.01
+              Substructure_mig_start: 3200
+              split_time_non_Africans: 3550
         _Recent_GF_fixed_mean_0_:
               GF_start: 800
               GF_stop: 801

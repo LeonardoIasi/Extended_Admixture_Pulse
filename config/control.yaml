@@ -27,6 +27,11 @@ CONTROL:
              _Inferred_Demographies_Scenario_2_:
              _Inferred_Demographies_Scenario_3_:
              _Inferred_Demographies_Scenario_4_:
+       Fig_2_B_complex:
+             _Complex_Demographies_Scenario_1_:
+             _Complex_Demographies_Scenario_2_:
+             _Complex_Demographies_Scenario_3_:
+             _Complex_Demographies_Scenario_4_:
        Fig_2_C:
              _Recombination_Map_Scenario_1_:
              _Recombination_Map_Scenario_2_:
@@ -37,6 +42,11 @@ CONTROL:
              _Recombination_Map_and_Inferred_Demographies_Scenario_2_:
              _Recombination_Map_and_Inferred_Demographies_Scenario_3_:
              _Recombination_Map_and_Inferred_Demographies_Scenario_4_:
+       Fig_2_D_Complex:
+             _Recombination_Map_and_Complex_Demographies_Scenario_1_:
+             _Recombination_Map_and_Complex_Demographies_Scenario_2_:
+             _Recombination_Map_and_Complex_Demographies_Scenario_3_:
+             _Recombination_Map_and_Complex_Demographies_Scenario_4_:
        Test_recomb1:
              _Recombination_Map_Scenario_1_:
        Test_recomb2:
