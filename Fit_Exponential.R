@@ -1,7 +1,7 @@
-
-library("DEoptim")
-library("MASS")
-
+suppressPackageStartupMessages({
+  library("DEoptim")
+  library("MASS")
+})
 #!/usr/bin/Rscript
 args <- commandArgs(TRUE)
 
@@ -20,7 +20,7 @@ Snake_output_Two <- as.character(args[3]) # output of expfit plot of the decay
 lval <- as.numeric(args[4])		# lower value of dist to use
 hval <- as.numeric(1)		# higher value of dist to use  
 col <- as.numeric(2)   # data column containing weighted correlation
-plot <- as.logical(TRUE)           # plot the output = TRUE/FALSE 
+plot <- as.logical(FALSE)           # plot the output = TRUE/FALSE 
 
 
 # Read input file

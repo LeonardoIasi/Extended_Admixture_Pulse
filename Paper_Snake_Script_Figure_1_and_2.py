@@ -232,7 +232,7 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 Set_name='Fig_2_B_complex'
 
 # Choose number of replicates #
-replicates=10
+replicates=100
 
 # Choose Folder #
 Folder_name='../Fig_2_B_complex'
@@ -396,13 +396,14 @@ rule fit_Curve:
 		"{Folder_name}/Raw_ALDER_output-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}.txt"
 	output:
 		"{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.log",
-		"{Folder_name}/Model_Fit/Plot-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.pdf",
+		#"{Folder_name}/Model_Fit/Plot-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.pdf",
 
 
 	run:
 		master=load_config_master(config['MASTER'],wildcards.master_name)
 		params=load_config_sim_parameters(config['sim_parameters'],master['simulation'])
-		shell("""Rscript /r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Fit_Exponential.R {input[0]} {output[0]} {output[1]} {wildcards.min_dist_Fit}""")
+		#shell("""Rscript /r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Fit_Exponential.R {input[0]} {output[0]} {output[1]} {wildcards.min_dist_Fit}""")
+		shell("""Rscript /r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Fit_Exponential.R {input[0]} {output[0]} {output[0]} {wildcards.min_dist_Fit}""")
 
 rule grep_results_and_merge_with_Scenarios:
 	input:
