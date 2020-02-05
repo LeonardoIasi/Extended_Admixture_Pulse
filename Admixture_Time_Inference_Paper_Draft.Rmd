@@ -323,7 +323,7 @@ Figure_All_Real_Data <- function(input,log,GF_length,Colour_P){
     wcorr <- data[,col]
     ndist <- length(dist)  ## number of rows in dataset
     lval=0.05
-    hval=0.35
+    hval=0.5
     
     # check x lower value and y lower value
     data.sub <- data
@@ -359,7 +359,7 @@ Figure_All_Real_Data <- function(input,log,GF_length,Colour_P){
   
   Px <-  ggplot(data =Real_Data.melted, aes(x = Genetic_Distance, y = value,color=variable)) +
     geom_point(pch=18)+
-    #coord_cartesian(ylim = c(-8,-13),expand = 0,xlim = c(0,0.5)+
+    coord_cartesian(ylim = c(-8,-14),expand = 0,xlim = c(0,0.5))+
     #geom_vline(xintercept=Split_time,linetype=3,color='black')+
     scale_color_manual(values = Colour_P)+
     labs(x = "Genetic distance")+
@@ -415,10 +415,10 @@ Figure_1_C_2 <- function(Timespan_GF_Models,time_l,Split_time,Mean_Time,Colour_P
   return(Px)
 }
 
-Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time,Mean_Time,Colour_P){
+Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time,Mean_Time,Intercept,Colour_P){
   n_GF_Models=length(Timespan_GF_Models)
   
-  Lomax_fun <- function(GF_Length,max_Genetic_distance,Split_time,Mean_Time,log=T){
+  Lomax_fun <- function(GF_Length,max_Genetic_distance,Split_time,Mean_Time,Intercept,log=T){
     Genetic_length=seq(0.01,max_Genetic_distance,0.01)
     EX= Mean_Time
     VarX= (GF_Length/4)**2
@@ -426,20 +426,20 @@ Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time
     a=EX*b
     Theta=b
     k=a
-    Lomax_normal <- function(dist,k,theta) (1 + ((dist/100) /  theta))^-(k)
-    Lomax_log <- function(dist,k,theta) -k* log(1 + ((dist/100) /  theta))
+    Lomax_normal <- function(dist,k,theta,A) A*(1 + ((dist/100) /  theta))^-(k)
+    Lomax_log <- function(dist,k,theta,A) -k* log(1 + ((dist/100) /  theta)) + log(A)
     if(log==T){
-      ALD <-  Lomax_log(dist=Genetic_length,k = k ,theta = Theta)
+      ALD <-  Lomax_log(dist=Genetic_length,k = k ,theta = Theta, A=Intercept)
     }
     else{
-      ALD <-  Lomax_normal(dist=Genetic_length,k = k ,theta = Theta)
+      ALD <-  Lomax_normal(dist=Genetic_length,k = k ,theta = Theta, A=Intercept)
     }
     Lomax_Result <- cbind(Genetic_length,ALD,k,Theta)
     return(Lomax_Result)
   }
   Lomax_Result <- c()
   for(i in Timespan_GF_Models){
-    xx=Lomax_fun(i,max_Genetic_distance,Split_time,Mean_Time,log=T)
+    xx=Lomax_fun(i,max_Genetic_distance,Split_time,Mean_Time,Intercept,log=T)
     Lomax_Result <- cbind(Lomax_Result,xx)
   }
   Lomax_Result <- as.data.frame(Lomax_Result)
@@ -452,6 +452,7 @@ Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time
   Px <-  ggplot(data =Lomax_Result.melted, aes(x = Genetic_Distance, y = value,color=variable)) +
     geom_line()+
     #coord_cartesian(ylim = c(0,max(ALD$'2')),expand = 0)+
+    coord_cartesian(ylim = c(-8,-14),expand = 0,xlim = c(0,0.5))+
     #geom_vline(xintercept=Split_time,linetype=3,color='black')+
     scale_color_manual(values = Colour_P)+
     labs(x = "Genetic distance")+
@@ -502,7 +503,7 @@ Plot_Fig_1_B <- function(Data,Colour_P){
 
 ```
 
-```{r fig1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig1} A) Migration rate per generation modeled using a Gamma distribution for different gene flow length, dotted line indicates maximum time of gene flow. B) The expected LD decay modeled as a Lomax distribution for the different length. C) The observed LD decay from msprime simulations" }
+```{r fig1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=3,fig.cap="\\label{fig:fig1} A) Migration rate per generation modeled using a Gamma distribution for different gene flow length, dotted line indicates maximum time of gene flow. B) The expected LD decay modeled as a Lomax distribution for the different length. C) The observed LD decay from msprime simulations" }
 
 ## Visualization of gamma theoretical lomax LD and real data LD
 ALL_Continuous_Data <- c('Results_Fig_1_2/Differnt_GF_length_Data/Raw_ALDER_output-_Scenario_11_-run0-GF_Model_IV-ascertainment-0.txt',
@@ -514,7 +515,7 @@ ALL_Continuous_Data <- c('Results_Fig_1_2/Differnt_GF_length_Data/Raw_ALDER_outp
 
 P_Gamma <- Figure_1_C_2(c(1,200,400,800,1000,1500),3000,2550,1500,Colour_P = cbPalette_viridis)
 
-P_Lomax <-Theoratical_Lomax(c(1,200,400,800,1000,1500),0.5,2550,1500,Colour_P = cbPalette_viridis)
+P_Lomax <-Theoratical_Lomax(c(1,200,400,800,1000,1500),0.5,2550,1500,0.0004,Colour_P = cbPalette_viridis)
 
 P_real <- Figure_All_Real_Data(ALL_Continuous_Data,log=T,c(1,200,400,800,1000,1500),Colour_P = cbPalette_viridis)
 
