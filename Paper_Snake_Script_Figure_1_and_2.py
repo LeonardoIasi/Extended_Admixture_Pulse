@@ -229,16 +229,16 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 
 ############################################################################################
 # Choose which Set to process by giving Set_name the name of the Set to be processed #
-Set_name='Fig_2_B_complex'
+Set_name='Fig_2_D_Complex'
 
 # Choose number of replicates #
 replicates=100
 
 # Choose Folder #
-Folder_name='../Fig_2_B_complex'
+Folder_name='../Fig_2_D_Complex'
 
 # Choose Result Folder Name #
-Result_Folder='../Fig_2_B_complex/Result'
+Result_Folder='../Fig_2_D_Complex/Result'
 ############################################################################################
 
 
