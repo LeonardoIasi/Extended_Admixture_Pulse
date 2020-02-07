@@ -215,7 +215,7 @@ MASTER:
              ascertainment: 1
              Recombination_Map: [True,Recombination_Maps/Scaled_Genetic_AAMap.txt]
              Complex_Demography: [True,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
-      _Recombination_Map_and_ComplexDemographies_Scenario_3_:
+      _Recombination_Map_and_Complex_Demographies_Scenario_3_:
              simulation: '_MS_fixed_mean_5_Complex'
              min_dist_Fit: 0.02
              GF_Model: [GF_Model_IV,0]
