@@ -224,7 +224,7 @@ AIC = 2p - 2\ln(\hat{L})
 
 ###Modeling parameter effect sizes
 
-To model and compare parameter effect sizes we  simulated 100 replications  for each  combination of the previously introduced parameters: ascertainment scheme (LES/HES), minimal genetic distance ($d_{0}=0.02\,cM$/$d_{0}=0.05\,cM$), demography (simple/inferred), recombination rate (constant/variable), gene flow model (pulse/continuous). Results of simulations where  the nls-optimization to fit the ALD decay curve did  not converge were removed (6 out of 3200). We used a Gaussian linear  least-squares model to estimate the effect size of the different parameters. The deviation between the estimated admixture time and the true admixture time, the error in the estimate, was used as the response to the non interacting parameters as model predictors assuming normal distributed and homogeneous residuals. Calculation of variance inflation factors of the predictors where not indicative for colinearity between predictors. Model stability assessment using dfbetas showed stable model predictors and residuals and plotting residuals against fitted values revealed slight deviations  from a normal distribution mostly driven by few extreme values of simulations under the variable recombination rate, however, no overall obvious deviation from the assumptions.
+To model and compare parameter effect sizes we  simulated 100 replications  for each  combination of the previously introduced parameters: ascertainment scheme (LES/HES), minimal genetic distance ($d_{0}=0.02\,cM$/$d_{0}=0.05\,cM$), demography (simple/inferred), recombination rate (constant/variable), gene flow model (pulse/continuous). Results of simulations where  the nls-optimization to fit the ALD decay curve did  not converge were removed (11 out of 3200). We used a Gaussian linear  least-squares model to estimate the effect size of the different parameters. The deviation between the estimated admixture time and the true admixture time, the error in the estimate, was used as the response to the non interacting parameters as model predictors assuming normal distributed and homogeneous residuals. Calculation of variance inflation factors of the predictors where not indicative for colinearity between predictors. Model stability assessment using dfbetas showed stable model predictors and residuals and plotting residuals against fitted values revealed slight deviations  from a normal distribution mostly driven by few extreme values of simulations under the variable recombination rate, however, no overall obvious deviation from the assumptions.
 
 
 
@@ -609,9 +609,6 @@ ggarrange(P1_1,P1_2,
 
 ##Comparing effect sizes
 
-Having established that the duration of continuous admixture under ideal circumstances is only marginally influential on admixture time estimates, we deploy more realistic simulation scenarios.
-Specifically, we investigated the influence of two analysis parameter by changing the ascertainment scheme to a higher-enrichment scheme requiring additional to the LES non-Africans to be polymorphic at a SNP, and applying a larger minimal distance of 0.05 cM between SNPs used for the fitting of the exponential distribution. Additionally, we changed the demographic model from a simple to a complex one based on inferred effective population sizes and time points taken from MSMC estimates for Africans and non-Africans and PSMC estimates for the simulated Neandertals. Split times between the population where unchanged and Neandertals were sampled 750 generations before the modern humans to simulate branch shortening. We further applied the African-American-Map to simulate varying recombination rates across the 150 Mb long chromosomes, instead of a constant rate. We simulated every combination of these parameter sets resulting in 32 different sets with 100 replications each (Supp. Fig. \ref{fig:figS1}). A Gaussian linear model was applied to estimate effect sizes of the four predictors being ascertainment scheme, minimal distance, demography and recombination on the bias of admixture estimates (Supplement Table \ref{tab:tableS1}). Figure \ref{fig:fig3} shows the comparison of the bias on admixture time estimates between the previously used model (ascertainment = LES, $d_{0} = 0.02 cM$, demography = simple and recombination = constant) further refereed to as the standard model and a model with one of the four parameter changed, respectively and the corresponding model prediction. The previously observed overestimation of the standard model was estimated to be 122 (+7/-7) generations. Every parameter change results in lower estimates compared to the standard model, with the biggest difference between a constant and a varying recombination (-863 +5/-6 generations) and the smallest differences between a pulse and continuous gene flow model (-40 +5/-6 generations). Most accurate estimates are achieved using the LES ascertainment scheme in combination with a minimal distance of 0.05 cM. These analysis parameter combination shows more robustness towards changes in the demography (Supplement Figure 1).
-
 ```{r message=FALSE, echo=FALSE,warning=FALSE}
 
 ##### GLM for the bais on the admixture dates #####
@@ -625,8 +622,8 @@ Simple_D_Sim_1$Recomb.rate <- "0_constant"
 Simple_D_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 Simple_D_Sim_2$Demography <- "0_Simple"
 Simple_D_Sim_2$Recomb.rate <- "0_constant"
-
-Inferred_D_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Inferred_D_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+#Inferred_D_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 Inferred_D_Sim_1$Demography <- "Inferred"
 Inferred_D_Sim_1$Recomb.rate <- "0_constant"
 Inferred_D_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
@@ -641,11 +638,12 @@ Recom_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper
 Recom_Sim_2$Demography <- "0_Simple"
 Recom_Sim_2$Recomb.rate <- "variable"
 Recom_Sim_2$m <- Recom_Sim_2$m
-Recom_Sim_and_Inf_1 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Recom_Sim_and_Inf_1 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_recomb_map_-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+#Recom_Sim_and_Inf_1 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 Recom_Sim_and_Inf_1$Demography <- "Inferred"
 Recom_Sim_and_Inf_1$Recomb.rate <- "variable"
 Recom_Sim_and_Inf_1$m <- Recom_Sim_and_Inf_1$m
-Recom_Sim_and_Inf_2 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_recomb_map_-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Recom_Sim_and_Inf_2 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_recomb_map_-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 #Recom_Sim_and_Inf_2 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 Recom_Sim_and_Inf_2$Demography <- "Inferred"
 Recom_Sim_and_Inf_2$Recomb.rate <- "variable"
@@ -668,7 +666,7 @@ xdata.M.3_no_error <- xdata.M.3[xdata.M.3$error=="no_error",]
 Combination_of_predictors <- table(xdata.M.3_no_error$Ascertainment,xdata.M.3_no_error$min_dist,xdata.M.3_no_error$Demography,xdata.M.3_no_error$GF,xdata.M.3_no_error$Recomb.rate)
 
 # Fit linear model while assuming normal distributed residuals
-res.M.3=lm(Diff~Ascertainment+min_dist+Demography+Demography+Recomb.rate+GF,data = xdata.M.3)
+res.M.3=lm(Diff~Ascertainment+min_dist+Demography+Recomb.rate+GF,data = xdata.M.3_no_error)
 
 ### check assumptions
 
@@ -690,6 +688,13 @@ m.coefs=cbind(org=coefficients(res.M.3),confint(res.M.3))
 Summary_Table_res.M.3 <- cbind(m.coefs,res.M.3.sum[,-1])
 
 ```
+
+<!-- Having established that the duration of continuous admixture under ideal circumstances is only marginally influential on admixture time estimates, we deploy more realistic simulation scenarios.
+Specifically, we investigated the influence of two analysis parameter by changing the ascertainment scheme to a higher-enrichment scheme requiring additional to the LES non-Africans to be polymorphic at a SNP, and applying a larger minimal distance of 0.05 cM between SNPs used for the fitting of the exponential distribution. Additionally, we changed the demographic model from a simple to a complex one based on inferred effective population sizes and time points taken from MSMC estimates for Africans and non-Africans and PSMC estimates for the simulated Neandertals. Split times between the population where unchanged and Neandertals were sampled 750 generations before the modern humans to simulate branch shortening. We further applied the African-American-Map to simulate varying recombination rates across the 150 Mb long chromosomes, instead of a constant rate. We simulated every combination of these parameter sets resulting in 32 different sets with 100 replications each (Supp. Fig. \ref{fig:figS1}). A Gaussian linear model was applied to estimate effect sizes of the four predictors being ascertainment scheme, minimal distance, demography and recombination on the bias of admixture estimates (Supplement Table \ref{tab:tableS1}). Figure \ref{fig:fig3} shows the comparison of the bias on admixture time estimates between the previously used model (ascertainment = LES, $d_{0} = 0.02 cM$, demography = simple and recombination = constant) further refereed to as the standard model and a model with one of the four parameter changed, respectively and the corresponding model prediction. The previously observed overestimation of the standard model was estimated to be 122 (+7/-7) generations. Every parameter change results in lower estimates compared to the standard model, with the biggest difference between a constant and a varying recombination (-863 +5/-6 generations) and the smallest differences between a pulse and continuous gene flow model (-40 +5/-6 generations). Most accurate estimates are achieved using the LES ascertainment scheme in combination with a minimal distance of 0.05 cM. These analysis parameter combination shows more robustness towards changes in the demography (Supplement Figure 1). -->
+
+Having established that the duration of continuous admixture under ideal circumstances is only marginally influential on admixture time estimates, we deploy more realistic simulation scenarios.
+Specifically, we investigated the influence of two analysis parameter by changing the ascertainment scheme to a higher-enrichment scheme requiring additional to the LES non-Africans to be polymorphic at a SNP, and applying a larger minimal distance of 0.05 cM between SNPs used for the fitting of the exponential distribution. Additionally, we changed the demographic model from a simple to a complex one based on inferred effective population sizes. Addidtinaly we included deep structure in the ancestral AFrican-non-African population and a gene flow event between Africans and non-Africans after the Neandertal admixture event (Figure \ref{fig:Intro_fig} B).  We further applied the African-American-Map to simulate varying recombination rates across the 150 Mb long chromosomes, instead of a constant rate. We simulated every combination of these parameter sets resulting in 32 different sets with 100 replications each (Supp. Fig. \ref{fig:figS1}). A Gaussian linear model was applied to estimate effect sizes of the four predictors being ascertainment scheme, minimal distance, demography and recombination on the bias of admixture estimates (Supplement Table \ref{tab:tableS1}). Figure \ref{fig:fig3} shows the comparison of the bias on admixture time estimates between the previously used model (ascertainment = LES, $d_{0} = 0.02 cM$, demography = simple and recombination = constant) further refereed to as the standard model and a model with one of the four parameter changed, respectively and the corresponding model prediction. The previously observed overestimation of the standard model was estimated to be `r round(Summary_Table_res.M.3["(Intercept)","org"])` (`r round(Summary_Table_res.M.3["(Intercept)","2.5 %"])` - `r round(Summary_Table_res.M.3["(Intercept)","97.5 %"])` 95 % CI) generations. Every parameter change results in lower estimates compared to the standard model, with the biggest difference between a constant and a varying recombination (`r round(Summary_Table_res.M.3["Recomb.ratevariable","2.5 %"])` - `r round(Summary_Table_res.M.3["Recomb.ratevariable","97.5 %"])` generations) and the smallest differences between a pulse and continuous gene flow model (`r round(Summary_Table_res.M.3["GFContinous","2.5 %"])` - `r round(Summary_Table_res.M.3["GFContinous","97.5 %"])` generations). Most accurate estimates are achieved using the LES ascertainment scheme in combination with a minimal distance of 0.05 cM. The bias introduced by the demography seems to depend on the used ascerteinent scheme, since only under the HES a difference between the simple and complex demography is evident (Supplement Figure 1). Overall the bias introduced by the ascerteinment, minimal distance cutoff, demography and gene flow model are 10 % or less of the true mean admixture time.
+
 
 ```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig3} Comparison of the bias on the admixture time estimates between each parameter and the standard model of 100 replications each. Dotted line represents the model prediction with the 2.5 % and 97.5 % compatibility intervals solid lines. Dotted horizontal line indicates unbiased admixture estimates."}
 #### Ploting the model ####
@@ -772,7 +777,7 @@ PX2 <- Plot_Fig_2_X(Simplest_case,xx[xx$Var2=="0_Pulse_0_LES_0.05_0_Simple_0_con
              m.coefs["(Intercept)",]-m.coefs["min_dist0.05",],m.coefs["min_dist0.05",],x.lable = c("d0 = 0.02","d0 = 0.05"),"Minimal Distance\n")
 
 PX3 <- Plot_Fig_2_X(Simplest_case,xx[xx$Var2=="0_Pulse_0_LES_0.02_Inferred_0_constant",],
-             m.coefs["(Intercept)",]-m.coefs["DemographyInferred",],m.coefs["DemographyInferred",],x.lable = c("Simple","Inferred"),"Demography\n")
+             m.coefs["(Intercept)",]-m.coefs["DemographyInferred",],m.coefs["DemographyInferred",],x.lable = c("Simple","Complex"),"Demography\n")
 
 PX4 <- Plot_Fig_2_X(Simplest_case,xx[xx$Var2=="0_Pulse_0_LES_0.02_0_Simple_variable",],
              m.coefs["(Intercept)",]-m.coefs["Recomb.ratevariable",],m.coefs["Recomb.ratevariable",],x.lable = c("Constant","Variable"),"Recombination Map\n")
@@ -1075,7 +1080,7 @@ Conclusions:
 
 #Supplement
 
-```{r figS1, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS1}Comparison of the bias on the admixture time estimates in generations between all combinations the parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/inferred, recombination = constant/variable and the gene flow model = pulse/continuous.  Dotted horizontal line indicates unbiased admixture estimates."}
+```{r figS1, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS1}Comparison of the bias on the admixture time estimates in generations between all combinations the parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous.  Dotted horizontal line indicates unbiased admixture estimates."}
 
 
 ### Supplement Figures ? Tables
@@ -1085,6 +1090,7 @@ Plot_Fig_2_A <- function(Data,x.axes.lables){
     geom_point(aes(size = Freq),show.legend = F)+
     geom_boxplot()+
     geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
+    coord_cartesian(ylim = c(-1500,1100),expand = 0)+
     labs(x = "Predictor combination")+
     labs(y = "Bias on admixture estimate")+
     theme(axis.text.x = element_text(angle = 0))+
@@ -1096,14 +1102,23 @@ Plot_Fig_2_A <- function(Data,x.axes.lables){
   
 }
 
-x.axes.lables=c("LES\n0.02\nSim\nCon","LES\n0.02\nSim\nVar","LES\n0.02\nInf\nCon","LES\n0.02\nInf\nVar"
-                ,"LES\n0.05\nSim\nCon","LES\n0.05\nSim\nVar","LES\n0.05\nInf\nCon","LES\n0.05\nInf\nVar"
-                ,"HES\n0.02\nSim\nCon","HES\n0.02\nSim\nVar","HES\n0.02\nInf\nCon","HES\n0.02\nInf\nVar"
-                ,"HES\n0.05\nSim\nCon","HES\n0.05\nSim\nVar","HES\n0.05\nInf\nCon","HES\n0.05\nInf\nVar"
-                ,"LES\n0.02\nSim\nCon","LES\n0.02\nSim\nVar","LES\n0.02\nInf\nCon","LES\n0.02\nInf\nVar"
-                ,"LES\n0.05\nSim\nCon","LES\n0.05\nSim\nVar","LES\n0.05\nInf\nCon","LES\n0.05\nInf\nVar"
-                ,"HES\n0.02\nSim\nCon","HES\n0.02\nSim\nVar","HES\n0.02\nInf\nCon","HES\n0.02\nInf\nVar"
-                ,"HES\n0.05\nSim\nCon","HES\n0.05\nSim\nVar","HES\n0.05\nInf\nCon","HES\n0.05\nInf\nVar")
+#x.axes.lables=c("LES\n0.02\nSim\nCon","LES\n0.02\nSim\nVar","LES\n0.02\nInf\nCon","LES\n0.02\nInf\nVar"
+#                ,"LES\n0.05\nSim\nCon","LES\n0.05\nSim\nVar","LES\n0.05\nInf\nCon","LES\n0.05\nInf\nVar"
+#                ,"HES\n0.02\nSim\nCon","HES\n0.02\nSim\nVar","HES\n0.02\nInf\nCon","HES\n0.02\nInf\nVar"
+#                ,"HES\n0.05\nSim\nCon","HES\n0.05\nSim\nVar","HES\n0.05\nInf\nCon","HES\n0.05\nInf\nVar"
+#                ,"LES\n0.02\nSim\nCon","LES\n0.02\nSim\nVar","LES\n0.02\nInf\nCon","LES\n0.02\nInf\nVar"
+#                ,"LES\n0.05\nSim\nCon","LES\n0.05\nSim\nVar","LES\n0.05\nInf\nCon","LES\n0.05\nInf\nVar"
+#                ,"HES\n0.02\nSim\nCon","HES\n0.02\nSim\nVar","HES\n0.02\nInf\nCon","HES\n0.02\nInf\nVar"
+#                ,"HES\n0.05\nSim\nCon","HES\n0.05\nSim\nVar","HES\n0.05\nInf\nCon","HES\n0.05\nInf\nVar")
+
+x.axes.lables=c("LES\n0.02\nSim\nCon","LES\n0.02\nSim\nVar","LES\n0.02\nCom\nCon","LES\n0.02\nCom\nVar"
+                ,"LES\n0.05\nSim\nCon","LES\n0.05\nSim\nVar","LES\n0.05\nCom\nCon","LES\n0.05\nCom\nVar"
+                ,"HES\n0.02\nSim\nCon","HES\n0.02\nSim\nVar","HES\n0.02\nCom\nCon","HES\n0.02\nCom\nVar"
+                ,"HES\n0.05\nSim\nCon","HES\n0.05\nSim\nVar","HES\n0.05\nCom\nCon","HES\n0.05\nCom\nVar"
+                ,"LES\n0.02\nSim\nCon","LES\n0.02\nSim\nVar","LES\n0.02\nCom\nCon","LES\n0.02\nCom\nVar"
+                ,"LES\n0.05\nSim\nCon","LES\n0.05\nSim\nVar","LES\n0.05\nCom\nCon","LES\n0.05\nCom\nVar"
+                ,"HES\n0.02\nSim\nCon","HES\n0.02\nSim\nVar","HES\n0.02\nCom\nCon","HES\n0.02\nCom\nVar"
+                ,"HES\n0.05\nSim\nCon","HES\n0.05\nSim\nVar","HES\n0.05\nCom\nCon","HES\n0.05\nCom\nVar")
 
 Plot_Fig_2_A(xx,x.axes.lables)
 ```
