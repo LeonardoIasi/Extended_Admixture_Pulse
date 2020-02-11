@@ -235,10 +235,10 @@ Set_name='Fig_2_D_Complex'
 replicates=100
 
 # Choose Folder #
-Folder_name='../Fig_2_D_Complex'
+Folder_name='../Fig_2_D_Complex_Recomb_Map'
 
 # Choose Result Folder Name #
-Result_Folder='../Fig_2_D_Complex/Result'
+Result_Folder='../Fig_2_D_Complex_Recomb_Map/Result'
 ############################################################################################
 
 
