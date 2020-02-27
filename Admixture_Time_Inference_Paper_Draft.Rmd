@@ -100,30 +100,15 @@ An additional admixture event between Neandertals and East-Asian populations at 
 <!-- What does admixture pulse mean? is it distingushable from a continuous admixtuer? -->
 <!-- the time of the last GF is relevant for Neandertal extinction, hence the extrema of the distribition more important then mean time -->
 
-*bp 19/02: this should be at the end of the intro*
 
-##What we want to do
-
-While good estimates for the mean admixture time between Neandertals and modern humans
-exist, little is known about the duration of the event. In particular, dates
-when admixture ended are of crucial importance, as they are relevant to 
-Neandertals extinction. 
-Here, we perform a simulation study where we  investigate the effect of model 
-and data assumptions on estimated admixture  dates. We show that in many cases
-pulses cannot be distinguished from more continuous admixture events, 
-and so current methods are unsuitable to definitively answer when the contact between 
-Neandertals and modern humans ended. 
-
-*bp 19/02: this should go in the discussion*
-
-Neandertals and modern human populations overlapped in some regions for a long period of time [@higham_timing_2014], potentially resulting in continuous admixture over hundreds of generations. We are especially interested in the extrema of a continuous admixture distribution, since the start and end point can inform us about the first contact between humans and Neandertals and the time of extinction of Neandertals.
-
+*li 27/02: I think it makes sense to mention all the assumptions which might be problematic and in the end how we gonne do it (check the effec of continuous admixture, compare it to the other assumptions, try to explicitly model continuous admixture using the Lomax)*
 
 ##Assumptions on the data
 Both approaches, the direct measure of the segment length and the indirect ALD based method, without first directly inferring introgressed segments such as the popular ALDER method [@loh_inferring_2013], rely on some fairly strong modelling assumptions [@pool_inference_2009; @gravel_population_2012; @liang_lengths_2014]. We want to investigate which of these assumptions can be relaxed without causing a strong bias in the estimate.
 <!-- last sentence changed to be more positive by Ben's recommendationc -->
 
 ### Segments are is independent and identically exponentially distributed
+
 First, it is assumed that the lengths of the introgressed segments are independent 
 and identically exponentially distributed. One restriction this puts on the data is that segments of the same ancestor are 
 assumed not to recombine into longer segments. This assumption is violated in particular 
@@ -134,19 +119,20 @@ when admixture is very old $(t \approx 2N)$ or very recent $t \approx \log(2N)$ 
 *bp 19/02: in this paragraph, you repeated yourself a lot. Try to be concise and present your argument in one logical sequence whenever possible* 
 
 ### Recombination Map
+
 Second, it is assumed that the recombination rates are known. Since the recombination 
 is used as a clock, misspecification of the recombinationn map will lead to over/or 
 underestimates of tract lengths, and admixture times. Crucially, even if the
 length estimation is unbiased, the admixture time estimates can be substantially
-biased 
+biased. Uncertainties in the genetic map were found to downward bias the time estimates by missing certain recombination events resulting in assuming introgressed segments longer than they actually are [@sankararaman_date_2012].  Sankararaman et al. 2012 suggested a method for accounting for uncertainty in the recombination map by estimating a correction parameter for a given recombination map by comparing the distances between a pair of markers in the map to the number of crossovers that span those markers as observed in a pedigree map. This however limits the applicability of the method, since it requires a population-specific map as well as a pedigree based map to estimate the error in the map [@sankararaman_date_2012; @fu_genome_2014; @sankararaman_combined_2016]. 
 
 *bp 19/02:recap what Priya/Sriram found about the bias/correction*
 
-*li 27/02: now I first explain what is the problem with genetic maps are and then how it affects the estimate according to Siriam (Prya quotes him on this) and then what is the problem with the correction*
+*li 27/02: now I first explain  how it affects the estimate according to Siriam (Prya quotes him on this) and then what is the problem with the correction and then what is the problem with genetic maps are*
 
-Recombination maps are used to assign the genetic length between introgressed segments/variants. Different maps are available[@coop_high-resolution_2008; @kong_fine-scale_2010;@hinch_landscape_2011; @wegmann_recombination_2011;@mcvean_fine-scale_2004; @myers_fine-scale_2005; @hapmap_consortium_2007]. 
+There are different recombination maps used to assign the genetic length between introgressed segments/variants available[@coop_high-resolution_2008; @kong_fine-scale_2010;@hinch_landscape_2011; @wegmann_recombination_2011;@mcvean_fine-scale_2004; @myers_fine-scale_2005; @hapmap_consortium_2007]. 
 They either focuse on short term information by using parent-offspring data to directly observe recombination events [@coop_high-resolution_2008; @kong_fine-scale_2010], searching for admixture tracts breakpoints [@hinch_landscape_2011; @wegmann_recombination_2011] or long term population averages of recombination inferred by LD [@mcvean_fine-scale_2004; @myers_fine-scale_2005; @hapmap_consortium_2007]. 
-Different genetic maps are highly correlated on a megabase scale but reveal significant population differences on a finer scale [@kong_fine-scale_2010; @hinch_landscape_2011]. The average length of Neandertal introgressed segments is approximately 50 kb [@sankararaman_date_2012], and so fine-scale recombination maps are essential. Furthermore, recombination maps can also vary over time [@auton_fine-scale_2012]. These uncertainties in the genetic map were found to downward bias the time estimates by missing certain recombination events resulting in assuming introgressed segments longer than they actually are [@sankararaman_date_2012].  Sankararaman et al. 2012 suggested a method for accounting for uncertainty in the recombination map by estimating a correction parameter for a given recombination map by comparing the distances between a pair of markers in the map to the number of crossovers that span those markers as observed in a pedigree map. This however limits the applicability of the method, since it requires a population-specific map as well as a pedigree based map to estimate the error in the map [@sankararaman_date_2012; @fu_genome_2014; @sankararaman_combined_2016].
+Different genetic maps are highly correlated on a megabase scale but reveal significant population differences on a finer scale [@kong_fine-scale_2010; @hinch_landscape_2011]. The average length of Neandertal introgressed segments is approximately 50 kb [@sankararaman_date_2012], and so fine-scale recombination maps are essential. Furthermore, recombination maps can also vary over time [@auton_fine-scale_2012]. Highly precise maps are not available for every population and the change through time is unknown.
 
 ### Demography
 *bp 19/02:this section (and frequently your writing in general) could need more structure. One simple approach is the _context-content-conclusion_ system For this intro section, the basic idea is that for each paragraph you need to make clear that you start by*
@@ -158,11 +144,11 @@ Different genetic maps are highly correlated on a megabase scale but reveal sign
 
 A third assumption is that the demographic history of the studied population is
 known. While the recombination clock is relatively robust to population size 
-changes *ref Gravel2012?*, demographic processes can create similar genomic signals as 
+changes *bp 19/02: ref Gravel2012? li 27/02: No they didn't check for fluctuations in Ne*, demographic processes can create similar genomic signals as 
 admixture *how*. Genomic segments carrying these signals can falsely be included 
-in the estimate of the length distribution of admixed segments, leading to a bias.  *how?*
+in the estimate of the length distribution of admixed segments, leading to a bias by considering them while fitting them to a distribution.  *how?*
 Admixture segments can also get lost by genetic drift, making it harder to 
-estimate the length distribution.*why?* 
+estimate the length distribution due to its potential deviation from an exponential distribution.*why?* 
 Figure \ref{fig:Intro_fig} B shows two possible demographies for the Neandertal 
 admixture, a simplified one without no population changes and a more complex one 
 including structured populations, bottlenecks and additional gene flow. 
@@ -176,9 +162,9 @@ segments [@nei_linkage_1973;@pfaff_population_2001]. Moreover additional gene fl
 <!-- Drift biasing admixture citation needed -->
 
 ### Methodological bias through ascertainment 
-An additional bias might be introduced in the ALD based dating method since it requires 
-ascertaining the SNPs for admixture informative sites, especially for archaic 
-admixture [@sankararaman_date_2012; @fu_genome_2014]. 
+An additional bias might be introduced in the ALD based dating method when
+ascerteinment of SNPs for admixture informative sites is deploid, wherby positions in the admixed population are considered where both source populations are diverged from eachother. This is usually done for archaic 
+admixture to enrich the signal of ALD to not confalte it with background LD from demographic processes which is in the same range length [@sankararaman_date_2012; @fu_genome_2014]. 
 
 *bp 19/02: explain briefly why this is necessary, and how exactly this is done*
 
@@ -195,22 +181,35 @@ Finally, the admixture is assumed to happened in only a single generation [@moor
 in this single generation can be modeled using a single exponential distribution. 
 This however limits the information gained form the dating since in case of a 
 multi-generation long admixture the single-pulse model results in a mean admixture 
-time between start end end of the gene flow. Ideally one would like to obtain 
-the start and end, hence the duration of admixture between Neandertals and non-African populations. 
+time between start and end of the admixture. Ideally one would like to obtain 
+the start and end, hence the duration of admixture between populations. 
 
 *bp 19/02: preceeding section could be merged with last intro paragraph*
 
-If admixture is happening over $n$ generations, this results in a mixture of $n$ 
+*bp 19/02: this should be at the end of the intro*
+
+*li 27/02: Now it is at the end and i merged it with the existing paragraph as well as the previous attempts of modeling multi-generation long admixture*
+
+##What we want to do
+
+
+While good estimates for the mean admixture time between Neandertals and modern humans
+exist, little is known about the duration of the event. In particular, dates
+when admixture ended are of crucial importance, as they are relevant to 
+Neandertals extinction. Models were introduced to model multi-generation long admixture. If admixture is happening over $n$ generations, this results in a mixture of $n$ 
 different exponential distribution, one for the segments entered in each generation 
 [@pickrell_ancient_2014].  Previous studies tried to model this, using the ALD, 
 by assuming not a continuous admixture but summarizing it into different 
 independent events. In this case, the decay curve is comprised out of $n$ 
 different exponential terms, each for one admixture event 
-[@pickrell_ancient_2014; @zhou_inference_2017]. Methods were introduced to model continuous admixture using a polynomial function with the number of coefficients related to the number of generations of continuous admixture [@zhou_modeling_2017]. These models however work best with recent admixture, in the last 100 generations, with a substantial admixture proportion of around 0.3 [@zhou_modeling_2017]. This is outside of the range for scenarios of Neandertal admixture, were the admixture proportion is around 0.03 and the timing around 1500 generations ago [@sankararaman_date_2012;@prufer_complete_2013;@sankararaman_genomic_2014].
+[@pickrell_ancient_2014; @zhou_inference_2017]. To model it as a continuous admixture Zhou et al. 2017
+suggested using a polynomial function with the number of coefficients related to the number of generations of continuous admixture [@zhou_modeling_2017]. These models however work best with recent admixture, in the last 100 generations, with a substantial admixture proportion of around 0.3 [@zhou_modeling_2017]. 
 <!-- zhou_modeling_2017-tested on simulations with no changes in Ne, Admixture proportion of 30% and uniform recombnation [@zhou_modeling_2017]-->
 <!-- Fitting this polynomial functions is not trivial -->
-
-We introduce a model for continuous admixture, where the migration rate over time is Gamma distributed with two parameters, one for the mean time of continuous admixture and one for the duration of the admixture. First, we examining the effect of long continuous admixture on the admixture time estimates in comparison to the effects of the aforementioned model assumptions. Therefore, we quantitatively evaluate the effect of the admixture model, recombination, demography and analysis parameters on the inference. Second, we define the expectation of the resulting segment length distribution for continuous Gama distributed admixture being Lomax distributed, holding a parameter for the duration of admixture. This expectation works for both methods to infer the segments length, either directly or by using the ALD decay. Using this model, we investigate under which scenarios the parameters of the Lomax-distribution can be  accurately  estimated and for which parameters we can distinguish a pulse-like admixture event from a continuous event. Together this critically evaluates the current state of knowledge about different aspects of archaic admixture time.
+This is outside of the range for scenarios of Neandertal admixture, were the admixture proportion is around 0.03 and the timing around 1500 generations ago [@sankararaman_date_2012;@prufer_complete_2013;@sankararaman_genomic_2014]. here we introduce a model for continuous admixture, where the migration rate over time is Gamma distributed with only two parameters, one for the mean time of continuous admixture and one for the duration of the admixture. In our simulation study, we first examining the effect of long continuous admixture on the admixture time estimates in comparison to the effects of the aforementioned model assumptions. Therefore, we quantitatively evaluate the effect of the admixture model, recombination, demography and analysis parameters on the inference. Second, we define the expectation of the resulting segment length distribution for continuous Gamma distributed admixture being Lomax distributed, holding a parameter for the duration of admixture. This expectation works for both methods to infer the segments length, either directly or by using the ALD decay. Using this model, we investigate under which scenarios the parameters of the Lomax-distribution can be  accurately  estimated and for which parameters we can distinguish a pulse-like admixture event from a continuous event. We show that in many cases
+pulses cannot be distinguished from more continuous admixture events, 
+and so current methods are unsuitable to definitively answer when the contact between 
+Neandertals and modern humans ended. 
 
 
 ```{r Intro_fig,message=FALSE, echo=FALSE,warning=FALSE,fig.align="center",out.width="95%",fig.pos="H",fig.cap="\\label{fig:Into_fig} A) Chromosomal sections with introgressed segments (grey). Introgressed variants (green circles) are in high LD compared to the background (stars). The ALD approach estimates linkage between the introgressed variants, wheres the haplotype  approach tries to estimate the segment directly. B) Two possible demographies of humans splitting into African population (AFR) and non-African (non-AFR) with admixture from Neandertals (NEA) into non-Africans. The simple demographic model with constant population sizes and the complex with rapid population size changes (1), substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the out-of-Africa event (2) and additional gene flow between Africans and non-Africans after the Neandertal admixture (3)."}
@@ -1146,6 +1145,10 @@ New.Fig
 
 
 #Discussion
+
+*bp 19/02: this should go in the discussion*
+
+Neandertals and modern human populations overlapped in some regions for a long period of time [@higham_timing_2014], potentially resulting in continuous admixture over hundreds of generations. We are especially interested in the extrema of a continuous admixture distribution, since the start and end point can inform us about the first contact between humans and Neandertals and the time of extinction of Neandertals.
 
 Conclusions:
 \begin{itemize}
