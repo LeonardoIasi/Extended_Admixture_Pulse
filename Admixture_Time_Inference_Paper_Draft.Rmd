@@ -54,23 +54,39 @@ text-align: justify}
 
 
 #Introduction
+*bp, li 28/02: in generall motivate why you are talking about stuff, why is it important for our question and dont go into explenaition straight away*
 
-Detecting admixture, i.e. gene flow between previously isolated populations can shed light into the complex evolutionary history of populations. It is an important factor in speciation  events and is found in many sexually reproducing species of plants, invertebrates and vertebrates [@abbott_hybridization_2013;@payseur_genomic_2016;@harrison_hybridization_2014]. The sequencing of the Neandertal [@green_draft_2010] and Denisovan [@reich_genetic_2010] genome revealed admixture events between Neandertals and  modern humans outside of Africa  [@green_draft_2010; @prufer_complete_2013; @fu_early_2015; @fu_genome_2014; @sankararaman_genomic_2014;@prufer_high-coverage_2017], as well as a second admixture event between Denisovans and Asian populations [@reich_genetic_2010; @meyer_high-coverage_2012; @sankararaman_combined_2016; @vernot_excavating_2016]. 
+Detecting admixture, i.e. gene flow between previously isolated populations can shed light into the complex evolutionary history of populations. Admixture, sometimes also referred to as hybridization, is an important factor of speciation and occurs in almost all proposed processes of it [@abbott_hybridization_2013]. In its most basic understanding, the capacity to admix is used as a criterion to characterize species [@mayr_animal_1963]. In the biological species concept species are defined as reproductively isolated from others. 
+
+This classical allopatric concept of speciation, however is questioned by the emergent finding of speciation events in the presence of admixture [@sousa_understanding_2013]. 
+<!-- Not sure about this sentence this is not the topic of the paper -->
+
+In addition admixture is recognized to shapes genetic diversity and can introduce novel variants into the admixing populations [@harrison_hybridization_2014]. These variants can be adaptive in the admixed population [@hedrick_adaptive_2013] or be selected against at loci which determine species specific phenotypes [@shaw_genes_2011], thereby helping to identify loci important for local adaptation [@payseur_using_2010]. Admixture is found in many sexually reproducing species of plants, invertebrates and vertebrates [@payseur_genomic_2016]. Novel DNA sequencing methods make it easier to detect admixture event between populations [@sousa_understanding_2013]. The sequencing of the Neandertal [@green_draft_2010] and Denisovan [@reich_genetic_2010] genome revealed admixture events between Neandertals and  modern humans outside of Africa  [@green_draft_2010; @prufer_complete_2013; @fu_early_2015; @fu_genome_2014; @sankararaman_genomic_2014;@prufer_high-coverage_2017], as well as a second admixture event between Denisovans and Asian populations [@reich_genetic_2010; @meyer_high-coverage_2012; @sankararaman_combined_2016; @vernot_excavating_2016]. These admixture events where found to have impacted modern human phenotypes [@dannemann_something_2018]. One important question is how long ago these admixture events are and how long they lasted for, since this can be a clue to the debated question of the time of extinction of these hominin populations.
 
 
 *bp 19/02:this feels very thin. It's OK to motivate admixture as something that is widely present, but then you need to give a comprehensive introduction, not just a very incomplete list of papers. The alternative is to simply refer to a bunch of relevant reviews*
 
 *li 27/02:I refere now to some hybridization reviews which point out to alot of admixture papers in different species*
+*bp, li 28/02:artbildung hervorheben wieso sind wir interresiert daran biologisch nicht sofort mea teschnisch wreden i.e. why do we care about admixture at all*
+
+
 
 ##Admixture on the genomic level and basic idea how to date it
-On the genomic level, admixture introduces highly divergent chromosomal segments into the admixing population. Over time, miotic recombination progressively breaks these introgressed segments down [@falush_inference_2003, @baird_etheridge_barton_2003]. 
+
+On the genomic level, admixture introduces highly divergent chromosomal segments into the admixing population. Over time, miotic recombination progressively breaks these introgressed segments down [@falush_inference_2003, @baird_etheridge_barton_2003].
 Assuming that recombination events occur according to a Poisson process, the fragment length distribution can be approximated by an exponential distribution, whose parameter is informative about the number of generations since the fragments entered the admixing population [@moorjani_history_2011;@pool_inference_2009; @gravel_population_2012].
-In particular, under a constant recombination rate, the length of introgressed segments should be inversely proportional to the time since the admixture event [@gravel2012, @liang_nielsen2014] .  Hence, the length distribution of introgressed chromosomal segments ('recombination clock') can be used to inferred the time since the admixture event [@moorjani_history_2011;@pugach_dating_2011; @sankararaman_date_2012;@loh_inferring_2013;@sankararaman_combined_2016;@pugach_gateway_2018;@jacobs_multiple_2019,@hellenthal_genetic_2014]  
+In particular, under a constant recombination rate, the length of introgressed segments should be inversely proportional to the time since the admixture event [@gravel2012; @liang_nielsen2014] .  Hence, the length distribution of introgressed chromosomal segments ('recombination clock') can be used to inferred the time since the admixture event [@moorjani_history_2011;@pugach_dating_2011; @sankararaman_date_2012;@loh_inferring_2013;@sankararaman_combined_2016;@pugach_gateway_2018;@jacobs_multiple_2019,@hellenthal_genetic_2014]  
 *bp 19/02:add hellenthal 2014 science*
 
 *bp 19/02: Maybe introduce here the term of admixture pulse*
 
-To do this, the model usually assumes an admixture pulse, where admixture between two populations is a one generation long event followed by a period of isolation [@liang_lengths_2014]. The proportion of admixture of individuals in the admixed population is assumed to be identical, tracts are rare and inbreeding is not significant, such that admixture segments do not recombine with each other to form longer segments [@pool_inference_2009].  The effect of drift is assumed to be negligible [@loh_inferring_2013], the introgressed segments act neutral [@shchur_distribution_2019] and the recombination rate map is identical across populations and does not change over time [@gravel_population_2012].
+*bp,li 28/02: ausbauen da wichtigste assumption*
+
+*bp,li 28/02: Hervorheben der main idea das wir die laenge vom Nean gf messen wollen especially das ende die hauptfage hierbei waere inwieweit das end von einem gf mit dem bisher gemessenen mittelwert entfernt ist. Da wir wissen das der mittelwert durch die ganzen untengennanten faktoren beeinflusst werden kann muessen wir diese auch fuer die laengen messung in betracht ziehen*
+
+To do this, the model usually assumes an admixture pulse, where admixture between two populations is only a one generation long event followed by a period of isolation [@liang_lengths_2014]. The consequence of this is that one obtains only a mean admixture time if the real admixture was multi-generational.  
+
+Additionally, the model assumes that the proportion of admixture of individuals in the admixed population is assumed to be identical, tracts are rare and inbreeding is not significant, such that admixture segments do not recombine with each other to form longer segments [@pool_inference_2009].  The effect of drift is assumed to be negligible [@loh_inferring_2013], the introgressed segments act neutral [@shchur_distribution_2019] and the recombination rate map is identical across populations and does not change over time [@gravel_population_2012].
 <!-- Introduce model assumptions here -->
 <!-- constant recombination rate -->
 <!-- same ancestor -->
@@ -91,9 +107,11 @@ The other approach first tries to infer introgressed haplotypes directly, by par
 
 *li 27/02: Included how they differ but it goes into quit detail already especially the differences in Pryas method compared to Siriams where she uses a slightly differnt ascerteinment scheme (the one I am also testing) pluse the DECODE map for the corection of the genetic map*
 
-Both approaches have been used to estimate the time of admixture between Neandertals and modern humans.  Using the decay of introgressed Neandetlas variants in modern day genomes, Sankararaman et al dated the neandertal-human admixture time to be 37,000–86,000 ya (years ago) [@sankararaman_date_2012]. Later, this data was refined to 40,510–54,454 ya (95% CI) using a different ascertainment scheme combined with a different genetic map [@moorjani_genetic_2016]. A date was also obtained from an ancient genome to be 50,000 to 60,000 ya by adding the admixture date of the ancient individual, obtained by the decay of pairwise covariance between introgressed SNPs, to the specimens radiocarbon date [@fu_genome_2014]. 
+Both approaches have been used to estimate the time of admixture between Neandertals and modern humans assuming a one generation admixture pulse.  Using the decay of introgressed Neandetlas variants in modern day genomes, Sankararaman et al dated the neandertal-human admixture time to be 37,000–86,000 ya (years ago) [@sankararaman_date_2012]. Later, this data was refined to 40,510–54,454 ya (95% CI) using a different ascertainment scheme combined with a different genetic map [@moorjani_genetic_2016]. A date was also obtained from an ancient genome to be 50,000 to 60,000 ya by adding the admixture date of the ancient individual, obtained by the decay of pairwise covariance between introgressed SNPs, to the specimens radiocarbon date [@fu_genome_2014]. 
 
 An additional admixture event between Neandertals and East-Asian populations at the same time as the admixture between Neandertals and all non-Africans was suggested to explain the higher amount of Neandertal ancestry in present-day East Asians [@kim_selection_2015; @vernot_complex_2015]. The Denisovan human admixture was dated to be between 44,000–54,000 ya using the ALD approach on modern day genomes [@sankararaman_combined_2016]. An additional Denisovan admixture event was suggested for East-Asian populations by directly identifying Denisovan haplotype segments, which are more diverged from the Denisovan high-coverage genome then previously found segments [@browning_analysis_2018]. Comparing the mean length of the two groups of segments introgressed from divergent Denisovan populations did, however, not reveal significant differences, suggesting a lack of power to distinguish the two events by time [@browning_analysis_2018; @jacobs_multiple_2019]. Analysing genomes from Papuan individuals revealed two time separated admixture events with Denisovan, one in line with previous estimates at 45.7 kya (95% CI 31.9-60.7 kya) and one exclusive to Papuans dated to be around 29.8 kya (95% CI 14.4-50.4 kya) [@jacobs_multiple_2019].
+
+So the mean time estimate is known for these admixtures, but preferentially one would like to obtain the duration. especially the end of gene flow between modern humans and archaic hominin populations is of great interest. The question is how far apart is the mean time from the end of admixture.
 
 <!-- [I would move the intro paragraph ] -->
 
@@ -104,7 +122,7 @@ An additional admixture event between Neandertals and East-Asian populations at 
 *li 27/02: I think it makes sense to mention all the assumptions which might be problematic and in the end how we gonne do it (check the effec of continuous admixture, compare it to the other assumptions, try to explicitly model continuous admixture using the Lomax)*
 
 ##Assumptions on the data
-Both approaches, the direct measure of the segment length and the indirect ALD based method, without first directly inferring introgressed segments such as the popular ALDER method [@loh_inferring_2013], rely on some fairly strong modelling assumptions [@pool_inference_2009; @gravel_population_2012; @liang_lengths_2014]. We want to investigate which of these assumptions can be relaxed without causing a strong bias in the estimate.
+Both approaches, the direct measure of the segment length and the indirect ALD based method, without first directly inferring introgressed segments such as the popular ALDER method [@loh_inferring_2013], rely on some fairly strong modelling assumptions [@pool_inference_2009; @gravel_population_2012; @liang_lengths_2014]. These assumptions are known to influence the mean time estimates and are therefore likely  influence the duration estimate as well. Therefore, we want to investigate which of these assumptions can be relaxed without causing a strong bias in the estimate.
 <!-- last sentence changed to be more positive by Ben's recommendationc -->
 
 ### Segments are is independent and identically exponentially distributed
@@ -112,7 +130,7 @@ Both approaches, the direct measure of the segment length and the indirect ALD b
 First, it is assumed that the lengths of the introgressed segments are independent 
 and identically exponentially distributed. One restriction this puts on the data is that segments of the same ancestor are 
 assumed not to recombine into longer segments. This assumption is violated in particular 
-when admixture is very old $(t \approx 2N)$ or very recent $t \approx \log(2N)$ [@liang_lengths_2014].
+when admixture is very old $(t \approx 2N)$ or very recent $t \approx \log(2N)$ or when the admixture proportions are large [@liang_lengths_2014]. In our case we deal with small admixture proportions and $\log(2N) < t < 2N$.
 
 *li 27/02: from liang_lengths_2014: Tract length can be correlated due to the variance in migrant ancestors an individual has and due to inbreeding joining together migrant tracts which violates the iid assumption especially in the cases mentioned*
 
