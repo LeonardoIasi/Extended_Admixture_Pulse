@@ -1,5 +1,5 @@
 ---
-title: "Neandertal-Human admixture duration not detectable using introgressed segments from modern human genomes due to uncertainties in the recombination map"
+title: "Evaluating Archaic Admixture Time Estimates"
 author: Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary Anthropology,
   MPI EVA), Dr. Benjamin Marco Peter (MPI EVA, benjamin_peter@eva.mpg.de)
 date: "`r Sys.Date()`"
