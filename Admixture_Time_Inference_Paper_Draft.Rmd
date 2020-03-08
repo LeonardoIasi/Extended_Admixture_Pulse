@@ -55,7 +55,7 @@ text-align: justify}
 
 
 #Introduction
-\textcolor{green}{*bp, li 28/02: in generall motivate why you are talking about stuff, why is it important for our question and dont go into explenaition straight away*}
+*bp, li 28/02: in generall motivate why you are talking about stuff, why is it important for our question and dont go into explenaition straight away*
 
 Detecting admixture, i.e. gene flow between previously isolated populations can shed light into the complex evolutionary history of populations. Admixture, sometimes also referred to as hybridization, is an important factor of speciation and occurs in almost all proposed processes of it [@abbott_hybridization_2013]. In its most basic understanding, the capacity to admix is used as a criterion to characterize species, as in the biological species concept a species is defined as reproductively isolated from others [@mayr_animal_1963]. 
 
@@ -65,10 +65,9 @@ Detecting admixture, i.e. gene flow between previously isolated populations can 
 In addition admixture is recognized to shapes genetic diversity and can introduce novel variants into the admixing populations [@harrison_hybridization_2014]. These variants can be adaptive in the admixed population [@hedrick_adaptive_2013] or be selected against at loci which determine species specific phenotypes [@shaw_genes_2011], thereby helping to identify loci important for local adaptation [@payseur_using_2010]. Admixture is found in many sexually reproducing species of plants, invertebrates and vertebrates [@payseur_genomic_2016]. Novel DNA sequencing methods make it easier to detect admixture event between populations [@sousa_understanding_2013]. The sequencing of the Neandertal [@green_draft_2010] and Denisovan [@reich_genetic_2010] genome revealed admixture events between Neandertals and  modern humans outside of Africa  [@green_draft_2010; @prufer_complete_2013; @vernot_resurrecting_2014;@fu_early_2015; @fu_genome_2014; @sankararaman_genomic_2014;@prufer_high-coverage_2017], as well as a second admixture event between Denisovans and Asian populations [@reich_genetic_2010; @meyer_high-coverage_2012; @sankararaman_combined_2016; @vernot_excavating_2016]. These admixture events where found to have impacted modern human phenotypes [@dannemann_something_2018]. One important question is how long ago these admixture events are and how long they lasted for, since this can be a clue to the debated question of the time of extinction of these hominin populations.
 
 
-\textcolor{green}{*bp 19/02:this feels very thin. It's OK to motivate admixture as something that is widely present, but then you need to give a comprehensive introduction, not just a very incomplete list of papers. The alternative is to simply refer to a bunch of relevant reviews*}
+*bp 19/02:this feels very thin. It's OK to motivate admixture as something that is widely present, but then you need to give a comprehensive introduction, not just a very incomplete list of papers. The alternative is to simply refer to a bunch of relevant reviews*
 
-\textcolor{green}{*li 27/02:I refere now to some hybridization reviews which point out to alot of admixture papers in different species*
-*bp, li 28/02:artbildung hervorheben wieso sind wir interresiert daran biologisch nicht sofort mea teschnisch wreden i.e. why do we care about admixture at all*}
+*bp, li 28/02:artbildung hervorheben wieso sind wir interresiert daran biologisch nicht sofort mea teschnisch wreden i.e. why do we care about admixture at all*
 
 
 
@@ -82,10 +81,9 @@ multi-generation long admixture the single-pulse model results in a mean admixtu
 time between start and end of the admixture. Ideally one would like to obtain the start and end, hence the duration of admixture between populations.
 
 
-\textcolor{green}{*bp 19/02: Maybe introduce here the term of admixture pulse*}
+*bp 19/02: Maybe introduce here the term of admixture pulse*
 
-
-\textcolor{green}{*bp,li 28/02: Hervorheben der main idea das wir die laenge vom Nean gf messen wollen especially das ende die hauptfage hierbei waere inwieweit das end von einem gf mit dem bisher gemessenen mittelwert entfernt ist. Da wir wissen das der mittelwert durch die ganzen untengennanten faktoren beeinflusst werden kann muessen wir diese auch fuer die laengen messung in betracht ziehen*}
+*bp,li 28/02: Hervorheben der main idea das wir die laenge vom Nean gf messen wollen especially das ende die hauptfage hierbei waere inwieweit das end von einem gf mit dem bisher gemessenen mittelwert entfernt ist. Da wir wissen das der mittelwert durch die ganzen untengennanten faktoren beeinflusst werden kann muessen wir diese auch fuer die laengen messung in betracht ziehen*
 
 
 ##The two approaches of obtaining the length of introgressed segments: ALD
@@ -100,9 +98,9 @@ The other approach first tries to infer introgressed haplotypes directly, by par
 
 ##Dates of archaic introgression obtained so far
 
-\textcolor{green}{*bp 19/02: This paragraph is in quite good shape, but I think it is worth highlighting how the approaches used differ, and why accuracy was increased over time*}
+*bp 19/02: This paragraph is in quite good shape, but I think it is worth highlighting how the approaches used differ, and why accuracy was increased over time*
 
-\textcolor{green}{*li 27/02: Included how they differ but it goes into quit detail already especially the differences in Pryas method compared to Siriams where she uses a slightly differnt ascerteinment scheme (the one I am also testing) pluse the DECODE map for the corection of the genetic map*}
+*li 27/02: Included how they differ but it goes into quit detail already especially the differences in Pryas method compared to Siriams where she uses a slightly differnt ascerteinment scheme (the one I am also testing) pluse the DECODE map for the corection of the genetic map*
 
 Both approaches have been used to estimate the time of admixture between Neandertals and modern humans assuming a one generation admixture pulse.  Using the decay of introgressed neandertal variants in modern day genomes, Sankararaman et al dated the neandertal-human admixture time to be 37,000–86,000 ya (years ago) [@sankararaman_date_2012]. Later, this data was refined to 40,510–54,454 ya (95% CI) using a different ascertainment scheme combined with a different genetic map [@moorjani_genetic_2016]. A date was also obtained from an ancient genome to be 50,000 to 60,000 ya by adding the admixture date of the ancient individual, obtained by the decay of pairwise covariance between introgressed SNPs, to the specimens radiocarbon date [@fu_genome_2014]. 
 
@@ -116,7 +114,7 @@ All these studies focused on the mean time estimates of admixture, but preferent
 <!-- the time of the last GF is relevant for Neandertal extinction, hence the extrema of the distribition more important then mean time -->
 
 
-\textcolor{green}{*li 27/02: I think it makes sense to mention all the assumptions which might be problematic and in the end how we gonne do it (check the effec of continuous admixture, compare it to the other assumptions, try to explicitly model continuous admixture using the Lomax)*}
+*li 27/02: I think it makes sense to mention all the assumptions which might be problematic and in the end how we gonne do it (check the effec of continuous admixture, compare it to the other assumptions, try to explicitly model continuous admixture using the Lomax)*
 
 ##Assumptions on the data
 All dates obtained have to be based on a priori knowledge and assumptions.
@@ -127,7 +125,7 @@ Violations of these assumptions are known to influence the mean time estimates. 
 
 ### Segments are is independent and identically exponentially distributed
 
-\textcolor{green}{*li 27/02: from liang et al 2014: Tract length can be correlated due to the variance in migrant ancestors an individual has and due to inbreeding joining together migrant tracts which violates the iid assumption especially in the cases mentioned* }
+*li 27/02: from liang et al 2014: Tract length can be correlated due to the variance in migrant ancestors an individual has and due to inbreeding joining together migrant tracts which violates the iid assumption especially in the cases mentioned* 
 
 
 First, it is assumed that the lengths of the introgressed segments are independent 
@@ -136,7 +134,7 @@ assumed not to recombine into longer segments. This assumption is violated in pa
 when admixture is very old $(t \approx 2N)$ or very recent $t \approx \log(2N)$ or when the admixture proportions are large [@liang_lengths_2014]. In our case we deal with small admixture proportions and $\log(2N) < t < 2N$.
 
 
-\textcolor{green}{*bp 19/02: in this paragraph, you repeated yourself a lot. Try to be concise and present your argument in one logical sequence whenever possible* }
+*bp 19/02: in this paragraph, you repeated yourself a lot. Try to be concise and present your argument in one logical sequence whenever possible* 
 
 ### Recombination Map
 
@@ -154,23 +152,25 @@ These uncertainties in the genetic map were found to downward bias the neanderta
 Sankararaman et al. 2012 suggested a method for accounting for some uncertainty in the recombination map by estimating a correction parameter for a given recombination map by comparing the distances between a pair of markers in the map to the number of crossovers that span those markers as observed in a pedigree map. This however limits the applicability of the method, since it requires a population-specific map as well as a pedigree based map to estimate the error in the map [@sankararaman_date_2012; @fu_genome_2014; @sankararaman_combined_2016 ; @moorjani_genetic_2016]. 
 
 
-\textcolor{green}{*bp 19/02:recap what Priya/Sriram found about the bias/correction*}
+*bp 19/02:recap what Priya/Sriram found about the bias/correction*
 
-\textcolor{green}{*li 27/02: now I first explain  how it affects the estimate according to Siriam (Prya quotes him on this) and then what is the problem with the correction and then what is the problem with genetic maps are*}
+*li 27/02: now I first explain  how it affects the estimate according to Siriam (Prya quotes him on this) and then what is the problem with the correction and then what is the problem with genetic maps are*
 
 
 ### Demography
-\textcolor{green}{*bp 19/02: this section (and frequently your writing in general) could need more structure. One simple approach is the   context-content-conclusion system For this intro section, the basic idea is that for each paragraph you need to make clear that you start by*}
+*bp 19/02: this section (and frequently your writing in general) could need more structure. One simple approach is the   context-content-conclusion system For this intro section, the basic idea is that for each paragraph you need to make clear that you start by*
 
-\textcolor{green}{*1. explaining why we're interested in demography,* }
-\textcolor{green}{*2. what precisely the issue is*}
-\textcolor{green}{*3. explain what you're gonna do about it*}
+*1. explaining why we're interested in demography,* 
+*2. what precisely the issue is*
+*3. explain what you're gonna do about it*
 
 
 A third assumption is that the demographic history of the studied population is
 known. While the recombination clock itself is relatively robust to population size 
 changes 
-\textcolor{green}{*bp 19/02: ref Gravel2012? li 27/02: No they didn't check for fluctuations in Ne*}
+
+*bp 19/02: ref Gravel2012? li 27/02: No they didn't check for fluctuations in Ne*
+
 , the problem is the detection of truly introgressed segments. Demographic processes can create similar genomic signals as admixture [@vernot_resurrecting_2014; @hsieh_model_based_2016]. These segments also exhibit high density of divergent variants in high LD to each other. There are multiple demographic processes that could lead to such signals. Figure \ref{fig:Intro_fig} B shows two possible demographies for the neandertal admixture, a simplified one without population size changes and a more complex one 
 including structured populations, bottlenecks and  an additional admixture event. 
 The extreme reduction in population sizes of the admixing population can create 
@@ -192,7 +192,7 @@ population are ascertained using only a few sequenced archaic individuals as
 proxies for the actual introgressing archaic population [@sankararaman_date_2012;@fu_genome_2014;@sankararaman_combined_2016;@moorjani_genetic_2016]. These individuals are potentially only distantly related to the introgressing population [@jacobs_multiple_2019], which might 
 result in missing introgressed variants. 
 
-\textcolor{green}{*li 27/02 What to cite for the last sentence?*}
+*li 27/02 What to cite for the last sentence?*
 
 ###What are we going to do about all the assumptions
 <!-- Not finish  -->
@@ -200,11 +200,11 @@ result in missing introgressed variants.
 Using simulations, the effect of each assumption is obtained and explicitly modeled conditioning on all other assumptions to get individual effect sizes. Knowledge about a strong biasing effects will help to model continuous admixture, which is mathematically more challenging than a pulse admixture and the fitting process is more prone to interference by biasing effects.
 
 
-\textcolor{green}{*bp 19/02: preceeding section could be merged with last intro paragraph*}
+*bp 19/02: preceeding section could be merged with last intro paragraph*
 
-\textcolor{green}{*bp 19/02: this should be at the end of the intro*}
+*bp 19/02: this should be at the end of the intro*
 
-\textcolor{green}{*li 27/02: Now it is at the end and i merged it with the existing paragraph as well as the previous attempts of modeling multi-generation long admixture*}
+*li 27/02: Now it is at the end and i merged it with the existing paragraph as well as the previous attempts of modeling multi-generation long admixture*
 
 ##What we want to do
 
