@@ -1,5 +1,5 @@
 ---
-title: "Evaluating Archaic Admixture Time Estimates"
+title: "Neandertal-Human admixture duration not detectable using introgressed segments from modern human genomes due to uncertainties in the recombination map"
 author: Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary Anthropology,
   MPI EVA), Dr. Benjamin Marco Peter (MPI EVA, benjamin_peter@eva.mpg.de)
 date: "`r Sys.Date()`"
@@ -55,10 +55,8 @@ text-align: justify}
 
 
 #Introduction
-*bp, li 28/02: in generall motivate why you are talking about stuff, why is it important for our question and dont go into explenaition straight away*
 
-Detecting admixture, i.e. gene flow between previously isolated populations can shed light into the complex evolutionary history of populations. Admixture, sometimes also referred to as hybridization, is an important factor of speciation and occurs in almost all proposed processes of it [@abbott_hybridization_2013]. In its most basic understanding, the capacity to admix is used as a criterion to characterize species, as in the biological species concept a species is defined as reproductively isolated from others [@mayr_animal_1963]. 
-
+Admixture, i.e. gene flow between previously isolated populations, sometimes also referred to as hybridization, is an important factor of speciation and occurs in almost all proposed processes of it [@abbott_hybridization_2013]. In its most basic understanding, the capacity to admix is used as a criterion to characterize species, as in the biological species concept a species is defined as reproductively isolated from others [@mayr_animal_1963]. 
 <!-- This classical allopatric concept of speciation, however is questioned by the emergent finding of speciation events in the presence of admixture [@sousa_understanding_2013].  -->
 <!-- Not sure about this sentence this is not the topic of the paper -->
 
@@ -66,10 +64,6 @@ In addition admixture is recognized to shape genetic diversity and can introduce
 <!-- Admixture is found in many sexually reproducing species of plants, invertebrates and vertebrates [@payseur_genomic_2016].  -->
 Novel DNA sequencing methods make it easier to detect admixture event between populations [@sousa_understanding_2013]. The sequencing of the Neandertal [@green_draft_2010] and Denisovan [@reich_genetic_2010] genome revealed admixture events between Neandertals and  modern humans outside of Africa  [@green_draft_2010; @prufer_complete_2013; @vernot_resurrecting_2014;@fu_early_2015; @fu_genome_2014; @sankararaman_genomic_2014;@prufer_high-coverage_2017], as well as a second admixture event between Denisovans and Asian populations [@reich_genetic_2010; @meyer_high-coverage_2012; @sankararaman_combined_2016; @vernot_excavating_2016]. These admixture events where found to have impacted modern human phenotypes [@dannemann_something_2018]. One important question is the date and duration of such admixture events, since this can be a clue to the debated question of the time of extinction of these hominin populations.
 
-
-*bp 19/02:this feels very thin. It's OK to motivate admixture as something that is widely present, but then you need to give a comprehensive introduction, not just a very incomplete list of papers. The alternative is to simply refer to a bunch of relevant reviews*
-
-*bp, li 28/02:artbildung hervorheben wieso sind wir interresiert daran biologisch nicht sofort mea teschnisch wreden i.e. why do we care about admixture at all*
 
 
 
@@ -81,11 +75,6 @@ In particular, under a constant recombination rate, the length of introgressed s
 in this one generation can be modeled using a single exponential distribution [ref?]. This however limits the information gained from the dating since in case of a 
 multi-generation long admixture the single-pulse model results in a mean admixture 
 time between start and end of the admixture. Ideally one would like to obtain the start and end, hence the duration of admixture between populations.
-
-
-*bp 19/02: Maybe introduce here the term of admixture pulse*
-
-*bp,li 28/02: Hervorheben der main idea das wir die laenge vom Nean gf messen wollen especially das ende die hauptfage hierbei waere inwieweit das end von einem gf mit dem bisher gemessenen mittelwert entfernt ist. Da wir wissen das der mittelwert durch die ganzen untengennanten faktoren beeinflusst werden kann muessen wir diese auch fuer die laengen messung in betracht ziehen*
 
 
 ##The two approaches of obtaining the length of introgressed segments: ALD
@@ -105,9 +94,6 @@ The other approach first tries to infer introgressed haplotypes directly, by par
 
 ##Dates of archaic introgression obtained so far
 
-*bp 19/02: This paragraph is in quite good shape, but I think it is worth highlighting how the approaches used differ, and why accuracy was increased over time*
-
-*li 27/02: Included how they differ but it goes into quit detail already especially the differences in Pryas method compared to Siriams where she uses a slightly differnt ascerteinment scheme (the one I am also testing) pluse the DECODE map for the corection of the genetic map*
 
 Both approaches have been used to estimate the time of admixture between Neandertals and modern humans assuming a one generation admixture pulse.  Using the decay of introgressed neandertal variants in modern day genomes, Sankararaman et al dated the neandertal-human admixture time to be 37,000–86,000 ya (years ago) [@sankararaman_date_2012]. Later, this data was refined to 40,510–54,454 ya (95% CI) using a different ascertainment scheme combined with a different genetic map [@moorjani_genetic_2016]. A date was also obtained from an ancient genome to be 50,000 - 60,000 ya by adding the admixture date of the ancient individual, obtained by the decay of pairwise covariance between introgressed SNPs, to the specimens radiocarbon date [@fu_genome_2014]. 
 
@@ -132,8 +118,6 @@ How far apart can the time of the end of admixture be from its mean time to stil
 <!-- the time of the last GF is relevant for Neandertal extinction, hence the extrema of the distribition more important then mean time -->
 
 
-*li 27/02: I think it makes sense to mention all the assumptions which might be problematic and in the end how we gonne do it (check the effec of continuous admixture, compare it to the other assumptions, try to explicitly model continuous admixture using the Lomax)*
-
 ##Assumptions on the data
 All dates obtained have to be based on a priori knowledge and assumptions.
 <!-- Both approaches to identify the introgressed segments, the direct measure of the segment length and the indirect ALD based method, without first directly inferring introgressed segments such as the popular ALDER method [@loh_inferring_2013], rely on some fairly strong modelling assumptions [@pool_inference_2009; @gravel_population_2012; @liang_lengths_2014]. -->
@@ -145,16 +129,12 @@ Violations of these assumptions are known to influence the mean time estimates. 
 
 ### Segments are is independent and identically exponentially distributed
 
-*li 27/02: from liang et al 2014: Tract length can be correlated due to the variance in migrant ancestors an individual has and due to inbreeding joining together migrant tracts which violates the iid assumption especially in the cases mentioned* 
 
 
 First, it is assumed that the lengths of the introgressed segments are independent 
 and identically exponentially distributed. One restriction this puts on the data is that segments of the same ancestor are 
 assumed not to recombine with each other to form longer segments. This assumption is violated in particular 
 when admixture is very old $(t \approx 2N)$ or very recent $t \approx \log(2N)$ or when the admixture proportions are large [@liang_lengths_2014]. In our case we deal with small admixture proportions and $\log(2N) < t < 2N$.
-
-
-*bp 19/02: in this paragraph, you repeated yourself a lot. Try to be concise and present your argument in one logical sequence whenever possible* 
 
 ### Recombination Map
 
@@ -175,17 +155,7 @@ These uncertainties in the genetic map were found to downward bias the neanderta
 Sankararaman et al. 2012 suggested a method for accounting for some uncertainty in the recombination map by estimating a correction parameter for a given recombination map by comparing the distances between a pair of markers in the map to the number of crossovers that span those markers as observed in a pedigree map. This however limits the applicability of the method, since it requires a population-specific map as well as a pedigree based map to estimate the error in the map [@sankararaman_date_2012; @fu_genome_2014; @sankararaman_combined_2016 ; @moorjani_genetic_2016]. 
 
 
-*bp 19/02:recap what Priya/Sriram found about the bias/correction*
-
-*li 27/02: now I first explain  how it affects the estimate according to Siriam (Prya quotes him on this) and then what is the problem with the correction and then what is the problem with genetic maps are*
-
-
 ### Demography
-*bp 19/02: this section (and frequently your writing in general) could need more structure. One simple approach is the   context-content-conclusion system For this intro section, the basic idea is that for each paragraph you need to make clear that you start by*
-
-*1. explaining why we're interested in demography,* 
-*2. what precisely the issue is*
-*3. explain what you're gonna do about it*
 
 
 A third assumption is that the demographic history of the studied population is
@@ -222,7 +192,6 @@ proxies for the actual introgressing archaic population [@sankararaman_date_2012
 These individuals are potentially only distantly related to the introgressing population [@jacobs_multiple_2019], which might 
 result in missing introgressed variants. 
 
-*li 27/02 What to cite for the last sentence?*
 
 ###What are we going to do about all the assumptions
 <!-- Not finish  -->
@@ -230,11 +199,6 @@ result in missing introgressed variants.
 Using simulations, the effect of each assumption is obtained and explicitly modeled conditioning on all other assumptions to get individual effect sizes. Knowledge about a strong biasing effects will help to model continuous admixture, which is mathematically more challenging than a pulse admixture and the fitting process is more prone to interference by biasing effects.
 
 
-*bp 19/02: preceeding section could be merged with last intro paragraph*
-
-*bp 19/02: this should be at the end of the intro*
-
-*li 27/02: Now it is at the end and i merged it with the existing paragraph as well as the previous attempts of modeling multi-generation long admixture*
 
 ##What we want to do
 
@@ -398,6 +362,7 @@ suppressPackageStartupMessages({
   library(ggpubr)
   library(dplyr)
   library(rethinking)
+  library(kableExtra)
 })
 
 Results_Table <- function(Table_Path) {
@@ -739,7 +704,7 @@ ggarrange(P1_1,P1_2,
 
 ##Comparing effect sizes
 
-```{r message=FALSE, echo=FALSE,warning=FALSE}
+```{r message=FALSE, echo=FALSE,warning=FALSE, cache=T}
 
 ##### GLM for the bais on the admixture dates #####
 
@@ -749,88 +714,65 @@ ggarrange(P1_1,P1_2,
 Simple_D_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 Simple_D_Sim_1$Demography <- "0_Simple"
 Simple_D_Sim_1$Recomb.rate <- "0_constant"
+Simple_D_Sim_1$Sim_id <- ifelse(Simple_D_Sim_1$Ascertained==0,"Simple_D_Sim_LES_0","Simple_D_Sim_HES_0")
 Simple_D_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 Simple_D_Sim_2$Demography <- "0_Simple"
 Simple_D_Sim_2$Recomb.rate <- "0_constant"
+Simple_D_Sim_2$Sim_id <- ifelse(Simple_D_Sim_2$Ascertained==0,"Simple_D_Sim_LES_1","Simple_D_Sim_HES_1")
 Inferred_D_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 #Inferred_D_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 Inferred_D_Sim_1$Demography <- "Inferred"
 Inferred_D_Sim_1$Recomb.rate <- "0_constant"
+Inferred_D_Sim_1$Sim_id <- ifelse(Inferred_D_Sim_1$Ascertained==0,"Inferred_D_Sim_LES_0","Inferred_D_Sim_HES_0")
 Inferred_D_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 #Inferred_D_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 Inferred_D_Sim_2$Demography <- "Inferred"
 Inferred_D_Sim_2$Recomb.rate <- "0_constant"
+Inferred_D_Sim_2$Sim_id <- ifelse(Inferred_D_Sim_2$Ascertained==0,"Inferred_D_Sim_LES_1","Inferred_D_Sim_HES_1")
 Recom_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 Recom_Sim_1$Demography <- "0_Simple"
 Recom_Sim_1$Recomb.rate <- "variable"
 Recom_Sim_1$m <- Recom_Sim_1$m
+Recom_Sim_1$Sim_id <- ifelse(Recom_Sim_1$Ascertained==0,"Recom_D_Sim_LES_0","Recom_D_Sim_HES_0")
 Recom_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 Recom_Sim_2$Demography <- "0_Simple"
 Recom_Sim_2$Recomb.rate <- "variable"
 Recom_Sim_2$m <- Recom_Sim_2$m
+Recom_Sim_2$Sim_id <- ifelse(Recom_Sim_2$Ascertained==0,"Recom_D_Sim_LES_1","Recom_D_Sim_HES_1")
 Recom_Sim_and_Inf_1 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_recomb_map_-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 #Recom_Sim_and_Inf_1 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 Recom_Sim_and_Inf_1$Demography <- "Inferred"
 Recom_Sim_and_Inf_1$Recomb.rate <- "variable"
 Recom_Sim_and_Inf_1$m <- Recom_Sim_and_Inf_1$m
+Recom_Sim_and_Inf_1$Sim_id <- ifelse(Recom_Sim_and_Inf_1$Ascertained==0,"Recom_Sim_and_Inf_LES_0","Recom_Sim_and_Inf_HES_0")
 Recom_Sim_and_Inf_2 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_recomb_map_-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 #Recom_Sim_and_Inf_2 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 Recom_Sim_and_Inf_2$Demography <- "Inferred"
 Recom_Sim_and_Inf_2$Recomb.rate <- "variable"
 Recom_Sim_and_Inf_2$m <- Recom_Sim_and_Inf_2$m
+Recom_Sim_and_Inf_2$Sim_id <- ifelse(Recom_Sim_and_Inf_2$Ascertained==0,"Recom_Sim_and_Inf_LES_1","Recom_Sim_and_Inf_HES_1")
+
 # first build model only with Simple and Inferred demography
 #xdata <- rbind(Simple_D_Sim_1,Simple_D_Sim_2,Inferred_D_Sim_1,Inferred_D_Sim_2)
 
 ######## model with response beeing the difference between the estimated Admixture time and the true one #####
 # full model with Ascertainement, min dist, Demographi and recombination rate as predictore but no interactions
-xdata.M.3 <- rbind(Simple_D_Sim_1,Simple_D_Sim_2,Inferred_D_Sim_1,Inferred_D_Sim_2,Recom_Sim_1,Recom_Sim_2,Recom_Sim_and_Inf_1,Recom_Sim_and_Inf_2)
+xdata.M.3 <- rbind(Simple_D_Sim_1,Simple_D_Sim_2,Recom_Sim_1,Recom_Sim_2,Inferred_D_Sim_1,Inferred_D_Sim_2,Recom_Sim_and_Inf_1,Recom_Sim_and_Inf_2)
+rm(Simple_D_Sim_1,Simple_D_Sim_2,Recom_Sim_1,Recom_Sim_2,Inferred_D_Sim_1,Inferred_D_Sim_2,Recom_Sim_and_Inf_1,Recom_Sim_and_Inf_2)
+xdata.M.3$TID <- ifelse(xdata.M.3$GF=='0_Pulse',paste(xdata.M.3$Sim_id,'P',sep = '_'),paste(xdata.M.3$Sim_id,'C',sep = '_')) 
+
+
 xdata.M.3$Diff <- xdata.M.3$m - xdata.M.3$mean.t.GF
 # remove all estimates where nls reported an error
 xdata.M.3_no_error <- xdata.M.3[xdata.M.3$error=="no_error",]
+xdata.M.3_no_error$Sim_id_int <- as.integer(as.factor(xdata.M.3_no_error$TID))
 
-# Check response
-#hist(xdata.M.3_no_error$Diff)
-#min(xdata.M.3_no_error$Diff)
-#max(xdata.M.3_no_error$Diff)
-# check combinations of predictors do they have equal numbers of observations
-Combination_of_predictors <- table(xdata.M.3_no_error$Ascertainment,xdata.M.3_no_error$min_dist,xdata.M.3_no_error$Demography,xdata.M.3_no_error$GF,xdata.M.3_no_error$Recomb.rate)
-
-# Fit linear model while assuming normal distributed residuals
-res.M.3=lm(Diff~Ascertainment+min_dist+Demography+Recomb.rate+GF,data = xdata.M.3_no_error)
+xdata.M.3_no_error$Diff_s <- (xdata.M.3_no_error$m - xdata.M.3_no_error$mean.t.GF)/sd(xdata.M.3_no_error$m)
 
 
-### check assumptions
-
-# check colinearity
-#vif(res.M.3)
-
-#check normal distribution 
-#diagnostics.plot(res.M.3)
-
-# check model stability
-#m.stab.plot(lm_check_dfbetas(res.M.3))
-
-### check result
-res.M.3.sum=summary(res.M.3)$coefficients
-
-# get confidence intervals
-m.coefs=cbind(org=coefficients(res.M.3),confint(res.M.3))
-
-Summary_Table_res.M.3 <- cbind(m.coefs,res.M.3.sum[,-1])
-
-#### Bayesian Model ####
-
-Bdata <- list(
-  E = standardize(xdata.M.3_no_error$Diff),
-  A = ifelse(xdata.M.3_no_error$Ascertained==0,1,2),
-  MD = ifelse(xdata.M.3_no_error$min_dist=="0.02",1,2),
-  D = ifelse(xdata.M.3_no_error$Demography=="0_Simple",1,2),
-  R = ifelse(xdata.M.3_no_error$Recomb.rate=="0_constant",1,2),
-  GF = ifelse(xdata.M.3_no_error$GF=="0_Pulse",1,2)
-)
-
-Bdata_index <- list(
-  E = standardize(xdata.M.3_no_error$Diff),
+Bdata_index_s <- list(
+  E = (xdata.M.3_no_error$Diff_s),
+  Id = xdata.M.3_no_error$Sim_id_int,
   A = ifelse(xdata.M.3_no_error$Ascertained==0,0,1),
   MD = ifelse(xdata.M.3_no_error$min_dist=="0.02",0,1),
   D = ifelse(xdata.M.3_no_error$Demography=="0_Simple",0,1),
@@ -839,54 +781,75 @@ Bdata_index <- list(
 )
 
 
-Effect_size <- ulam(
+Effect_size_fixed_s <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
-    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF,
-    a ~ dnorm( 0 , 0.2 ),
-    c(bA,bm,bD,bR,bG) ~ dnorm( 0 , 0.5 ),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF ,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)
-  ), data=Bdata, chains=4 , cores=4 )
+  ), data=Bdata_index_s, chains=4 , cores=4 , log_lik = T)
 
-traceplot(Effect_size)
-precis(Effect_size,depth = 2)
-plot(precis(Effect_size,depth = 2))
+
+Effect_size_fixed_id_s <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a[Id] + bA*A + bm*MD + bD*D + bR*R + bG*GF ,
+    a[Id] ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)
+  ), data=Bdata_index_s, chains=4 , cores=4,iter=4000, log_lik = T)
+
+Effect_size_varying_intercepts_s <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a[Id] + bA*A + bm*MD + bD*D + bR*R + bG*GF ,
+    a[Id] ~ dnorm( a_bar , sigma_a ),
+    c(bA,bm,bD,bR,bG) ~ dnorm( 0 , 2 ),
+    a_bar ~ dnorm(0,1),
+    sigma_a ~ dexp(1),
+    sigma ~ dexp(1)
+  ), data=Bdata_index_s, chains=4 , cores=4 , log_lik = T)
+
+
+Effect_size_fixed_with_all_pairwise_interactions <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bmd*MD*D + bma*MD*A + bmr*MD*R + bmg*MD*GF + brd*R*D + bra*R*A + brg*R*GF + bad*A*D + 
+      bag*A*GF + bdg*D*GF ,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bmd,bma,bmr,bmg,brd,bra,brg,bad,bag,bdg) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)
+  ), data=Bdata_index_s, chains=4 , cores=4 ,log_lik = T)
+
+
+#compare(Effect_size_fixed_s,Effect_size_fixed_id_s,Effect_size_varying_intercepts_s,Effect_size_fixed_with_all_pairwise_interactions)
+#Effect_size_fixed_id seems to make th best out of sample predictions however it splits it and we are more interrested in the overall effects
+#traceplot(Effect_size_fixed_id)
+
+B_model_result <- precis(Effect_size_fixed_s)
 
 ```
 
-<!-- Having established that the duration of continuous admixture under ideal circumstances is only marginally influential on admixture time estimates, we deploy more realistic simulation scenarios.
-Specifically, we investigated the influence of two analysis parameter by changing the ascertainment scheme to a higher-enrichment scheme requiring additional to the LES non-Africans to be polymorphic at a SNP, and applying a larger minimal distance of 0.05 cM between SNPs used for the fitting of the exponential distribution. Additionally, we changed the demographic model from a simple to a complex one based on inferred effective population sizes and time points taken from MSMC estimates for Africans and non-Africans and PSMC estimates for the simulated Neandertals. Split times between the population where unchanged and Neandertals were sampled 750 generations before the modern humans to simulate branch shortening. We further applied the African-American-Map to simulate varying recombination rates across the 150 Mb long chromosomes, instead of a constant rate. We simulated every combination of these parameter sets resulting in 32 different sets with 100 replications each (Supp. Fig. \ref{fig:figS1}). A Gaussian linear model was applied to estimate effect sizes of the four predictors being ascertainment scheme, minimal distance, demography and recombination on the bias of admixture estimates (Supplement Table \ref{tab:tableS1}). Figure \ref{fig:fig3} shows the comparison of the bias on admixture time estimates between the previously used model (ascertainment = LES, $d_{0} = 0.02 cM$, demography = simple and recombination = constant) further refereed to as the standard model and a model with one of the four parameter changed, respectively and the corresponding model prediction. The previously observed overestimation of the standard model was estimated to be 122 (+7/-7) generations. Every parameter change results in lower estimates compared to the standard model, with the biggest difference between a constant and a varying recombination (-863 +5/-6 generations) and the smallest differences between a pulse and continuous gene flow model (-40 +5/-6 generations). Most accurate estimates are achieved using the LES ascertainment scheme in combination with a minimal distance of 0.05 cM. These analysis parameter combination shows more robustness towards changes in the demography (Supplement Figure 1). -->
 
 Having established that the duration of continuous admixture under ideal circumstances is only marginally influential on admixture time estimates, we deploy more realistic simulation scenarios.
-Specifically, we investigated the influence of two analysis parameter by changing the ascertainment scheme to a higher-enrichment scheme requiring additional to the LES non-Africans to be polymorphic at a SNP, and applying a larger minimal distance of 0.05 cM between SNPs used for the fitting of the exponential distribution. Additionally, we changed the demographic model from a simple to a complex one based on inferred effective population sizes. Additionally we included deep structure in the ancestral African-non-African population and a gene flow event between Africans and non-Africans after the Neandertal admixture event (Figure \ref{fig:Intro_fig} B).  We further applied the African-American-Map to simulate varying recombination rates across the 150 Mb long chromosomes, instead of a constant rate. We simulated every combination of these parameter sets resulting in 32 different sets with 100 replications each (Supp. Fig. \ref{fig:figS1}). A Gaussian linear model was applied to estimate effect sizes of the four predictors being ascertainment scheme, minimal distance, demography and recombination on the bias of admixture estimates (Supplement Table \ref{tab:tableS1}). Figure \ref{fig:fig3} shows the comparison of the bias on admixture time estimates between the previously used model (ascertainment = LES, $d_{0} = 0.02 cM$, demography = simple and recombination = constant) further refereed to as the standard model and a model with one of the four parameter changed, respectively and the corresponding model prediction. The previously observed overestimation of the standard model was estimated to be `r round(Summary_Table_res.M.3["(Intercept)","org"])` (`r round(Summary_Table_res.M.3["(Intercept)","2.5 %"])` - `r round(Summary_Table_res.M.3["(Intercept)","97.5 %"])` 95 % CI) generations. Every parameter change results in lower estimates compared to the standard model, with the biggest difference between a constant and a varying recombination (`r round(Summary_Table_res.M.3["Recomb.ratevariable","2.5 %"])` - `r round(Summary_Table_res.M.3["Recomb.ratevariable","97.5 %"])` generations) and the smallest differences between a pulse and continuous gene flow model (`r round(Summary_Table_res.M.3["GFContinous","2.5 %"])` - `r round(Summary_Table_res.M.3["GFContinous","97.5 %"])` generations). Most accurate estimates are achieved using the LES ascertainment scheme in combination with a minimal distance of 0.05 cM. The bias introduced by the demography seems to depend on the used ascertainment scheme, since only under the HES a difference between the simple and complex demography is evident (Supplement Figure 1). Overall the bias introduced by the ascertainment, minimal distance cutoff, demography and gene flow model are 10 % or less of the true mean admixture time.
+Specifically, we investigated the influence of two analysis parameter by changing the ascertainment scheme to a higher-enrichment scheme requiring additional to the LES non-Africans to be polymorphic at a SNP, and applying a larger minimal distance of 0.05 cM between SNPs used for the fitting of the exponential distribution. Additionally, we changed the demographic model from a simple to a complex one based on inferred effective population sizes. Additionally we included deep structure in the ancestral African-non-African population and a gene flow event between Africans and non-Africans after the Neandertal admixture event (Figure \ref{fig:Intro_fig} B).  We further applied the African-American-Map to simulate varying recombination rates across the 150 Mb long chromosomes, instead of a constant rate. We simulated every combination of these parameter sets resulting in 32 different sets with 100 replications each (Supp. Fig. \ref{fig:figS1}). A Gaussian linear model was applied to estimate effect sizes of the four predictors being ascertainment scheme, minimal distance, demography and recombination on the bias of admixture estimates (Supplement Table \ref{tab:tableS1}). Figure \ref{fig:fig3} shows the comparison of the bias on admixture time estimates between the previously used model (ascertainment = LES, $d_{0} = 0.02 cM$, demography = simple and recombination = constant) further refereed to as the standard model and a model with one of the four parameter changed, respectively and the corresponding model prediction. The previously observed overestimation of the standard model was estimated to be `r round(B_model_result$mean[1],2)` (`r round(B_model_result[1,3],2)` - `r round(B_model_result[1,4],2)` 89 % CI) standard deviation from the true admixture time. Every parameter change results in lower estimates compared to the standard model, with the biggest difference between a constant and a varying recombination (`r round(B_model_result[3,3],2)` - `r round(B_model_result[3,4],2)` 89 % CI) and the smallest differences between a pulse and continuous gene flow model (`r round(B_model_result[2,3],2)` - `r round(B_model_result[2,4],2)` 89 % CI). Most accurate estimates are achieved using the LES ascertainment scheme in combination with a minimal distance of 0.05 cM. The bias introduced by the demography seems to depend on the used ascertainment scheme, since only under the HES a difference between the simple and complex demography is evident (Supplement Figure 1). Overall the bias introduced by the ascertainment, minimal distance cutoff, demography and gene flow model are 10 % or less of the true mean admixture time.
 
 
-```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig3} Comparison of the bias on the admixture time estimates between each parameter and the standard model of 100 replications each. Dotted line represents the model prediction with the 2.5 % and 97.5 % compatibility intervals solid lines. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig3} Comparison of the standardized bias on the admixture time estimates between each parameter and the standard model of 100 replications each. Dotted line represents the model prediction with the 5.5 % and 94.5 % compatibility intervals solid lines. Dotted horizontal line indicates unbiased admixture estimates."}
+
 #### Ploting the model ####
 
-### functions ###
-Get_colour <- function(xx,col1,col2){
-  is.even <- function(x) x %% 2 == 0
-  for (i in 1:length(as.numeric(xx$Var2))) {
-    if (is.even(i) == T) {
-      xx$col[as.numeric(xx$Var2)==i] <- col2
-    } else{
-      xx$col[as.numeric(xx$Var2)==i] <- col1
-    }
-    
-  }
-  return(xx)
-}
 
-Plot_Fig_2_X <- function(Null_Case,Predictore_case,m.intercept,m.slope,x.lable,x.title,xlab=NULL,ylab=NULL,y.ticks=F){
+Plot_Fig_2_X <- function(Null_Case,Predictore_case,B_Model,Int,Slope,x.lable,x.title,xlab=NULL,ylab=NULL,y.ticks=F){
   Data=rbind(Null_Case,Predictore_case)
   if(y.ticks==F){
-    Px <-  ggplot(Data,aes(x=Var2,y=as.numeric(as.character(Var1)),colour=factor(Var3)))+
+    Px <-  ggplot(Data,aes(x=as.character(Combination),y=as.numeric(as.character(Diff_s)),colour=Col))+
       geom_point(aes(size = Freq),show.legend = F)+
       geom_boxplot(show.legend = F)+
-      geom_abline(intercept = m.intercept[1],slope = m.slope[1],linetype=2)+
-      geom_abline(intercept = m.intercept[2],slope = m.slope[2])+
-      geom_abline(intercept = m.intercept[3],slope = m.slope[3])+
+      geom_abline(intercept = B_Model$mean[Int]-B_Model$mean[Slope],slope = B_Model$mean[Slope],linetype=2)+
+      geom_abline(intercept = B_Model$`5.5%`[Int]-B_Model$`5.5%`[Slope],slope = B_Model$`5.5%`[Slope])+
+      geom_abline(intercept = B_Model$`94.5%`[Int]-B_Model$`94.5%`[Slope],slope = B_Model$`94.5%`[Slope])+
       geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
       labs(x = xlab)+
       labs(y = ylab)+
@@ -894,26 +857,27 @@ Plot_Fig_2_X <- function(Null_Case,Predictore_case,m.intercept,m.slope,x.lable,x
       theme(axis.text.x = element_text(angle = 0,size = 12),
             axis.text.y=element_blank(),
             axis.ticks.y =element_blank())+
-      coord_cartesian(ylim = c(-1100,300), expand = 0)+
+      coord_cartesian(ylim = c(-2,1), expand = 0)+
       ggtitle(x.title)+
       theme(plot.title = element_text(hjust = 0.5,size = 12))+
       scale_color_manual("Gene Flow Model",
                          values = c(cbPalette_viridis[1],cbPalette_viridis[6]),
                          labels = c("Pulse","Continuous"))
   }
+  
   if(y.ticks==T){
-    Px <-  ggplot(Data,aes(x=Var2,y=as.numeric(as.character(Var1)),colour=factor(Var3)))+
+    Px <-  ggplot(Data,aes(x=as.character(Combination),y=as.numeric(as.character(Diff_s)),colour=Col))+
       geom_point(aes(size = Freq),show.legend = F)+
       geom_boxplot(show.legend = F)+
-      geom_abline(intercept = m.intercept[1],slope = m.slope[1],linetype=2)+
-      geom_abline(intercept = m.intercept[2],slope = m.slope[2])+
-      geom_abline(intercept = m.intercept[3],slope = m.slope[3])+
+      geom_abline(intercept = B_Model$mean[Int]-B_Model$mean[Slope],slope = B_Model$mean[Slope],linetype=2)+
+      geom_abline(intercept = B_Model$`5.5%`[Int]-B_Model$`5.5%`[Slope],slope = B_Model$`5.5%`[Slope])+
+      geom_abline(intercept = B_Model$`94.5%`[Int]-B_Model$`94.5%`[Slope],slope = B_Model$`94.5%`[Slope])+
       geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
       labs(x = xlab)+
       labs(y = ylab)+
       scale_x_discrete(labels= x.lable)+
       theme(axis.text.x = element_text(angle = 0,size = 12))+
-      coord_cartesian(ylim = c(-1100,300), expand = 0)+
+      coord_cartesian(ylim = c(-2,1), expand = 0)+
       ggtitle(x.title)+
       theme(plot.title = element_text(hjust = 0.5,size = 12))+
       scale_color_manual("Gene Flow Model",
@@ -927,35 +891,358 @@ Plot_Fig_2_X <- function(Null_Case,Predictore_case,m.intercept,m.slope,x.lable,x
 
 ### Execute plot functions ###
 
-Model_3=as.data.frame(table(round(xdata.M.3_no_error$Diff,digits = 0), paste(xdata.M.3_no_error$GF,xdata.M.3_no_error$Ascertainment,xdata.M.3_no_error$min_dist,xdata.M.3_no_error$Demography,
-                                                                        xdata.M.3_no_error$Recomb.rate, sep="_"),xdata.M.3_no_error$GF))
-Model_3=subset(Model_3,Freq>0)
-xx=Get_colour(xx=Model_3,col1 ="#56B4E9" ,col2 = "#D55E00")
+Plot_model <- data.frame(table(Diff_s=round(xdata.M.3_no_error$Diff_s,digits = 2),GF=xdata.M.3_no_error$GF,Asc=xdata.M.3_no_error$Ascertainment,d0=xdata.M.3_no_error$min_dist,True_GF=xdata.M.3_no_error$mean.t.GF,Demo=xdata.M.3_no_error$Demography,Recomb=xdata.M.3_no_error$Recomb.rate,Combination=xdata.M.3_no_error$TID))
+Plot_model <- subset(Plot_model,Freq>0)
 
-### Plot the simple case against the model prediction where one of the other parametres is different respectively ###
-Simplest_case=xx[xx$Var2=="0_Pulse_0_LES_0.02_0_Simple_0_constant",]
 
-PX1 <- Plot_Fig_2_X(Simplest_case,xx[xx$Var2=="0_Pulse_HES_0.02_0_Simple_0_constant",],
-             m.coefs["(Intercept)",]-m.coefs["AscertainmentHES",],m.coefs["AscertainmentHES",],x.lable = c("LES","HES"),"Ascertainment\nScheme",y.ticks = T)
 
-PX2 <- Plot_Fig_2_X(Simplest_case,xx[xx$Var2=="0_Pulse_0_LES_0.05_0_Simple_0_constant",],
-             m.coefs["(Intercept)",]-m.coefs["min_dist0.05",],m.coefs["min_dist0.05",],x.lable = c("d0 = 0.02","d0 = 0.05"),"Minimal Distance\n")
+Plot_model$Col <- ifelse(Plot_model$GF=='0_Pulse','#56B4E9','#D55E00')
+Simplest_case= Plot_model[Plot_model$Combination=='Simple_D_Sim_LES_0_P',]
+Simplest_case$Combination <- paste(0,Simplest_case$Combination,sep = '_')
 
-PX3 <- Plot_Fig_2_X(Simplest_case,xx[xx$Var2=="0_Pulse_0_LES_0.02_Inferred_0_constant",],
-             m.coefs["(Intercept)",]-m.coefs["DemographyInferred",],m.coefs["DemographyInferred",],x.lable = c("Simple","Complex"),"Demography\n")
 
-PX4 <- Plot_Fig_2_X(Simplest_case,xx[xx$Var2=="0_Pulse_0_LES_0.02_0_Simple_variable",],
-             m.coefs["(Intercept)",]-m.coefs["Recomb.ratevariable",],m.coefs["Recomb.ratevariable",],x.lable = c("Constant","Variable"),"Recombination Map\n")
+PX1 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_HES_0_P',],B_model_result,Int = 1,Slope = 6
+             ,x.lable = c("LES","HES"),"Ascertainment\nScheme",y.ticks = T)
 
-PX5 <- Plot_Fig_2_X(Simplest_case,xx[xx$Var2=="Continous_0_LES_0.02_0_Simple_0_constant",],
-             m.coefs["(Intercept)",]-m.coefs["GFContinous",],m.coefs["GFContinous",],x.lable = c("Pulse","Continous"),"Gene Flow\n")
+PX2 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_LES_1_P',],B_model_result,Int = 1,Slope = 5,x.lable = c("d0 = 0.02","d0 = 0.05"),"Minimal Distance\n")
+
+PX3 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Inferred_D_Sim_LES_0_P',],B_model_result,Int = 1,Slope = 4,
+             x.lable = c("Simple","Complex"),"Demography\n")
+
+PX4 <- Plot_Fig_2_X(Null_Case = Simplest_case,Predictore_case = Plot_model[Plot_model$Combination=='Recom_D_Sim_LES_0_P',],B_model_result,Int = 1,Slope = 3,x.lable = c("Constant","Variable"),"Recombination Map\n")
+
+PX5 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_LES_0_C',],B_model_result,Int = 1,Slope = 2,x.lable = c("Pulse","Continous"),"Gene Flow\n")
 
 Figure_2_X <- ggarrange(PX1,PX2,PX3,PX4,PX5,
           ncol = 5, nrow = 1)
-annotate_figure(Figure_2_X,bottom = text_grob("Predictor combination"),left = text_grob("Bias on admixture time estimate",rot=90))
+annotate_figure(Figure_2_X,bottom = text_grob("Predictor combination"),left = text_grob("Standardized difference between true and estimated time",rot=90))
 
 ```
 
+##Estimating the Lomax-parameters under different conditions
+
+```{r message=FALSE, echo=FALSE,warning=FALSE}
+#### New Figure for Paper using recent sampling (50 gen): constant RR, RM no correction, RM diff RM correction, RM correction same RM ####
+
+
+cbPalette_viridis <- viridis(6,option = "D")
+
+Filter_Result_Table <- function(Result.Table){
+  Result.Table=read.table(Result.Table,header=F,sep = " ")
+  Result.names <- c('A.exp', 's.exp', 'c.exp', 'RSS_Expo','AIC_Expo', 'A.lomax', 's.lomax', 'w.lomax','c.lomax', 'RSS_Lomax','AIC_Lomax', 'F_Test','Scenario.name','GF.Start','GF.End','AS','minDist','GF.Model')
+  colnames(Result.Table) <- Result.names
+  #Result.Table <- Result.Table[(1/Result.Table$s.exp)>0,]
+  #Result.Table <- Result.Table[(1/Result.Table$s.exp)<5000,]
+  #Result.Table <- Result.Table[Result.Table$RSS_Lomax<1e-2,]
+  return(Result.Table)
+}
+
+#### True values
+True_params <- function(Result.Table){
+  True_params_Calc <- function(True_GF_length,True_mean_GF){
+    EX= True_mean_GF
+    GF_Len <-True_GF_length
+    VarX= ((GF_Len)/4)**2
+    b= EX/VarX
+    a=EX*b
+    #a=a+1
+    True_W=1/a
+    True_S=b/(1/True_W)
+    xx=c(True_W,True_S)
+    return(xx)
+  }
+  True.params <- c()
+  for (i in 1:length(Result.Table$F_Test)) {
+    xx=True_params_Calc(Result.Table$True_GF_length[i],Result.Table$True_mean_GF[i])
+    True.params <- rbind(True.params,xx)
+  }
+  True.params <- as.data.frame(True.params)
+  return(True.params)
+}
+
+Result.Table.fn <- function(Result.Table.path,Sampling.time.from.GF.End,name){
+  Result.Table <- Filter_Result_Table(Result.Table.path)
+  Result.Table$Name <- name
+  Result.Table$Sample_Time <- Sampling.time.from.GF.End
+  Result.Table$True_GF_length <- Result.Table$GF.End-Result.Table$GF.Start
+  Result.Table$True_mean_GF <- ((Result.Table$GF.End+Result.Table$GF.Start)/2)-(Result.Table$GF.Start-Result.Table$Sample_Time)
+  Result.Table$mean_GF_exp <- 1/Result.Table$s.exp
+  Result.Table$mean_GF_lomax_s <- 1/Result.Table$s.lomax
+  Result.Table.comparison <- True_params(Result.Table)
+  Result.Table$True_W <- Result.Table.comparison$V1
+  Result.Table$True_S <- Result.Table.comparison$V2
+  Result.Table.comparison$length_GF <- (sqrt(Result.Table$mean_GF_lomax_s/(((1/Result.Table$w.lomax)+1)*Result.Table$s.lomax)))*4
+  Result.Table$length_GF <- Result.Table.comparison$length_GF
+  
+  return(Result.Table)
+}
+
+Plot_sampling_50_gen_t_GF <- function(ggdata_t.GF,cbPalette_viridis){
+  ggplot(ggdata_t.GF,aes(x=variable,y=as.numeric(as.character(value)),colour=factor(Name)))+
+    geom_boxplot(show.legend = T)+
+    facet_grid(~as.factor(True_GF_length),switch = "x")+
+    geom_hline( aes(yintercept = True_mean_GF ))+
+    ggtitle("All sampled 50 gen from GF end") +
+    labs(x = "Gene Flow Length")+
+    labs(y = "Estimated Admixture Time")+
+    theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    coord_cartesian(ylim = c(0,1000), expand = 0)+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("Constant Recombination","HapMap AAMap corrected","HapMap HapMap corrected","HapMap not corrected"))
+  
+}
+
+Plot_sampling_50_gen_GF_Length <- function(ggdata_l.GF,cbPalette_viridis){
+  ggplot(ggdata_l.GF,aes(x=variable,y=as.numeric(as.character(value)),colour=factor(Name)))+
+    geom_boxplot(show.legend = F)+
+    facet_grid(~as.factor(True_GF_length),switch = "x")+
+    geom_hline( aes(yintercept = True_GF_length ))+
+    ggtitle(paste("All sampled 50 gen from GF end",sep = " ")) +
+    labs(x = "Gene Flow Length")+
+    labs(y = "Estimated Gene Flow Length")+
+    theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    coord_cartesian(ylim = c(0,4000), expand = 0)+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("Constant Recombination","HapMap AAMap corrected","HapMap HapMap corrected","HapMap not corrected"))
+}
+
+Plot_sampling_varying_gen_t_GF <- function(ggdata_t.GF_varying,cbPalette_viridis){
+  ggplot(ggdata_t.GF_varying,aes(x=variable,y=as.numeric(as.character(value)),colour=factor(Name)))+
+    geom_boxplot()+
+    facet_grid(~as.factor(Sample_Time),switch = "x")+
+    geom_hline( aes(yintercept = True_mean_GF ))+
+    ggtitle("All Gene Flow length = 800 gen") +
+    labs(x = "Generations Sample After Gene Flow End")+
+    labs(y = "Estimated Admixture Time")+
+    theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    coord_cartesian(ylim = c(0,2000), expand = 0)+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("Constant Recombination","HapMap AAMap corrected","HapMap HapMap corrected","HapMap not corrected"))
+  
+}
+
+Plot_sampling_varying_gen_GF_Length <- function(ggdata_l.GF_varying,cbPalette_viridis){
+  ggplot(ggdata_l.GF_varying,aes(x=variable,y=as.numeric(as.character(value)),colour=factor(Name)))+
+    #geom_point(aes(size = Freq),show.legend = F)+
+    geom_boxplot(show.legend = F)+
+    facet_grid(~as.factor(Sample_Time),switch = "x")+
+    geom_hline( aes(yintercept = True_GF_length ))+
+    ggtitle("All Gene Flow length = 800 gen") +
+    labs(x = "Generations Sample After Gene Flow End")+
+    labs(y = "Estimated Gene Flow  Length")+
+    theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    coord_cartesian(ylim = c(0,4000), expand = 0)+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("Constant Recombination","HapMap AAMap corrected","HapMap HapMap corrected","HapMap not corrected"))
+}
+
+Result.Table.path_Recent_50 <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_no_correction <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_AAMap_correction <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+
+Result.Table.path_Recent_50_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_no_correction_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_AAMap_correction_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+
+Result.Table.path_Recent_Varying <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_no_correction <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+
+Result.Table.path_Recent_Varying_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_no_correction_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+
+
+Plot.data_50<-rbind(
+  Recent_50_constant<- Result.Table.fn(Result.Table.path_Recent_50,50,'Recent_50_constant'),
+  Recent_50_HapMap_no_correction <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_no_correction,50,'Recent_50_HapMap_no_correction'),
+  Recent_50_HapMap_AAMap_correction <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_AAMap_correction,50,'Recent_50_HapMap_AAMap_correction'),
+  Recent_50_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction,50,'Recent_50_HapMap_HapMap_correction')
+)
+
+ggdata_t.GF_50 <- melt(Plot.data_50,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_l.GF_50 <- melt(Plot.data_50,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+
+Plot.data_50_fixed_Lambda<-rbind(
+  Recent_50_constant_fixed_Lambda<- Result.Table.fn(Result.Table.path_Recent_50_fixed_Lambda,50,'Recent_50_constant'),
+  Recent_50_HapMap_no_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_no_correction_fixed_Lambda,50,'Recent_50_HapMap_no_correction'),
+  Recent_50_HapMap_AAMap_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_AAMap_correction_fixed_Lambda,50,'Recent_50_HapMap_AAMap_correction'),
+  Recent_50_HapMap_HapMap_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda,50,'Recent_50_HapMap_HapMap_correction')
+)
+
+ggdata_t.GF_50_fixed_Lambda <- melt(Plot.data_50_fixed_Lambda,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_l.GF_50_fixed_Lambda <- melt(Plot.data_50_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+
+Plot.data_varying<-rbind(
+  Recent_varying_constant<- Result.Table.fn(Result.Table.path_Recent_Varying,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_constant'),
+  Recent_varying_HapMap_no_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_no_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_no_correction'),
+  Recent_varying_HapMap_AAMap_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_AAMap_correction'),
+  Recent_varying_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_HapMap_correction')
+)
+
+ggdata_t.GF_varying <- melt(Plot.data_varying,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_l.GF_varying <- melt(Plot.data_varying,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+
+Plot.data_varying_fixed_Lambda<-rbind(
+  Recent_varying_constant_fixed_Lambda<- Result.Table.fn(Result.Table.path_Recent_Varying_fixed_Lambda,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_constant'),
+  Recent_varying_HapMap_no_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_no_correction_fixed_Lambda,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_no_correction'),
+  Recent_varying_HapMap_AAMap_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction_fixed_Lambda,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_AAMap_correction'),
+  Recent_varying_HapMap_HapMap_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_HapMap_correction')
+)
+
+ggdata_t.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_l.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+
+
+New.P1 <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50,cbPalette_viridis)
+New.P2 <- Plot_sampling_50_gen_GF_Length(ggdata_l.GF_50,cbPalette_viridis)
+New.P3 <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying,cbPalette_viridis)
+New.P4 <- Plot_sampling_varying_gen_GF_Length(ggdata_l.GF_varying,cbPalette_viridis)
+
+New.P1_fixed_Lambda <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_fixed_Lambda,cbPalette_viridis)
+New.P2_fixed_Lambda <- Plot_sampling_50_gen_GF_Length(ggdata_l.GF_50_fixed_Lambda,cbPalette_viridis)
+New.P3_fixed_Lambda <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_fixed_Lambda,cbPalette_viridis)
+New.P4_fixed_Lambda <- Plot_sampling_varying_gen_GF_Length(ggdata_l.GF_varying_fixed_Lambda,cbPalette_viridis)
+```
+
+
+
+We investigated the effect of continuous admixture in comparison to other parameters on the admixture time estimates of a model only considering a single generation pulse. The continuous admixture revealed to have the smallest effect, whereas the recombination rate shows a sever underestimation of the admixture time. Building on the previous result we want to find out the conditions to retrieve the Lomax parameters i.e. the duration of gene flow. We simulated an admixture scenario under a simple demography with varying duration of continuous admixture and sampled the population at different time points since the end of the gen flow. Doing so allows us to examine how close one has to sample form the end of a continuous admixture to still accurately estimate its duration. Moreover, since the recombination map is highly influential we test the duration estimates under a constant and variable recombination using the HapMap genetic map, whereby we correct the genetic distance by: assuming a constant rate, using the AAMap or the HapMap itself. We used the LES ascertainment scheme in combination with a minimal distance of 0.05 cM. To fit the Lomax we can take advantage of the fact that the bias of the mean time estimates using the simplified one generation pulse model is pretty accurate. We can thus estimate lambda first by fitting an exponential and in a second step estimating k using a Lomax distribution with a starting parameter for lambda received form the exponential fit. Figure \ref{fig:fig4} A and C show the mean time estimates received from the Exponential fit. A shows estimates for different durations of continuous admixture with all populations sampled 50 generations after the end of gene flow. C shows estimates for a 800 generation long continuous admixture sampled after different times after the end of the gene flow. In both scenarios, for simulations under a constant recombination the mean time can be estimated confidently with only slight underestimation for long continuous gene flow of 1500 generations. Estimates for simulation under a recombination map only assuming a constant rate when calculating the LD results in severely underestimation of the mean time estimates. Using the AAMap yields results closer to the true value and less downwards biased, however only using the exact same genetic map gives unbiased results. Figure \ref{fig:fig4} B and D shows the corresponding duration estimates by the Lomax fit. Accurate estimates can be obtained throughout the different gene flow length under a constant recombination rate, when sampled recent from the end of the continuous admixture. The further away one samples form the end of the admixture event the less accurate the estimates. All simulations using a recombination map show a much higher variance in the estimates, especially for a gene flow length longer then 800 generations or sampled later then 50 generations away from the end of gene flow the estimates are not reliably. If no precise genetic map is used to inferred the genetic distance between SNPs, no accurate duration estimates can be obtained. The mean duration over all replicates for the simulation corrected by the exact same map seems relatively unbiased for a recent gene flow with a duration shorter 1000 generations. Under a realistic scenario with a varying recombination rate, the duration can only be accurately estimated with a highly precise map for recent continuous admixture events not longer then 400 generations. With regard to scenarios of Neandertal admixture, accurately estimating the duration of possible continuous admixture from present day human genomes even under a constant rate is probably is under powered. The time since the end of the gene flow when using present day human genome is to far away such that the signal of continuous gene flow, even under simple simulation scenarios using a constant recombination rate, is not strong enough. 
+
+
+
+```{r message=FALSE, echo=FALSE,warning=FALSE}
+Get_model_selection <- function(Data,GF_length,Sim_Scenario){
+  if (GF_length==1){
+    xx <- Data[Data$True_GF_length==GF_length,]
+  } else {
+    xx <- Data[Data$True_GF_length>=GF_length,]
+  }
+
+  xx <- xx[xx$Name==Sim_Scenario,]
+  
+  
+  Expo_prefered <- xx[xx$AIC_Expo<xx$AIC_Lomax,]
+  
+  Lomax_prefered <- length(xx$A.exp)-length(Expo_prefered$A.exp)
+  
+  Model_select <- cbind(length(Expo_prefered$A.exp),Lomax_prefered)
+  colnames(Model_select) <- c("Expo_prefered","Lomax_prefered")
+
+  return(Model_select)
+}
+
+Pulse_model_selction <- Get_model_selection(Plot.data_50,1,'Recent_50_constant')
+Continuous_model_selection <- Get_model_selection(Plot.data_50,2,'Recent_50_constant')
+```
+
+
+To distinguish a pulse like admixture event resulting in an exponentially distributed ALD decay from a Lomax distributed ALD decay associated with a continuous admixture, we compared the two model via goodness-of-fit to the ALD data. Therefore we used Akaike's information criterion comparing the exponential model nested in the Lomax. We expect that, since the AIC is penalizing extra parameter, that a Lomax fit to a pulse like simulation scenario should be rejected, wheres for all the other scenarios the Lomax would be preferred. However, for the simplified simulation scenarios under a constant recombination rate were we obtained the best results the Lomax displays a lower AIC in `r Pulse_model_selction[,2]` fits out of 100 replications. Model comparison for scenarios of true continuous admixture always rested in the Lomax having a lower AIC. The AIC reject the null hypothesis to often and thus seem to be a to liberal test.
+<!-- does on call a a statistical test rejecting the H0 to often liberal? -->
+
+
+
+
+
+<!-- To get a duration under realistic scenario on needs a highly precise map and genflow has to be shorter then 400 generation and recently in the past. -->
+
+<!-- Maybe call it inferring the genetic distance rather than correcting -->
+
+``` {r fig4, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig4} ll"}
+
+
+New.Fig <- ggarrange(New.P1,New.P2,New.P3,New.P4,
+                   labels = c("A","B","C","D"),
+                   ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
+
+New.Fig_fixed_Lambda <- ggarrange(New.P1_fixed_Lambda,New.P2_fixed_Lambda,New.P3_fixed_Lambda,New.P4_fixed_Lambda,
+                     labels = c("A","B","C","D"),
+                     ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
+New.Fig
+
+#New.Fig_fixed_Lambda
+```
+
+
+#Discussion
+
+*bp 19/02: this should go in the discussion*
+
+Neandertals and modern human populations overlapped in some regions for a long period of time [@higham_timing_2014], potentially resulting in continuous admixture over hundreds of generations. We are especially interested in the extrema of a continuous admixture distribution, since the start and end point can inform us about the first contact between humans and Neandertals and the time of extinction of Neandertals.
+
+Conclusions:
+\begin{itemize}
+	\item The mean time of gene flow can be reliably estimated with a pulse model even if the gene flow is actually continuous.
+  \item Technical model variables (ascertainment scheme, minimal distance, demography and recombination map) outweigh the effect of continuous gene flow.
+  \item The Lomax model is under powered to inferring continuous admixture for parameters relevant for Neandertal admixture.
+  \item Estimating the the mean time and especially the duration of gene flow is only possible with a highly precise genetic map.
+  \item The signal of continuous gene flow is hard to detect if the gene flow is not long enough or to far in the past.
+  \item Reliably distinguishing the models is difficult.
+\end{itemize}
+
+#Refereces
+
+<div id="refs"></div>
+
+
+\pagebreak
+\setcounter{figure}{0}
+\renewcommand{\figurename}{Fig. S}
+\renewcommand{\tablename}{Tab. S}
+
+
+#Supplement
+
+```{r figS1, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS1}Comparison of the bias on the admixture time estimates in generations between all combinations the parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous.  Dotted horizontal line indicates unbiased admixture estimates."}
+
+
+### Supplement Figures ? Tables
+
+Plot_Fig_2_A <- function(Data,x.axes.lables){
+  Px <-  ggplot(Data,aes(x=as.character(Combination),y=as.numeric(as.character(Diff_s)),colour=Col))+
+    geom_point(aes(size = Freq),show.legend = F)+
+    geom_boxplot(show.legend = F)+
+    geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
+    coord_cartesian(ylim = c(-3,2),expand = 0)+
+    labs(x = "Predictor combination")+
+    labs(y = "Stadardized bias on admixture estimate")+
+    theme(axis.text.x = element_text(angle = 0))+
+    scale_x_discrete(labels= x.axes.lables)+
+    scale_color_manual("Gene Flow Model",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[6]),
+                       labels = c("Pulse","Continuous"))
+  return(Px)
+  
+}
+
+
+x.axes.lables=c("HES\n0.02\nInf\nCon","HES\n0.02\nInf\nCon","HES\n0.05\nInf\nCon","HES\n0.05\nInf\nCon"
+                ,"LES\n0.02\nInf\nCon","LES\n0.02\nInf\nCon","LES\n0.05\nInf\nCon","LES\n0.05\nInf\nCon"
+                ,"HES\n0.02\nSim\nVar","HES\n0.02\nSim\nVar","HES\n0.05\nSim\nVar","HES\n0.05\nSim\nVar"
+                ,"LES\n0.02\nSim\nVar","LES\n0.02\nSim\nVar","LES\n0.05\nSim\nVar","LES\n0.05\nSim\nVar"
+                ,"HES\n0.02\nCom\nVar","HES\n0.02\nCom\nVar","HES\n0.05\nCom\nVar","HES\n0.05\nCom\nVar"
+                ,"LES\n0.02\nCom\nVar","LES\n0.02\nCom\nVar","LES\n0.05\nCom\nVar","LES\n0.05\nCom\nVar"
+                ,"HES\n0.02\nSim\nCon","HES\n0.02\nSim\nCon","HES\n0.05\nSim\nCon","HES\n0.05\nSim\nCon"
+                ,"LES\n0.02\nSim\nCon","LES\n0.02\nSim\nCon","LES\n0.05\nSim\nCon","LES\n0.05\nSim\nCon")
+
+Plot_Fig_2_A(Plot_model,x.axes.lables)
+```
 ##Estimating the Lomax-parameters under different conditions
 
 ```{r message=FALSE, echo=FALSE,warning=FALSE}
