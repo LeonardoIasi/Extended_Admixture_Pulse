@@ -122,7 +122,7 @@ MASTER:
       _Complex_Demographies_Scenario_1_:
              simulation: '_MS_fixed_mean_0_Complex'
              min_dist_Fit: 0.02
-             GF_Model: [GF_Model_IV,0]
+             GF_Model: [GF_Model_IV,0]_MS_fixed_mean_0_Inf
              ascertainment: 0
              Complex_Demography: [True,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
       _Complex_Demographies_Scenario_2_:
