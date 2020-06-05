@@ -407,11 +407,280 @@ distinguished from more continuous admixture events, and so current
 methods are unsuitable to definitively answer when the contact between
 Neandertals and modern humans ended.
 
+```{r message=FALSE, echo=F,warning=FALSE}
+suppressPackageStartupMessages({
+  library(VGAM)
+  library(tidyverse)
+  library(ggplot2)
+  library(reshape)
+  library(viridis)
+  library(ggpubr)
+  library(dplyr)
+  library(rethinking)
+  library(kableExtra)
+  library(DEoptim)
+})
 
-```{r Intro_fig,message=FALSE, echo=FALSE,warning=FALSE,fig.align="center",out.width="95%",fig.pos="H",fig.cap="\\label{fig:Into_fig} A) Chromosomal sections with introgressed segments (grey). Introgressed variants (green circles) are in high LD compared to the background (stars). The ALD approach estimates linkage between the introgressed variants, wheres the haplotype  approach tries to estimate the segment directly. B) Two possible demographies of humans splitting into African population (AFR) and non-African (non-AFR) with admixture from Neandertals (NEA) into non-Africans. The simple demographic model with constant population sizes and the complex with rapid population size changes (1), substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the out-of-Africa event (2) and additional gene flow between Africans and non-Africans after the Neandertal admixture (3)."}
+Results_Table <- function(Table_Path) {
+  header_for_Result=c("A","m","c","RSS_Expo","error","Scenario","GF_Start","GF_Stop","Ascertained","min_dist","Gene_Flow_Model")
+  Raw_results <-  read.table(Table_Path, header = F,col.names = header_for_Result)
+  Raw_results$mean.t.GF <- rowMeans(Raw_results[c('GF_Start', 'GF_Stop')], na.rm=TRUE)
+  Raw_results$length.t.GF <- Raw_results$GF_Stop - Raw_results$GF_Start
+  Raw_results$GF[Raw_results$length.t.GF== 1]="0_Pulse"
+  Raw_results$GF[Raw_results$length.t.GF > 1]="Continous"
+  Raw_results$Ascertainment[Raw_results$Ascertained== 0]="0_LES"
+  Raw_results$Ascertainment[Raw_results$Ascertained == 1]="HES"
+  Raw_results$min_dist <- as.factor(Raw_results$min_dist)
+  Raw_results$GF[Raw_results$Gene_Flow_Model== "GF_Model_I"]="0_Pulse"
+  return(Raw_results)
+}
+
+cbPalette <- c( "#56B4E9", "#E69F00", "#009E73", "#F0E442", "#0072B2", "#D55E00")
+cbPalette_viridis <- viridis(6,option = "D")
+
+Get_Data_Table <- function(Data){
+  xx=as.data.frame(table(round(Data$m,digits = 0), paste(Data$GF,Data$mean.t.GF, sep="_"),Data$mean.t.GF,Data$GF,Data$mean.t.GF,Data$length.t.GF))
+  xx=subset(xx,Freq>0)
+  xx=xx[order(xx$Var3),]
+  return(xx)
+}
+
+Get_points <- function(input,lval,hval,log){
+  # Read input file
+  data <- read.table(input, header = F)
+  
+  
+  # set dist and wcorr
+  col=2
+  dist <- data[,1]
+  wcorr <- data[,col]
+  ndist <- length(dist)  ## number of rows in dataset
+  lval=lval
+  hval=hval
+  
+  # check x lower value and y lower value
+  data.sub <- data
+  if ((lval > dist[1]) || (hval < dist[ndist])) {
+    data.sub <- subset(data, ((dist <= hval) & (dist >= lval)))
+  } 
+  dist <- data.sub[,1]		# updated x values
+  wcorr <- data.sub[,col]		# updated y values
+  if(log==T){
+    xx <- cbind(dist,log(wcorr))
+    xx <- xx[complete.cases(xx),]
+    wcorr <- xx[,2]
+    wcorr <-c(wcorr,rep(NA,length(data.sub[,1])-length(wcorr)))
+    dist <- xx[,1]
+    dist <-c(dist,rep(NA,length(data.sub[,1])-length(dist)))
+  }
+  result_table <- data.frame(dist,wcorr)
+  return(result_table)
+}
+
+Figure_1_C_1 <- function(input,log,Colour_P){
+  
+  Pulse <- Get_points(input[1],lval=0.05,hval=0.6,log)
+  Continous <- Get_points(input[2],lval=0.05,hval=0.6,log)
+  P_C_Data <- data.frame(Pulse,Continous)
+  P_C_Data <- P_C_Data[P_C_Data$wcorr > -13,]
+  
+  Px <-  ggplot(data=P_C_Data,aes(y=wcorr,x=dist))+
+    geom_point(aes(x=dist,y=wcorr),color=Colour_P[1],pch=4)+
+    geom_point(aes(x=dist.1,y=wcorr.1),color=Colour_P[6],pch=18)+
+    labs(y = "log weighted LD")+
+    labs(x = "Genetic Distance in cM")
+  #coord_cartesian(ylim = c(-13,-8),xlim=c(0,0.4),expand = 0)
+  
+  return(Px)
+  
+}
+
+Figure_All_Real_Data <- function(input,log,GF_length,Colour_P){
+  
+  Real_Data <- c()
+  for(i in input){
+    xx <-Get_points(i,lval=0.05,hval=0.5,log)
+    Real_Data <- c(Real_Data,xx)
+  }
+  Real_Data <- as.data.frame(Real_Data)
+  Real_Data_names <- c()
+  for(i in GF_length){
+    Real_Data_names <- c(Real_Data_names,c('Genetic_Distance',i))
+  }
+  colnames(Real_Data) <- Real_Data_names
+  Real_Data.melted <- melt(Real_Data, id = c("Genetic_Distance"))
+  
+  Px <-  ggplot(data =Real_Data.melted, aes(x = Genetic_Distance, y = value,color=variable)) +
+    geom_point(pch=18)+
+    coord_cartesian(ylim = c(-8,-14),expand = 0,xlim = c(0,0.5))+
+    #geom_vline(xintercept=Split_time,linetype=3,color='black')+
+    scale_color_manual(values = Colour_P)+
+    labs(x = "Genetic distance")+
+    labs(y = "log weighted LD")+
+    labs(color="Gene Flow Length")
+  return(Px)
+  
+}
+
+Figure_1_C_2 <- function(Timespan_GF_Models,time_l,Split_time,Mean_Time,Colour_P,max_y,max_x){
+  
+  n_GF_Models=length(Timespan_GF_Models)
+  time=seq(1,time_l,1)
+  
+  Gamma_fun <- function(GF_Length,time_l,Split_time,Mean_Time){
+    time=seq(1,time_l,1)
+    EX= Mean_Time
+    VarX= (GF_Length/4)**2
+    b= EX/VarX
+    a=EX*b
+    
+    GF_gamma <- dgamma(x=time,shape = a+1,scale = 1/b)
+    GF_gamma[GF_gamma < 1e-6] = 0
+    GF_gamma <- GF_gamma[1:Split_time]
+    m2 <- c()
+    for (i in GF_gamma){
+      x <- i*(0.03/sum(GF_gamma))
+      m2 <- c(m2,x)
+    }
+    m2 <- c(m2,rep(0,time_l-Split_time))
+    cutoff_in_Percent=(sum(m2[2550:5001])/0.03)*100
+    
+    GF <- c(m2)
+    return(GF)
+  }
+  GF <- c(seq(1,time_l,1))
+  for(i in 1:n_GF_Models){
+    Timespan <- Timespan_GF_Models[i]
+    GF_x <- Gamma_fun(Timespan,time_l,Split_time,Mean_Time)
+    GF <- cbind(GF,GF_x)
+  }
+  GF <- as.data.frame(GF)
+  colnames(GF) <- c('Time',Timespan_GF_Models)
+  GF.melted <- melt(GF, id = "Time")
+  Px <-  ggplot(data =GF.melted, aes(x = Time, y = value,color=variable)) +
+    geom_line(show.legend = F)+
+    coord_cartesian(ylim = c(0,max(GF[max_y])),xlim = c(0,max_x),expand = 0)+
+    geom_vline(xintercept=Split_time,linetype=3,color='black')+
+    scale_color_manual(values = Colour_P)+
+    labs(x = "Time in Generations")+
+    labs(y = "Migration Rate")+
+    labs(color="Gene Flow Length")
+  return(Px)
+}
+
+Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time,Mean_Time,Intercept,Colour_P){
+  n_GF_Models=length(Timespan_GF_Models)
+  
+  Lomax_fun <- function(GF_Length,max_Genetic_distance,Split_time,Mean_Time,Intercept,log=T){
+    Genetic_length=seq(0.01,max_Genetic_distance,0.01)
+    EX= Mean_Time
+    VarX= (GF_Length/4)**2
+    b= EX/VarX
+    a=EX*b
+    Theta=b
+    k=a
+    Lomax_normal <- function(dist,k,theta,A) A*(1 + ((dist/100) /  theta))^-(k)
+    Lomax_log <- function(dist,k,theta,A) -k* log(1 + ((dist/100) /  theta)) + log(A)
+    if(log==T){
+      ALD <-  Lomax_log(dist=Genetic_length,k = k ,theta = Theta, A=Intercept)
+    }
+    else{
+      ALD <-  Lomax_normal(dist=Genetic_length,k = k ,theta = Theta, A=Intercept)
+    }
+    Lomax_Result <- cbind(Genetic_length,ALD,k,Theta)
+    return(Lomax_Result)
+  }
+  Lomax_Result <- c()
+  for(i in Timespan_GF_Models){
+    xx=Lomax_fun(i,max_Genetic_distance,Split_time,Mean_Time,Intercept,log=T)
+    Lomax_Result <- cbind(Lomax_Result,xx)
+  }
+  Lomax_Result <- as.data.frame(Lomax_Result)
+  colnames_Lomax_Result <- c()
+  for(time in Timespan_GF_Models){
+    colnames_Lomax_Result <- c(colnames_Lomax_Result,c('Genetic_Distance',time,'k','Theta'))
+  }
+  colnames(Lomax_Result) <- colnames_Lomax_Result
+  Lomax_Result.melted <- melt(Lomax_Result, id = c("Genetic_Distance",'k','Theta'))
+  Px <-  ggplot(data =Lomax_Result.melted, aes(x = Genetic_Distance, y = value,color=variable)) +
+    geom_line()+
+    #coord_cartesian(ylim = c(0,max(ALD$'2')),expand = 0)+
+    coord_cartesian(ylim = c(-8,-14),expand = 0,xlim = c(0,0.5))+
+    #geom_vline(xintercept=Split_time,linetype=3,color='black')+
+    scale_color_manual(values = Colour_P)+
+    labs(x = "Genetic distance")+
+    labs(y = "log weighted LD")+
+    labs(color="Gene Flow Length")
+  return(Px)
+}
+
+
+######################## GG PLotting ###########################
+
+## ggplot Figure 1 A
+Plot_Fig_1_A <- function(Data,Colour_P){
+  Px <-  ggplot(Data,aes(x=Var4,y=as.numeric(as.character(Var1)),colour=factor(Var4)))+
+    geom_point(aes(size = Freq),show.legend = F)+
+    geom_boxplot()+
+    facet_grid(~as.factor(Var3),switch = "x")+
+    geom_hline( aes(yintercept = as.numeric(as.character(Data$Var3)) ))+
+    labs(x = "True Admixture Time")+
+    labs(y = "Estimated Admixture Time")+
+    theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    coord_cartesian(ylim = c(0,2250), expand = 0)+
+    scale_color_manual("Gene Flow Model",
+                       values = c(Colour_P[1],Colour_P[4]),
+                       labels = c("Pulse","Continuous"))
+  return(Px)
+  
+}
+
+
+### Figure 1 ggplot ###
+Plot_Fig_1_B <- function(Data,Colour_P){
+  Px <-  ggplot(Data,aes(x=Var7,y=as.numeric(as.character(Var1)),colour=factor(Var6)))+
+    geom_point(aes(size = Freq),show.legend = F)+
+    geom_boxplot()+
+    facet_grid(~as.factor(Var6),switch = "x")+
+    geom_hline( aes(yintercept = 1500 ))+
+    theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    labs(x = "Pulse length")+
+    labs(y = "Estimated Admixture Time")+
+    scale_color_manual("Gene Flow Length",
+                       values = Colour_P  
+                       
+    )
+  return(Px)
+  
+}
+
+```
+
+
+```{r fig1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=3,fig.cap="\\label{fig:fig1} A) Chromosomal sections with introgressed segments (grey). Introgressed variants (green circles) are in high LD compared to the background (stars). The ALD approach estimates linkage between the introgressed variants, wheres the haplotype  approach tries to estimate the segment directly. B) Migration rate per #generation modeled using a Gamma distribution for different gene flow length, dotted line indicates maximum time of gene flow. C) The #expected LD decay modeled as a Lomax distribution for the different length."}
+
 library(png)
 #Intro_Fig <- readPNG('Paper_Graphics.png',native = T,info = T)
-include_graphics(path = 'Paper_Graphics_2.png',auto_pdf = T)
+#include_graphics(path = 'Paper_Graphics_2.png',auto_pdf = T)
+
+P_Gamma <- Figure_1_C_2(c(1,200,400,800,1000,1500),3000,2550,1500,Colour_P = cbPalette_viridis,3,3100)
+
+P_Lomax <-Theoratical_Lomax(c(1,200,400,800,1000,1500),0.5,2550,1500,0.0004,Colour_P = cbPalette_viridis)
+
+Intro_graphic <- readPNG(source = "Paper_Graphics_detedtion_methods.png",native = F,info = T)
+im_A <- ggplot() + 
+    background_image(Intro_graphic) +
+    theme_bw()+
+    # This ensures that the image leaves some space at the edges
+    theme(plot.margin = margin(t=1, l=1, r=1, b=1, unit = "cm"))
+
+ggarrange(im_A,P_Gamma,P_Lomax,
+          labels = c("A","B", "C"),
+          ncol = 3, nrow = 1,common.legend = T,legend = 'bottom')
 
 ```
 
@@ -548,289 +817,11 @@ As an alternative model, we need to consider $t$ not as a single point in time, 
 
 Using this model we i) examining the effect of continuous admixture on the admixture time estimates calculated using the exponential model assuming a pulse like admixture. ii) comparing this effect to the effects by demography, recombination rate and analysis parameters used for the indirect inference of admixture tract length using ALD, namely the ascertainment scheme and the minimal distance between SNPs. iii) are interested under which conditions the parameters of the Lomax-distribution can be estimated accurately for a scenario of Neandertal admixture and if it is possible to distinguish a pulse-like admixture event (resulting in exponentially-distributed track lengths) from a continuous event (resulting in Lomax-distributed track lengths).
 
-```{r message=FALSE, echo=F,warning=FALSE}
-suppressPackageStartupMessages({
-  library(VGAM)
-  library(tidyverse)
-  library(ggplot2)
-  library(reshape)
-  library(viridis)
-  library(ggpubr)
-  library(dplyr)
-  library(rethinking)
-  library(kableExtra)
-})
-
-Results_Table <- function(Table_Path) {
-  header_for_Result=c("A","m","c","RSS_Expo","error","Scenario","GF_Start","GF_Stop","Ascertained","min_dist","Gene_Flow_Model")
-  Raw_results <-  read.table(Table_Path, header = F,col.names = header_for_Result)
-  Raw_results$mean.t.GF <- rowMeans(Raw_results[c('GF_Start', 'GF_Stop')], na.rm=TRUE)
-  Raw_results$length.t.GF <- Raw_results$GF_Stop - Raw_results$GF_Start
-  Raw_results$GF[Raw_results$length.t.GF== 1]="0_Pulse"
-  Raw_results$GF[Raw_results$length.t.GF > 1]="Continous"
-  Raw_results$Ascertainment[Raw_results$Ascertained== 0]="0_LES"
-  Raw_results$Ascertainment[Raw_results$Ascertained == 1]="HES"
-  Raw_results$min_dist <- as.factor(Raw_results$min_dist)
-  Raw_results$GF[Raw_results$Gene_Flow_Model== "GF_Model_I"]="0_Pulse"
-  return(Raw_results)
-}
-
-cbPalette <- c( "#56B4E9", "#E69F00", "#009E73", "#F0E442", "#0072B2", "#D55E00")
-cbPalette_viridis <- viridis(6,option = "D")
-
-Get_Data_Table <- function(Data){
-  xx=as.data.frame(table(round(Data$m,digits = 0), paste(Data$GF,Data$mean.t.GF, sep="_"),Data$mean.t.GF,Data$GF,Data$mean.t.GF,Data$length.t.GF))
-  xx=subset(xx,Freq>0)
-  xx=xx[order(xx$Var3),]
-  return(xx)
-}
-
-Figure_1_C_1 <- function(input,log,Colour_P){
-  Get_points <- function(Raw_data,log){
-    # Read input file
-    data <- read.table(Raw_data, header = F)
-    
-    
-    # set dist and wcorr
-    col=2
-    dist <- data[,1]
-    wcorr <- data[,col]
-    ndist <- length(dist)  ## number of rows in dataset
-    lval=0.05
-    hval=0.6
-    
-    # check x lower value and y lower value
-    data.sub <- data
-    if ((lval > dist[1]) || (hval < dist[ndist])) {
-      data.sub <- subset(data, ((dist <= hval) & (dist >= lval)))
-    } 
-    dist <- data.sub[,1]		# updated x values
-    wcorr <- data.sub[,col]		# updated y values
-    if(log==T){
-      xx <- cbind(dist,log(wcorr))
-      xx <- xx[complete.cases(xx),]
-      wcorr <- xx[,2]
-      wcorr <-c(wcorr,rep(NA,length(data.sub[,1])-length(wcorr)))
-      dist <- xx[,1]
-      dist <-c(dist,rep(NA,length(data.sub[,1])-length(dist)))
-    }
-    
-    return(data.frame(dist,wcorr))
-  }
-  
-  Pulse <- Get_points(input[1],log)
-  Continous <- Get_points(input[2],log)
-  P_C_Data <- data.frame(Pulse,Continous)
-  P_C_Data <- P_C_Data[P_C_Data$wcorr > -13,]
-  
-  Px <-  ggplot(data=P_C_Data,aes(y=wcorr,x=dist))+
-    geom_point(aes(x=dist,y=wcorr),color=Colour_P[1],pch=4)+
-    geom_point(aes(x=dist.1,y=wcorr.1),color=Colour_P[6],pch=18)+
-    labs(y = "log weighted LD")+
-    labs(x = "Genetic Distance in cM")
-  #coord_cartesian(ylim = c(-13,-8),xlim=c(0,0.4),expand = 0)
-  
-  return(Px)
-  
-}
-
-Figure_All_Real_Data <- function(input,log,GF_length,Colour_P){
-  Get_points <- function(Raw_data,log){
-    # Read input file
-    data <- read.table(Raw_data, header = F)
-    
-    
-    # set dist and wcorr
-    col=2
-    dist <- data[,1]
-    wcorr <- data[,col]
-    ndist <- length(dist)  ## number of rows in dataset
-    lval=0.05
-    hval=0.5
-    
-    # check x lower value and y lower value
-    data.sub <- data
-    if ((lval > dist[1]) || (hval < dist[ndist])) {
-      data.sub <- subset(data, ((dist <= hval) & (dist >= lval)))
-    } 
-    dist <- data.sub[,1]		# updated x values
-    wcorr <- data.sub[,col]		# updated y values
-    if(log==T){
-      xx <- cbind(dist,log(wcorr))
-      xx <- xx[complete.cases(xx),]
-      wcorr <- xx[,2]
-      wcorr <-c(wcorr,rep(NA,length(data.sub[,1])-length(wcorr)))
-      dist <- xx[,1]
-      dist <-c(dist,rep(NA,length(data.sub[,1])-length(dist)))
-    }
-    
-    return(data.frame(dist,wcorr))
-  }
-  
-  Real_Data <- c()
-  for(i in input){
-    xx <- Get_points(i,log)
-    Real_Data <- c(Real_Data,xx)
-  }
-  Real_Data <- as.data.frame(Real_Data)
-  Real_Data_names <- c()
-  for(i in GF_length){
-    Real_Data_names <- c(Real_Data_names,c('Genetic_Distance',i))
-  }
-  colnames(Real_Data) <- Real_Data_names
-  Real_Data.melted <- melt(Real_Data, id = c("Genetic_Distance"))
-  
-  Px <-  ggplot(data =Real_Data.melted, aes(x = Genetic_Distance, y = value,color=variable)) +
-    geom_point(pch=18)+
-    coord_cartesian(ylim = c(-8,-14),expand = 0,xlim = c(0,0.5))+
-    #geom_vline(xintercept=Split_time,linetype=3,color='black')+
-    scale_color_manual(values = Colour_P)+
-    labs(x = "Genetic distance")+
-    labs(y = "log weighted LD")+
-    labs(color="Gene Flow Length")
-  return(Px)
-  
-}
-
-Figure_1_C_2 <- function(Timespan_GF_Models,time_l,Split_time,Mean_Time,Colour_P){
-  
-  n_GF_Models=length(Timespan_GF_Models)
-  time=seq(1,time_l,1)
-  
-  Gamma_fun <- function(GF_Length,time_l,Split_time,Mean_Time){
-    time=seq(1,time_l,1)
-    EX= Mean_Time
-    VarX= (GF_Length/4)**2
-    b= EX/VarX
-    a=EX*b
-    
-    GF_gamma <- dgamma(x=time,shape = a+1,scale = 1/b)
-    GF_gamma[GF_gamma < 1e-6] = 0
-    GF_gamma <- GF_gamma[1:Split_time]
-    m2 <- c()
-    for (i in GF_gamma){
-      x <- i*(0.03/sum(GF_gamma))
-      m2 <- c(m2,x)
-    }
-    m2 <- c(m2,rep(0,time_l-Split_time))
-    cutoff_in_Percent=(sum(m2[2550:5001])/0.03)*100
-    
-    GF <- c(m2)
-    return(GF)
-  }
-  GF <- c(seq(1,time_l,1))
-  for(i in 1:n_GF_Models){
-    Timespan <- Timespan_GF_Models[i]
-    GF_x <- Gamma_fun(Timespan,time_l,Split_time,Mean_Time)
-    GF <- cbind(GF,GF_x)
-  }
-  GF <- as.data.frame(GF)
-  colnames(GF) <- c('Time',Timespan_GF_Models)
-  GF.melted <- melt(GF, id = "Time")
-  Px <-  ggplot(data =GF.melted, aes(x = Time, y = value,color=variable)) +
-    geom_line(show.legend = F)+
-    coord_cartesian(ylim = c(0,max(GF$'2')),expand = 0)+
-    geom_vline(xintercept=Split_time,linetype=3,color='black')+
-    scale_color_manual(values = Colour_P)+
-    labs(x = "Time in Generations")+
-    labs(y = "Migration Rate")+
-    labs(color="Gene Flow Length")
-  return(Px)
-}
-
-Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time,Mean_Time,Intercept,Colour_P){
-  n_GF_Models=length(Timespan_GF_Models)
-  
-  Lomax_fun <- function(GF_Length,max_Genetic_distance,Split_time,Mean_Time,Intercept,log=T){
-    Genetic_length=seq(0.01,max_Genetic_distance,0.01)
-    EX= Mean_Time
-    VarX= (GF_Length/4)**2
-    b= EX/VarX
-    a=EX*b
-    Theta=b
-    k=a
-    Lomax_normal <- function(dist,k,theta,A) A*(1 + ((dist/100) /  theta))^-(k)
-    Lomax_log <- function(dist,k,theta,A) -k* log(1 + ((dist/100) /  theta)) + log(A)
-    if(log==T){
-      ALD <-  Lomax_log(dist=Genetic_length,k = k ,theta = Theta, A=Intercept)
-    }
-    else{
-      ALD <-  Lomax_normal(dist=Genetic_length,k = k ,theta = Theta, A=Intercept)
-    }
-    Lomax_Result <- cbind(Genetic_length,ALD,k,Theta)
-    return(Lomax_Result)
-  }
-  Lomax_Result <- c()
-  for(i in Timespan_GF_Models){
-    xx=Lomax_fun(i,max_Genetic_distance,Split_time,Mean_Time,Intercept,log=T)
-    Lomax_Result <- cbind(Lomax_Result,xx)
-  }
-  Lomax_Result <- as.data.frame(Lomax_Result)
-  colnames_Lomax_Result <- c()
-  for(time in Timespan_GF_Models){
-    colnames_Lomax_Result <- c(colnames_Lomax_Result,c('Genetic_Distance',time,'k','Theta'))
-  }
-  colnames(Lomax_Result) <- colnames_Lomax_Result
-  Lomax_Result.melted <- melt(Lomax_Result, id = c("Genetic_Distance",'k','Theta'))
-  Px <-  ggplot(data =Lomax_Result.melted, aes(x = Genetic_Distance, y = value,color=variable)) +
-    geom_line()+
-    #coord_cartesian(ylim = c(0,max(ALD$'2')),expand = 0)+
-    coord_cartesian(ylim = c(-8,-14),expand = 0,xlim = c(0,0.5))+
-    #geom_vline(xintercept=Split_time,linetype=3,color='black')+
-    scale_color_manual(values = Colour_P)+
-    labs(x = "Genetic distance")+
-    labs(y = "log weighted LD")+
-    labs(color="Gene Flow Length")
-  return(Px)
-}
 
 
-######################## GG PLotting ###########################
+```{r eval=FALSE}
 
-## ggplot Figure 1 A
-Plot_Fig_1_A <- function(Data,Colour_P){
-  Px <-  ggplot(Data,aes(x=Var4,y=as.numeric(as.character(Var1)),colour=factor(Var4)))+
-    geom_point(aes(size = Freq),show.legend = F)+
-    geom_boxplot()+
-    facet_grid(~as.factor(Var3),switch = "x")+
-    geom_hline( aes(yintercept = as.numeric(as.character(Data$Var3)) ))+
-    labs(x = "True Admixture Time")+
-    labs(y = "Estimated Admixture Time")+
-    theme(
-      axis.text.x=element_blank(),
-      axis.ticks.x=element_blank())+
-    coord_cartesian(ylim = c(0,2250), expand = 0)+
-    scale_color_manual("Gene Flow Model",
-                       values = c(Colour_P[1],Colour_P[4]),
-                       labels = c("Pulse","Continuous"))
-  return(Px)
-  
-}
-
-
-### Figure 1 ggplot ###
-Plot_Fig_1_B <- function(Data,Colour_P){
-  Px <-  ggplot(Data,aes(x=Var7,y=as.numeric(as.character(Var1)),colour=factor(Var6)))+
-    geom_point(aes(size = Freq),show.legend = F)+
-    geom_boxplot()+
-    facet_grid(~as.factor(Var6),switch = "x")+
-    geom_hline( aes(yintercept = 1500 ))+
-    theme(
-      axis.text.x=element_blank(),
-      axis.ticks.x=element_blank())+
-    labs(x = "Pulse length")+
-    labs(y = "Estimated Admixture Time")+
-    scale_color_manual("Gene Flow Length",
-                       values = Colour_P  
-                       
-    )
-  return(Px)
-  
-}
-
-```
-
-```{r fig1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=3,fig.cap="\\label{fig:fig1} A) Migration rate per generation modeled using a Gamma distribution for different gene flow length, dotted line indicates maximum time of gene flow. B) The expected LD decay modeled as a Lomax distribution for the different length. C) The observed LD decay from msprime simulations" }
+#{r fig1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=3,fig.cap="\\label{fig:fig1} A) Migration rate per #generation modeled using a Gamma distribution for different gene flow length, dotted line indicates maximum time of gene flow. B) The #expected LD decay modeled as a Lomax distribution for the different length. C) The observed LD decay from msprime simulations" }
 
 ## Visualization of gamma theoretical lomax LD and real data LD
 ALL_Continuous_Data <- c('Results_Fig_1_2/Differnt_GF_length_Data/Raw_ALDER_output-_Scenario_11_-run0-GF_Model_IV-ascertainment-0.txt',
@@ -849,6 +840,7 @@ P_real <- Figure_All_Real_Data(ALL_Continuous_Data,log=T,c(1,200,400,800,1000,15
 ggarrange(P_Gamma,P_Lomax,P_real,
           labels = c("A","B", "C"),
           ncol = 3, nrow = 1,common.legend = T,legend = 'bottom')
+
 ```
 
 
@@ -989,7 +981,7 @@ Effect_size_fixed_s <- ulam(
     sigma ~ dexp(1)
   ), data=Bdata_index_s, chains=4 , cores=4 , log_lik = T)
 
-
+"
 Effect_size_fixed_id_s <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
@@ -1020,7 +1012,7 @@ Effect_size_fixed_with_all_pairwise_interactions <- ulam(
     c(bA,bm,bD,bR,bG,bmd,bma,bmr,bmg,brd,bra,brg,bad,bag,bdg) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)
   ), data=Bdata_index_s, chains=4 , cores=4 ,log_lik = T)
-
+"
 
 #compare(Effect_size_fixed_s,Effect_size_fixed_id_s,Effect_size_varying_intercepts_s,Effect_size_fixed_with_all_pairwise_interactions)
 #Effect_size_fixed_id seems to make th best out of sample predictions however it splits it and we are more interrested in the overall effects
@@ -1035,7 +1027,10 @@ Having established that the duration of continuous admixture under ideal circums
 Specifically, we investigated the influence of two analysis parameter by changing the ascertainment scheme to a higher-enrichment scheme requiring additional to the LES non-Africans to be polymorphic at a SNP, and applying a larger minimal distance of 0.05 cM between SNPs used for the fitting of the exponential distribution. Additionally, we changed the demographic model from a simple to a complex one based on inferred effective population sizes. Additionally we included deep structure in the ancestral African-non-African population and a gene flow event between Africans and non-Africans after the Neandertal admixture event (Figure \ref{fig:Intro_fig} B).  We further applied the African-American-Map to simulate varying recombination rates across the 150 Mb long chromosomes, instead of a constant rate. We simulated every combination of these parameter sets resulting in 32 different sets with 100 replications each (Supp. Fig. \ref{fig:figS1}). A Gaussian linear model was applied to estimate effect sizes of the four predictors being ascertainment scheme, minimal distance, demography and recombination on the bias of admixture estimates (Supplement Table \ref{tab:tableS1}). Figure \ref{fig:fig3} shows the comparison of the bias on admixture time estimates between the previously used model (ascertainment = LES, $d_{0} = 0.02 cM$, demography = simple and recombination = constant) further refereed to as the standard model and a model with one of the four parameter changed, respectively and the corresponding model prediction. The previously observed overestimation of the standard model was estimated to be `r round(B_model_result$mean[1],2)` (`r round(B_model_result[1,3],2)` - `r round(B_model_result[1,4],2)` 95 % CI) standard deviation from the true admixture time. Every parameter change results in lower estimates compared to the standard model, with the biggest difference between a constant and a varying recombination (`r round(B_model_result[3,3],2)` - `r round(B_model_result[3,4],2)` 95 % CI) and the smallest differences between a pulse and continuous gene flow model (`r round(B_model_result[2,3],2)` - `r round(B_model_result[2,4],2)` 95 % CI). Most accurate estimates are achieved using the LES ascertainment scheme in combination with a minimal distance of 0.05 cM. The bias introduced by the demography seems to depend on the used ascertainment scheme, since only under the HES a difference between the simple and complex demography is evident (Supplement Figure 1). Overall the bias introduced by the ascertainment, minimal distance cutoff, demography and gene flow model are 10 % or less of the true mean admixture time.
 
 
-```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig3} Comparison of the standardized bias on the admixture time estimates between each parameter and the standard model of 100 replications each. Dotted line represents the model prediction with the 5.5 % and 94.5 % compatibility intervals solid lines. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig3} A) The two tested demographies of humans splitting into African population (AFR) and non-African (non-AFR) with admixture from Neandertals (NEA) into non-Africans. The simple demographic model with constant population sizes and the complex with rapid population size changes (1), substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the out-of-Africa event (2) and additional gene flow between Africans and non-Africans after the Neandertal admixture (3). B) Comparison of the standardized bias on the admixture time estimates between each parameter and the standard model of 100 replications each. Dotted line represents the model prediction with the 5.5 % and 94.5 % compatibility intervals solid lines. Dotted horizontal line indicates unbiased admixture estimates."}
+
+
+
 
 #### Ploting the model ####
 
@@ -1047,8 +1042,8 @@ Plot_Fig_2_X <- function(Null_Case,Predictore_case,B_Model,Int,Slope,x.lable,x.t
       geom_point(aes(size = Freq),show.legend = F)+
       geom_boxplot(show.legend = F)+
       geom_abline(intercept = B_Model$mean[Int]-B_Model$mean[Slope],slope = B_Model$mean[Slope],linetype=2)+
-      geom_abline(intercept = B_Model$`5.5%`[Int]-B_Model$`5.5%`[Slope],slope = B_Model$`5.5%`[Slope])+
-      geom_abline(intercept = B_Model$`94.5%`[Int]-B_Model$`94.5%`[Slope],slope = B_Model$`94.5%`[Slope])+
+      geom_abline(intercept = B_Model$`2.5%`[Int]-B_Model$`2.5%`[Slope],slope = B_Model$`2.5%`[Slope])+
+      geom_abline(intercept = B_Model$`97.5%`[Int]-B_Model$`97.5%`[Slope],slope = B_Model$`97.5%`[Slope])+
       geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
       labs(x = xlab)+
       labs(y = ylab)+
@@ -1069,11 +1064,11 @@ Plot_Fig_2_X <- function(Null_Case,Predictore_case,B_Model,Int,Slope,x.lable,x.t
       geom_point(aes(size = Freq),show.legend = F)+
       geom_boxplot(show.legend = F)+
       geom_abline(intercept = B_Model$mean[Int]-B_Model$mean[Slope],slope = B_Model$mean[Slope],linetype=2)+
-      geom_abline(intercept = B_Model$`5.5%`[Int]-B_Model$`5.5%`[Slope],slope = B_Model$`5.5%`[Slope])+
-      geom_abline(intercept = B_Model$`94.5%`[Int]-B_Model$`94.5%`[Slope],slope = B_Model$`94.5%`[Slope])+
+      geom_abline(intercept = B_Model$`2.5%`[Int]-B_Model$`2.5%`[Slope],slope = B_Model$`2.5%`[Slope])+
+      geom_abline(intercept = B_Model$`97.5%`[Int]-B_Model$`97.5%`[Slope],slope = B_Model$`97.5%`[Slope])+
       geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
       labs(x = xlab)+
-      labs(y = ylab)+
+      labs(y = "Standardized difference \nbetween true and estimated time")+
       scale_x_discrete(labels= x.lable)+
       theme(axis.text.x = element_text(angle = 0,size = 12))+
       coord_cartesian(ylim = c(-2,1), expand = 0)+
@@ -1112,9 +1107,23 @@ PX4 <- Plot_Fig_2_X(Null_Case = Simplest_case,Predictore_case = Plot_model[Plot_
 
 PX5 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_LES_0_C',],B_model_result,Int = 1,Slope = 2,x.lable = c("Pulse","Continous"),"Gene Flow\n")
 
-Figure_2_X <- ggarrange(PX1,PX2,PX3,PX4,PX5,
-          ncol = 5, nrow = 1)
-annotate_figure(Figure_2_X,bottom = text_grob("Predictor combination"),left = text_grob("Standardized difference between true and estimated time",rot=90))
+
+Result_graphic <- readPNG(source = "Paper_Graphics_Demography.png",native = F,info = T)
+im_B <- ggplot() + 
+    background_image(Result_graphic) +
+    theme_bw()+
+    # This ensures that the image leaves some space at the edges
+    theme(plot.margin = margin(t=1, l=1, r=1, b=1, unit = "cm"))
+
+
+Fig_3 <- ggarrange(                                               # second row with boxplot
+      ggarrange(im_B, NULL, ncol = 2),       # Second row with pgn and NULL
+        ggarrange(PX1,PX2,PX3,PX4,PX5,
+          ncol = 5, nrow = 1),
+          nrow = 2, 
+          labels = c("A","B")                                      # Labels of the boxplot
+          )
+annotate_figure(Fig_3,bottom = text_grob("Predictor combination"))
 
 ```
 
@@ -1387,6 +1396,156 @@ Lomax.Fig_mean_exp
 #Lomax.Fig_mean_lomax
 
 #New.Fig_fixed_Lambda
+```
+
+```{r message=FALSE, echo=FALSE,warning=FALSE}
+input <- "Real_Data_Analysis/Raw_ALDER_output_ALL_chr_hcNea_YRI_CEU_1k_G_LES_ascertained_corrected_rr_CEU_specific_map.txt"
+#input <- "Raw_ALDER_output-ALL_chr_hcNea_YRI_CEU_1k_G_LES_ascertained_corrected_constant_rr.txt"
+lval <- 0.05	# lower value of dist to use
+hval <- 3		# higher value of dist to use 
+log <- F
+affine <- T
+
+
+Fit_Exp_fn <- function(Data,affine){
+  xx=Data
+  
+  dist=xx$dist
+  wcorr=xx$wcorr
+  #Fitting an Exponential
+  
+  if(affine){
+    fm1_exp <- function(x) x[1]*exp(-(dist/100)/x[2])+x[3]
+    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
+    fm3_exp <- DEoptim(fm2_exp, lower=c(1e-6,0,-1), upper=c(1, 1,1), control=list(trace=FALSE))
+    
+    par1_exp <- fm3_exp$optim$bestmem
+    # parameters for y ~ Ae-mt
+    names(par1_exp) <- c("A", "s","c")
+    A_exp_est <- as.numeric((par1_exp[1]))
+    Lambda_est <-as.numeric((par1_exp[2]))  	# rate of decay of exponential
+    C_exp_est <- as.numeric((par1_exp[3]))
+    
+    fit1_exp <- nls(wcorr ~ (A*exp(-(dist/100)/s)+c), start=par1_exp, control=list(maxiter=10000, warnOnly=TRUE)) 
+  } else {
+    fm1_exp <- function(x) x[1]*exp(-(dist/100)/x[2])
+    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
+    fm3_exp <- DEoptim(fm2_exp, lower=c(1e-6,0), upper=c(1, 1), control=list(trace=FALSE))
+    
+    par1_exp <- fm3_exp$optim$bestmem
+    # parameters for y ~ Ae-mt
+    names(par1_exp) <- c("A", "s")
+    A_exp_est <- as.numeric((par1_exp[1]))
+    Lambda_est <-as.numeric((par1_exp[2]))  	# rate of decay of exponential
+    
+    fit1_exp <- nls(wcorr ~ (A*exp(-(dist/100)/s)), start=par1_exp, control=list(maxiter=10000, warnOnly=TRUE))
+    
+  }
+  return(fit1_exp)
+}
+
+Fit_Lomax_fn <- function(Data,fixed_w){
+  xx=Data
+  
+  dist=xx$dist
+  wcorr=xx$wcorr
+
+  fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + (x[1]*(dist/100) /  x[2])))^(1/x[1])
+  fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
+  fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(fixed_w,0,0,0), upper=c(fixed_w,1,1,1), control=list(trace=FALSE))
+  
+  par1_lomax <- fm3_DEoptim$optim$bestmem
+  par1_lomax <- c(par1_lomax[2],par1_lomax[3],par1_lomax[4])
+  names(par1_lomax) <- c("s","A","c")
+  fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((fixed_w*(dist/100)) / s)))^(1/fixed_w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+
+  return(fit1_lomax)
+}
+
+xdata=Get_points(input,lval,hval,log)
+Expo_fit_result <- Fit_Exp_fn(Data = xdata,affine = affine)
+t_expo_est=1/coef(Expo_fit_result)[[2]]
+
+
+t_d=c(1,100,200,400,800,1000,1500,2000,2500)
+
+all_t_lomax_est <- list()
+for(t in 1:length(t_d)){
+  fixed_w= 1/(t_expo_est*(t_expo_est/((t_d[t]/4)^2)))
+  
+  Lomax_fit_result <- Fit_Lomax_fn(Data = xdata,fixed_w = fixed_w)
+  coef(Lomax_fit_result)
+  t_lomax_est=1/coef(Lomax_fit_result)[[1]]
+  all_t_lomax_est[[t]] <- Lomax_fit_result
+  
+}
+
+Mean_time_est <- data.frame(Model=c("Exp","Lomax(td=1)","Lomax(td=100)","Lomax(td=200)","Lomax(td=400)"
+                                    ,"Lomax(td=800)","Lomax(td=1000)","Lomax(td=1500)","Lomax(td=2000)","Lomax(td=2500)"),
+                            Mean_time=c(1/coef(Expo_fit_result)[[2]],1/coef(all_t_lomax_est[[1]])[[1]],1/coef(all_t_lomax_est[[2]])[[1]]
+                                        ,1/coef(all_t_lomax_est[[3]])[[1]],1/coef(all_t_lomax_est[[4]])[[1]],1/coef(all_t_lomax_est[[5]])[[1]]
+                                        ,1/coef(all_t_lomax_est[[6]])[[1]],1/coef(all_t_lomax_est[[7]])[[1]],1/coef(all_t_lomax_est[[8]])[[1]]
+                                        ,1/coef(all_t_lomax_est[[9]])[[1]]))
+
+
+EXP_Log_fn <- function(dist,A,s) log(A)  -((dist/100)/s)
+LOMAX_Log_fn <- function(dist,A,s,w) log(A) + (1/w) * -log(1+ ((w*(dist/100))/s))
+
+
+AIC_result <- AIC(Expo_fit_result,all_t_lomax_est[[1]],all_t_lomax_est[[2]],all_t_lomax_est[[3]],all_t_lomax_est[[4]],
+    all_t_lomax_est[[5]],all_t_lomax_est[[6]],all_t_lomax_est[[7]],all_t_lomax_est[[8]],all_t_lomax_est[[9]])
+
+
+Model_RSS <- c()
+for(i in list(Expo_fit_result,all_t_lomax_est[[1]],all_t_lomax_est[[2]],all_t_lomax_est[[3]],all_t_lomax_est[[4]],
+           all_t_lomax_est[[5]],all_t_lomax_est[[6]],all_t_lomax_est[[7]],all_t_lomax_est[[8]],all_t_lomax_est[[9]])){
+  RSS <- sum(residuals(i)^2) 
+  Model_RSS <- c(Model_RSS,RSS)
+}
+
+```
+
+
+```{r fig5, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig4} Different admixure duration models ranging from a one generation pulse tu 2500 generations for Neandertal admixture duration using all 1k Genome CEU individuals as the admixed population with all YRI and 3 high coverage Neandertals as reference populations."}
+
+cbPalette_viridis <- viridis(length(t_d),option = "D")
+fit.ggplot_exp=data.frame(y=EXP_Log_fn(xdata$dist,coef(Expo_fit_result)[[1]],coef(Expo_fit_result)[[2]]),x=xdata$dist)
+Real_Lomax_fit_Result <- c()
+for(i in 1:length(t_d)){
+  fit.ggplot_lomax_x=data.frame(y=LOMAX_Log_fn(xdata$dist,coef(all_t_lomax_est[[i]])[[2]],coef(all_t_lomax_est[[i]])[[1]],1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2)))),x=xdata$dist)
+  Real_Lomax_fit_Result <- c(Real_Lomax_fit_Result,fit.ggplot_lomax_x)
+  Real_Lomax_fit_Result <- as.data.frame(Real_Lomax_fit_Result)
+}
+  Real_fit_Result <- c(Real_Lomax_fit_Result,fit.ggplot_exp)
+  Real_fit_Result <- as.data.frame(Real_fit_Result)
+  colnames_Real_fit_Result  <- c()
+  for(t in t_d){
+    colnames_Real_fit_Result <- c(colnames_Real_fit_Result,c(t,'Genetic_Distance'))
+  }
+  colnames_Real_fit_Result  <- c(colnames_Real_fit_Result,c(0,'Genetic_Distance'))
+  colnames(Real_fit_Result) <- colnames_Real_fit_Result
+
+  Real_fit_Result.melted <- melt(Real_fit_Result, id = c("Genetic_Distance"))
+
+
+Real_data_Plot <- ggplot(data=xdata,aes(x=dist,y=log(wcorr)))+
+  geom_point()+
+  xlim(0,1)+
+  ylim(-15,-5)+
+  geom_line(data =Real_fit_Result.melted, aes(x = Genetic_Distance, y = value,color=variable))+
+  scale_color_manual("Gene Flow Length",
+                   values = c(c(cbPalette_viridis,"red")),
+                   labels = c(c(t_d,"Pulse")))+
+  labs(x = "Genetic distance")+
+  labs(y = "log weighted LD")
+
+
+P_Gamma_2 <- Figure_1_C_2(c(1,t_d),5000,5000,1500,Colour_P = c("red",cbPalette_viridis),4,3100)
+
+ggarrange(P_Gamma_2,Real_data_Plot,ncol = 2,nrow = 1,
+          labels = c("A","B")
+          ,common.legend = T,legend = 'bottom')
+
 ```
 
 
