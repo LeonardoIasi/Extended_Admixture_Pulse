@@ -134,7 +134,6 @@ Hence, using this 'recombination clock', the length distribution of introgressed
 admixture event 
 (\cite{moorjani_history_2011,pugach_dating_2011,sankararaman_date_2012,loh_inferring_2013,sankararaman_combined_2016,pugach_gateway_2018,jacobs_multiple_2019,hellenthal_genetic_2014}).
 
-something new
 
 \subsection{The two approaches and their application to find archaic admixture dates}\label{the-two-approaches-and-their-application-to-find-archaic-admixture-dates}
 
@@ -151,7 +150,7 @@ admixture event a few tens of generations ago, ALD stretches  over long genetic 
 from short range LD due to other processes (\cite{moorjani_history_2011}). For ancient
 admixture events however, ALD is quite similar to the genomic background. To circumvent this issue for dating the Neandertal-human admixture time, an ascertainment scheme was used to calculate LD only for markers that are nearly differentially fixed between the two taxa. In this case, the presence of apparent Neandertal alleles in close-range LD is a signature of a locally introgressed locus
 (\cite{sankararaman_date_2012}). Typically, estimation of admixture time proceeds by fitting a decay curve of pairwise LD as a function of
-genetic distance, using an exponential distribution whose parameters are informative for the time of the admixture pulse
+genetic distance, using an exponential distribution whose parameters are informative for the time of an admixture pulse
 (\cite{moorjani_history_2011,loh_inferring_2013}). Using this approach Sankararaman et al. dated the Neandertal-human admixture time to
 be  between 37,000--86,000 ya (years ago) (\cite{sankararaman_date_2012}). Later,
 this date was refined to 40,510--54,454 ya (95\% CI) using a different
@@ -187,14 +186,14 @@ of gene flow. While convenient for inference, one cannot use this approach to di
 Here, we are chiefly interested in gene flow between Neandertals and modern humans, which was previously modeled assuming a one-generation pulse of admixture. Dating this gene flow event accurately would inform several questions of  great importance, but not always the same aspect of the gene flow is the one of primary interest. For example, if we are interested in dating the out-of-Africa migration of our ancestors, the start of the gene flow between Neandertals and modern humans is of primary interest, as this establishes modern humans and Neandertals in sympatry, likely outside of Africa.
 In contrast, the date of the most recent gene flow between Neandertals and modern humans may be informative for dating the extinction of Neandertals. Under an admixture pulse model, which assumes that these two times coincide, hypotheses about the impact of modern human colonization of Eurasia on Neandertal extinction cannot be evaluated.
 
-Thus, our goal here is to examine when an admixture pulse can be rejected for more general models of continuous gene flow.  Using a continuous model, we are interested in establishing the start and end of admixture between Neandertals and modern humans, not just the mean admixture time. This is a difficult problem, as it requires deconvoluting an exponential mixture, which is notoriously hard . Thus, we also need to carefully evaluate the potential technical and biological factors that may introduce additional biases (\cite{pool_inference_2009,gravel_population_2012,liang_lengths_2014}).
-For this purpose, we explore these factors influencing the inferred length of admixture pulses, to gauge their relative importance.
+Thus, our goal here is to examine when an admixture pulse can be rejected for more general models of continuous gene flow (Figure \ref{fig:fig1} B).  Using a continuous model, we are interested in establishing the start and end of admixture between Neandertals and modern humans, not just the mean admixture time. This is a difficult problem, as it requires deconvoluting an exponential mixture, which is notoriously hard . Thus, we also need to carefully evaluate the potential technical and biological factors that may introduce additional biases (\cite{pool_inference_2009,gravel_population_2012,liang_lengths_2014}).
+For this purpose, we explore these factors influencing the inferred time of admixture pulses, to gauge their relative importance.
 
 
 
 \subsection{Assumptions on the data}\label{assumptions-on-the-data}
 
-In general the model assumes that introgressed segments are rare and inbreeding is not significant (\cite{pool_inference_2009}). The segments act neutral (\cite{shchur_distribution_2019}) and the recombination clock is constant over time and populations (\cite{gravel_population_2012}). We will adopt these assumptions. Instead we focus on the one-generation pulse and technical assumptions. It is usually assumed that the demography is known or its effects negligible, the recombination map known or recombination is constant. Beside that is is assumed that the ascertainment scheme sufficiently represent the variation in the true introgressing archaic population.
+In general the model assumes that introgressed segments are rare and inbreeding is not significant (\cite{pool_inference_2009}). The segments act neutral (\cite{shchur_distribution_2019}) and the recombination clock is constant over time and populations (\cite{gravel_population_2012}). We will adopt these assumptions. Instead we focus on the one-generation pulse and technical assumptions. It is usually assumed that the demography is known or its effects negligible, the recombination map known or recombination is constant. Beside that it is assumed that the ascertainment scheme sufficiently represent the variation in the true introgressing archaic population.
 
 Violations of these assumptions are known to influence the mean time
 estimates. Hence, the effect of assuming a one-generation pulse has to
@@ -209,7 +208,7 @@ The simplest generalization of the admixture pulse model to more complex scenari
 (\cite{zhou_modeling_2017,zhou_inference_2017}). 
 
 Here we use a simpler model of continuous admixture with just two parameters, and one less than the two-pulse model of Pickrell et al. 2014 (\cite{pickrell_ancient_2014}). One parameter reflects the mean admixture time, and the other the duration of the admixture event; letting this parameter go to zero thus recovers the (nested) pulse model. 
-This model is particularly simple if we assume that migration rate over time is Gamma distributed, in which case the distribution of admixture segment lengths has a closed form.
+This model is particularly simple if we assume that migration rate over time is Gamma distributed, in which case the distribution of admixture segment lengths has a closed form (Figure \ref{fig:fig1} B & C).
 
 \subsection{What we want to do}\label{what-we-want-to-do}
 In our  study, we first examine the  effect of long
@@ -249,7 +248,7 @@ models. We compared the effect of these parameters together with
 analysis parameters to the effect of continuous admixture on the
 estimates. After assessing these effects we evaluate the possible
 parameter range for using a Lomax distribution to fit the ALD decay,
-enabling to obtain a duration of continuous admixture.
+enabling to obtain a duration of continuous admixture. To demonstrate our finding we used the 1000 Genomes data together with 3 high coverage Neandertals to fit several gene flow models with different durations to the data.
 
 \subsection{Simulations}\label{simulations}
 
@@ -377,6 +376,10 @@ same as in the simple simulations (10000 generations ago). In the complex model 
 humans before the split was set to 18296 (taken from the MSMC results). To simulate branch shortening
 caused by the extinction of Neandertals, Neandertals were sampled 750
 generations before the Africans and non-Africans. We simulated an additional admixture event between African and non-African populations with a total migration rate of 0.01 starting from 200 till 50 generations ago.
+
+\subsection{1000 Genomes Data}\label{1000 Genomes Data}
+
+We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagyrskaya high coverage Neandertals.  We used all unrelated individuals from the YRI as representatives of unadmixed Africans and all CEU as admixed Europeans. We only considered biallelic sites and the sites were polarized relative to the hg19 Human reference genome. We used the CEU specific genetic map from
 
 \subsection{Admixture time estimates}\label{admixture time estimates}
 
