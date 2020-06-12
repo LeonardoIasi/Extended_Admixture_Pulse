@@ -1596,22 +1596,30 @@ for(i in list(Expo_fit_result,all_t_lomax_est[[1]],all_t_lomax_est[[2]],all_t_lo
 
 cbPalette_viridis <- viridis(length(t_d),option = "D")
 fit.ggplot_exp=data.frame(y=EXP_Log_fn(xdata$dist,coef(Expo_fit_result)[[1]],coef(Expo_fit_result)[[2]]),x=xdata$dist)
+fit.ggplot_exp$lowCI <- EXP_Log_fn(xdata$dist,confint(Expo_fit_result)[[1,1]],confint(Expo_fit_result)[[2,1]])
+fit.ggplot_exp$highCI <- EXP_Log_fn(xdata$dist,confint(Expo_fit_result)[[1,2]],confint(Expo_fit_result)[[2,2]])
+fit.ggplot_exp$Duration <- 1e5
 Real_Lomax_fit_Result <- c()
 for(i in 1:length(t_d)){
   fit.ggplot_lomax_x=data.frame(y=LOMAX_Log_fn(xdata$dist,coef(all_t_lomax_est[[i]])[[2]],coef(all_t_lomax_est[[i]])[[1]],1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2)))),x=xdata$dist)
-  Real_Lomax_fit_Result <- c(Real_Lomax_fit_Result,fit.ggplot_lomax_x)
+    fit.ggplot_lomax_x$lowCI <- LOMAX_Log_fn(xdata$dist,confint(all_t_lomax_est[[i]])[[2,1]],confint(all_t_lomax_est[[i]])[[1,1]],1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2))))
+  fit.ggplot_lomax_x$highCI <- LOMAX_Log_fn(xdata$dist,confint(all_t_lomax_est[[i]])[[2,2]],confint(all_t_lomax_est[[i]])[[1,2]],1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2))))
+  fit.ggplot_lomax_x$Duration <- t_d[i]
+  Real_Lomax_fit_Result <- rbind(Real_Lomax_fit_Result,fit.ggplot_lomax_x)
   Real_Lomax_fit_Result <- as.data.frame(Real_Lomax_fit_Result)
 }
-  Real_fit_Result <- c(Real_Lomax_fit_Result,fit.ggplot_exp)
+  Real_fit_Result <- rbind(Real_Lomax_fit_Result,fit.ggplot_exp)
   Real_fit_Result <- as.data.frame(Real_fit_Result)
+  Real_fit_Result$Duration <- as.factor(Real_fit_Result$Duration)
+"  
   colnames_Real_fit_Result  <- c()
   for(t in t_d){
-    colnames_Real_fit_Result <- c(colnames_Real_fit_Result,c(t,'Genetic_Distance'))
+    colnames_Real_fit_Result <- c(colnames_Real_fit_Result,c(t,'Genetic_Distance',paste(t,'lowCI',sep = ''),paste(t,'lowCI',sep = '')))
   }
-  colnames_Real_fit_Result  <- c(colnames_Real_fit_Result,c(0,'Genetic_Distance'))
+  colnames_Real_fit_Result  <- c(colnames_Real_fit_Result,c(1e5,'Genetic_Distance',paste(1e5,'lowCI',sep = ''),paste(1e5,'lowCI',sep = '')))
   colnames(Real_fit_Result) <- colnames_Real_fit_Result
 
-  Real_fit_Result.melted <- melt(Real_fit_Result, id = c("Genetic_Distance"))
+  Real_fit_Result.melted <- melt(Real_fit_Result, id = c('Genetic_Distance'))
 
 
 Real_data_Plot <- ggplot(data=xdata,aes(x=dist,y=log(wcorr)))+
@@ -1619,12 +1627,24 @@ Real_data_Plot <- ggplot(data=xdata,aes(x=dist,y=log(wcorr)))+
   xlim(0,1)+
   ylim(-15,-5)+
   geom_line(data =Real_fit_Result.melted, aes(x = Genetic_Distance, y = value,color=variable))+
+  scale_color_manual('Gene Flow Length',
+                   values = c(c(cbPalette_viridis,'red')),
+                   labels = c(c(t_d,'Pulse')))+
+  labs(x = 'Genetic distance')+
+  labs(y = 'log weighted LD')
+"
+Real_data_Plot <- ggplot(data=Real_fit_Result,aes(x = x, y = y,color=Duration,fill=Duration))+
+  geom_point(data=xdata,aes(x=dist,y=log(wcorr),color=NULL,fill=NULL),show.legend = F)+
+  xlim(0,1)+
+  ylim(-15,-5)+
+  geom_line(data=Real_fit_Result,aes(x = x, y = y,color=Duration))+
+  geom_ribbon(aes(ymin=lowCI,ymax=highCI, fill = Duration,color=NULL), alpha = 0.2,show.legend = F)+
   scale_color_manual("Gene Flow Length",
-                   values = c(c(cbPalette_viridis,"red")),
-                   labels = c(c(t_d,"Pulse")))+
+                     values = c(c(cbPalette_viridis,"red")),
+                     labels = c(c(t_d,"Pulse")))+
+  scale_fill_manual( values = c(c(cbPalette_viridis,"red")))+
   labs(x = "Genetic distance")+
   labs(y = "log weighted LD")
-
 
 P_Gamma_2 <- Figure_1_C_2(c(1,t_d),5000,5000,1500,Colour_P = c("red",cbPalette_viridis),4,3100)
 
