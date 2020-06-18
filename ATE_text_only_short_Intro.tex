@@ -24,7 +24,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={The Human-Neandertal admixture estimated from present-day human genomes is compatible with a multitude of duration times},
+            pdftitle={The Human-Neandertal admixture time estimated from present-day human genomes is compatible with a multitude of durations},
             pdfauthor={Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary Anthropology, MPI EVA), Dr.~Benjamin Marco Peter (MPI EVA, benjamin\_peter@eva.mpg.de)},
             pdfborder={0 0 0},
             breaklinks=true}
@@ -76,7 +76,7 @@
 
 \setlength{\droptitle}{-2em}
 
-  \title{The Human-Neandertal admixture estimated from present-day human genomes is compatible with a multitude of duration times}
+  \title{The Human-Neandertal admixture time estimated from present-day human genomes is compatible with a multitude of durations}
     \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
     \author{Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary
@@ -184,7 +184,7 @@ of gene flow. While convenient for inference, one cannot use this approach to di
 Here, we are chiefly interested in gene flow between Neandertals and modern humans, which was previously modeled assuming a one-generation pulse of admixture. Dating this gene flow event accurately would inform several questions of  great importance, but not always the same aspect of the gene flow is the one of primary interest. For example, if we are interested in dating the out-of-Africa migration of our ancestors, the start of the gene flow between Neandertals and modern humans is of primary interest, as this establishes modern humans and Neandertals in sympatry, likely outside of Africa.
 In contrast, the date of the most recent gene flow between Neandertals and modern humans may be informative for dating the extinction of Neandertals. Under an admixture pulse model, which assumes that these two times coincide, hypotheses about the impact of modern human colonization of Eurasia on Neandertal extinction cannot be evaluated.
 
-Thus, our goal here is to examine when an admixture pulse can be rejected for more general models of continuous gene flow (Figure \ref{fig:fig1} B).  Using a continuous model, we are interested in establishing the start and end of admixture between Neandertals and modern humans, not just the mean admixture time. This is a difficult problem, as it requires deconvoluting an exponential mixture, which is notoriously hard . Thus, we also need to carefully evaluate the potential technical and biological factors that may introduce additional biases (\cite{pool_inference_2009,gravel_population_2012,liang_lengths_2014}).
+Thus, our goal here is to examine when an admixture pulse can be rejected for more general models of continuous gene flow (Figure \ref{fig:fig1} B).  Using a continuous model, we are interested in establishing the start and end of admixture between Neandertals and modern humans, not just the mean admixture time. This is a difficult problem, as it requires deconvoluting an exponential mixture, which is notoriously hard (\cite{dasgupta_mixture_2008}). Thus, we also need to carefully evaluate the potential technical and biological factors that may introduce additional biases (\cite{pool_inference_2009,gravel_population_2012,liang_lengths_2014}).
 For this purpose, we explore these factors influencing the inferred time of admixture pulses, to gauge their relative importance.
 
 
@@ -202,7 +202,7 @@ pulse-like and multi-generation long admixture.
 \subsection{complex migration models}
 
 To relax the one-generation pulse assumption we have to generalize the admixture model.
-The simplest generalization of the admixture pulse model to more complex scenarios is to assume a model with two or more pulses. In such a case,  each segment will have entered in one of the pulses, and the resulting admixture tracts will be a discrete mixture of the constituent distributions (\cite{pickrell_ancient_2014}), weighted by the relative migration rates. Zhou et al. 2017 (\cite{zhou_modeling_2017}) showed that this model, in principle, can be used for continuous mixtures as well, using a polynomial function as a mixture density. However, they found that even for relatively short admixture events, the large number of parameters led to an underestimate of admixture duration \cite{zhou_inference_2017}, and the beginning and end of admixture were not well inferred.
+The simplest generalization of the admixture pulse model to more complex scenarios is to assume a model with two or more pulses. In such a case,  each segment will have entered in one of the pulses, and the resulting admixture tracts will be a discrete mixture of the constituent distributions (\cite{pickrell_ancient_2014}), weighted by the relative migration rates. Zhou et al. 2017 (\cite{zhou_modeling_2017}) showed that this model, in principle, can be used for continuous mixtures as well, using a polynomial function as a mixture density. However, they found that even for relatively short admixture events, the large number of parameters led to an underestimate of admixture duration (\cite{zhou_inference_2017}), and the beginning and end of admixture were not well inferred
 (\cite{zhou_modeling_2017,zhou_inference_2017}). 
 
 Here we use a simpler model of continuous admixture with just two parameters, and one less than the two-pulse model of Pickrell et al. 2014 (\cite{pickrell_ancient_2014}). One parameter reflects the mean admixture time, and the other the duration of the admixture event; letting this parameter go to zero thus recovers the (nested) pulse model. 
@@ -220,7 +220,8 @@ the ALD decay. Using this model, we investigate under which scenarios
 the parameters of the Lomax-distribution can be accurately estimated and
 for which parameters we can distinguish a pulse-like admixture event
 from a continuous event. We show that in many cases pulses cannot be
-distinguished from more continuous admixture events, and so current
+distinguished from more continuous admixture events. Using the 1000 Genomes data, ALD inferred admixture times from Europeans are consistent with a multitude of duration times.
+We conclude that current
 methods are unsuitable to definitively answer when the contact between
 Neandertals and modern humans ended.
 
@@ -229,9 +230,9 @@ Neandertals and modern humans ended.
 \includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig1-1.pdf}
 \caption{\label{fig:fig1} A) Chromosomal sections with introgressed
 segments (grey). Introgressed variants (green circles) are in high LD
-compared to the background (stars). The ALD approach estimates linkage
-between the introgressed variants, wheres the haplotype approach tries
-to estimate the segment directly. B) Migration rate per generation
+compared to the background . The ALD approach estimates linkage
+between the introgressed variants (green circles), wheres the haplotype approach tries
+to estimate the segment directly (grey area). B) Migration rate per generation
 modeled using a Gamma distribution for different gene flow length,
 dotted line indicates maximum time of gene flow. C) The expected LD
 decay modeled as a Lomax distribution for the different length.}
@@ -653,7 +654,7 @@ admixture and sampled the population at different time points since the
 end of the gene flow. Doing so allows us to examine how close one has to
 sample form the end of a continuous admixture to still accurately
 estimate its duration. Since the recombination map was shown to be highly
-influential we tested the duration estimates under a constant and variable
+influential, we tested the duration estimates under a constant and variable
 recombination using the HapMap genetic map. Here, we correct the
 genetic distance by: assuming a constant rate, using the AAMap (uncertainty in the recombination map) or the
 HapMap itself (knowing the population recombination map). We used the LES ascertainment scheme in combination with
