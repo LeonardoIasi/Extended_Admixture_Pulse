@@ -446,7 +446,7 @@ P_Gamma <- Figure_1_C_2(c(1,200,400,800,1000,1500),3000,2550,1500,Colour_P = cbP
 
 P_Lomax <-Theoratical_Lomax(c(1,200,400,800,1000,1500),0.5,2550,1500,0.0004,Colour_P = cbPalette_viridis)
 
-Intro_graphic <- readPNG(source = "Paper_Graphics_detedtion_methods.png",native = F,info = T)
+Intro_graphic <- readPNG(source = "Paper_Graphics_detection_approaches_only.png",native = F,info = T)
 im_A <- ggplot() + 
     background_image(Intro_graphic) +
     theme_bw()+
@@ -1146,7 +1146,7 @@ PX4 <- Plot_Fig_2_X(Null_Case = Simplest_case,Predictore_case = Plot_model[Plot_
 PX5 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_LES_0_C',],B_model_result,Int = 1,Slope = 2,x.lable = c("Pulse","Continous"),"Gene Flow\n")
 
 
-Result_graphic <- readPNG(source = "Paper_Graphics_Demography.png",native = F,info = T)
+Result_graphic <- readPNG(source = "Paper_Graphics_demography_only.png",native = F,info = T)
 im_B <- ggplot() + 
     background_image(Result_graphic) +
     theme_bw()+
@@ -1485,8 +1485,9 @@ Lomax.Fig_mean_exp
 ```
 
 ```{r message=FALSE, echo=FALSE,warning=FALSE}
-input <- "Real_Data_Analysis/Raw_ALDER_output_ALL_chr_hcNea_YRI_CEU_1k_G_LES_ascertained_corrected_rr_CEU_specific_map.txt"
-#input <- "Raw_ALDER_output-ALL_chr_hcNea_YRI_CEU_1k_G_LES_ascertained_corrected_constant_rr.txt"
+input_pol_corrected <- "Real_Data_Analysis/Raw_ALDER_output-ALL_chr_hcNea_YRI_CEU_1k_G_polarized_LES_ascertained_corrected_rr_CEU_specific_map.txt"
+#input_corrected <- "Real_Data_Analysis/Raw_ALDER_output_ALL_chr_hcNea_YRI_CEU_1k_G_LES_ascertained_corrected_rr_CEU_specific_map.txt"
+#input <- "Real_Data_Analysis/Raw_ALDER_output-ALL_chr_hcNea_YRI_CEU_1k_G_LES_ascertained_corrected_constant_rr.txt"
 lval <- 0.05	# lower value of dist to use
 hval <- 3		# higher value of dist to use 
 log <- F
@@ -1548,7 +1549,9 @@ Fit_Lomax_fn <- function(Data,fixed_w){
   return(fit1_lomax)
 }
 
-xdata=Get_points(input,lval,hval,log)
+xdata=Get_points(input_pol_corrected,lval,hval,log)
+#xdata2=Get_points(input_corrected,lval,hval,log)
+#xdata3=Get_points(input,lval,hval,log)
 Expo_fit_result <- Fit_Exp_fn(Data = xdata,affine = affine)
 t_expo_est=1/coef(Expo_fit_result)[[2]]
 
@@ -1646,7 +1649,7 @@ Real_data_Plot <- ggplot(data=Real_fit_Result,aes(x = x, y = y,color=Duration,fi
   labs(x = "Genetic distance")+
   labs(y = "log weighted LD")
 
-P_Gamma_2 <- Figure_1_C_2(c(1,t_d),5000,5000,1500,Colour_P = c("red",cbPalette_viridis),4,3100)
+P_Gamma_2 <- Figure_1_C_2(c(1,t_d),5000,5000,1500,Colour_P = c("red",cbPalette_viridis[-1]),4,3100)
 
 ggarrange(P_Gamma_2,Real_data_Plot,ncol = 2,nrow = 1,
           labels = c("A","B")
