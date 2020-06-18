@@ -1649,7 +1649,7 @@ Real_data_Plot <- ggplot(data=Real_fit_Result,aes(x = x, y = y,color=Duration,fi
   labs(x = "Genetic distance")+
   labs(y = "log weighted LD")
 
-P_Gamma_2 <- Figure_1_C_2(c(1,t_d),5000,5000,1500,Colour_P = c("red",cbPalette_viridis),4,3100)
+P_Gamma_2 <- Figure_1_C_2(c(1,t_d),5000,5000,1500,Colour_P = c("red",cbPalette_viridis[-1]),4,3100)
 
 ggarrange(P_Gamma_2,Real_data_Plot,ncol = 2,nrow = 1,
           labels = c("A","B")
