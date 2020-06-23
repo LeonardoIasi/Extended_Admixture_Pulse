@@ -293,7 +293,7 @@ Figure_All_Real_Data <- function(input,log,GF_length,Colour_P){
     scale_color_manual(values = Colour_P)+
     labs(x = "Genetic distance")+
     labs(y = "log weighted LD")+
-    labs(color="Gene Flow Length")
+    labs(color="Admixture Duration")
   return(Px)
   
 }
@@ -340,7 +340,7 @@ Figure_1_C_2 <- function(Timespan_GF_Models,time_l,Split_time,Mean_Time,Colour_P
     scale_color_manual(values = Colour_P)+
     labs(x = "Time in Generations")+
     labs(y = "Migration Rate")+
-    labs(color="Gene Flow Length")
+    labs(color="Admixture Duration")
   return(Px)
 }
 
@@ -386,7 +386,7 @@ Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time
     scale_color_manual(values = Colour_P)+
     labs(x = "Genetic distance (cM)")+
     labs(y = "log weighted LD")+
-    labs(color="Gene Flow Length")
+    labs(color="Admixture Duration")
   return(Px)
 }
 
@@ -407,7 +407,7 @@ Plot_Fig_1_A <- function(Data,Colour_P){
       axis.ticks.x=element_blank())+
     coord_cartesian(ylim = c(0,2250), expand = 0)+
     scale_color_manual("Gene Flow Model",
-                       values = c(Colour_P[1],Colour_P[4]),
+                       values = c(Colour_P[1],Colour_P[6]),
                        labels = c("Pulse","Continuous"))
   return(Px)
   
@@ -426,7 +426,7 @@ Plot_Fig_1_B <- function(Data,Colour_P){
       axis.ticks.x=element_blank())+
     labs(x = "Pulse length")+
     labs(y = "Estimated Admixture Time")+
-    scale_color_manual("Gene Flow Length",
+    scale_color_manual("Admixture Duration",
                        values = Colour_P  
                        
     )
@@ -1814,10 +1814,11 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
 ```
 
 ```{r figS3, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS3} Lomax estimates for the mean time."}
+
 New.P1_mean_GF_exp <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_exp,cbPalette_viridis,"All sampled 50 gen from GF end exponential fit")
 New.P1_mean_GF_lomax <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_lomax,cbPalette_viridis,"All sampled 50 gen from GF end lomax fit")
-New.P3_mean_GF_exp <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_exp,cbPalette_viridis,"All Gene Flow length = 800 gen exponential fit")
-New.P3_mean_GF_lomax <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_lomax,cbPalette_viridis,"All Gene Flow length = 800 gen lomax fit")
+New.P3_mean_GF_exp <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_exp,cbPalette_viridis,"All admixture durations = 800 gen exponential fit")
+New.P3_mean_GF_lomax <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_lomax,cbPalette_viridis,"All admixture durations  = 800 gen lomax fit")
 
 Lomax.Fig_only_mean_lomax <- ggarrange(New.P1_mean_GF_exp,New.P1_mean_GF_lomax,New.P3_mean_GF_exp,New.P3_mean_GF_lomax,
                    labels = c("A","B","C","D"),
