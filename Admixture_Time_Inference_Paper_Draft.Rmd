@@ -1,5 +1,7 @@
 ---
-title: "Neandertal-Human admixture duration not detectable using introgressed segments from modern human genomes due to uncertainties in the recombination map"
+title: "The dating of the Human-Neandertal introgression event estimated from present-day human genomes is compatible with a multitude of admixture durations"
+#title: "The Human-Neandertal admixture time estimated from present-day human genomes is compatible with a multitude of durations"
+#title: "Neandertal-Human admixture duration not detectable using introgressed segments from modern human genomes due to uncertainties in the recombination map"
 author: Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary Anthropology,
   MPI EVA), Dr. Benjamin Marco Peter (MPI EVA, benjamin_peter@eva.mpg.de)
 date: "`r Sys.Date()`"
@@ -1242,7 +1244,7 @@ Plot_sampling_50_gen_t_GF <- function(ggdata_t.GF,cbPalette_viridis,Ptitle){
     facet_grid(~as.factor(True_GF_length),switch = "x")+
     geom_hline( aes(yintercept = True_mean_GF ))+
     ggtitle(Ptitle) +
-    labs(x = "Gene Flow Length")+
+    labs(x = "Admixture Duration")+
     labs(y = "Estimated Admixture Time")+
     theme(
       axis.text.x=element_blank(),
@@ -1260,8 +1262,8 @@ Plot_sampling_50_gen_GF_Length <- function(ggdata_l.GF,cbPalette_viridis,Ptitle)
     facet_grid(~as.factor(True_GF_length),switch = "x")+
     geom_hline( aes(yintercept = True_GF_length ))+
     ggtitle(Ptitle) +
-    labs(x = "Gene Flow Length")+
-    labs(y = "Estimated Gene Flow Length")+
+    labs(x = "Admixture Duration")+
+    labs(y = "Estimated Admixture Duration")+
     theme(
       axis.text.x=element_blank(),
       axis.ticks.x=element_blank())+
@@ -1277,7 +1279,7 @@ Plot_sampling_varying_gen_t_GF <- function(ggdata_t.GF_varying,cbPalette_viridis
     facet_grid(~as.factor(Sample_Time),switch = "x")+
     geom_hline( aes(yintercept = True_mean_GF ))+
     ggtitle(Ptitle) +
-    labs(x = "Generations Sample After Gene Flow End")+
+    labs(x = "Generations Sampled After End of Admixture")+
     labs(y = "Estimated Admixture Time")+
     theme(
       axis.text.x=element_blank(),
@@ -1296,7 +1298,7 @@ Plot_sampling_varying_gen_GF_Length <- function(ggdata_l.GF_varying,cbPalette_vi
     facet_grid(~as.factor(Sample_Time),switch = "x")+
     geom_hline( aes(yintercept = True_GF_length ))+
     ggtitle(Ptitle) +
-    labs(x = "Generations Sample After Gene Flow End")+
+    labs(x = "Generations Sampled After End of Admixture")+
     labs(y = "Estimated Gene Flow Length")+
     theme(
       axis.text.x=element_blank(),
@@ -1371,17 +1373,17 @@ ggdata_t.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.
 ggdata_l.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
 
 
-New.P1_mean_GF_exp <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_exp,cbPalette_viridis, "All sampled 50 gen from GF end")
-New.P1_mean_GF_lomax <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_lomax,cbPalette_viridis,"All sampled 50 gen from GF end")
-New.P2 <- Plot_sampling_50_gen_GF_Length(ggdata_l.GF_50,cbPalette_viridis,"All sampled 50 gen from GF end")
-New.P3_mean_GF_exp <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_exp,cbPalette_viridis,"All Gene Flow length = 800 gen")
-New.P3_mean_GF_lomax <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_lomax,cbPalette_viridis,"All Gene Flow length = 800 gen")
-New.P4 <- Plot_sampling_varying_gen_GF_Length(ggdata_l.GF_varying,cbPalette_viridis,"All Gene Flow length = 800 gen")
+New.P1_mean_GF_exp <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_exp,cbPalette_viridis, "Sampled 50 Gen. From End Of Admixture")
+New.P1_mean_GF_lomax <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_lomax,cbPalette_viridis,"Sampled 50 Gen. From End Of Admixture")
+New.P2 <- Plot_sampling_50_gen_GF_Length(ggdata_l.GF_50,cbPalette_viridis,"Sampled 50 Gen. From End Of Admixture")
+New.P3_mean_GF_exp <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_exp,cbPalette_viridis,"Admixture Duration = 800 Gen.")
+New.P3_mean_GF_lomax <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_lomax,cbPalette_viridis,"Admixture Duration = 800 Gen.")
+New.P4 <- Plot_sampling_varying_gen_GF_Length(ggdata_l.GF_varying,cbPalette_viridis,"Admixture Duration = 800 Gen.")
 
-New.P1_fixed_Lambda <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_fixed_Lambda,cbPalette_viridis,"All sampled 50 gen from GF end")
-New.P2_fixed_Lambda <- Plot_sampling_50_gen_GF_Length(ggdata_l.GF_50_fixed_Lambda,cbPalette_viridis,"All sampled 50 gen from GF end")
-New.P3_fixed_Lambda <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_fixed_Lambda,cbPalette_viridis,"All Gene Flow length = 800 gen")
-New.P4_fixed_Lambda <- Plot_sampling_varying_gen_GF_Length(ggdata_l.GF_varying_fixed_Lambda,cbPalette_viridis,"All Gene Flow length = 800 gen")
+New.P1_fixed_Lambda <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_fixed_Lambda,cbPalette_viridis,"Sampled 50 Gen. From End Of Admixture")
+New.P2_fixed_Lambda <- Plot_sampling_50_gen_GF_Length(ggdata_l.GF_50_fixed_Lambda,cbPalette_viridis,"Sampled 50 Gen. From End Of Admixture")
+New.P3_fixed_Lambda <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_fixed_Lambda,cbPalette_viridis,"Admixture Duration = 800 Gen.")
+New.P4_fixed_Lambda <- Plot_sampling_varying_gen_GF_Length(ggdata_l.GF_varying_fixed_Lambda,cbPalette_viridis,"Admixture Duration = 800 Gen.")
 ```
 
 
@@ -1665,38 +1667,15 @@ ggplot_fit_data_transf_fn <- function(Expo_fit_result,all_t_lomax_est,log){
   
 }
 
-
-"  
-  colnames_Real_fit_Result  <- c()
-  for(t in t_d){
-    colnames_Real_fit_Result <- c(colnames_Real_fit_Result,c(t,'Genetic_Distance',paste(t,'lowCI',sep = ''),paste(t,'lowCI',sep = '')))
-  }
-  colnames_Real_fit_Result  <- c(colnames_Real_fit_Result,c(1e5,'Genetic_Distance',paste(1e5,'lowCI',sep = ''),paste(1e5,'lowCI',sep = '')))
-  colnames(Real_fit_Result) <- colnames_Real_fit_Result
-
-  Real_fit_Result.melted <- melt(Real_fit_Result, id = c('Genetic_Distance'))
-
-
-Real_data_Plot <- ggplot(data=xdata,aes(x=dist,y=log(wcorr)))+
-  geom_point()+
-  xlim(0,1)+
-  ylim(-15,-5)+
-  geom_line(data =Real_fit_Result.melted, aes(x = Genetic_Distance, y = value,color=variable))+
-  scale_color_manual('Gene Flow Length',
-                   values = c(c(cbPalette_viridis,'red')),
-                   labels = c(c(t_d,'Pulse')))+
-  labs(x = 'Genetic distance')+
-  labs(y = 'log weighted LD')
-"
 Real_fit_Result_norm <- ggplot_fit_data_transf_fn(Expo_fit_result, all_t_lomax_est, log=F)
-#Real_fit_Result_norm <- Real_fit_Result_norm[Real_fit_Result_norm$Duration==1e5,]
+
 Real_data_Plot_normal <- ggplot(data=Real_fit_Result_norm,aes(x = x, y = y,color=Duration,fill=Duration))+
   geom_point(data=xdata,aes(x=dist,y=wcorr,color=NULL,fill=NULL),show.legend = F)+
   xlim(0,0.5)+
   #ylim(-15,-5)+
   geom_line(data=Real_fit_Result_norm,aes(x = x, y = y,color=Duration))+
   geom_ribbon(aes(ymin=lowCI,ymax=highCI, fill = Duration,color=NULL), alpha = 0.5,show.legend = F)+
-  scale_color_manual("Gene Flow Length",
+  scale_color_manual("Admixture Duration",
                      values = c(c(cbPalette_viridis,"red")),
                      labels = c(c(t_d,"Pulse")))+
   scale_fill_manual( values = c(c(cbPalette_viridis,"red")))+
@@ -1710,7 +1689,7 @@ Real_data_Plot_log <- ggplot(data=Real_fit_Result_log,aes(x = x, y = y,color=Dur
   ylim(-13,-5)+
   geom_line(data=Real_fit_Result_log,aes(x = x, y = y,color=Duration))+
   geom_ribbon(aes(ymin=lowCI,ymax=highCI, fill = Duration,color=NULL), alpha = 0.5,show.legend = F)+
-  scale_color_manual("Gene Flow Length",
+  scale_color_manual("Admixture Duration",
                      values = c(c(cbPalette_viridis,"red")),
                      labels = c(c(t_d,"Pulse")))+
   scale_fill_manual( values = c(c(cbPalette_viridis,"red")))+
@@ -1755,7 +1734,7 @@ Conclusions:
 
 
 \section{Supplement}\label{supplement}
-```{r figS1, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS1}A) The two tested demographies of humans splitting into African population (AFR) and non-African (non-AFR) with admixture from Neandertals (NEA) into non-Africans. The simple demographic model with constant population sizes and the complex with rapid population size changes (1), substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the out-of-Africa event (2) and additional gene flow between Africans and non-Africans after the Neandertal admixture (3)."}
+```{r figS1, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS1} The two tested demographies of humans splitting into African population (AFR) and non-African (non-AFR) with admixture from Neandertals (NEA) into non-Africans. The simple demographic model with constant population sizes and the complex with rapid population size changes (1), substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the out-of-Africa event (2) and additional gene flow between Africans and non-Africans after the Neandertal admixture (3)."}
 
 Demography_graphic <- readPNG(source = "Paper_Graphics_demography_only.png",native = F,info = T)
 im_B <- ggplot() + 
@@ -1815,10 +1794,10 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
 
 ```{r figS3, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS3} Lomax estimates for the mean time."}
 
-New.P1_mean_GF_exp <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_exp,cbPalette_viridis,"All sampled 50 gen from GF end exponential fit")
-New.P1_mean_GF_lomax <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_lomax,cbPalette_viridis,"All sampled 50 gen from GF end lomax fit")
-New.P3_mean_GF_exp <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_exp,cbPalette_viridis,"All admixture durations = 800 gen exponential fit")
-New.P3_mean_GF_lomax <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_lomax,cbPalette_viridis,"All admixture durations  = 800 gen lomax fit")
+New.P1_mean_GF_exp <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_exp,cbPalette_viridis,"Sampled 50 Gen. from End Of Admixture Exponential Fit")
+New.P1_mean_GF_lomax <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_lomax,cbPalette_viridis,"Sampled 50 Gen. from End Of Admixture Lomax Fit")
+New.P3_mean_GF_exp <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_exp,cbPalette_viridis,"Admixture Duration = 800 Gen. Exponential Fit")
+New.P3_mean_GF_lomax <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_lomax,cbPalette_viridis,"Admixture Duration  = 800 Gen. Lomax Fit")
 
 Lomax.Fig_only_mean_lomax <- ggarrange(New.P1_mean_GF_exp,New.P1_mean_GF_lomax,New.P3_mean_GF_exp,New.P3_mean_GF_lomax,
                    labels = c("A","B","C","D"),
