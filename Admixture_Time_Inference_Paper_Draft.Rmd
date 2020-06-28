@@ -1013,9 +1013,9 @@ boxplot(rep(as.numeric(as.character(Simplest_case$Diff_s)),Simplest_case$Freq),
       rep(as.numeric(as.character(Plot_model$Diff_s[Plot_model$Combination=='Simple_D_Sim_HES_0_P'])),Plot_model$Freq[Plot_model$Combination=='Simple_D_Sim_HES_0_P']), 
       col=col.alpha(rangi2,0.5),ylim=c(-0.5,0.5) )
 # plot the MAP line, aka the mean mu for each weight
-plot( seq(0,1,0.05) , A_pred.mean )
+lines( seq(1,2,0.05) , A_pred.mean,add=T )
 # plot a shaded region for 89% PI
-shade(A_pred.PI ,seq(0,1,0.05))
+shade(A_pred.PI ,seq(1,2,0.05),add=T)
 
 ```
 
@@ -1168,6 +1168,109 @@ Simplest_case$Combination <- paste(0,Simplest_case$Combination,sep = '_')
 
 
 PX1 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_HES_0_P',],B_model_result,Int = 1,Slope = 6
+             ,x.lable = c("LES","HES"),"Ascertainment\nScheme",y.ticks = T)
+
+PX2 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_LES_1_P',],B_model_result,Int = 1,Slope = 5,x.lable = c("d0 = 0.02","d0 = 0.05"),"Minimal Distance\n")
+
+PX3 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Inferred_D_Sim_LES_0_P',],B_model_result,Int = 1,Slope = 4,
+             x.lable = c("Simple","Complex"),"Demography\n")
+
+PX4 <- Plot_Fig_2_X(Null_Case = Simplest_case,Predictore_case = Plot_model[Plot_model$Combination=='Recom_D_Sim_LES_0_P',],B_model_result,Int = 1,Slope = 3,x.lable = c("Constant","Variable"),"Recombination Map\n")
+
+PX5 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_LES_0_C',],B_model_result,Int = 1,Slope = 2,x.lable = c("Pulse","Continous"),"Gene Flow\n")
+
+
+
+#Fig_3 <- ggarrange(                                               # second row with boxplot
+#      ggarrange(im_B, NULL, ncol = 2),       # Second row with pgn and NULL
+#        ggarrange(PX1,PX2,PX3,PX4,PX5,
+#          ncol = 5, nrow = 1),
+#          nrow = 2, 
+#          labels = c("A","B")                                      # Labels of the boxplot
+#          )
+#annotate_figure(Fig_3,bottom = text_grob("Predictor combination"))
+
+Fig_3 <-  ggarrange(PX1,PX2,PX3,PX4,PX5,
+          ncol = 5, nrow = 1)
+annotate_figure(Fig_3,bottom = text_grob("Predictor combination"),left  = text_grob("Standardized difference between true and estimated time",rot = 90))
+       
+
+```
+
+```{r eval=FALSE,,message=FALSE, echo=FALSE,warning=FALSE}
+
+
+
+
+#### Ploting the model ####S
+
+
+Plot_Fig_2_X <- function(Null_Case,Predictore_case,B_Model,Int,Pred_data,Slope,x.lable,x.title,xlab=NULL,ylab=NULL,y.ticks=F){
+  Factor_pred <- link( Effect_size_fixed_s , data=data.frame(A=Pred_data[1],MD=Pred_data[2],D=Pred_data[3],R=Pred_data[4],GF=Pred_data[5]) )
+  Factor_pred.mean <- apply( Factor_pred , 2 , mean )
+  Factor_pred.PI <- apply( A_pred , 2 , PI , prob=0.95 )
+  pred_Data <- data.frame(x=seq(0,1,0.05),y=Factor_pred.mean)
+  Data=rbind(Null_Case,Predictore_case)
+  if(y.ticks==F){
+    Px <-  ggplot(Data,aes(x=as.character(Combination),y=as.numeric(as.character(Diff_s)),colour=Col))+
+      geom_point(aes(size = Freq),show.legend = F)+
+      geom_boxplot(show.legend = F)+
+      geom_abline(data=pred_Data,aes(x=x,y=y),linetype=2)+
+      #geom_abline(seq(1,2,0.05) , Factor_pred.PI[,1])+
+      #geom_abline(seq(1,2,0.05) , Factor_pred.PI[,2])+
+      geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
+      labs(x = xlab)+
+      labs(y = ylab)+
+      scale_x_discrete(labels= x.lable)+
+      theme(axis.text.x = element_text(angle = 0,size = 12),
+            axis.text.y=element_blank(),
+            axis.ticks.y =element_blank())+
+      coord_cartesian(ylim = c(-2,1), expand = 0)+
+      ggtitle(x.title)+
+      theme(plot.title = element_text(hjust = 0.5,size = 12))+
+      scale_color_manual("Gene Flow Model",
+                         values = c(cbPalette_viridis[1],cbPalette_viridis[6]),
+                         labels = c("Pulse","Continuous"))
+  }
+  
+  if(y.ticks==T){
+    Px <-  ggplot(Data,aes(x=as.character(Combination),y=as.numeric(as.character(Diff_s)),colour=Col))+
+      geom_point(aes(size = Freq),show.legend = F)+
+      geom_boxplot(show.legend = F)+
+      geom_line(data=pred_Data,aes(x=pred_Data[,1],y=pred_Data[,2]),linetype=2)+
+      #geom_abline(seq(1,2,0.05) , Factor_pred.PI[,1])+
+      #geom_abline(seq(1,2,0.05) , Factor_pred.PI[,2])+
+      geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
+      labs(x = xlab)+
+      #labs(y = "Standardized difference \nbetween true and estimated time")+
+      scale_x_discrete(labels= x.lable)+
+      theme(axis.text.x = element_text(angle = 0,size = 12),
+            axis.title.y=element_blank())+
+      coord_cartesian(ylim = c(-2,1), expand = 0)+
+      ggtitle(x.title)+
+      theme(plot.title = element_text(hjust = 0.5,size = 12))+
+      scale_color_manual("Gene Flow Model",
+                         values = c(cbPalette_viridis[1],cbPalette_viridis[6]),
+                         labels = c("Pulse","Continuous"))
+  }
+
+  return(Px)
+  
+}
+
+### Execute plot functions ###
+
+Plot_model <- data.frame(table(Diff_s=round(xdata.M.3_no_error$Diff_s,digits = 2),GF=xdata.M.3_no_error$GF,Asc=xdata.M.3_no_error$Ascertainment,d0=xdata.M.3_no_error$min_dist,True_GF=xdata.M.3_no_error$mean.t.GF,Demo=xdata.M.3_no_error$Demography,Recomb=xdata.M.3_no_error$Recomb.rate,Combination=xdata.M.3_no_error$TID))
+Plot_model <- subset(Plot_model,Freq>0)
+
+
+
+Plot_model$Col <- ifelse(Plot_model$GF=='0_Pulse','#56B4E9','#D55E00')
+Simplest_case= Plot_model[Plot_model$Combination=='Simple_D_Sim_LES_0_P',]
+Simplest_case$Combination <- paste(0,Simplest_case$Combination,sep = '_')
+
+
+PX1 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_HES_0_P',],B_model_result,c(seq(0,1,0.05),0,0,0,0),Int = 1,Slope = 6
              ,x.lable = c("LES","HES"),"Ascertainment\nScheme",y.ticks = T)
 
 PX2 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_LES_1_P',],B_model_result,Int = 1,Slope = 5,x.lable = c("d0 = 0.02","d0 = 0.05"),"Minimal Distance\n")
@@ -1590,13 +1693,6 @@ for(t in 1:length(t_d)){
   
 }
 
-Mean_time_est <- data.frame(Model=c("Exp","Lomax(td=1)","Lomax(td=100)","Lomax(td=200)","Lomax(td=400)"
-                                    ,"Lomax(td=800)","Lomax(td=1000)","Lomax(td=1500)","Lomax(td=2000)","Lomax(td=2500)"),
-                            Mean_time=c(1/coef(Expo_fit_result)[[2]],1/coef(all_t_lomax_est[[1]])[[1]],1/coef(all_t_lomax_est[[2]])[[1]]
-                                        ,1/coef(all_t_lomax_est[[3]])[[1]],1/coef(all_t_lomax_est[[4]])[[1]],1/coef(all_t_lomax_est[[5]])[[1]]
-                                        ,1/coef(all_t_lomax_est[[6]])[[1]],1/coef(all_t_lomax_est[[7]])[[1]],1/coef(all_t_lomax_est[[8]])[[1]]
-                                        ,1/coef(all_t_lomax_est[[9]])[[1]]))
-
 
 EXP_norm_fn <- function(dist,A,s,c) A*exp(-(dist/100)/s)+c
 LOMAX_norm_fn <- function(dist,A,s,w,c) c+A*(1/(1  + ((w*(dist/100)) / s)))^(1/w)
@@ -1607,6 +1703,10 @@ LOMAX_Log_fn <- function(dist,A,s,w) log(A) + (1/w) * -log(1+ ((w*(dist/100))/s)
 AIC_result <- AIC(Expo_fit_result,all_t_lomax_est[[1]],all_t_lomax_est[[2]],all_t_lomax_est[[3]],all_t_lomax_est[[4]],
     all_t_lomax_est[[5]],all_t_lomax_est[[6]],all_t_lomax_est[[7]],all_t_lomax_est[[8]],all_t_lomax_est[[9]])
 
+xx=t(data.frame(c(c(coef(Expo_fit_result)[1],confint(Expo_fit_result)[1,1],confint(Expo_fit_result)[1,2]),
+                 c(coef(Expo_fit_result)[2],confint(Expo_fit_result)[2,1],confint(Expo_fit_result)[2,2]),
+                 c(coef(Expo_fit_result)[3],confint(Expo_fit_result)[3,1],confint(Expo_fit_result)[3,2]))))
+colnames(xx) <- c("A","A 2.5 %", "A 97.5 %","s","s 2.5 %", "s 97.5 %","c","c 2.5 %", "c 97.5 %")
 
 Model_RSS <- c()
 for(i in list(Expo_fit_result,all_t_lomax_est[[1]],all_t_lomax_est[[2]],all_t_lomax_est[[3]],all_t_lomax_est[[4]],
@@ -1614,6 +1714,42 @@ for(i in list(Expo_fit_result,all_t_lomax_est[[1]],all_t_lomax_est[[2]],all_t_lo
   RSS <- sum(residuals(i)^2) 
   Model_RSS <- c(Model_RSS,RSS)
 }
+
+```
+
+```{r message=FALSE, echo=FALSE,warning=FALSE}
+
+Get_CI_s_approx_fn <- function(fit,i,n_data){
+  org <- coef(fit)[[i]]
+  lwr_approx <- coef(fit)[[i]]*(1-(1.96/sqrt(length(n_data[,1]))))
+  upr_approx <- coef(fit)[[i]]*(1+(1.96/sqrt(length(n_data[,1]))))
+  param_CI <- c(1/org,1/upr_approx,1/lwr_approx)
+  return(param_CI)
+}
+
+Get_CI_other_approx_fn <- function(fit,i,n_data,sigma){
+  org <- coef(fit)[[i]]
+  lwr_approx <- coef(fit)[[i]]-1.96*(sigma/sqrt(length(n_data[,1])))
+  upr_approx <- coef(fit)[[i]]+1.96*(sigma/sqrt(length(n_data[,1])))
+  param_CI <- c(org,lwr_approx,upr_approx)
+  return(param_CI)
+}
+
+A_param=Get_CI_other_approx_fn(Expo_fit_result,1,xdata,summary(Expo_fit_result)$sigma)
+t_m=Get_CI_s_approx_fn(Expo_fit_result,2,xdata)
+c_param=Get_CI_other_approx_fn(Expo_fit_result,3,xdata,summary(Expo_fit_result)$sigma)
+Expo_fit_tabel <- rbind(A_param,t_m,c_param)
+
+Lomax_fit_tabel <- c()
+for(model in all_t_lomax_est){
+  A_parm=Get_CI_other_approx_fn(model,2,xdata,summary(model)$sigma)
+  t_m=Get_CI_s_approx_fn(model,1,xdata)
+  c_param=Get_CI_other_approx_fn(model,3,xdata,summary(Expo_fit_result)$sigma)
+  Lomax_fit_tabel_x <- rbind(A_param,t_m,c_param)
+  Lomax_fit_tabel <- rbind(Lomax_fit_tabel,Lomax_fit_tabel_x)
+}
+
+
 
 ```
 
@@ -1791,7 +1927,7 @@ Real_data_Plot_normal_2 <- ggplot(data=Real_fit_Result_norm_2,aes(x = x, y = fit
   geom_point(data=xdata,aes(x=dist,y=wcorr,color=NULL,fill=NULL),show.legend = F)+
   xlim(0,0.5)+
   #ylim(-15,-5)+
-  geom_ribbon(aes(ymin=lwr,ymax=upr, fill = Duration,color=NULL), alpha = 0.3,show.legend = F)+
+  #geom_ribbon(aes(ymin=lwr,ymax=upr, fill = Duration,color=NULL), alpha = 0.3,show.legend = F)+
   geom_line(data=Real_fit_Result_norm_2,aes(x = x, y = fit,color=Duration))+
   scale_color_manual("Admixture Duration",
                      values = c(c(cbPalette_viridis,cbPalette_viridis[1])),
@@ -1804,8 +1940,8 @@ Real_data_Plot_normal <- ggplot(data=Real_fit_Result_norm,aes(x = x, y = y,color
   geom_point(data=xdata,aes(x=dist,y=wcorr,color=NULL,fill=NULL),show.legend = F)+
   xlim(0,0.5)+
   #ylim(-15,-5)+
-  geom_ribbon(aes(ymin=lowCI,ymax=highCI, fill = Duration,color=NULL), alpha = 0.5,show.legend = F)+
-    geom_line(data=Real_fit_Result_norm,aes(x = x, y = y,color=Duration))+
+  #geom_ribbon(aes(ymin=lowCI,ymax=highCI, fill = Duration,color=NULL), alpha = 0.5,show.legend = F)+
+  geom_line(data=Real_fit_Result_norm,aes(x = x, y = y,color=Duration))+
   scale_color_manual("Admixture Duration",
                      values = c(c(cbPalette_viridis,"red")),
                      labels = c(c(t_d,"Pulse")))+
@@ -1937,3 +2073,21 @@ Lomax.Fig_only_mean_lomax <- ggarrange(New.P1_mean_GF_exp,New.P1_mean_GF_lomax,N
 Lomax.Fig_only_mean_lomax
 ```
 
+
+```{r tableS2, echo=FALSE,results='asis' }
+
+Param_Est_Tabel <- rbind(Expo_fit_tabel,Lomax_fit_tabel)
+Models <- c("Exponential","Exponential","Exponential","Lomax (td=1)","Lomax (td=1)","Lomax (td=1)"
+            ,"Lomax (td=100)","Lomax (td=100)","Lomax (td=100)","Lomax (td=200)","Lomax (td=200)","Lomax (td=200)"
+            ,"Lomax (td=400)","Lomax (td=400)","Lomax (td=400)","Lomax (td=800)","Lomax (td=800)","Lomax (td=800)"
+            ,"Lomax (td=1000)","Lomax (td=1000)","Lomax (td=1000)","Lomax (td=1500)","Lomax (td=1500)","Lomax (td=1500)"
+            ,"Lomax (td=2000)","Lomax (td=2000)","Lomax (td=2000)","Lomax (td=2500)","Lomax (td=2500)","Lomax (td=2500)")
+Params_name <- rep(c("A","mean time","c"),10)
+Param_Est_Tabel <- cbind(Models,Params_name,Param_Est_Tabel)
+
+
+kable(Param_Est_Tabel , "latex",col.names = c("Model","Parameter","Estimate","2.5 %", "97.5 %"),row.names = FALSE,
+      caption = "\\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit") %>%
+  #collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
