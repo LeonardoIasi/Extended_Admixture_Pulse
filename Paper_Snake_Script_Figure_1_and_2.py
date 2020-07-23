@@ -1,6 +1,6 @@
 configfile:	"config/control.yaml"
-configfile:	"config/master.yaml"
 configfile:	"config/sim_parameters_new.yaml"
+configfile:	"config/master2.yaml"
 configfile:	"config/ALDER.yaml"
 import msprime
 import pandas as pd
@@ -71,7 +71,11 @@ def GF_Model_IV(TimeSpan,GF_start,GF_stop,demographic_events,GF_rate,loc,Folder_
 	VarX= ((GF_stop - GF_start)/4)**2
 	b= EX/VarX
 	a=EX*b
-	m=[stats.gamma.pdf(x=range(TimeSpan+1),a=a+1,loc=loc,scale=1/b)]
+	#if Gamma_mode == 'Normal':
+	#	m=[stats.gamma.pdf(x=range(TimeSpan+1),a=a+1,loc=loc,scale=1/b)]
+	#if Gamma_mode == 'Alternative':
+	print("Using correct Gamma")
+	m=[stats.gamma.pdf(x=range(TimeSpan+1),a=a,loc=loc,scale=1/b)]
 	m=m[0]
 	m[abs(m) < 1e-6] = 0
 	m2 = [i * GF_rate/ sum(m) for i in m]
@@ -229,16 +233,16 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 
 ############################################################################################
 # Choose which Set to process by giving Set_name the name of the Set to be processed #
-Set_name='Fig_2_D_Complex'
+Set_name='Fig_1_B_corrected'
 
 # Choose number of replicates #
-replicates=100
+replicates=10
 
 # Choose Folder #
-Folder_name='../Fig_2_D_Complex_Recomb_Map'
+Folder_name='../Fig_1_B_corrected'
 
 # Choose Result Folder Name #
-Result_Folder='../Fig_2_D_Complex_Recomb_Map/Result'
+Result_Folder='../Fig_1_B_corrected/Result'
 ############################################################################################
 
 
