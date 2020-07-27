@@ -116,7 +116,7 @@ showed low proportions of Denisovan ancestry being widespread in Oceania and to 
 
 
 
-This genetic evidence for the direct contact and interbreeding of modern humans with other hominin populations is often used to resolve the timing and duration of biogeographical events using admixture dates. One particular event of interest is the time and duration of interbreeding between Neandertals and modern humans, when their range overlapped. Archaeological evidence suggest a range overlap between the first modern humans out-of-Africa at around 188 thousand years ago (kya) (\cite{stringer_when_2018,hershkovitz_earliest_2018}) and a possible extinction of Neandertals around 37 kya (\cite{zilhao_precise_2017}) and 39 kya (\cite{higham_timing_2014}) at the end of the Mousterian. This leaves a potential timeframe for Neandertal and modern human interaction of approximately 140,000 years. Detailed genetic dating of Neandertal and modern human admixture is hoped to unveil more evidence of the timing and especially duration of this interaction,
+This genetic evidence for the direct contact and interbreeding of modern humans with other hominin populations is often used to resolve the timing and duration of biogeographical events using admixture dates (\cite{sankararaman_date_2012,jacobs_multiple_2019,vyas_analyses_2019}). One particular event of interest is the time and duration of interbreeding between Neandertals and modern humans, when their range overlapped. Archaeological evidence suggest a range overlap between the first modern humans out-of-Africa at around 188 thousand years ago (kya) (\cite{stringer_when_2018,hershkovitz_earliest_2018}) and a possible extinction of Neandertals around 37 kya (\cite{zilhao_precise_2017}) and 39 kya (\cite{higham_timing_2014}) at the end of the Mousterian. This leaves a potential timeframe for Neandertal and modern human interaction of approximately 140,000 years. Detailed genetic dating of Neandertal and modern human admixture is hoped to unveil more evidence of the timing and especially duration of this interaction,
 potentially holding a clue of the debated question of extinction of these hominin populations. Another example is the geographical range distribution of Denisovans that is inferred by admixture proportions and time estimates from present day population and their geographical distribution (\cite{jacobs_multiple_2019}). 
 
 \subsection{Admixture on the genomic level and basic idea how to date
@@ -298,7 +298,7 @@ Continuous gene flow over time with the random variable $t \in \{t_1,t_2,...,t_n
 
 \begin{equation}
 \label{eq:2}
-m_i \sim \Gamma(k+1,\frac{1}{\theta})
+m_i \sim \Gamma(k,\frac{1}{\theta})
 \end{equation}
 
 Where k is the shape and \(\theta\) the rate parameter. The parameter
@@ -311,7 +311,7 @@ migrants, modeled using the ccdf of a Lomax distribution (Eq. \ref{eq:3})
 \begin{equation}
 \begin{split}
 \label{eq:3}
-x_i &\sim Lomax(k,\theta) \\
+x_i &\sim Lomax(k+1,\theta) \\
 \mathbb{E}[x] &= \frac{1}{t\lambda} = \frac{\theta}{k}\lambda
 \end{split}
 \end{equation}
@@ -344,7 +344,7 @@ calculated from the 150 Mb map (\(1.843 \, \frac{cM}{Mb}\) AAMap and
 \(1.549 \, \frac{cM}{Mb}\) HapMap). To emulate uncertainties in the
 genetic map we either: used the mean recombination rate from the
 respective map to calculate the genetic distance from the physical
-distance for each SNP, used the other map to assign distances by linear interpolation
+distance for each SNP, used the other map to assign distances
 (e.g.~AAMap used for the msprime simulation and HapMap used to assign
 genetic distances) or used the same map for simulation and assigning
 genetic distances.
@@ -721,7 +721,7 @@ Here, we contrasted this pulse model with scenarios involving more long-standing
 
 In our analyses using the extended model, we find that most methods focus on the mean time of gene flow, and are mostly accurate in its inference. However, we also show that even gene flow lasting thousands of generations may yield data that are practically indistinguishable from a pulse, and that other modelling and method assumptions have an impact on estimates that are of a similar magnitude or much higher. Particularly the assumption of a constant recombination rate will lead to sever underestimations of admixture times, therefore reliable mean time estimates can only be obtained using population specific recombination maps.
 
-The major implication of our result is that one has to be extremely cautious when interpreting results of genetic dating; the data are entirely consistent with gene flow occurring both earlier and later than the confidence intervals of the mean gene flow timing might indicate. This is of great practical importance as it might be tempting to link the genetic admixture date estimates with biogeographical events. For example, the lower bounds on admixture time estimates might be used as dates of Neandertal extinction, and likewise use the earliest dates of gene flow as evidence when the out-of-Africa migration happened \citep{sankararaman_date_2012}. Our results show that both of these analyses might be misleading.
+The major implication of our result is that one has to be extremely cautious when interpreting results of genetic dating; the data are entirely consistent with gene flow occurring both earlier and later than the confidence intervals of the mean gene flow timing might indicate. This is of great practical importance as it might be tempting to link the genetic admixture date estimates with biogeographical events \cite{sankararaman_date_2012,lazaridis_genomic_2016,jacobs_multiple_2019,vyas_analyses_2019,douka_age_2019}. For example, the lower bounds on admixture time estimates might be used as dates of Neandertal extinction, and likewise use the earliest dates of gene flow as evidence when the out-of-Africa migration happened \citep{sankararaman_date_2012}. Our results show that both of these analyses might be misleading.
 
 
 While our results show that drawing concrete conclusions from introgression time estimates, other avenues for differentiating different gene flow events remain fruitful.
