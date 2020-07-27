@@ -25,43 +25,40 @@ sim_parameters:
               EUR_AFR_migration_rate_GF: 0.0
               EUR_AFR_migration_start: 50
               EUR_AFR_migration_end: 200
-              GAMMA: 'Normal'
+              GAMMA: 'Alternative'
         _MS_fixed_Var_1_:
+              GF_start: 250
+              GF_stop: 251
+        _MS_fixed_Var_2_:
+              GF_start: 500
+              GF_stop: 501
+        _MS_fixed_Var_3_:
+              GF_start: 1000
+              GF_stop: 1001
+        _MS_fixed_Var_4_:
+              GF_start: 1500
+              GF_stop: 1501
+        _MS_fixed_Var_5_:
+              GF_start: 2000
+              GF_stop: 2001
+        _MS_fixed_Var_6_:
               GF_start: 188
               GF_stop: 312
-        _MS_fixed_Var_2_:
+        _MS_fixed_Var_7_:
               GF_start: 375
               GF_stop: 625
-        _MS_fixed_Var_3_:
+        _MS_fixed_Var_8_:
               GF_start: 750
               GF_stop: 1250
-        _MS_fixed_Var_4_:
+        _MS_fixed_Var_9_:
               GF_start: 1125
               GF_stop: 1875
-        _MS_fixed_Var_5_:
+        _MS_fixed_Var_10_:
               GF_start: 1500
               GF_stop: 2500
         _MS_fixed_mean_0_:
               GF_start: 1500
               GF_stop: 1501
-        _MS_fixed_mean_0_1_:
-              GF_start: 1499
-              GF_stop: 1501
-        _MS_fixed_mean_0_2_:
-              GF_start: 1447
-              GF_stop: 1503
-        _MS_fixed_mean_0_3_:
-              GF_start: 1495
-              GF_stop: 1505
-        _MS_fixed_mean_0_4_:
-              GF_start: 1490
-              GF_stop: 1510
-        _MS_fixed_mean_0_5_:
-              GF_start: 1475
-              GF_stop: 1525
-        _MS_fixed_mean_0_6_:
-              GF_start: 1450
-              GF_stop: 1550
         _MS_fixed_mean_1_:
               GF_start: 1400
               GF_stop: 1600

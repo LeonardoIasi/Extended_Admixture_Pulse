@@ -1,5 +1,5 @@
 configfile:    "config/control.yaml"
-configfile:    "config/master.yaml"
+configfile:    "config/master2.yaml"
 configfile:    "config/sim_parameters_new.yaml"
 configfile:    "config/ALDER.yaml"
 import pandas as pd
@@ -74,6 +74,7 @@ def GF_Model_IV(TimeSpan,GF_start,GF_stop,demographic_events,GF_rate,loc,Folder_
     if Gamma_mode == 'Normal':
         m=[stats.gamma.pdf(x=range(TimeSpan+1),a=a+1,loc=loc,scale=1/b)]
     if Gamma_mode == 'Alternative':
+        print("Using correct Gamma")
         m=[stats.gamma.pdf(x=range(TimeSpan+1),a=a,loc=loc,scale=1/b)]
     m=m[0]
     m[abs(m) < 1e-6] = 0
@@ -200,16 +201,16 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 
 ############################################################################################
 # Choose which Set to process by giving Set_name the name of the Set to be processed #
-Set_name='Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map'
+Set_name='Close_to_GF_End_Recent_GF'
 
 # Choose number of replicates #
 replicates=100
 
 # Choose Folder #
-Folder_name='../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map'
+Folder_name='../Close_to_GF_End_Recent_GF'
 
 # Choose Result Folder Name #
-Result_Folder='../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map/Result_both_Fit_fixed_Lambda'
+Result_Folder='../Close_to_GF_End_Recent_GF/Result_both_Fit_fixed_Lambda_new'
 
 # Choose if lambda chould be fixed or variable while fitting the AIC_Lomax
 Fix_lambda=True
@@ -395,17 +396,17 @@ rule fit_Curve:
         Fix_lambda=Fix_lambda
     output:
         #"{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
-        "{Folder_name}/Model_Fit_fixed_Lambda/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
+        "{Folder_name}/Model_Fit_fixed_Lambda_new/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
         #"{Folder_name}/Model_Fit/Plot-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.pdf",
     script:
-        "/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Fit_Exponential_and_Lomax_Snake.R"
+        "/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Fit_Exponential_and_Lomax_Snake_old.R"
         #"/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Fit_Exponential_and_Lomax_Snake_fix_S.R"
 
 
 rule grep_results_and_merge_with_Scenarios:
     input:
         #"{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
-        "{Folder_name}/Model_Fit_fixed_Lambda/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
+        "{Folder_name}/Model_Fit_fixed_Lambda_new/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
     output:
         temp("{Folder_name}/Result-Fit_Output-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt")
 

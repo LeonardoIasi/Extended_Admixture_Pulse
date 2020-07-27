@@ -2,10 +2,10 @@
 
 suppressPackageStartupMessages({
   library(VGAM)
-  library(tidyverse)
+  #library(tidyverse)
   library("DEoptim")
   library("MASS")
-  library(bbmle)
+  #library(bbmle)
 })
 
 
@@ -98,52 +98,52 @@ Fit_Lomax_fn <- function(Data,affine,Expo_s,Fix_lambda){
   wcorr=xx$wcorr
   if(Fix_lambda){
     if(affine){
-      fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + (x[1]*(dist/100) /  x[2])))^(1/x[1])
+      fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + ((x[1])*(dist/100) /  x[2])))^(1/(x[1]))
       fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
       fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1e-6,Expo_s,0,0), upper=c(100,Expo_s,1,1), control=list(trace=FALSE))
       
       par1_lomax <- fm3_DEoptim$optim$bestmem
       par1_lomax <- c(par1_lomax[1],par1_lomax[3],par1_lomax[4])
       names(par1_lomax) <- c("w","A","c")
-      fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((w*(dist/100)) / Expo_s)))^(1/w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+      fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + (((w)*(dist/100)) / Expo_s)))^(1/(w)), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
       
     } else {
-      fm1_lomax <- function(x)  x[3]* (1/(1 + (x[1]*(dist/100) /  x[2])))^(1/x[1])
+      fm1_lomax <- function(x)  x[3]* (1/(1 + ((x[1])*(dist/100) /  x[2])))^(1/(x[1]))
       fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
       fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1e-6,Expo_s,0), upper=c(100,Expo_s,1), control=list(trace=FALSE))
       
       par1_lomax <- fm3_DEoptim$optim$bestmem
       par1_lomax <- c(par1_lomax[1],par1_lomax[3])
       names(par1_lomax) <- c("w","A")
-      fit1_lomax <- nls(wcorr ~ A*(1/(1  + ((w*(dist/100)) / Expo_s)))^(1/w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+      fit1_lomax <- nls(wcorr ~ A*(1/(1  + (((w)*(dist/100)) / Expo_s)))^(1/(w)), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
       
     }
   }
   else{
     if(affine){
-      fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + (x[1]*(dist/100) /  x[2])))^(1/x[1])
+      fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + ((x[1])*(dist/100) /  x[2])))^(1/(x[1]))
       fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
       fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1e-6,Expo_s,0,0), upper=c(100,Expo_s,1,1), control=list(trace=FALSE))
       
       par1_lomax <- fm3_DEoptim$optim$bestmem
       par1_lomax <- c(par1_lomax[1],Expo_s,par1_lomax[3],par1_lomax[4])
       names(par1_lomax) <- c("w","s","A","c")
-      fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((w*(dist/100)) / s)))^(1/w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+      fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + (((w)*(dist/100)) / Expo_s)))^(1/(w)), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
       
     } else {
-      fm1_lomax <- function(x)  x[3]* (1/(1 + (x[1]*(dist/100) /  x[2])))^(1/x[1])
+      fm1_lomax <- function(x)  x[3]* (1/(1 + ((x[1])*(dist/100) /  x[2])))^(1/(x[1]))
       fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
       fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1e-6,Expo_s/2,0), upper=c(100,Expo_s*2,1), control=list(trace=FALSE))
       
       par1_lomax <- fm3_DEoptim$optim$bestmem
       par1_lomax <- c(par1_lomax[1],Expo_s,par1_lomax[3])
       names(par1_lomax) <- c("w","s","A")
-      fit1_lomax <- nls(wcorr ~ A*(1/(1  + ((w*(dist/100)) / s)))^(1/w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+      fit1_lomax <- nls(wcorr ~ A*(1/(1  + (((w)*(dist/100)) / Expo_s)))^(1/(w)), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
       
     }
     
   }
-
+  
   return(fit1_lomax)
 }
 

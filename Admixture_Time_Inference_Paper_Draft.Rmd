@@ -197,6 +197,9 @@ suppressPackageStartupMessages({
   library(kableExtra)
   library(DEoptim)
   library(png)
+  library("MASS")
+  library(bbmle)
+  library(DPQ)
 })
 
 Results_Table <- function(Table_Path) {
@@ -216,11 +219,21 @@ Results_Table <- function(Table_Path) {
 cbPalette <- c( "#56B4E9", "#E69F00", "#009E73", "#F0E442", "#0072B2", "#D55E00")
 cbPalette_viridis <- viridis(6,option = "D")
 
-Get_Data_Table <- function(Data){
+Get_Data_Table <- function(Data,mean_Gamma=F){
   xx=as.data.frame(table(round(Data$m,digits = 0), paste(Data$GF,Data$mean.t.GF, sep="_"),Data$mean.t.GF,Data$GF,Data$mean.t.GF,Data$length.t.GF))
   xx=subset(xx,Freq>0)
   xx=xx[order(xx$Var3),]
   return(xx)
+}
+
+Get_gamma_mean <- function(start_GF,stop_GF){
+    EX= (stop_GF - start_GF)/2 + start_GF
+    VarX= ((stop_GF - start_GF)/4)**2
+    b= EX/VarX
+    a=EX*b
+    a=a+1
+    mean_gamma= a/b
+    return(round(mean_gamma))
 }
 
 Get_points <- function(input,lval,hval,log){
@@ -312,7 +325,7 @@ Figure_1_C_2 <- function(Timespan_GF_Models,time_l,Split_time,Mean_Time,Colour_P
     b= EX/VarX
     a=EX*b
     
-    GF_gamma <- dgamma(x=time,shape = a+1,scale = 1/b)
+    GF_gamma <- dgamma(x=time,shape = a,scale = 1/b)
     GF_gamma[GF_gamma < 1e-6] = 0
     GF_gamma <- GF_gamma[1:Split_time]
     m2 <- c()
@@ -356,7 +369,7 @@ Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time
     b= EX/VarX
     a=EX*b
     Theta=b
-    k=a
+    k=a+1
     Lomax_normal <- function(dist,k,theta,A) A*(1 + ((dist/100) /  theta))^-(k)
     Lomax_log <- function(dist,k,theta,A) -k* log(1 + ((dist/100) /  theta)) + log(A)
     if(log==T){
@@ -407,7 +420,7 @@ Plot_Fig_1_A <- function(Data,Colour_P){
     theme(
       axis.text.x=element_blank(),
       axis.ticks.x=element_blank())+
-    coord_cartesian(ylim = c(0,2250), expand = 0)+
+    coord_cartesian(ylim = c(0,2500), expand = 0)+
     scale_color_manual("Gene Flow Model",
                        values = c(Colour_P[1],Colour_P[6]),
                        labels = c("Pulse","Continuous"))
@@ -426,7 +439,7 @@ Plot_Fig_1_B <- function(Data,Colour_P){
     theme(
       axis.text.x=element_blank(),
       axis.ticks.x=element_blank())+
-    labs(x = "Pulse length")+
+    labs(x = "Admixture Duration")+
     labs(y = "Estimated Admixture Time")+
     scale_color_manual("Admixture Duration",
                        values = Colour_P  
@@ -760,45 +773,26 @@ from a continuous event (resulting in Lomax-distributed ALD).
 
 
 
-
-```{r eval=FALSE,message=FALSE, echo=FALSE,warning=FALSE}
-
-#{r fig1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=3,fig.cap="\\label{fig:fig1} A) Migration rate per #generation modeled using a Gamma distribution for different gene flow length, dotted line indicates maximum time of gene flow. B) The #expected LD decay modeled as a Lomax distribution for the different length. C) The observed LD decay from msprime simulations" }
-
-## Visualization of gamma theoretical lomax LD and real data LD
-ALL_Continuous_Data <- c('Results_Fig_1_2/Differnt_GF_length_Data/Raw_ALDER_output-_Scenario_11_-run0-GF_Model_IV-ascertainment-0.txt',
-                         'Results_Fig_1_2/Differnt_GF_length_Data/Raw_ALDER_output-_Scenario_12_-run0-GF_Model_IV-ascertainment-0.txt',
-                         'Results_Fig_1_2/Differnt_GF_length_Data/Raw_ALDER_output-_Scenario_13_-run0-GF_Model_IV-ascertainment-0.txt',
-                         'Results_Fig_1_2/Differnt_GF_length_Data/Raw_ALDER_output-_Scenario_14_-run0-GF_Model_IV-ascertainment-0.txt',
-                         'Results_Fig_1_2/Differnt_GF_length_Data/Raw_ALDER_output-_Scenario_15_-run0-GF_Model_IV-ascertainment-0.txt',
-                         'Results_Fig_1_2/Differnt_GF_length_Data/Raw_ALDER_output-_Scenario_16_-run0-GF_Model_IV-ascertainment-0.txt')
-
-P_Gamma <- Figure_1_C_2(c(1,200,400,800,1000,1500),3000,2550,1500,Colour_P = cbPalette_viridis)
-
-P_Lomax <-Theoratical_Lomax(c(1,200,400,800,1000,1500),0.5,2550,1500,0.0004,Colour_P = cbPalette_viridis)
-
-P_real <- Figure_All_Real_Data(ALL_Continuous_Data,log=T,c(1,200,400,800,1000,1500),Colour_P = cbPalette_viridis)
-
-ggarrange(P_Gamma,P_Lomax,P_real,
-          labels = c("A","B", "C"),
-          ncol = 3, nrow = 1,common.legend = T,legend = 'bottom')
-
-```
-
-
 \subsection{The effect of continuous admixture on the admixture time estimates}\label{the effect of continuous admixture on the admixture time estimates}
 
 
 ```{r message=FALSE, echo=FALSE,warning=FALSE}
+
 #Data
-Figure_1_A_Data <- Results_Table("Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_1_A_new-GF_Model_I-min_dist_Fit-0.05-ascertainment-0.txt")
-Figure_1_A_Data <- Figure_1_A_Data[Figure_1_A_Data$error=="no_error",] 
-Figure_1_B_Data <- Results_Table("Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_1_B-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
-Figure_1_C_1_Data <- c('Results_Fig_1_2/Differnt_GF_length_Data/Raw_ALDER_output-_Scenario_11_-run0-GF_Model_IV-ascertainment-0.txt','Results_Fig_1_2/Differnt_GF_length_Data/Raw_ALDER_output-_Scenario_16_-run0-GF_Model_IV-ascertainment-0.txt')
+# Old data
+#Figure_1_A_Data <- Results_Table("Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_1_A_new-GF_Model_I-min_dist_Fit-0.05-ascertainment-0.txt")
+#Figure_1_A_Data <- Figure_1_A_Data[Figure_1_A_Data$error=="no_error",]
+#Figure_1_B_Data <- Results_Table("Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_1_B-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+
+# New Data
+Figure_1_A_Data <- Results_Table("Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_1_A_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Figure_1_A_Data <- Figure_1_A_Data[Figure_1_A_Data$error=="no_error",]
+Figure_1_B_Data <- Results_Table("Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_1_B_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+
 
 Fig_A_1 <- Get_Data_Table(Figure_1_A_Data)
 Fig_A_1$Var1 <- as.numeric(as.character(Fig_A_1$Var1))
-Fig_A_1$Var3 <- as.numeric(as.character(Fig_A_1$Var3))
+Fig_A_1$Var3 <- round(as.numeric(as.character(Fig_A_1$Var3)))
 Fig_A_1_Means <- aggregate(Fig_A_1[,c(1,3)],list(Fig_A_1$Var2), mean)
 Fig_A_1_Means_diff <- data.frame(sqrt((Fig_A_1_Means$Var1-Fig_A_1_Means$Var3)^2)/Fig_A_1_Means$Var3)
 Fig_A_1_Means_diff_pulse <- round(range(Fig_A_1_Means_diff[1:5,]*100))
@@ -884,41 +878,49 @@ ggarrange(P1_1,P1_2,
 ### Read in data ###
 
 Simple_D_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Simple_D_Sim_1$Gamma_mean <- Get_gamma_mean(Simple_D_Sim_1$GF_Start,Simple_D_Sim_1$GF_Stop)
 Simple_D_Sim_1$Demography <- "0_Simple"
 Simple_D_Sim_1$Recomb.rate <- "0_constant"
 Simple_D_Sim_1$Sim_id <- ifelse(Simple_D_Sim_1$Ascertained==0,"Simple_D_Sim_LES_0","Simple_D_Sim_HES_0")
 Simple_D_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Simple_D_Sim_2$Gamma_mean <- Get_gamma_mean(Simple_D_Sim_2$GF_Start,Simple_D_Sim_2$GF_Stop)
 Simple_D_Sim_2$Demography <- "0_Simple"
 Simple_D_Sim_2$Recomb.rate <- "0_constant"
 Simple_D_Sim_2$Sim_id <- ifelse(Simple_D_Sim_2$Ascertained==0,"Simple_D_Sim_LES_1","Simple_D_Sim_HES_1")
 Inferred_D_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 #Inferred_D_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Inferred_D_Sim_1$Gamma_mean <- Get_gamma_mean(Inferred_D_Sim_1$GF_Start,Inferred_D_Sim_1$GF_Stop)
 Inferred_D_Sim_1$Demography <- "Inferred"
 Inferred_D_Sim_1$Recomb.rate <- "0_constant"
 Inferred_D_Sim_1$Sim_id <- ifelse(Inferred_D_Sim_1$Ascertained==0,"Inferred_D_Sim_LES_0","Inferred_D_Sim_HES_0")
 Inferred_D_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 #Inferred_D_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Inferred_D_Sim_2$Gamma_mean <- Get_gamma_mean(Inferred_D_Sim_2$GF_Start,Inferred_D_Sim_2$GF_Stop)
 Inferred_D_Sim_2$Demography <- "Inferred"
 Inferred_D_Sim_2$Recomb.rate <- "0_constant"
 Inferred_D_Sim_2$Sim_id <- ifelse(Inferred_D_Sim_2$Ascertained==0,"Inferred_D_Sim_LES_1","Inferred_D_Sim_HES_1")
 Recom_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Recom_Sim_1$Gamma_mean <- Get_gamma_mean(Recom_Sim_1$GF_Start,Recom_Sim_1$GF_Stop)
 Recom_Sim_1$Demography <- "0_Simple"
 Recom_Sim_1$Recomb.rate <- "variable"
 Recom_Sim_1$m <- Recom_Sim_1$m
 Recom_Sim_1$Sim_id <- ifelse(Recom_Sim_1$Ascertained==0,"Recom_D_Sim_LES_0","Recom_D_Sim_HES_0")
 Recom_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Recom_Sim_2$Gamma_mean <- Get_gamma_mean(Recom_Sim_2$GF_Start,Recom_Sim_2$GF_Stop)
 Recom_Sim_2$Demography <- "0_Simple"
 Recom_Sim_2$Recomb.rate <- "variable"
 Recom_Sim_2$m <- Recom_Sim_2$m
 Recom_Sim_2$Sim_id <- ifelse(Recom_Sim_2$Ascertained==0,"Recom_D_Sim_LES_1","Recom_D_Sim_HES_1")
 Recom_Sim_and_Inf_1 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_recomb_map_-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 #Recom_Sim_and_Inf_1 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Recom_Sim_and_Inf_1$Gamma_mean <- Get_gamma_mean(Recom_Sim_and_Inf_1$GF_Start,Recom_Sim_and_Inf_1$GF_Stop)
 Recom_Sim_and_Inf_1$Demography <- "Inferred"
 Recom_Sim_and_Inf_1$Recomb.rate <- "variable"
 Recom_Sim_and_Inf_1$m <- Recom_Sim_and_Inf_1$m
 Recom_Sim_and_Inf_1$Sim_id <- ifelse(Recom_Sim_and_Inf_1$Ascertained==0,"Recom_Sim_and_Inf_LES_0","Recom_Sim_and_Inf_HES_0")
 Recom_Sim_and_Inf_2 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_recomb_map_-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 #Recom_Sim_and_Inf_2 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Recom_Sim_and_Inf_2$Gamma_mean <- Get_gamma_mean(Recom_Sim_and_Inf_2$GF_Start,Recom_Sim_and_Inf_2$GF_Stop)
 Recom_Sim_and_Inf_2$Demography <- "Inferred"
 Recom_Sim_and_Inf_2$Recomb.rate <- "variable"
 Recom_Sim_and_Inf_2$m <- Recom_Sim_and_Inf_2$m
@@ -934,12 +936,41 @@ rm(Simple_D_Sim_1,Simple_D_Sim_2,Recom_Sim_1,Recom_Sim_2,Inferred_D_Sim_1,Inferr
 xdata.M.3$TID <- ifelse(xdata.M.3$GF=='0_Pulse',paste(xdata.M.3$Sim_id,'P',sep = '_'),paste(xdata.M.3$Sim_id,'C',sep = '_')) 
 
 
-xdata.M.3$Diff <- xdata.M.3$m - xdata.M.3$mean.t.GF
+#xdata.M.3$Diff <- xdata.M.3$m - xdata.M.3$mean.t.GF
+xdata.M.3$Diff <- xdata.M.3$m - xdata.M.3$Gamma_mean
 # remove all estimates where nls reported an error
 xdata.M.3_no_error <- xdata.M.3[xdata.M.3$error=="no_error",]
 xdata.M.3_no_error$Sim_id_int <- as.integer(as.factor(xdata.M.3_no_error$TID))
 
-xdata.M.3_no_error$Diff_s <- (xdata.M.3_no_error$m - xdata.M.3_no_error$mean.t.GF)/sd(xdata.M.3_no_error$m)
+xdata.M.3_no_error$Diff_s <- (xdata.M.3_no_error$m - xdata.M.3_no_error$Gamma_mean)/sd(xdata.M.3_no_error$m)
+
+
+
+Bdata_index_s_2 <- list(
+  E = (xdata.M.3_no_error$Diff_s),
+  Id = xdata.M.3_no_error$Sim_id_int,
+  A = ifelse(xdata.M.3_no_error$Ascertained==0,0,1),
+  MD = ifelse(xdata.M.3_no_error$min_dist=="0.05",0,1),
+  D = ifelse(xdata.M.3_no_error$Demography=="0_Simple",0,1),
+  R = ifelse(xdata.M.3_no_error$Recomb.rate=="0_constant",0,1),
+  GF = ifelse(xdata.M.3_no_error$GF=="0_Pulse",0,1)
+)
+
+
+
+Effect_size_fixed_s_2 <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF ,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)
+  ), data=Bdata_index_s_2, chains=4 , cores=4 , log_lik = T)
+
+```
+
+```{r eval=FALSE,message=FALSE, echo=FALSE,warning=FALSE, cache=T}
+# Alternative models
 
 
 Bdata_index_s <- list(
@@ -952,7 +983,6 @@ Bdata_index_s <- list(
   GF = ifelse(xdata.M.3_no_error$GF=="0_Pulse",0,1)
 )
 
-
 Effect_size_fixed_s <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
@@ -961,10 +991,6 @@ Effect_size_fixed_s <- ulam(
     c(bA,bm,bD,bR,bG) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)
   ), data=Bdata_index_s, chains=4 , cores=4 , log_lik = T)
-```
-
-```{r eval=FALSE,message=FALSE, echo=FALSE,warning=FALSE, cache=T}
-# Alternative models
 
 Effect_size_fixed_id_s <- ulam(
   alist(
@@ -1003,28 +1029,9 @@ compare(Effect_size_fixed_s,Effect_size_fixed_id_s,Effect_size_varying_intercept
 traceplot(Effect_size_fixed_id)
 ```
 
-```{r eval=FALSE, message=FALSE, echo=FALSE,warning=FALSE}
-B_model_result <- precis(Effect_size_fixed_s,prob = 0.95)
-
-A_pred <- link( Effect_size_fixed_s , data=data.frame(A=seq(0,1,0.05),MD=0,D=0,R=0,GF=0) )
-A_pred.mean <- apply( A_pred , 2 , mean )
-A_pred.PI <- apply( A_pred , 2 , PI , prob=0.95 )
-boxplot(rep(as.numeric(as.character(Simplest_case$Diff_s)),Simplest_case$Freq),
-      rep(as.numeric(as.character(Plot_model$Diff_s[Plot_model$Combination=='Simple_D_Sim_HES_0_P'])),Plot_model$Freq[Plot_model$Combination=='Simple_D_Sim_HES_0_P']), 
-      col=col.alpha(rangi2,0.5),ylim=c(-0.5,0.5) )
-# plot the MAP line, aka the mean mu for each weight
-lines( seq(1,2,0.05) , A_pred.mean,add=T )
-# plot a shaded region for 89% PI
-shade(A_pred.PI ,seq(1,2,0.05),add=T)
-
+```{r message=FALSE, echo=FALSE,warning=FALSE, cache=T}
+B_model_result <- precis(Effect_size_fixed_s_2,prob = 0.95)
 ```
-
-```{r  message=FALSE, echo=FALSE,warning=FALSE, cache=T}
-B_model_result <- precis(Effect_size_fixed_s,prob = 0.95)
-
-```
-
-
 
 Having established that the duration of continuous admixture under ideal
 circumstances is only marginally influential on admixture time
@@ -1098,7 +1105,54 @@ demography and admixture model are 10 \% or less of the true mean
 admixture time. The major uncertainties in the admixture time estimate arise from assuming a constant recombination rate. The admixture time estimates for a pulse or a multi-generation admixture are simillarly effected by the other modeling parameters.
 
 
-```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig3} Comparison of the standardized difference between true and estimated admixture time for each parameter and the standard model of 100 replications each. Dotted line represents the model prediction with the 5.5 % and 94.5 % compatibility intervals solid lines. Dotted horizontal line indicates unbiased admixture estimates."}
+
+```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig3} Comparison between the effect sizes of the estimated parameters on the standardized difference between true and estimated admixture time"}
+
+post_effect_size_model <- extract.samples(Effect_size_fixed_s_2,n = 1e5)
+Post_effect_size_est=data.frame(mean=c(
+mean(post_effect_size_model$a),
+mean(post_effect_size_model$a + post_effect_size_model$bG),
+mean(post_effect_size_model$a + post_effect_size_model$bR),
+mean(post_effect_size_model$a + post_effect_size_model$bD),
+mean(post_effect_size_model$a + post_effect_size_model$bm),
+mean(post_effect_size_model$a + post_effect_size_model$bA)),
+HPDI_lower=c(
+HPDI(post_effect_size_model$a,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[1]),
+HPDI_upper=c(
+HPDI(post_effect_size_model$a,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2])
+#,row.names = c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+)
+
+
+
+ggplot(Post_effect_size_est,aes(x=row.names(Post_effect_size_est),y=as.numeric(as.character(mean))))+
+      geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F)+
+    geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(row.names(Post_effect_size_est))),col="black",width=0.2)+
+  geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+  labs(x = "")+
+  labs(y = "Standardized difference between true and estimated time")+
+  theme(plot.title = element_text(hjust = 0.5,size = 12))+
+  scale_x_discrete(labels= c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+                    )+
+  scale_color_manual("Gene Flow Model",
+                     values = c(cbPalette_viridis[1],cbPalette_viridis[6],
+                                cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1]),
+                     label=c("Pulse","Continuous"))
+
+```
+
+
+```{r eval=FALSE, message=FALSE, echo=FALSE,warning=FALSE}
 
 
 
@@ -1197,109 +1251,6 @@ annotate_figure(Fig_3,bottom = text_grob("Predictor combination"),left  = text_g
 
 ```
 
-```{r eval=FALSE,,message=FALSE, echo=FALSE,warning=FALSE}
-
-
-
-
-#### Ploting the model ####S
-
-
-Plot_Fig_2_X <- function(Null_Case,Predictore_case,B_Model,Int,Pred_data,Slope,x.lable,x.title,xlab=NULL,ylab=NULL,y.ticks=F){
-  Factor_pred <- link( Effect_size_fixed_s , data=data.frame(A=Pred_data[1],MD=Pred_data[2],D=Pred_data[3],R=Pred_data[4],GF=Pred_data[5]) )
-  Factor_pred.mean <- apply( Factor_pred , 2 , mean )
-  Factor_pred.PI <- apply( A_pred , 2 , PI , prob=0.95 )
-  pred_Data <- data.frame(x=seq(0,1,0.05),y=Factor_pred.mean)
-  Data=rbind(Null_Case,Predictore_case)
-  if(y.ticks==F){
-    Px <-  ggplot(Data,aes(x=as.character(Combination),y=as.numeric(as.character(Diff_s)),colour=Col))+
-      geom_point(aes(size = Freq),show.legend = F)+
-      geom_boxplot(show.legend = F)+
-      geom_abline(data=pred_Data,aes(x=x,y=y),linetype=2)+
-      #geom_abline(seq(1,2,0.05) , Factor_pred.PI[,1])+
-      #geom_abline(seq(1,2,0.05) , Factor_pred.PI[,2])+
-      geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
-      labs(x = xlab)+
-      labs(y = ylab)+
-      scale_x_discrete(labels= x.lable)+
-      theme(axis.text.x = element_text(angle = 0,size = 12),
-            axis.text.y=element_blank(),
-            axis.ticks.y =element_blank())+
-      coord_cartesian(ylim = c(-2,1), expand = 0)+
-      ggtitle(x.title)+
-      theme(plot.title = element_text(hjust = 0.5,size = 12))+
-      scale_color_manual("Gene Flow Model",
-                         values = c(cbPalette_viridis[1],cbPalette_viridis[6]),
-                         labels = c("Pulse","Continuous"))
-  }
-  
-  if(y.ticks==T){
-    Px <-  ggplot(Data,aes(x=as.character(Combination),y=as.numeric(as.character(Diff_s)),colour=Col))+
-      geom_point(aes(size = Freq),show.legend = F)+
-      geom_boxplot(show.legend = F)+
-      geom_line(data=pred_Data,aes(x=pred_Data[,1],y=pred_Data[,2]),linetype=2)+
-      #geom_abline(seq(1,2,0.05) , Factor_pred.PI[,1])+
-      #geom_abline(seq(1,2,0.05) , Factor_pred.PI[,2])+
-      geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
-      labs(x = xlab)+
-      #labs(y = "Standardized difference \nbetween true and estimated time")+
-      scale_x_discrete(labels= x.lable)+
-      theme(axis.text.x = element_text(angle = 0,size = 12),
-            axis.title.y=element_blank())+
-      coord_cartesian(ylim = c(-2,1), expand = 0)+
-      ggtitle(x.title)+
-      theme(plot.title = element_text(hjust = 0.5,size = 12))+
-      scale_color_manual("Gene Flow Model",
-                         values = c(cbPalette_viridis[1],cbPalette_viridis[6]),
-                         labels = c("Pulse","Continuous"))
-  }
-
-  return(Px)
-  
-}
-
-### Execute plot functions ###
-
-Plot_model <- data.frame(table(Diff_s=round(xdata.M.3_no_error$Diff_s,digits = 2),GF=xdata.M.3_no_error$GF,Asc=xdata.M.3_no_error$Ascertainment,d0=xdata.M.3_no_error$min_dist,True_GF=xdata.M.3_no_error$mean.t.GF,Demo=xdata.M.3_no_error$Demography,Recomb=xdata.M.3_no_error$Recomb.rate,Combination=xdata.M.3_no_error$TID))
-Plot_model <- subset(Plot_model,Freq>0)
-
-
-
-Plot_model$Col <- ifelse(Plot_model$GF=='0_Pulse','#56B4E9','#D55E00')
-Simplest_case= Plot_model[Plot_model$Combination=='Simple_D_Sim_LES_0_P',]
-Simplest_case$Combination <- paste(0,Simplest_case$Combination,sep = '_')
-
-
-PX1 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_HES_0_P',],B_model_result,c(seq(0,1,0.05),0,0,0,0),Int = 1,Slope = 6
-             ,x.lable = c("LES","HES"),"Ascertainment\nScheme",y.ticks = T)
-
-PX2 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_LES_1_P',],B_model_result,Int = 1,Slope = 5,x.lable = c("d0 = 0.02","d0 = 0.05"),"Minimal Distance\n")
-
-PX3 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Inferred_D_Sim_LES_0_P',],B_model_result,Int = 1,Slope = 4,
-             x.lable = c("Simple","Complex"),"Demography\n")
-
-PX4 <- Plot_Fig_2_X(Null_Case = Simplest_case,Predictore_case = Plot_model[Plot_model$Combination=='Recom_D_Sim_LES_0_P',],B_model_result,Int = 1,Slope = 3,x.lable = c("Constant","Variable"),"Recombination Map\n")
-
-PX5 <- Plot_Fig_2_X(Simplest_case,Plot_model[Plot_model$Combination=='Simple_D_Sim_LES_0_C',],B_model_result,Int = 1,Slope = 2,x.lable = c("Pulse","Continous"),"Gene Flow\n")
-
-
-
-#Fig_3 <- ggarrange(                                               # second row with boxplot
-#      ggarrange(im_B, NULL, ncol = 2),       # Second row with pgn and NULL
-#        ggarrange(PX1,PX2,PX3,PX4,PX5,
-#          ncol = 5, nrow = 1),
-#          nrow = 2, 
-#          labels = c("A","B")                                      # Labels of the boxplot
-#          )
-#annotate_figure(Fig_3,bottom = text_grob("Predictor combination"))
-
-Fig_3 <-  ggarrange(PX1,PX2,PX3,PX4,PX5,
-          ncol = 5, nrow = 1)
-annotate_figure(Fig_3,bottom = text_grob("Predictor combination"),left  = text_grob("Standardized difference between true and estimated time",rot = 90))
-       
-
-```
-
 \subsection{Estimating the Lomax-parameters under different conditions}\label{estimating the Lomax-parameters under different conditions}
 
 ```{r message=FALSE, echo=FALSE,warning=FALSE}
@@ -1326,7 +1277,7 @@ True_params <- function(Result.Table){
     VarX= ((GF_Len)/4)**2
     b= EX/VarX
     a=EX*b
-    #a=a+1
+    a=a+1
     True_W=1/a
     True_S=b/(1/True_W)
     xx=c(True_W,True_S)
@@ -1347,12 +1298,13 @@ Result.Table.fn <- function(Result.Table.path,Sampling.time.from.GF.End,name){
   Result.Table$Sample_Time <- Sampling.time.from.GF.End
   Result.Table$True_GF_length <- Result.Table$GF.End-Result.Table$GF.Start
   Result.Table$True_mean_GF <- ((Result.Table$GF.End+Result.Table$GF.Start)/2)-(Result.Table$GF.Start-Result.Table$Sample_Time)
+  Result.Table$True_gamma_mean_GF <- Get_gamma_mean(Result.Table$GF.Start,Result.Table$GF.End)
   Result.Table$mean_GF_exp <- 1/Result.Table$s.exp
   Result.Table$mean_GF_lomax_s <- 1/Result.Table$s.lomax
   Result.Table.comparison <- True_params(Result.Table)
   Result.Table$True_W <- Result.Table.comparison$V1
   Result.Table$True_S <- Result.Table.comparison$V2
-  Result.Table.comparison$length_GF <- (sqrt(Result.Table$mean_GF_lomax_s/(((1/Result.Table$w.lomax)+1)*Result.Table$s.lomax)))*4
+  Result.Table.comparison$length_GF <- (sqrt(Result.Table$mean_GF_lomax_s/(((1/Result.Table$w.lomax))*Result.Table$s.lomax)))*4
   Result.Table$length_GF <- Result.Table.comparison$length_GF
   
   return(Result.Table)
@@ -1362,14 +1314,14 @@ Plot_sampling_50_gen_t_GF <- function(ggdata_t.GF,cbPalette_viridis,Ptitle){
   ggplot(ggdata_t.GF,aes(x=variable,y=as.numeric(as.character(value)),colour=factor(Name)))+
     geom_boxplot(show.legend = T)+
     facet_grid(~as.factor(True_GF_length),switch = "x")+
-    geom_hline( aes(yintercept = True_mean_GF ))+
+    geom_hline( aes(yintercept = True_gamma_mean_GF ))+
     ggtitle(Ptitle) +
     labs(x = "Admixture Duration")+
     labs(y = "Estimated Admixture Time")+
     theme(
       axis.text.x=element_blank(),
       axis.ticks.x=element_blank())+
-    coord_cartesian(ylim = c(0,1000), expand = 0)+
+    coord_cartesian(ylim = c(0,1500), expand = 0)+
     scale_color_manual("Simulations",
                        values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
                        labels = c("Constant Recombination","HapMap AAMap corrected","HapMap HapMap corrected","HapMap not corrected"))
@@ -1397,7 +1349,7 @@ Plot_sampling_varying_gen_t_GF <- function(ggdata_t.GF_varying,cbPalette_viridis
   ggplot(ggdata_t.GF_varying,aes(x=variable,y=as.numeric(as.character(value)),colour=factor(Name)))+
     geom_boxplot()+
     facet_grid(~as.factor(Sample_Time),switch = "x")+
-    geom_hline( aes(yintercept = True_mean_GF ))+
+    geom_hline( aes(yintercept = True_gamma_mean_GF ))+
     ggtitle(Ptitle) +
     labs(x = "Generations Sampled After End of Admixture")+
     labs(y = "Estimated Admixture Time")+
@@ -1419,7 +1371,7 @@ Plot_sampling_varying_gen_GF_Length <- function(ggdata_l.GF_varying,cbPalette_vi
     geom_hline( aes(yintercept = True_GF_length ))+
     ggtitle(Ptitle) +
     labs(x = "Generations Sampled After End of Admixture")+
-    labs(y = "Estimated Gene Flow Length")+
+    labs(y = "Estimated Admixture Duration")+
     theme(
       axis.text.x=element_blank(),
       axis.ticks.x=element_blank())+
@@ -1457,9 +1409,9 @@ Plot.data_50<-rbind(
   Recent_50_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction,50,'Recent_50_HapMap_HapMap_correction')
 )
 
-ggdata_t.GF_50_mean_GF_exp <- melt(Plot.data_50,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name'))
-ggdata_t.GF_50_mean_GF_lomax <- melt(Plot.data_50,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name'))
-ggdata_l.GF_50 <- melt(Plot.data_50,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_t.GF_50_mean_GF_exp <- melt(Plot.data_50,measure.vars =  c('mean_GF_exp'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name'))
+ggdata_t.GF_50_mean_GF_lomax <- melt(Plot.data_50,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name'))
+ggdata_l.GF_50 <- melt(Plot.data_50,measure.vars =  c('length_GF'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name'))
 
 Plot.data_50_fixed_Lambda<-rbind(
   Recent_50_constant_fixed_Lambda<- Result.Table.fn(Result.Table.path_Recent_50_fixed_Lambda,50,'Recent_50_constant'),
@@ -1468,8 +1420,8 @@ Plot.data_50_fixed_Lambda<-rbind(
   Recent_50_HapMap_HapMap_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda,50,'Recent_50_HapMap_HapMap_correction')
 )
 
-ggdata_t.GF_50_fixed_Lambda <- melt(Plot.data_50_fixed_Lambda,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name'))
-ggdata_l.GF_50_fixed_Lambda <- melt(Plot.data_50_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_t.GF_50_fixed_Lambda <- melt(Plot.data_50_fixed_Lambda,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name'))
+ggdata_l.GF_50_fixed_Lambda <- melt(Plot.data_50_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name'))
 
 Plot.data_varying<-rbind(
   Recent_varying_constant<- Result.Table.fn(Result.Table.path_Recent_Varying,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_constant'),
@@ -1478,9 +1430,9 @@ Plot.data_varying<-rbind(
   Recent_varying_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_HapMap_correction')
 )
 
-ggdata_t.GF_varying_mean_GF_exp <- melt(Plot.data_varying,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
-ggdata_t.GF_varying_mean_GF_lomax <- melt(Plot.data_varying,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
-ggdata_l.GF_varying <- melt(Plot.data_varying,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_t.GF_varying_mean_GF_exp <- melt(Plot.data_varying,measure.vars =  c('mean_GF_exp'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_t.GF_varying_mean_GF_lomax <- melt(Plot.data_varying,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_l.GF_varying <- melt(Plot.data_varying,measure.vars =  c('length_GF'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name','Sample_Time'))
 
 Plot.data_varying_fixed_Lambda<-rbind(
   Recent_varying_constant_fixed_Lambda<- Result.Table.fn(Result.Table.path_Recent_Varying_fixed_Lambda,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_constant'),
@@ -1489,8 +1441,8 @@ Plot.data_varying_fixed_Lambda<-rbind(
   Recent_varying_HapMap_HapMap_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_HapMap_correction')
 )
 
-ggdata_t.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
-ggdata_l.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_t.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_l.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name','Sample_Time'))
 
 
 New.P1_mean_GF_exp <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_exp,cbPalette_viridis, "Sampled 50 Gen. From End Of Admixture")
@@ -1597,7 +1549,7 @@ continuous admixture always resulted in the Lomax having a lower AIC.
 
 <!-- Maybe call it inferring the genetic distance rather than correcting -->
 
-``` {r fig4, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig4} Parameter estimate for different sampling and admixture duration times using different methods for assigning genetic length A) Mean time estimates from the pulse model fit of different gene flow length all sampled 50 generations after the gene flow enden. B) Lomax duration estimat of the scenario C) Mean time estimates from the pulse model fit of different sampling times after the end of 800 generations of gene flow. D) Lomax duration estimat of the scenario"}
+``` {r fig4, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig4} Parameter estimate for different sampling and admixture duration times using different methods for assigning genetic length A) Mean time estimates from the continuous model fit of different gene flow length all sampled 50 generations after the gene flow enden. B) Lomax duration estimat of the scenario C) Mean time estimates from the continuous model fit of different sampling times after the end of 800 generations of gene flow. D) Lomax duration estimat of the scenario"}
 
 
 Lomax.Fig_mean_exp <- ggarrange(New.P1_mean_GF_exp,New.P2,New.P3_mean_GF_exp,New.P4,
@@ -1612,11 +1564,11 @@ Lomax.Fig_fixed_Lambda <- ggarrange(New.P1_fixed_Lambda,New.P2_fixed_Lambda,New.
                      labels = c("A","B","C","D"),
                      ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
 
-Lomax.Fig_mean_exp
+#Lomax.Fig_mean_exp
 
-#Lomax.Fig_mean_lomax
+Lomax.Fig_mean_lomax
 
-#New.Fig_fixed_Lambda
+#Lomax.Fig_fixed_Lambda
 ```
 
 ```{r message=FALSE, echo=FALSE,warning=FALSE}
@@ -1971,6 +1923,8 @@ ggarrange(Real_data_Plot_normal_2,Real_data_Plot_log,ncol = 2,nrow = 1,
 ```
 
 
+
+
 \section{Discussion}\label{discussion}
 
 Archaeological evidence suggests that Neandertals and modern human populations overlapped in some regions for
@@ -2014,6 +1968,12 @@ im_B
 
 ```{r figS2, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 relicates respectively. Dotted line represents the model prediction with the 5.5 % and 94.5 % compatibility intervals solid lines. Dotted horizontal line indicates no difference between ture and estimated time. "}
 
+Plot_model <- data.frame(table(Diff_s=round(xdata.M.3_no_error$Diff_s,digits = 2),GF=xdata.M.3_no_error$GF,Asc=xdata.M.3_no_error$Ascertainment,d0=xdata.M.3_no_error$min_dist,True_GF=xdata.M.3_no_error$mean.t.GF,Demo=xdata.M.3_no_error$Demography,Recomb=xdata.M.3_no_error$Recomb.rate,Combination=xdata.M.3_no_error$TID))
+Plot_model <- subset(Plot_model,Freq>0)
+
+
+
+Plot_model$Col <- ifelse(Plot_model$GF=='0_Pulse','#56B4E9','#D55E00')
 
 
 
@@ -2059,7 +2019,7 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r figS3, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS3} Lomax estimates for the mean time."}
+```{r figS3, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS3} Exponential and Lomax estimates for the mean time."}
 
 New.P1_mean_GF_exp <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_exp,cbPalette_viridis,"Sampled 50 Gen. from End Of Admixture Exponential Fit")
 New.P1_mean_GF_lomax <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_lomax,cbPalette_viridis,"Sampled 50 Gen. from End Of Admixture Lomax Fit")
@@ -2090,4 +2050,403 @@ kable(Param_Est_Tabel , "latex",col.names = c("Model","Parameter","Estimate","2.
       caption = "\\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit") %>%
   #collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
+```
+
+```{r message=FALSE, echo=FALSE,warning=FALSE}
+### Functions
+Get_Filtered_Simulated_Fragments_fn <- function(Path_to_Fragment_File,header,recomb_rate,n_Haploid){
+  Segments <- read.table(Path_to_Fragment_File,stringsAsFactors = F,header=header)
+  if(header==F){
+    colnames(Segments) = c('Ind','chrom', 'start','end')
+  }
+  
+  Segments$length_bp <- as.numeric(Segments$end) - as.numeric(Segments$start)
+  m=sum(Segments$length_bp)/(length(unique(Segments$chrom))*n_Haploid*150e6)
+  Segments$length_cM <- Segments$length_bp*(recomb_rate)*100
+  
+  Segments_filtered <- c()
+  for(chr in 1:22){
+    Segments_filtered_chr <- Segments[Segments$chrom==paste("chr",chr,sep = "") & !duplicated(Segments$start) & !duplicated(Segments$end),]
+    Segments_filtered <- rbind(Segments_filtered,Segments_filtered_chr)
+    rm(Segments_filtered_chr)
+  }
+  return(list(Segments_filtered=Segments_filtered,m=m))
+  
+}
+
+Assign_Genetic_distance_Simulation_interpolate_fn <- function(Path_to_Fragment_File,header,Path_to_Recomb_Map,n_Haploid){
+  Fragments <- read.table(Path_to_Fragment_File,stringsAsFactors = F,header=header,fill = T)
+  if(header==F){
+    colnames(Fragments) = c('Ind','chrom', 'start','end')
+  }
+  Fragment_bp=Fragments$end - Fragments$start
+  m=sum(Fragment_bp)/(length(unique(Fragments$chrom))*n_Haploid*150e6)
+  Recomb_Map <- read.table(Path_to_Recomb_Map, header = T)
+  Fragments_cM <- c()
+  for(chr in 1:length(unique(Fragments$chrom))){
+    Recomb_Map_chr <- Recomb_Map
+    Fragments_chr <- Fragments[Fragments$chrom==paste("chr",chr,sep=""),]
+    #Start_Arch_Freg <- approx(x=Recomb_Map_chr[,2]  , y=Recomb_Map_chr[,4], xout=Fragments_chr$start,method = "linear")
+    #Stop_Arch_Freg <- approx(x=Recomb_Map_chr[,2], y=Recomb_Map_chr[,4], xout=Fragments_chr$end,method = "linear")
+    Start_Arch_Freg <- approx(x=Recomb_Map_chr[,2]  , y=Recomb_Map_chr[,4], xout=Fragments_chr$start,method = "constant")
+    Stop_Arch_Freg <- approx(x=Recomb_Map_chr[,2], y=Recomb_Map_chr[,4], xout=Fragments_chr$end,method = "constant")
+    Chr_x <- data.frame(chrom=paste("chr",chr,sep = ""),Start_cM=Start_Arch_Freg$y,End_cM=Stop_Arch_Freg$y,length_bp=Fragments_chr$end - Fragments_chr$start)
+    Fragments_cM <- rbind(Fragments_cM,Chr_x)
+  }
+  Fragments_cM_clean <- Fragments_cM[complete.cases(Fragments_cM$Start_cM),]
+  Fragments_cM_clean <- Fragments_cM_clean[complete.cases(Fragments_cM_clean$End_cM),]
+  Fragments_cM_clean$length_cM <- Fragments_cM_clean$End_cM - Fragments_cM_clean$Start_cM
+  Fragments_cM_clean_filtered <- c()
+  for(chr in 1:22){
+    Fragments_cM_clean_filtered_chr <- Fragments_cM_clean[Fragments_cM_clean$chrom==paste("chr",chr,sep = "") & !duplicated(Fragments_cM_clean$Start_cM) & !duplicated(Fragments_cM_clean$End_cM),]
+    Fragments_cM_clean_filtered <- rbind(Fragments_cM_clean_filtered,Fragments_cM_clean_filtered_chr)
+    rm(Fragments_cM_clean_filtered_chr)
+  }
+  return(list(Fragments_cM_clean_filtered=Fragments_cM_clean_filtered,m=m))
+  
+}
+
+Assign_Genetic_distance_interpolate_fn <- function(Recomb_Map,Fragments){
+  Fragments_cM <- c()
+  for(chr in 1:23){
+    if(chr==23){
+      chr="X"
+    }
+    else{
+      chr=chr
+    }
+    Recomb_Map_chr <- Recomb_Map[Recomb_Map$Chr==paste("chr",chr,sep=""),]
+    Fragments_chr <- Fragments[Fragments$chrom==chr,]
+    Start_Arch_Freg <- approx(x=Recomb_Map_chr$Begin, y=Recomb_Map_chr$cM, xout=Fragments_chr$start,method = "constant")
+    Stop_Arch_Freg <- approx(x=Recomb_Map_chr$Begin, y=Recomb_Map_chr$cM, xout=Fragments_chr$end,method = "constant")
+    Chr_x <- data.frame(chr=chr,Start_cM=Start_Arch_Freg$y,End_cM=Stop_Arch_Freg$y,length_bp=Fragments_chr$length,called=Fragments_chr$called)
+    Fragments_cM <- rbind(Fragments_cM,Chr_x)
+  }
+  Fragments_cM_clean <- Fragments_cM[complete.cases(Fragments_cM$Start_cM),]
+  Fragments_cM_clean <- Fragments_cM_clean[complete.cases(Fragments_cM_clean$End_cM),]
+  Fragments_cM_clean$length_cM <- Fragments_cM_clean$End_cM - Fragments_cM_clean$Start_cM
+  return(Fragments_cM_clean)
+  
+}
+#truncated expo density
+dtexp <- function(x, rate=1, lower_trunc, upper_trunc){
+  dexp(x, rate, log=T) - logspace.sub(pexp(lower_trunc, rate, lower=F, log=T),pexp(upper_trunc, rate, lower=F, log=T))
+}
+
+#truncated lomax density
+dtlomax <- function(x, scale, shape, lower_trunc, upper_trunc){
+  VGAM::dlomax(x, scale=scale, shape=shape, log=T) - 
+    logspace.sub(VGAM::plomax(lower_trunc, scale=scale, shape=shape, lower=F, log=T),VGAM::plomax(upper_trunc, scale=scale, shape=shape, lower=F, log=T))
+}
+
+fit_exp_optim_rep=function(Fragments,lower_trunc,upper_trunc){
+  l=Fragments[Fragments>=lower_trunc & Fragments<=upper_trunc]
+  n = rep(1, length(l))
+  
+  try({
+    f = function(par) -sum(n * dtexp(l, exp(par[1]), lower_trunc=lower_trunc,upper_trunc = upper_trunc))
+    #f2 = function(par) -sum(n * dtexp(l, (par[1])))
+    res = optim(c(0), f, method="L-BFGS-B")
+    par =exp(res$par)
+    return(data.frame(rate=par, ll_exp = -res$value))
+  }, silent=F)
+  return(data.frame(rate=NA, ll_exp=NA))
+}
+
+fit_lomax_optim_fixed_shape_rep=function(Fragments,fixed_shape,lower_trunc,upper_trunc){
+  l=Fragments[Fragments>=lower_trunc & Fragments<=upper_trunc]
+  n = rep(1, length(l))
+  
+  try({
+    f = function(par)-sum(n * dtlomax(l, scale=exp(par[1]), shape=fixed_shape, lower_trunc=lower_trunc,upper_trunc=upper_trunc))
+    res = optim(c(-1), f, method="L-BFGS-B")
+    pars = exp(res$par)
+    return(data.frame(scale=pars,fixed_shape=fixed_shape,t_m_est=fixed_shape/pars,tm=(fixed_shape/pars)*100, ll_lomax = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc))
+  }, silent=F)
+  return(data.frame(scale=NA, t_m=NA,tm_exp=NA,ll_lomax=NA))
+}
+
+fit_lomax_optim_rep=function(Fragments,lower_trunc,upper_trunc){
+  l=Fragments[Fragments>=lower_trunc & Fragments<=upper_trunc]
+  n = rep(1, length(l))
+
+  try({
+    f = function(par)-sum(n * dtlomax(l, scale=par[1], shape=par[2],lower_trunc=lower_trunc,upper_trunc=upper_trunc))
+    res = optim(c(1, 1), f, method="L-BFGS-B", lower=c(1e-5, 1))
+    pars = res$par
+    return(data.frame(scale=pars[1], shape=pars[2],t_m_est=pars[2]/pars[1],t_m=(pars[2]/pars[1])*100, ll_lomax=-res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc))
+  }, silent=F)
+  return(data.frame(scale=NA, shape=NA,t_m=NA,tm_exp=NA,ll_lomax=NA))
+}
+
+Get_Expo_est_fn <- function(Fragments,lower_truncs,upper_trunc,m){
+  Expo_Res <- c()
+  for(i in lower_truncs){
+    expo_fit_res=fit_exp_optim_rep(Fragments$length_cM,i,upper_trunc)
+    #expo_fit_res$t_m <- (expo_fit_res$rate*100)/(1-m)
+    expo_fit_res$t_m <- (expo_fit_res$rate*100)
+    Expo_Res <- rbind(Expo_Res,expo_fit_res)
+  }
+ 
+  Expo_Res$lower_trunc <- lower_truncs
+  Expo_Res$upper_trunc <- upper_trunc
+  return(Expo_Res)
+  
+}
+
+
+Get_Lomax_fixed_shape_est_fn <- function(t_d,Fragments,Expo_Res,Expo_Res_col_tm,Expo_Res_col_lower_trunc,Expo_Res_col_upper_trunc){
+  Res_lomax <- c()
+  for(trunc in 1:length(Expo_Res[,1])){
+    t_d=t_d
+    t_expo_est=Expo_Res[trunc,Expo_Res_col_tm]
+    all_t_lomax_est <- c()
+    for(t in 1:length(t_d)){
+      fixed_shape= (t_expo_est^2)/((t_d[t]/4)^2)
+      Res_Segments_optim_lomax=fit_lomax_optim_fixed_shape_rep(Fragments$length_cM,fixed_shape,Expo_Res[trunc,Expo_Res_col_lower_trunc],Expo_Res[trunc,Expo_Res_col_upper_trunc])
+      all_t_lomax_est <- rbind(all_t_lomax_est,Res_Segments_optim_lomax)
+    }
+    Res_lomax <- rbind(Res_lomax,all_t_lomax_est)
+    
+  }
+  Res_lomax$length_GF <- rep(t_d,length(Expo_Res[,1]))
+  Res_lomax$t_expo_est <- rep(Expo_Res$rate,each=length(t_d))
+  Res_lomax$t_m_expo_est <- rep((Expo_Res$t_m),each=length(t_d))
+  return(Res_lomax)
+  
+}
+
+Get_Lomax_est_fn <- function(Fragments,Expo_Res,Expo_Res_col_lower_trunc,Expo_Res_col_upper_trunc){
+  Res_lomax <- c()
+  for(trunc in 1:length(Expo_Res[,1])){
+      Res_Segments_optim_lomax=fit_lomax_optim_rep(Fragments$length_cM,Expo_Res[trunc,Expo_Res_col_lower_trunc],Expo_Res[trunc,Expo_Res_col_upper_trunc])
+      Res_lomax <- rbind(Res_lomax,Res_Segments_optim_lomax)
+  }
+  Res_lomax$length_GF_est <- 1/sqrt(Res_lomax$shape/Res_lomax$t_m_est)*4
+
+  return(Res_lomax)
+}
+
+
+LRT_fn= function(ll) {2*(ll[1]-ll[2])}
+
+LRT_Lomax_fn <- function(Lomax_Fragments_fit_results,t_d){
+  LRT_res <- c()
+  for(i in seq(0,length(Lomax_Fragments_fit_results$scale)-length(t_d),length(t_d))){
+    i=i+1
+    GF_length_model <- t(combn(Lomax_Fragments_fit_results$length_GF[i:(i+(length(t_d)-1))],2))
+    ll <- t(combn(Lomax_Fragments_fit_results$ll_lomax[i:(i+(length(t_d)-1))],2))
+    l_t <- rep(Lomax_Fragments_fit_results$lower_trunc[i],length(ll[1]))
+    u_t <- rep(Lomax_Fragments_fit_results$upper_trunc[i],length(ll[1]))
+    
+    LRT <- apply(ll, 1, LRT_fn)
+    
+    LRT_res_x <- cbind(l_t,u_t,GF_length_model,ll,LRT)
+    colnames(LRT_res_x) <- c("lower_cutoff","upper_cutoff","GF_Length_Model_1","GF_Length_Model_2","Likelihood_M_1","Likelihood_M_2","LRT")
+    LRT_res <- rbind(LRT_res,LRT_res_x)
+  }
+  
+  LRT_res <- as.data.frame(LRT_res)
+  return(LRT_res)
+  
+}
+
+Results_fit_Simulation <- function(Path_to_Fragment_File,header,Path_to_Recomb_Map=NA,recomb_rate,upper_trunc,n_Haploid){
+  if(is.na(Path_to_Recomb_Map)==T){
+    Segments_filtered <- Get_Filtered_Simulated_Fragments_fn(Path_to_Fragment_File,header = header,recomb_rate = recomb_rate,n_Haploid=n_Haploid)
+    m <- Segments_filtered$m
+    Segments_filtered <- Segments_filtered$Segments_filtered
+  }
+  else{
+    Segments_filtered <- Assign_Genetic_distance_Simulation_interpolate_fn(Path_to_Fragment_File,Path_to_Recomb_Map,header = header,n_Haploid=n_Haploid)
+    m <- Segments_filtered$m
+    Segments_filtered <- Segments_filtered$Fragments_cM_clean_filtered
+  }
+
+  Expo_res <- Get_Expo_est_fn(Fragments = Segments_filtered,lower_truncs = c(0.001,0.002,0.005,0.01,0.05,0.1,0.15,0.2,0.5),upper_trunc = upper_trunc,m=m)
+  
+  Lomax_res <- Get_Lomax_est_fn(Segments_filtered,Expo_res,4,5)
+  
+  Lomax_fixed_shape_res <- Get_Lomax_fixed_shape_est_fn(t_d = c(1,100,200,400,800,1000,1500,2000,2500),Fragments = Segments_filtered,Expo_Res = Expo_res,
+                                                        Expo_Res_col_tm = 3,Expo_Res_col_lower_trunc = 4,Expo_Res_col_upper_trunc = 5)
+  Lomax_res_LRT <- LRT_Lomax_fn(Lomax_fixed_shape_res,t_d = c(1,100,200,400,800,1000,1500,2000,2500))
+  
+  Pulse_vs_Continuous <- Lomax_res_LRT[Lomax_res_LRT$GF_Length_Model_1==1 & abs(Lomax_res_LRT$LRT)<=2,]
+  
+  # LME GF_length
+  LME_gf_length <- c()
+  for(i in  c(0.001,0.002,0.005,0.01,0.05,0.1,0.15,0.2,0.5)){
+    LME_gf_length_x=Lomax_res[Lomax_res$ll_lomax==max(Lomax_res$ll_lomax[Lomax_res$lower_trunc==i]),]
+    LME_gf_length <- rbind(LME_gf_length,LME_gf_length_x)
+    rm(LME_gf_length_x)
+  }
+  
+  LME_gf_length_fixed_shape <- c()
+  for(i in  c(0.001,0.002,0.005,0.01,0.05,0.1,0.15,0.2,0.5)){
+    LME_gf_length_fixed_shape_x=Lomax_fixed_shape_res[Lomax_fixed_shape_res$ll_lomax==max(Lomax_fixed_shape_res$ll_lomax[Lomax_fixed_shape_res$lower_trunc==i]),]
+    LME_gf_length_fixed_shape <- rbind(LME_gf_length_fixed_shape,LME_gf_length_fixed_shape_x)
+    rm(LME_gf_length_fixed_shape_x)
+  }
+
+  return(list(
+    Filtered_Fragments= Segments_filtered,
+    m=m,
+    Expo_res= Expo_res,
+    Lomax_res=Lomax_res,
+    Lomax_fixed_shape_res=Lomax_fixed_shape_res,
+    Lomax_res_LRT=Lomax_res_LRT,
+    Pulse_vs_Continuous=Pulse_vs_Continuous,
+    LME_gf_length=LME_gf_length,
+    LME_gf_length_fixed_shape=LME_gf_length_fixed_shape
+  ))
+  
+}
+
+
+
+##### Simulation Results #####
+## No Recombination
+# True Pulse no recombination
+True_Pulse_no_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Simulation-merged-_Scenario_1__Archaic_Segments_run_0.bed",header = F,
+                                    recomb_rate = 1.2e-8,upper_trunc = 1.2,n_Haploid=100)
+
+# Inferred Pulse no recombination
+Inferred_Pulse_no_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Inferred_Archaic_Tracts-_Scenario_1_-run0_decoded_cutoff_0.9.txt",header=T,
+                                        recomb_rate = 1.2e-8,upper_trunc = 1.2,n_Haploid=100)
+
+# True Continuous no recombination
+True_Continuous_no_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Simulation-merged-_Scenario_2__Archaic_Segments_run_0.bed",header = F,
+                                    recomb_rate = 1.2e-8,upper_trunc = 1.2,n_Haploid=100)
+
+# Inferred Continuous no recombination
+Inferred_Continuous_no_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Inferred_Archaic_Tracts-_Scenario_2_-run0_decoded_cutoff_0.9.txt",header=T,
+                                        recomb_rate = 1.2e-8,upper_trunc = 1.2,n_Haploid=100)
+
+## With Recombination
+correction_Map="Scaled_Decode_Map"
+# True Pulse no recombination
+True_Pulse_with_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,
+                                      Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+
+# Inferred Pulse no recombination
+Inferred_Pulse_with_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header=T,
+                                          Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+
+# True Continuous no recombination
+True_Continuous_with_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Simulation-merged-_Scenario_2_Recomb__Archaic_Segments_run_0.bed",header = F,
+                                           Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+
+# Inferred Continuous no recombination
+Inferred_Continuous_with_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Inferred_Archaic_Tracts-_Scenario_2_Recomb_-run0_decoded_cutoff_0.9.txt",header=T,
+                                               Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+
+## No population specific map
+correction_Map="Scaled_Genetic_AAMap"
+True_Pulse_with_Recomb_AAMap_corrected <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,
+                                      Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+
+# Inferred Pulse no recombination
+Inferred_Pulse_with_Recomb_AAMap_corrected <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header=T,
+                                          Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+
+# True Continuous no recombination
+True_Continuous_with_Recomb_AAMap_corrected <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Simulation-merged-_Scenario_2_Recomb__Archaic_Segments_run_0.bed",header = F,
+                                           Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+
+# Inferred Continuous no recombination
+Inferred_Continuous_with_Recomb_AAMap_corrected <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Inferred_Archaic_Tracts-_Scenario_2_Recomb_-run0_decoded_cutoff_0.9.txt",header=T,
+                                               Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+
+All_Simulations_Pulse_expo_fit <- data.frame(t_m=c(True_Pulse_no_Recomb$Expo_res$t_m,True_Pulse_no_Recomb$Expo_res$t_m,True_Continuous_with_Recomb_AAMap_corrected$Expo_res$t_m,Inferred_Pulse_no_Recomb$Expo_res$t_m,Inferred_Pulse_with_Recomb$Expo_res$t_m,Inferred_Pulse_with_Recomb_AAMap_corrected$Expo_res$t_m),Name=rep(c("0_True_P_n_R","1_True_P_w_R","2_True_P_w_R_AAMap_cor","3_Inf_P_n_R","4_Inf_P_w_R","5_Inf_P_w_R_AAMap_cor"),each=9),lower_trunc=True_Pulse_no_Recomb$Expo_res$lower_trunc,upper_trunc=True_Pulse_no_Recomb$Expo_res$upper_trunc,variable="mean GF expo")
+
+All_Simulations_Pulse_lomax_fit <- data.frame(t_m=c(True_Pulse_no_Recomb$Lomax_res$t_m,True_Pulse_no_Recomb$Lomax_res$t_m,True_Continuous_with_Recomb_AAMap_corrected$Lomax_res$t_m,Inferred_Pulse_no_Recomb$Lomax_res$t_m,Inferred_Pulse_with_Recomb$Lomax_res$t_m,Inferred_Pulse_with_Recomb_AAMap_corrected$Lomax_res$t_m),Name=rep(c("0_True_P_n_R","1_True_P_w_R","2_True_P_w_R_AAMap_cor","3_Inf_P_n_R","4_Inf_P_w_R","5_Inf_P_w_R_AAMap_cor"),each=9),lower_trunc=True_Pulse_no_Recomb$Lomax_res$lower_trunc,upper_trunc=True_Pulse_no_Recomb$Lomax_res$upper_trunc,variable="mean GF lomax")
+
+
+```
+
+```{r figS4, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS3} Icelandic fragments simulated"}
+
+P_Sim_Frag_Expo <- ggplot(All_Simulations_Pulse_expo_fit,aes(x=Name,y=as.numeric(as.character(t_m)),colour=factor(Name)))+
+                      geom_boxplot()+
+                      facet_grid(~as.factor(lower_trunc),switch = "x")+
+                      ggtitle("Exponential PDF fit") +
+                      geom_hline( aes(yintercept = 1500 ))+
+                      labs(x = "lower cutoff in cM")+
+                      labs(y = "Estimated Admixture Time")+
+                      theme(
+                        axis.text.x=element_blank(),
+                        axis.ticks.x=element_blank())+
+                      coord_cartesian(ylim = c(0,2200), expand = 0)+
+                      scale_color_manual("Simulations",
+                                         values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4],cbPalette_viridis[5],cbPalette_viridis[6]),
+                                        labels = c("True Fragments","True Fragments Recombination","True Fragments Recombination AAMap corrected","Inferred Fragments","Inferred Fragments Recombination","Inferred Fragments Recombination AAMap corrected"))
+ 
+P_Sim_Frag_Lomax <- ggplot(All_Simulations_Pulse_lomax_fit,aes(x=Name,y=as.numeric(as.character(t_m)),colour=factor(Name)))+
+                      geom_boxplot()+
+                      facet_grid(~as.factor(lower_trunc),switch = "x")+
+                      ggtitle("Lomax PDF fit") +
+                      geom_hline( aes(yintercept = 1500 ))+
+                      labs(x = "lower cutoff in cM")+
+                      labs(y = "Estimated Admixture Time")+
+                      theme(
+                        axis.text.x=element_blank(),
+                        axis.ticks.x=element_blank())+
+                      coord_cartesian(ylim = c(0,2200), expand = 0)+
+                      scale_color_manual("Simulations",
+                                         values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4],cbPalette_viridis[5],cbPalette_viridis[6]),
+                                         labels = c("True Fragments","True Fragments Recombination","True Fragments Recombination AAMap corrected","Inferred Fragments","Inferred Fragments Recombination","Inferred Fragments Recombination AAMap corrected"))
+ 
+Segment_simulation_result <- ggarrange(P_Sim_Frag_Expo,P_Sim_Frag_Lomax,
+                   labels = c("A","B"),
+                   ncol = 2, nrow = 1,common.legend = T,legend = 'bottom')
+
+Segment_simulation_result
+```
+
+```{r figS5, message=FALSE, echo=FALSE,warning=FALSE,fig6.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig5} Different admixure duration models ranging from a one generation pulse tu 2500 generations for Neandertal admixture using directly infered introgressed segments from Skov et al. 2020"}
+### For the paper plot cutoff 0.05 - 1.2 cM
+#### Real Data Results
+lower_trunc=0.05
+upper_trunc=1.2
+
+Icelandic_Fragments <- read.table("Real_Data_Analysis/Archaicfragments_Iceland.txt",header = T)
+
+Icelandic_Recomb_Map <- read.table("Real_Data_Analysis/RecombmapIceland.txt", header = T)
+
+Icelandic_Fragments_Filtered <- Icelandic_Fragments[Icelandic_Fragments$archaic=="Vindija" | Icelandic_Fragments$archaic=="Altai",]
+
+Icelandic_Fragments_cM=Assign_Genetic_distance_interpolate_fn(Icelandic_Recomb_Map,Icelandic_Fragments_Filtered)
+
+Icelandic_Expo_est=Get_Expo_est_fn(Icelandic_Fragments_cM,lower_trunc,upper_trunc)
+
+Icelandic_Expo_lomax=Get_Lomax_est_fn(Icelandic_Fragments_cM,Icelandic_Expo_est,4,5)
+
+Icelandic_Expo_lomax_fixed=Get_Lomax_fixed_shape_est_fn(t_d,Icelandic_Fragments_cM,Icelandic_Expo_est,3,4,5)
+
+Plot_Icelandic_Fragments=hist(Icelandic_Fragments_cM$length_cM[Icelandic_Fragments_cM$length_cM>=lower_trunc &
+                                                              Icelandic_Fragments_cM$length_cM<=upper_trunc   ],breaks = 300,plot=F)
+Plot_Icelandic_Fragments <- data.frame(mids=Plot_Icelandic_Fragments$mids,density=Plot_Icelandic_Fragments$density)
+Icelandic_Fit_Results=data.frame(rep(Plot_Icelandic_Fragments$mids,10),c(
+                                 dtexp(Plot_Icelandic_Fragments$mids,Icelandic_Expo_lomax_fixed$t_expo_est[1], Icelandic_Expo_lomax_fixed$lower_trunc,Icelandic_Expo_lomax_fixed$upper_trunc),
+                                 dtlomax(Plot_Icelandic_Fragments$mids,Icelandic_Expo_lomax_fixed$scale[1], Icelandic_Expo_lomax_fixed$fixed_shape[1],Icelandic_Expo_lomax_fixed$lower_trunc,Icelandic_Expo_lomax_fixed$upper_trunc),
+                                 dtlomax(Plot_Icelandic_Fragments$mids,Icelandic_Expo_lomax_fixed$scale[2], Icelandic_Expo_lomax_fixed$fixed_shape[2],Icelandic_Expo_lomax_fixed$lower_trunc,Icelandic_Expo_lomax_fixed$upper_trunc),
+                                 dtlomax(Plot_Icelandic_Fragments$mids,Icelandic_Expo_lomax_fixed$scale[3], Icelandic_Expo_lomax_fixed$fixed_shape[3],Icelandic_Expo_lomax_fixed$lower_trunc,Icelandic_Expo_lomax_fixed$upper_trunc),
+                                 dtlomax(Plot_Icelandic_Fragments$mids,Icelandic_Expo_lomax_fixed$scale[4], Icelandic_Expo_lomax_fixed$fixed_shape[4],Icelandic_Expo_lomax_fixed$lower_trunc,Icelandic_Expo_lomax_fixed$upper_trunc),
+                                 dtlomax(Plot_Icelandic_Fragments$mids,Icelandic_Expo_lomax_fixed$scale[5], Icelandic_Expo_lomax_fixed$fixed_shape[5],Icelandic_Expo_lomax_fixed$lower_trunc,Icelandic_Expo_lomax_fixed$upper_trunc),
+                                 dtlomax(Plot_Icelandic_Fragments$mids,Icelandic_Expo_lomax_fixed$scale[6], Icelandic_Expo_lomax_fixed$fixed_shape[6],Icelandic_Expo_lomax_fixed$lower_trunc,Icelandic_Expo_lomax_fixed$upper_trunc),
+                                 dtlomax(Plot_Icelandic_Fragments$mids,Icelandic_Expo_lomax_fixed$scale[7], Icelandic_Expo_lomax_fixed$fixed_shape[7],Icelandic_Expo_lomax_fixed$lower_trunc,Icelandic_Expo_lomax_fixed$upper_trunc),
+                                 dtlomax(Plot_Icelandic_Fragments$mids,Icelandic_Expo_lomax_fixed$scale[8], Icelandic_Expo_lomax_fixed$fixed_shape[8],Icelandic_Expo_lomax_fixed$lower_trunc,Icelandic_Expo_lomax_fixed$upper_trunc),
+                                 dtlomax(Plot_Icelandic_Fragments$mids,Icelandic_Expo_lomax_fixed$scale[9], Icelandic_Expo_lomax_fixed$fixed_shape[9],Icelandic_Expo_lomax_fixed$lower_trunc,Icelandic_Expo_lomax_fixed$upper_trunc)),rep(c(0,t_d),each=length(Plot_Icelandic_Fragments$mids)))
+colnames(Icelandic_Fit_Results) <- c("x","y","GF_length")
+
+
+ggplot(data=Icelandic_Fit_Results,aes(x = x, y = y,color=as.factor(GF_length),fill=as.factor(GF_length)))+
+  geom_point(data=Plot_Icelandic_Fragments,aes(x=mids,y=log(density),color=NULL,fill=NULL),show.legend = F)+
+  geom_line(data=Icelandic_Fit_Results,aes(x = x, y = y,color=as.factor(GF_length)))+
+  scale_color_manual("Admixture Duration",
+                     values = c(c(cbPalette_viridis[1],cbPalette_viridis)),
+                     labels = c(c("Pulse",c(0,t_d))))+
+  scale_fill_manual( values = c(c(cbPalette_viridis[1],cbPalette_viridis)))+
+  labs(x = "Genetic distance (cM)")+
+  labs(y = "density") 
 ```

@@ -5,54 +5,55 @@ MASTER:
              max_dist_Fit: 1
              Inferred_Demographies: [False,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
              Recombination_Map: [False,Recombination_Maps/Scaled_Genetic_AAMap.txt,No_correction]
+             Complex_Demography: [False,Inferred_Pop_History/Vindjia_PSMC_inferred_Demography_unbiased_from_Mut_Rate_new.txt,Inferred_Pop_History/Yorubans_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt,Inferred_Pop_History/CEU_MSMC_inferred_Demography_unbiased_from_Mut_Rate.txt]
       _Scenario_1_:
              simulation: '_MS_fixed_Var_1_'
-             min_dist_Fit: 0.05
-             GF_Model: [GF_Model_I,0]
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
              ascertainment: 0
       _Scenario_2_:
              simulation: '_MS_fixed_Var_2_'
-             min_dist_Fit: 0.05
-             GF_Model: [GF_Model_I,0]
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
              ascertainment: 0
       _Scenario_3_:
              simulation: '_MS_fixed_Var_3_'
-             min_dist_Fit: 0.05
-             GF_Model: [GF_Model_I,0]
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
              ascertainment: 0
       _Scenario_4_:
              simulation: '_MS_fixed_Var_4_'
-             min_dist_Fit: 0.05
-             GF_Model: [GF_Model_I,0]
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
              ascertainment: 0
       _Scenario_5_:
              simulation: '_MS_fixed_Var_5_'
-             min_dist_Fit: 0.05
-             GF_Model: [GF_Model_I,0]
+             min_dist_Fit: 0.02
+             GF_Model: [GF_Model_IV,0]
              ascertainment: 0
       _Scenario_6_:
-             simulation: '_MS_fixed_Var_1_'
-             min_dist_Fit: 0.05
+             simulation: '_MS_fixed_Var_6_'
+             min_dist_Fit: 0.02
              GF_Model: [GF_Model_IV,0]
              ascertainment: 0
       _Scenario_7_:
-             simulation: '_MS_fixed_Var_2_'
-             min_dist_Fit: 0.05
+             simulation: '_MS_fixed_Var_7_'
+             min_dist_Fit: 0.02
              GF_Model: [GF_Model_IV,0]
              ascertainment: 0
       _Scenario_8_:
-             simulation: '_MS_fixed_Var_3_'
-             min_dist_Fit: 0.05
+             simulation: '_MS_fixed_Var_8_'
+             min_dist_Fit: 0.02
              GF_Model: [GF_Model_IV,0]
              ascertainment: 0
       _Scenario_9_:
-             simulation: '_MS_fixed_Var_4_'
-             min_dist_Fit: 0.05
+             simulation: '_MS_fixed_Var_9_'
+             min_dist_Fit: 0.02
              GF_Model: [GF_Model_IV,0]
              ascertainment: 0
       _Scenario_10_:
-             simulation: '_MS_fixed_Var_5_'
-             min_dist_Fit: 0.05
+             simulation: '_MS_fixed_Var_10_'
+             min_dist_Fit: 0.02
              GF_Model: [GF_Model_IV,0]
              ascertainment: 0
       _Scenario_11_:
