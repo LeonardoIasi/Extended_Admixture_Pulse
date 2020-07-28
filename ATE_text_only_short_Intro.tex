@@ -248,13 +248,13 @@ models. We compared the effect of these parameters together with
 analysis parameters to the effect of continuous admixture on the
 estimates. After assessing these effects we evaluate the possible
 parameter range for using a Lomax distribution to fit the ALD decay,
-enabling to obtain a duration of continuous admixture. To demonstrate our finding we used the 1000 Genomes data together with 3 high coverage Neandertals to fit several gene flow models with different durations to the data.
+enabling to obtain a duration of continuous admixture. We used both admixture models on real data. We fitted several admixture scenarios with different durations to ALD data from the 1000 Genomes Project with 3 high coverage Neandertals as well as to directly inferred Neandertal fragments using data from Skov et al. 2020 \ref{}.
 
 \subsection{Simulations}\label{simulations}
 
 We used the msprime coalescent simulator
 (\cite{kelleher_efficient_2016}) for simulations with sample sizes
-chosen to reflect presently available data: We simulate 176 diploid
+chosen to reflect presently available data. For ALD simulations we simulate 176 diploid
 African individuals and 170 diploid non-Africans, corresponding to the
 number of Yoruba (YRI) and Central Europeans from Utah (CEU)
 sequences in the 1000 Genomes project data
@@ -274,22 +274,22 @@ split time between modern humans and Neandertals is 10000 generations
 ago and the split between Africans and non-Africans is 2550
 generations ago. The migration rate from Neandertals into non-Africans
 was set to zero before the split from Africans, to ensure no Neandertal
-ancestry in Africans. Each simulation was repeated 100 times.
+ancestry in Africans. Each simulation was repeated 100 times. We used a simplified version of the demographic model described in Skov et al. 2018 for the directly inference of admixture segments. Here we only simulate Eurasians with a starting effective population size of 3899. Number of chromosomes, length of the chromosome, mutation rate, recombination rate and all split times are the same as in the ALD simulations. We sampled 500 haploid Africans and 100 haploid Eurasians.
 
 \subsubsection{Gene Flow}\label{gene flow}
 
 In the admixture pulse model, gene flow is a one generation long pulse,
 resulting in an exponentially distributed admixture-induced linkage
-disequilibrium (ALD) decay curve (Eq. \ref{eq:1}), with $-t \:\lambda$ as
-the rate parameter of the exponential complement cumulative distribution function (ccdf) holding the inverse
-of time since the admixture event $t$ with $\lambda$ here being the genetic
-distance \(d\) between two SNPs,
+disequilibrium (ALD) decay curve (Eq. \ref{eq:1}), with $\lambda$ as
+the rate parameter of the exponential distribution holding the inverse
+of time since the admixture event $t$ with $l$ ,here being either the genetic
+distance \(d\) between two SNPs or the genetic length of an admixture segment,
 
 \begin{equation}
 \begin{split}
 \label{eq:1}
-x_i &\sim exp(t\lambda) \\
-\mathbb{E}[x] &= \frac{1}{t\lambda}
+L_i &\sim exp(\lambda) \\
+\mathbb{E}[l] &= \frac{1}{\lambda} = \frac{1}{t}
 \end{split}
 \end{equation}
 
@@ -298,37 +298,36 @@ Continuous gene flow over time with the random variable $t \in \{t_1,t_2,...,t_n
 
 \begin{equation}
 \label{eq:2}
-m_i \sim \Gamma(k,\frac{1}{\theta})
+m_i \sim \Gamma(k,\theta)
 \end{equation}
 
-Where k is the shape and \(\theta\) the rate parameter. The parameter
-values are chosen such that the mean length \(\frac{1}{t\lambda}\) of the
-exponentially distributed ALD decay curve resulting from the one
-generation admixture pulse, is equal to the mean length of the ALD decay
-curve, as a result of continuous migration with the same total amount of
-migrants, modeled using the ccdf of a Lomax distribution (Eq. \ref{eq:3})
+Where k is the shape and \(\theta\) the scale parameter. The parameter
+values are chosen such that the mean length of the
+exponentially distributed ALD decay or segment length curve resulting from the one
+generation admixture pulse, is equal to the mean length as a result of continuous migration with the same total amount of
+migrants, modeled using a Lomax distribution with shape being $k+1$ and the scale $\frac{1}{\theta}$ (Eq. \ref{eq:3})
 
 \begin{equation}
 \begin{split}
 \label{eq:3}
-x_i &\sim Lomax(k+1,\theta) \\
-\mathbb{E}[x] &= \frac{1}{t\lambda} = \frac{\theta}{k}\lambda
+L_i &\sim Lomax(k+1,\frac{1}{\theta}) \\
+\mathbb{E}[x] &= \frac{1}{\lambda} = \frac{1}{k\theta}
 \end{split}
 \end{equation}
 
 \begin{equation}
 \label{eq:4}
-\mathbb{E}[t]=\frac{k}{\theta}
+t_{m}=\mathbb{E}[m] = k \theta
 \end{equation}
 
 \begin{equation*}
 \nonumber
-where \qquad k=\mathbb{E}[t] \, \theta \qquad and \qquad \theta=\frac{\mathbb{E}[t]}{Var[t]}
+where \qquad k=t_m \, \frac{1}{\theta} \qquad and \qquad \theta=\frac{1}{t_{m}Var[m]}
 \end{equation*}
 
 Equation (Eq. \ref{eq:4}) shows the relationships between the
 distribution parameters such that the resulting decay mean length are
-equal. Here \(x\) is in generations. $\mathbb{E}[t]$ is the mean time of admixture and $Var[t]=(\frac{t_d}{4})^2$ its variance with $t_d$ as the duration of admixture in generations.
+equal. Here \(x\) is in generations. $t_{m}$ is the mean time of admixture equal to the mean of the Gamma distribution ($\mathbb{E}[m]$) and $Var[m]=(\frac{t_d}{4})^2$ its variance with $t_d$ as the duration of admixture in generations.
 
 \subsubsection{Recombination map}\label{recombination map}
 
@@ -482,14 +481,13 @@ some models, the distribution of introgressed segment lengths \(L_i\) can
 be written as
 
 \begin{equation}
-L_i \sim exp({t \lambda})
+L_i \sim exp(t)
 \end{equation}
 
-where $t$ is the time when the fragment entered the population, and
-\(\lambda\) is a parameter that depends on the model assumptions and
+where $t$ is the time when the fragment entered the population. The mean fragment length will vary  depending on the model assumptions and
 recombination rate \(r\) (\citep{liang_lengths_2014}). E.g under the SMC,
-\(\lambda = (1-m)r\), and under the SMC' allowing for back coalescence,
-\(\lambda = 2N(1-m)(1-exp^{-t/2N})r\). For Neandertal admixture where
+\(L_i = t(1-m)r\), and under the SMC' allowing for back coalescence,
+\(L_i = 2N(1-m)(1-exp^{-t/2N})r\). For Neandertal admixture where
 \(m\), the admixture fraction, is typically low, the exponential
 assumption is satisfied (\cite{liang_lengths_2014}). For scenarios where
 the length of admixture tracts is not exponential, e.g. because
@@ -502,13 +500,13 @@ itself that follows a mixture distribution \(\mathcal{D}_t\). The most
 widely studied is a small number of discrete ``pulses'' of admixture, in
 which case \(\mathcal{D}_t\) is categorical. Here, we instead assume a
 continuous multi-generation admixture \(\mathcal{D}_t\); more precisely we assume \(\mathcal{D}_t\)
-follows a \(\Gamma(k+1, \frac{1}{\theta})\)-distribution. This has a number of
+follows a \(\Gamma(k, \theta)\)-distribution. This has a number of
 advantages:
 
 \begin{itemize}
     \item We just need two parameter $k$ and $\theta$, that can be interpreted as the duration of gene flow, instead of the minimal of two additional parameters required for the pulse model.
-    \item The segment length distribution $L_i$ follows a Lomax-distribution, i.e. has the analytical density $Pr(L=l) = \frac{k}{\theta} (1+\frac{l\lambda}{\theta})^{-(k+1)}$
-    \item The mean segment-length is  $\frac{\theta}{k}$ for all $k > 0$, and undefined otherwise. 
+    \item The segment length distribution $L_i$ follows a Lomax-distribution, i.e. has the analytical density $Pr(L=l) = \frac{1}{\theta k-1} (1+l\lambda\frac{1}{\theta})^{-(k-1)}$
+    \item The mean segment-length is  $\frac{1}{k \theta}$ for all $k > 0$, and undefined otherwise. 
     \item As $k$ approaches infinity, we recover the exponential distribution. Thus, if tract length are directly inferred, one can use a likelihood-ratio test to distinguish continuous from discrete gene flow. As the special case of exponentially lies on the boundary of the parameter space, the test-statistic does not follow a $\chi^2$-distribution (\cite{Kozubowski_Testing_2008}). Model selection using a LRT is however not possible when segment length are indirectly inferred by ALD.
 \end{itemize}
 
@@ -856,5 +854,19 @@ Lomax (td=2500) & c & -6.57454976888574e-07 & -5.03022034552669e-06 & 3.71531039
 \hline
 \end{tabular}
 \end{table}
+
+\begin{figure}
+\centering
+\includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS4-1.pdf}
+\caption{\label{fig:figS4} Icelandic fragments simulated}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS5-1.pdf}
+\caption{\label{fig:fig5} Different admixure duration models ranging
+from a one generation pulse tu 2500 generations for Neandertal admixture
+using directly infered introgressed segments from Skov et al. 2020}
+\end{figure}
 
 \end{document}
