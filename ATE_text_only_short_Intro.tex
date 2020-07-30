@@ -248,7 +248,7 @@ models. We compared the effect of these parameters together with
 analysis parameters to the effect of continuous admixture on the
 estimates. After assessing these effects we evaluate the possible
 parameter range for using a Lomax distribution to fit the ALD decay,
-enabling to obtain a duration of continuous admixture. We used both admixture models on real data. We fitted several admixture scenarios with different durations to ALD data from the 1000 Genomes Project with 3 high coverage Neandertals as well as to directly inferred Neandertal fragments using data from Skov et al. 2020 \ref{}.
+enabling to obtain a duration of continuous admixture. We used both admixture models on real data. We fitted several admixture scenarios with different durations to ALD data from the 1000 Genomes Project with 3 high coverage Neandertals and to directly inferred Neandertal fragments using data from Skov \& Coll Maci\`{a} et al. 2020 \cite{skov_nature_2020}.
 
 \subsection{Simulations}\label{simulations}
 
@@ -274,7 +274,7 @@ split time between modern humans and Neandertals is 10000 generations
 ago and the split between Africans and non-Africans is 2550
 generations ago. The migration rate from Neandertals into non-Africans
 was set to zero before the split from Africans, to ensure no Neandertal
-ancestry in Africans. Each simulation was repeated 100 times. We used a simplified version of the demographic model described in Skov et al. 2018 for the directly inference of admixture segments. Here we only simulate Eurasians with a starting effective population size of 3899. Number of chromosomes, length of the chromosome, mutation rate, recombination rate and all split times are the same as in the ALD simulations. We sampled 500 haploid Africans and 100 haploid Eurasians.
+ancestry in Africans. Each simulation was repeated 100 times. We used a simplified version of the demographic model described in Skov et al. 2018 \cite{skov_detecting_2018} for the direct inference of admixture segments. Here we simulate 100 haploid Eurasians with a starting effective population size of 3899. Number of chromosomes, length of the chromosome, mutation rate, recombination rate and all split times are the same as in the ALD simulations. We sampled 500 haploid Africans as outgroup individuals.
 
 \subsubsection{Gene Flow}\label{gene flow}
 
@@ -334,19 +334,19 @@ equal. Here \(x\) is in generations. $t_{m}$ is the mean time of admixture equal
 Uncertainties in the recombination map were previously shown to bias
 admixture time estimates. To investigate the effect of more realistic
 recombination rate variation we simulated samples using a recombination map. We
-either used the African-American-Map (\cite{hinch_landscape_2011}) or
+either used the African-American-Map (\cite{hinch_landscape_2011})
 the HapMap phase 3 (\cite{HapMapConsortium_second_2007}) for simulations
 under a variable recombination rate, for simplicity, we used the same
 recombination map (150 Mb of chromosome 1, excluding the first 10 Mb)
 for all simulated chromosomes. The mean recombination rate was
-calculated from the 150 Mb map (\(1.843 \, \frac{cM}{Mb}\) AAMap and
-\(1.549 \, \frac{cM}{Mb}\) HapMap). To emulate uncertainties in the
+calculated from the 150 Mb map (\(1.017 \, \frac{cM}{Mb}\) AAMap and
+\(0.992 \, \frac{cM}{Mb}\) HapMap). To emulate uncertainties in the
 genetic map we either: used the mean recombination rate from the
 respective map to calculate the genetic distance from the physical
 distance for each SNP, used the other map to assign distances
 (e.g.~AAMap used for the msprime simulation and HapMap used to assign
 genetic distances) or used the same map for simulation and assigning
-genetic distances.
+genetic distances. For simulating the Icelandic fragment we used 150 Mb of chromosome 1 from the decode map \cite{} \(0.914 \, \frac{cM}{Mb}\).
 
 \subsubsection{Complex demography}\label{inferred demography}
 
@@ -378,7 +378,11 @@ generations before the Africans and non-Africans. We simulated an additional adm
 
 \subsection{1000 Genomes Data}\label{1000 Genomes Data}
 
-We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagyrskaya high coverage Neandertals.  We filtered for all unrelated individuals from the YRI as representatives of unadmixed Africans and all CEU as admixed Europeans. We only considered biallelic sites. The sites were polarized relative to the Chimpanzee base (panTro4). We used the CEU specific fine-scale recombination map (\cite{spence_inference_2019}) to transform the physical distance between sites into genetic distance. 
+We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagyrskaya high coverage Neandertals.  We filtered for all unrelated individuals from the YRI as representatives of unadmixed Africans and all CEU as admixed Europeans. We only considered biallelic sites. The sites were polarized relative to the Chimpanzee base (panTro4). We used the CEU specific fine-scale recombination map (\cite{spence_inference_2019}) to convert the physical distance between sites into genetic distance. 
+
+\subsection{Neandertal segments in Icelanders}\label{1000 Genomes Data}
+
+We used the identified archaic segments from Skov \& Coll Maci\`{a} et al. 2020. The segments are pre-filtered using a posterior probability cutoff of 0.9 for identified archaic segments. We filtered the data set for archaic segments identified as Neandertal (Altai and Vindija). We used the DeCode genetic map to convert the physical segment length in bp to genetic length in cM. We used a lower and upper cutoff of 0.05 - 1.2 cM for the length of segments
 
 \subsection{Admixture time estimates}\label{admixture time estimates}
 
@@ -505,7 +509,7 @@ advantages:
 
 \begin{itemize}
     \item We just need two parameter $k$ and $\theta$, that can be interpreted as the duration of gene flow, instead of the minimal of two additional parameters required for the pulse model.
-    \item The segment length distribution $L_i$ follows a Lomax-distribution, i.e. has the analytical density $Pr(L=l) = \frac{1}{\theta k-1} (1+l\lambda\frac{1}{\theta})^{-(k-1)}$
+    \item The segment length distribution $L_i$ follows a Lomax-distribution, i.e. has the analytical density $Pr(L=l) = \frac{1}{\theta k-1} (1+l\frac{1}{\theta})^{-(k-1)}$
     \item The mean segment-length is  $\frac{1}{k \theta}$ for all $k > 0$, and undefined otherwise. 
     \item As $k$ approaches infinity, we recover the exponential distribution. Thus, if tract length are directly inferred, one can use a likelihood-ratio test to distinguish continuous from discrete gene flow. As the special case of exponentially lies on the boundary of the parameter space, the test-statistic does not follow a $\chi^2$-distribution (\cite{Kozubowski_Testing_2008}). Model selection using a LRT is however not possible when segment length are indirectly inferred by ALD.
 \end{itemize}
