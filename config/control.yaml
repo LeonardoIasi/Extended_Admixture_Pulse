@@ -32,58 +32,34 @@ CONTROL:
              _Complex_Demographies_Scenario_2_:
              _Complex_Demographies_Scenario_3_:
              _Complex_Demographies_Scenario_4_:
-       Fig_2_C:
+       Fig_2_C_corrected:
              _Recombination_Map_Scenario_1_:
              _Recombination_Map_Scenario_2_:
-             _Recombination_Map_Scenario_3_:
-             _Recombination_Map_Scenario_4_:
-       Fig_2_D:
-             _Recombination_Map_and_Inferred_Demographies_Scenario_1_:
-             _Recombination_Map_and_Inferred_Demographies_Scenario_2_:
-             _Recombination_Map_and_Inferred_Demographies_Scenario_3_:
-             _Recombination_Map_and_Inferred_Demographies_Scenario_4_:
-       Fig_2_D_Complex:
+       Fig_2_D_Complex_corrected:
              _Recombination_Map_and_Complex_Demographies_Scenario_1_:
              _Recombination_Map_and_Complex_Demographies_Scenario_2_:
-             _Recombination_Map_and_Complex_Demographies_Scenario_3_:
-             _Recombination_Map_and_Complex_Demographies_Scenario_4_:
-       Test_recomb1:
-             _Recombination_Map_Scenario_1_:
-       Test_recomb2:
-             Test_with_mean_rec_rat_chr1:
-       Alternative_Gamma:
-             _Scenario_11_:
-             _Scenario_16_:
-       Small_Continuous_GF:
-             _Scenario_small_Continuous_1_:
-             _Scenario_small_Continuous_2_:
-             _Scenario_small_Continuous_3_:
-             _Scenario_small_Continuous_4_:
-             _Scenario_small_Continuous_5_:
-             _Scenario_small_Continuous_6_:
-             _Scenario_16_:
-       Close_to_GF_End_Recent_GF:
+       Close_to_GF_End_Recent_GF_corrected:
              Close_to_End_recent_GF_0:
              Close_to_End_recent_GF_1:
              Close_to_End_recent_GF_2:
              Close_to_End_recent_GF_3:
              Close_to_End_recent_GF_4:
              Close_to_End_recent_GF_5:
-       Variyng_Time_of_Recent_sampling_GF_l_fixed:
+       Variyng_Time_of_Recent_sampling_GF_l_fixed_corrected:
              50_Gen_from_GF_continuous_800:
              100_Gen_from_GF_continuous_800:
              200_Gen_from_GF_continuous_800:
              400_Gen_from_GF_continuous_800:
              800_Gen_from_GF_continuous_800:
              1000_Gen_from_GF_continuous_800:
-       Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map:
+       Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected:
              Close_to_End_recent_GF_0_Recomb_Map:
              Close_to_End_recent_GF_1_Recomb_Map:
              Close_to_End_recent_GF_2_Recomb_Map:
              Close_to_End_recent_GF_3_Recomb_Map:
              Close_to_End_recent_GF_4_Recomb_Map:
              Close_to_End_recent_GF_5_Recomb_Map:
-       Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map:
+       Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected:
              50_Gen_from_GF_continuous_800_Recomb_Map:
              100_Gen_from_GF_continuous_800_Recomb_Map:
              200_Gen_from_GF_continuous_800_Recomb_Map:
