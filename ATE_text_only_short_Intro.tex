@@ -268,21 +268,20 @@ recombination rate was set to \(1*10^{-8}\) per base pair per generation
 unless specified otherwise. The demographic parameters are based on
 previous studies dating Neandertal admixture
 (\cite{sankararaman_date_2012,fu_genome_2014,moorjani_genetic_2016}). In
-the ``simple'' model (Figure \ref{fig:figS1}, the effective
+the ``simple'' model (Supplement Figure\ref{fig:figS1} A), the effective
 population size is assumed constant at Ne=10000 for all populations, the
 split time between modern humans and Neandertals is 10000 generations
 ago and the split between Africans and non-Africans is 2550
 generations ago. The migration rate from Neandertals into non-Africans
 was set to zero before the split from Africans, to ensure no Neandertal
-ancestry in Africans. Each simulation was repeated 100 times. We used a simplified version of the demographic model described in Skov et al. 2018 \cite{skov_detecting_2018} for the direct inference of admixture segments. Here we simulate 100 haploid Eurasians with a starting effective population size of 3899. Number of chromosomes, length of the chromosome, mutation rate, recombination rate and all split times are the same as in the ALD simulations. We sampled 500 haploid Africans as outgroup individuals.
+ancestry in Africans. Each simulation was repeated 100 times. We used a simplified version of the demographic model described in Skov et al. 2018 \cite{skov_detecting_2018} for the direct inference of admixture segments (Supplement Figure\ref{fig:figS1} C). Here we simulate 100 haploid non-Africans with a starting effective population size of 3899. The mutation rate and recombination rate are  \(1.2*10^{-8}\) per base per generation. Number of chromosomes, length of the chromosome and all split times are the same as in the simple demographic ALD simulations. We sampled 500 haploid Africans as outgroup individuals.
 
 \subsubsection{Gene Flow}\label{gene flow}
 
 In the admixture pulse model, gene flow is a one generation long pulse,
 resulting in an exponentially distributed admixture-induced linkage
 disequilibrium (ALD) decay curve (Eq. \ref{eq:1}), with $\lambda$ as
-the rate parameter of the exponential distribution holding the inverse
-of time since the admixture event $t$ with $l$ ,here being either the genetic
+the rate parameter of the exponential distribution holding the  time since the admixture event $t$ with $l$ ,here being either the genetic
 distance \(d\) between two SNPs or the genetic length of an admixture segment,
 
 \begin{equation}
@@ -293,7 +292,7 @@ L_i &\sim exp(\lambda) \\
 \end{split}
 \end{equation}
 
-Continuous gene flow over time with the random variable $t \in \{t_1,t_2,...,t_n\}$ was modeled as a gamma distribution (Eq.
+Continuous gene flow $m$ over time with the random variable $t \in \{t_1,t_2,...,t_n\}$ was modeled as a gamma distribution (Eq.
 \ref{eq:2})
 
 \begin{equation}
@@ -311,7 +310,7 @@ migrants, modeled using a Lomax distribution with shape being $k+1$ and the scal
 \begin{split}
 \label{eq:3}
 L_i &\sim Lomax(k+1,\frac{1}{\theta}) \\
-\mathbb{E}[x] &= \frac{1}{\lambda} = \frac{1}{k\theta}
+\mathbb{E}[l] &= \frac{1}{\lambda} = \frac{1}{k\theta}
 \end{split}
 \end{equation}
 
@@ -327,14 +326,14 @@ where \qquad k=t_m \, \frac{1}{\theta} \qquad and \qquad \theta=\frac{1}{t_{m}Va
 
 Equation (Eq. \ref{eq:4}) shows the relationships between the
 distribution parameters such that the resulting decay mean length are
-equal. Here \(x\) is in generations. $t_{m}$ is the mean time of admixture equal to the mean of the Gamma distribution ($\mathbb{E}[m]$) and $Var[m]=(\frac{t_d}{4})^2$ its variance with $t_d$ as the duration of admixture in generations.
+equal. Here \(l\) is in generations. $t_{m}$ is the mean time of admixture equal to the mean of the Gamma distribution ($\mathbb{E}[m]$) and $Var[m]=(\frac{t_d}{4})^2$ its variance with $t_d$ as the duration of admixture in generations.
 
 \subsubsection{Recombination map}\label{recombination map}
 
 Uncertainties in the recombination map were previously shown to bias
 admixture time estimates. To investigate the effect of more realistic
-recombination rate variation we simulated samples using a recombination map. We
-either used the African-American-Map (\cite{hinch_landscape_2011})
+recombination rate variation we simulated samples using a recombination map. For ALD simulations we
+either used the African-American-Map (\cite{hinch_landscape_2011} or
 the HapMap phase 3 (\cite{HapMapConsortium_second_2007}) for simulations
 under a variable recombination rate, for simplicity, we used the same
 recombination map (150 Mb of chromosome 1, excluding the first 10 Mb)
@@ -346,7 +345,7 @@ respective map to calculate the genetic distance from the physical
 distance for each SNP, used the other map to assign distances
 (e.g.~AAMap used for the msprime simulation and HapMap used to assign
 genetic distances) or used the same map for simulation and assigning
-genetic distances. For simulating the Icelandic fragment we used 150 Mb of chromosome 1 from the decode map \cite{} \(0.914 \, \frac{cM}{Mb}\).
+genetic distances. For simulating the Icelandic fragment we used 150 Mb of chromosome 1 from the deCODE map \cite{kong_fine-scale_2010} \(0.914 \, \frac{cM}{Mb}\).
 
 \subsubsection{Complex demography}\label{inferred demography}
 
@@ -421,10 +420,6 @@ notation from Kozubowski et al. 2008 (\cite{Kozubowski_Testing_2008}). Holding $
 The starting value of $t_m$  is taken from the exponential fit to ensure
 convergence of the model.
 
-To compare the two nested models we used Akaike's information criterion
-(AIC) measuring the goodness of fit while penalizing the addition of new
-parameters \(p\) and thus controlling for under- and overfitting (Eq.
-\ref{eq:7}).
 
 \begin{equation}
 \label{eq:5}
@@ -436,9 +431,18 @@ ALD \sim\ A\,e^{-t_m \:d}+c
 ALD \sim\ A\,\left( \frac{1}{1 + \frac{1}{k}t_m \:d}\right) ^k+c
 \end{equation}
 
+\subsubsection{Fitting of directly inferred segments length distribution}\label{Fitting of directly inferred segments length distribution}
+
+We fitted the density of the length of directly inferred introgressed segments either to the exponential (Eq. \ref{eq:7}) or lomax (Eq. \ref{eq:8}) probability density function. We set a lower and upper length cutoff, to account for non uniform detection capability of the Skov et al. 2018 model across different length of introgressed segments. To correct our parameter estimate from the respective pdf we divided it by the interval between the lower and upper cutoff of the pdf. 
+
 \begin{equation}
 \label{eq:7}
-AIC = 2p - 2\ln(\hat{L})
+Pr(l_{lower}<=L=<l_{upper}) \sim \frac{exp(l,\lambda)}{exp(L>=l_{lower},\lambda)-exp(L<=l_{upper},\lambda)}
+\end{equation}
+
+\begin{equation}
+\label{eq:8}
+Pr(l_{lower}<=L=<l_{upper}) \sim \frac{lomax(l,k+1,\frac{1}\theta)}{lomax(L>=l_{lower},k+1,\frac{1}\theta)-lomax(L<=l_{upper},k+1,\frac{1}\theta)}
 \end{equation}
 
 \subsection{Modeling parameter effect sizes}\label{modeling prameter effect sizes}
@@ -473,7 +477,7 @@ E_i &\sim Normal(\mu_i,\sigma) \\
 
 \subsection{Introduction to result}\label{introduction to result}
 
-We used coalescent simulations of Neandertal admixture into non-African humans to investigate multi-generation continuous admixture, using a Gamma distribution describing the per generation migration rate. Focusing on the ALD approach, the ALDER program was used to infer the decay of LD between ascertained sites informative for Neandertal introgression in non-Africans. The ascertained ALD was fitted with an exponential distribution assuming a one-generation admixture pulse.  We simulated this scenario using different conditions of recombination and demography as well as deploying different ascertainment schemes and LD cutoffs. A Generalized Linear Model (GLM) was used to compare all these factors with the effect of multi-generation continuous admixture on the pulse assumption. To get the duration of the admixture we introduce a new fitting approach deploying the LOMAX distribution. We test this new fitting with the most inferential factors from the previous analysis on simulated and real data.
+We used coalescent simulations of Neandertal admixture into non-African humans to investigate multi-generation continuous admixture, using a Gamma distribution describing the per generation migration rate. Focusing on the ALD approach, the ALDER program was used to infer the decay of LD between ascertained sites informative for Neandertal introgression in non-Africans. The ascertained ALD was fitted with an exponential distribution assuming a one-generation admixture pulse.  We simulated this scenario using different conditions of recombination and demography as well as deploying different ascertainment schemes and LD cutoffs. A Generalized Linear Model (GLM) was used to compare all these factors with the effect of multi-generation continuous admixture on the pulse assumption. To get the duration of the admixture we introduce a new fitting approach deploying the LOMAX distribution. We test this new fitting with the most inferential factors from the previous analysis on simulated and real data using the ALD and the direct inference of introgressed segment approaches.
 
 \subsection{Theoretical framework for continuous admixture}\label{theoretical framework for continuous admixture}
 
@@ -511,14 +515,14 @@ advantages:
     \item We just need two parameter $k$ and $\theta$, that can be interpreted as the duration of gene flow, instead of the minimal of two additional parameters required for the pulse model.
     \item The segment length distribution $L_i$ follows a Lomax-distribution, i.e. has the analytical density $Pr(L=l) = \frac{1}{\theta k-1} (1+l\frac{1}{\theta})^{-(k-1)}$
     \item The mean segment-length is  $\frac{1}{k \theta}$ for all $k > 0$, and undefined otherwise. 
-    \item As $k$ approaches infinity, we recover the exponential distribution. Thus, if tract length are directly inferred, one can use a likelihood-ratio test to distinguish continuous from discrete gene flow. As the special case of exponentially lies on the boundary of the parameter space, the test-statistic does not follow a $\chi^2$-distribution (\cite{Kozubowski_Testing_2008}). Model selection using a LRT is however not possible when segment length are indirectly inferred by ALD.
+    \item As $k$ approaches infinity, we recover the exponential distribution. Thus, if segment length are directly inferred, one can use a likelihood-ratio test to distinguish continuous from discrete gene flow. As the special case of exponentially lies on the boundary of the parameter space, the test-statistic does not follow a $\chi^2$-distribution (\cite{Kozubowski_Testing_2008}). Model selection using a LRT is however not possible when segment length are indirectly inferred by ALD.
 \end{itemize}
 
 Using this model we i) examining the effect of continuous admixture on
 the admixture time estimates calculated using the exponential model
 assuming a pulse like admixture. ii) comparing this effect to the
 effects by demography, recombination rate and analysis parameters used
-for the indirect inference of admixture tract length using ALD, namely
+for the indirect inference of admixture segment length using ALD, namely
 the ascertainment scheme and the minimal distance between SNPs. iii) are
 interested under which conditions the parameters of the
 Lomax-distribution can be estimated accurately for a scenario of
@@ -542,14 +546,21 @@ continuous admixture (Eq. \ref{eq:3}). Sites informative for Neandertal
 introgression into non-Africans where enriched using the
 Lower-Enrichment Ascertainment scheme (LES) filtering for SNPs ancestral in
 all Africans and polymorphic in Neandertals. The pairwise weighted LD
-between the ascertained SNPs was computed using the ALDER program.
+between the ascertained SNPs was computed using the ALDER program with a minimal distance between the SNPs of 0.05 cM.
 Figure \ref{fig:fig1} C shows the expected log weighted LD for different
 length of continuous admixture ranging from a one generation pulse to
 1500 generations.
 
-First, we compared estimates for different mean admixture times ranging from 250 generations ago to 2000 generations ago. We either used a pulse-like admixture model where the gene flow is only one generation long or a continuous admixture. The duration of admixture under the continuous model is 50\% of the mean time (if the mean time is 250 generations ago gene flow ranges from 325 to 175 generations ago). Assuming only a one generation pulse to estimate the mean time revealed only minor deviations between the two scenarios and the true
-admixture time of 3\% to 5\% for the pulse and 1\% to 7\% for the
-continuous (Figure \ref{fig:fig2} A). 
+First, we compared estimates for different mean admixture times ranging
+from 250 generations ago to 2000 generations ago. We either used a
+pulse-like gene flow model where the gene flow is only one generation
+long or a continuous gene flow model for the simulations. The duration
+of gene flow under the continuous model is 50\% of the mean time (if the
+mean time is 250 generations ago gene flow ranges from 325 to 175
+generations ago). Assuming only a one generation pulse to estimate the
+mean time, revealed only minor deviations between the two scenarios and
+the true admixture time of 3\% to 6\% for the pulse and 0\% to 5\% for
+the continuous (Figure \ref{fig:fig2} A).
 
 
 
@@ -594,7 +605,7 @@ Previous studies reported that violations of these assumptions can have an effec
  Furthermore, we altered the used scheme for ascertainment of SNPs for admixture informative sites. We compared the LES where only
 positions in the admixed population are considered where both source
 populations are diverged from each other, to an even stricter scheme. The Higher-Enrichment Scheme (HES) requiring additional
-to the LES non-Africans to be polymorphic at a SNP. Additionally, we altered the minimal distance between pairs of SNPs for which the LD is calculated from 0.02 cM to 0.05 cM.
+to the LES non-Africans to be polymorphic at a SNP. Additionally, we altered the minimal distance between pairs of SNPs for which the LD is calculated from 0.05 cM to 0.02 cM.
 
 
 
@@ -605,20 +616,23 @@ ascertainment scheme, minimal distance, demography and recombination on
 the bias of admixture estimates (Supplement Table \ref{tab:tableS1}).
 Figure \ref{fig:fig3} shows the comparison of the standardized
 difference between true and estimated time between the previously used
-model (ascertainment = LES, \(d_{0} = 0.02 cM\), demography = simple and
+model (ascertainment = LES, \(d_{0} = 0.05 cM\), demography = simple and
 recombination = constant) further refereed to as the standard model and
-a model with one of the four parameter changed, respectively. The previously observed overestimation
-of the standard model was estimated to be 0.25 (0.22 - 0.29 95 \% CI)
-standard deviation from the true admixture time. Every parameter change
-results in lower estimates compared to the standard model, with the
-biggest difference between a constant and a varying recombination (-1.76
-- -1.7 95 \% CI) and the smallest differences between a pulse and
-continuous gene flow model (-0.15 - -0.08 95 \% CI). Most accurate
-estimates are achieved using the LES ascertainment scheme in combination
-with a minimal distance of 0.05 cM. Additionally, the bias introduced by
-the demography seems to depend on the used ascertainment scheme, since
-only under the HES a difference between the simple and complex
-demography is evident (Supp. Fig. \ref{fig:figS2}).
+a model with one of the four parameter changed, respectively. The
+previously observed overestimation of the standard model was estimated
+to be 0.12 (0.08 - 0.16 95 \% CI) standard deviation from the true
+admixture time.
+
+Every parameter change results in lower estimates compared to the
+standard model, with the biggest difference between a constant and a
+varying recombination (-1.76 - -1.7 95 \% CI) and the smallest
+differences between a pulse and continuous gene flow model (-0.34 -
+-0.28 95 \% CI). Most accurate estimates are achieved using the LES
+ascertainment scheme in combination with a minimal distance of 0.05 cM.
+Additionally, the bias introduced by the demography seems to depend on
+the used ascertainment scheme, since only under the HES a difference
+between the simple and complex demography is evident (Supp. Fig.
+\ref{fig:figS2}).
 
 Overall the bias introduced by the ascertainment, minimal distance
 cutoff, demography and admixture model are 10 \% or less of the true
@@ -678,18 +692,9 @@ generations. With regard to scenarios of Neandertal admixture,
 accurately estimating the duration of possible continuous admixture from
 present day human genomes even under a constant rate is
 under powered. 
-Figure \ref{fig:fig5} shows multiple gene flow duration scenarios ranging from a one generation pulse to 2500 generations of continuous admixture. All scenarios are compatible with the ALD data from 1000 Genome's CEU computed using YRI and the Altai, Vindija and Chagyrskaya high coverage as reference populations and a CEU specific fine-scale genetic map.
+Figure \ref{fig:fig5} shows multiple gene flow duration scenarios ranging from a one generation pulse to 2500 generations of continuous admixture. All scenarios are compatible with the ALD data from 1000 Genome's CEU computed using YRI and the Altai, Vindija and Chagyrskaya high coverage as reference populations and a CEU specific fine-scale genetic map \cite{spence_inference_2019}.
 
-
-Additionally, we tried to classifying the two admixture scenarios using  Akaike's information
-criterion comparing the exponential model nested in the Lomax. We expect
-that, since the AIC is penalizing extra parameter, that a Lomax fit to a
-pulse like simulation scenario should be rejected, wheres for all the
-other scenarios the Lomax would be preferred. However, for the
-simplified simulation scenarios under a constant recombination rate were
-we obtained the best results, the Lomax displays a lower AIC in 59 fits
-out of 100 replications. Model comparison for scenarios of true
-continuous admixture always resulted in the Lomax having a lower AIC.
+We repeated the analysis on directly inferred Neandertal segments found in 27,566 high coverage genomes from Iceland \cite{skov_nature_2020} using the deCODE map \cite{kong_fine-scale_2010} as a population specific map for Icelanders (Supplement Figure \ref{fig:figS4}). However, the mean time estimates of Neandertal admixture obtained are way younger then expected both from previous genetic and archaeological studies, making long continuous admixture (longer then 200 generations ) less compatible with the data.
 
 \begin{figure}
 \centering
@@ -746,7 +751,7 @@ The other major avenue are ancient DNA samples from early modern humans that liv
 \begin{figure}
 \centering
 \includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS1-1.pdf}
-\caption{\label{fig:figS1} The two tested demographic histories of humans splitting into African population (AFR) and non-African (non-AFR) with admixture from Neandertals (NEA) into non-Africans. A) The simple demographic model with constant population sizes. B) The complex demographic model with rapid population size changes (1), substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the out-of-Africa event (2) and additional gene flow between Africans and non-Africans after the Neandertal admixture (3).}
+\caption{\label{fig:figS1} Demographic models of Neandertal admixture with non-Africans used for the simulations. A) Simple demographic model used for ALD simulations with constant population sizes. B) Complex demographic model with substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the final split and additional gene flow between Africans and non-Africans after the Neandertal admixture. The  population sizes after the (final) split are taken fome MSMC/PSMC estimates for the respective populations. C) Demographic model for the direct inference of Neandertal segments in non-Africans taken and modified from Skov et al. 2018. (\cite{skov_detecting_2018})}
 \end{figure}
 
 \begin{figure}
@@ -755,26 +760,27 @@ The other major avenue are ancient DNA samples from early modern humans that liv
 \caption{\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted line represents the model prediction with the 5.5 \% and 94.5 \% compatibility intervals solid lines. Dotted horizontal line indicates no difference between true and estimated time.}
 \end{figure}
 
-\begin{table}[h]
-\caption{\label{tab:tableS1} Mean, standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
+\begin{table}[H]
+
+\caption{\label{tab:tableS1}\label{tab:tableS1} Mean, standart deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
 \centering
 \begin{tabular}{l|r|r|r|r|r|r}
 \hline
   & mean & sd & 5.5\% & 94.5\% & n\_eff & Rhat\\
 \hline
-a & 0.25 & 0.02 & 0.22 & 0.29 & 1592.94 & 1\\
-\hline
-bG & -0.12 & 0.02 & -0.14 & -0.09 & 2053.35 & 1\\
-\hline
-bR & -1.73 & 0.02 & -1.76 & -1.70 & 2306.53 & 1\\
-\hline
-bD & -0.22 & 0.02 & -0.25 & -0.19 & 2281.65 & 1\\
-\hline
-bm & -0.13 & 0.02 & -0.16 & -0.11 & 2399.95 & 1\\
-\hline
-bA & -0.32 & 0.02 & -0.35 & -0.29 & 2250.29 & 1\\
-\hline
-sigma & 0.46 & 0.01 & 0.45 & 0.47 & 2538.23 & 1\\
+a & 0.12 & 0.02 & 0.08 & 0.16 & 1220.94 & 1\\
+\cline{1-7}
+bG & -0.31 & 0.02 & -0.34 & -0.28 & 1559.84 & 1\\
+\cline{1-7}
+bR & -1.73 & 0.02 & -1.76 & -1.70 & 2112.69 & 1\\
+\cline{1-7}
+bD & -0.22 & 0.02 & -0.25 & -0.19 & 2036.66 & 1\\
+\cline{1-7}
+bm & 0.13 & 0.02 & 0.10 & 0.17 & 1657.66 & 1\\
+\cline{1-7}
+bA & -0.32 & 0.02 & -0.35 & -0.29 & 1721.62 & 1\\
+\cline{1-7}
+sigma & 0.46 & 0.01 & 0.44 & 0.47 & 2239.47 & 1\\
 \hline
 \end{tabular}
 \end{table}
@@ -789,72 +795,71 @@ generations of continuous admixture. D) Lomax mean time estimate for the same sc
 \end{figure}
 
 \begin{table}[H]
-
 \caption{\label{tab:tableS2}\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit}
 \centering
 \begin{tabular}{l|l|l|l|l}
 \hline
 Model & Parameter & Estimate & 2.5 \% & 97.5 \%\\
 \hline
-Exponential & A & 0.0177951995245944 & 0.0177908267592258 & 0.017799572289963\\
+Exponential & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
 \hline
-Exponential & mean time & 1540.52127416954 & 1486.87424159324 & 1598.18442378037\\
+Exponential & mean time & 1540.51741259424 & 1486.87051449324 & 1598.18041766271\\
 \hline
-Exponential & c & 1.04924805906946e-05 & 6.11971522205646e-06 & 1.48652459593327e-05\\
+Exponential & c & 1.04922402241663e-05 & 6.11947485562607e-06 & 1.48650055927066e-05\\
 \hline
-Lomax (td=1) & A & 0.0177951995245944 & 0.0177908267592258 & 0.017799572289963\\
+Lomax (td=1) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
 \hline
-Lomax (td=1) & mean time & 1540.4535829052 & 1486.80890760596 & 1598.11419876881\\
+Lomax (td=1) & mean time & 1540.54690341371 & 1486.89897832594 & 1598.21101235108\\
 \hline
-Lomax (td=1) & c & 1.04879925636383e-05 & 6.11522719500016e-06 & 1.48607579322764e-05\\
+Lomax (td=1) & c & 1.04949518630901e-05 & 6.12218649454983e-06 & 1.48677172316303e-05\\
 \hline
-Lomax (td=100) & A & 0.0177951995245944 & 0.0177908267592258 & 0.017799572289963\\
+Lomax (td=100) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
 \hline
-Lomax (td=100) & mean time & 1541.21447780445 & 1487.54330514089 & 1598.90357467455\\
+Lomax (td=100) & mean time & 1541.21552745233 & 1487.54431823588 & 1598.90466361173\\
 \hline
-Lomax (td=100) & c & 1.04778285719237e-05 & 6.10506320328556e-06 & 1.48505939405618e-05\\
+Lomax (td=100) & c & 1.04778971116211e-05 & 6.10513174308087e-06 & 1.48506624801614e-05\\
 \hline
-Lomax (td=200) & A & 0.0177951995245944 & 0.0177908267592258 & 0.017799572289963\\
+Lomax (td=200) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
 \hline
-Lomax (td=200) & mean time & 1543.29935022922 & 1489.55557407698 & 1601.06648582073\\
+Lomax (td=200) & mean time & 1543.30241011905 & 1489.55852740936 & 1601.0696602451\\
 \hline
-Lomax (td=200) & c & 1.0433937247714e-05 & 6.06117187907592e-06 & 1.48067026163522e-05\\
+Lomax (td=200) & c & 1.04341296352963e-05 & 6.06136426675609e-06 & 1.48068950038366e-05\\
 \hline
-Lomax (td=400) & A & 0.0177951995245944 & 0.0177908267592258 & 0.017799572289963\\
+Lomax (td=400) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
 \hline
-Lomax (td=400) & mean time & 1551.70452997381 & 1497.66805228013 & 1609.78627929072\\
+Lomax (td=400) & mean time & 1551.70459843938 & 1497.66811836146 & 1609.78635031902\\
 \hline
-Lomax (td=400) & c & 1.02583936040117e-05 & 5.88562823537355e-06 & 1.46311589726498e-05\\
+Lomax (td=400) & c & 1.02583870973029e-05 & 5.88562172876263e-06 & 1.46311524658431e-05\\
 \hline
-Lomax (td=800) & A & 0.0177951995245944 & 0.0177908267592258 & 0.017799572289963\\
+Lomax (td=800) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
 \hline
-Lomax (td=800) & mean time & 1586.20214120494 & 1530.9643204954 & 1645.57516831918\\
+Lomax (td=800) & mean time & 1586.19945700954 & 1530.96172977427 & 1645.57238365183\\
 \hline
-Lomax (td=800) & c & 9.54368319534451e-06 & 5.17091782670639e-06 & 1.39164485639826e-05\\
+Lomax (td=800) & c & 9.54350178205991e-06 & 5.17073641351966e-06 & 1.39162671506002e-05\\
 \hline
-Lomax (td=1000) & A & 0.0177951995245944 & 0.0177908267592258 & 0.017799572289963\\
+Lomax (td=1000) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
 \hline
-Lomax (td=1000) & mean time & 1613.03878564827 & 1556.86640703106 & 1673.41633342024\\
+Lomax (td=1000) & mean time & 1613.04056713235 & 1556.86812647683 & 1673.41818158693\\
 \hline
-Lomax (td=1000) & c & 8.99440086897965e-06 & 4.62163550034154e-06 & 1.33671662376178e-05\\
+Lomax (td=1000) & c & 8.99447037087496e-06 & 4.62170500233471e-06 & 1.33672357394152e-05\\
 \hline
-Lomax (td=1500) & A & 0.0177951995245944 & 0.0177908267592258 & 0.017799572289963\\
+Lomax (td=1500) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
 \hline
-Lomax (td=1500) & mean time & 1713.23403168493 & 1653.57245904084 & 1777.36198106405\\
+Lomax (td=1500) & mean time & 1713.23411309364 & 1653.57253761458 & 1777.36206551997\\
 \hline
-Lomax (td=1500) & c & 6.99226716776451e-06 & 2.6195017991264e-06 & 1.13650325364026e-05\\
+Lomax (td=1500) & c & 6.99221511836012e-06 & 2.61944974981987e-06 & 1.13649804869004e-05\\
 \hline
-Lomax (td=2000) & A & 0.0177951995245944 & 0.0177908267592258 & 0.017799572289963\\
+Lomax (td=2000) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
 \hline
-Lomax (td=2000) & mean time & 1874.70292082734 & 1809.41836400178 & 1944.87480148365\\
+Lomax (td=2000) & mean time & 1874.70574615156 & 1809.42109093705 & 1944.87773256239\\
 \hline
-Lomax (td=2000) & c & 3.90605094093569e-06 & -4.66714427702433e-07 & 8.2788163095738e-06\\
+Lomax (td=2000) & c & 3.90606333903974e-06 & -4.66702029500504e-07 & 8.27882870757999e-06\\
 \hline
-Lomax (td=2500) & A & 0.0177951995245944 & 0.0177908267592258 & 0.017799572289963\\
+Lomax (td=2500) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
 \hline
-Lomax (td=2500) & mean time & 2128.77288305327 & 2054.64060710254 & 2208.45483960993\\
+Lomax (td=2500) & mean time & 2128.77896518946 & 2054.64647743473 & 2208.46114940615\\
 \hline
-Lomax (td=2500) & c & -6.57454976888574e-07 & -5.03022034552669e-06 & 3.71531039174954e-06\\
+Lomax (td=2500) & c & -6.57497391994452e-07 & -5.0302627605347e-06 & 3.7152679765458e-06\\
 \hline
 \end{tabular}
 \end{table}
