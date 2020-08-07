@@ -236,7 +236,7 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 Set_name='Fig_1_B_corrected'
 
 # Choose number of replicates #
-replicates=10
+replicates=100
 
 # Choose Folder #
 Folder_name='../Fig_1_B_corrected'
@@ -355,6 +355,12 @@ rule merge_snp_files:
 					for line in data:
 						out_merged_geno.write(line)
 
+def get_recomb_rate_for_correctio(master_name):
+	master_name=master_name
+	cor_rr=config['MASTER']['%s' % master_name]['correction_recomb_rate']
+
+        return cor_rr
+
 rule Set_Genetic_Distance:
 	input:
 		"{Folder_name}/Ascertained_Simulation_merged-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}.snp"
@@ -367,7 +373,9 @@ rule Set_Genetic_Distance:
 			x=float(params['recombination_rate'])
 			shell("""awk '{{print $1,$2, $3=$4*{x}, $4}}' {input} | sed '{{s/ /\t/g}}' > {output} """)
 		elif str(master['Recombination_Map'][0]) == 'True':
-			x=float(1.843e-8)
+			cor_rr=get_recomb_rate_for_correctio(wildcards.master_name)
+			print(cor_rr)
+			x=cor_rr
 			shell("""awk '{{print $1,$2, $3=$4*{x}, $4}}' {input} | sed '{{s/ /\t/g}}' > {output} """)
 
 rule run_ALDER:
