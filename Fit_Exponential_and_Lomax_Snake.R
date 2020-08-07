@@ -97,6 +97,7 @@ Fit_Lomax_fn <- function(Data,affine,Expo_s,Fix_lambda){
   dist=xx$dist
   wcorr=xx$wcorr
   if(Fix_lambda){
+    print("Using fixed lambda")
     if(affine){
       fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + ((x[1])*(dist/100) /  x[2])))^(1/(x[1]))
       fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
@@ -120,6 +121,7 @@ Fit_Lomax_fn <- function(Data,affine,Expo_s,Fix_lambda){
     }
   }
   else{
+    print("Estimating s")
     if(affine){
       fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + ((x[1])*(dist/100) /  x[2])))^(1/(x[1]))
       fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
@@ -128,7 +130,7 @@ Fit_Lomax_fn <- function(Data,affine,Expo_s,Fix_lambda){
       par1_lomax <- fm3_DEoptim$optim$bestmem
       par1_lomax <- c(par1_lomax[1],Expo_s,par1_lomax[3],par1_lomax[4])
       names(par1_lomax) <- c("w","s","A","c")
-      fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + (((w)*(dist/100)) / Expo_s)))^(1/(w)), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+      fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((w*(dist/100)) / s)))^(1/w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
       
     } else {
       fm1_lomax <- function(x)  x[3]* (1/(1 + ((x[1])*(dist/100) /  x[2])))^(1/(x[1]))
@@ -138,7 +140,7 @@ Fit_Lomax_fn <- function(Data,affine,Expo_s,Fix_lambda){
       par1_lomax <- fm3_DEoptim$optim$bestmem
       par1_lomax <- c(par1_lomax[1],Expo_s,par1_lomax[3])
       names(par1_lomax) <- c("w","s","A")
-      fit1_lomax <- nls(wcorr ~ A*(1/(1  + (((w)*(dist/100)) / Expo_s)))^(1/(w)), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+      fit1_lomax <- nls(wcorr ~ A*(1/(1  + (((w)*(dist/100)) / s)))^(1/(w)), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
       
     }
     
