@@ -455,12 +455,7 @@ Plot_Fig_1_B <- function(Data,Colour_P){
 ```{r fig1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=3,fig.cap="\\label{fig:fig1} A) Chromosomal sections with introgressed segments (grey). Introgressed variants (green circles) are in high LD compared to the background (stars). The ALD approach estimates linkage between the introgressed variants, wheres the haplotype  approach tries to estimate the segment directly. B) Migration rate per #generation modeled using a Gamma distribution for different gene flow length, dotted line indicates maximum time of gene flow. C) The #expected LD decay modeled as a Lomax distribution for the different length."}
 
 
-#library(grid)
-#library(ggplot2)
-#library(cowplot)
-#library(magick)
-#Intro_Fig <- readPNG('Paper_Graphics.png',native = T,info = T)
-#include_graphics(path = 'Paper_Graphics_2.png',auto_pdf = T)
+
 t_d=c(1,100,200,400,800,1000,1500,2000,2500)
 cbPalette_viridis <- viridis(length(t_d),option = "D")
 
@@ -777,7 +772,6 @@ from a continuous event (resulting in Lomax-distributed ALD).
 
 
 ```{r message=FALSE, echo=FALSE,warning=FALSE}
-
 #Data
 # Old data
 #Figure_1_A_Data <- Results_Table("Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_1_A_new-GF_Model_I-min_dist_Fit-0.05-ascertainment-0.txt")
@@ -845,7 +839,6 @@ time of 1500 generations.
 
 
 ```{r fig2,message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=8,fig.height=8,fig.cap="\\label{fig:fig2} A) Comparison of mean admixture time estimates between pulse and continuous gene flow for different admixture times. The length of continuous gene flow corresponds to 50% of the mean admixture time, black line indicates true mean admixture time. B) Comparison of mean admixture time estimates for simulations with a  mean time of admixture of 1500 generations ago, at a varying length of gene flow. Boxplot created from 100 simulation replicates, respectively."}
-
 ### Plot in one window
 
 P1_1 <- Plot_Fig_1_A(Fig_A_1,Colour_P = cbPalette_viridis)
@@ -888,13 +881,11 @@ Simple_D_Sim_2$Demography <- "0_Simple"
 Simple_D_Sim_2$Recomb.rate <- "0_constant"
 Simple_D_Sim_2$Sim_id <- ifelse(Simple_D_Sim_2$Ascertained==0,"Simple_D_Sim_LES_1","Simple_D_Sim_HES_1")
 Inferred_D_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
-#Inferred_D_Sim_1 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 Inferred_D_Sim_1$Gamma_mean <- Get_gamma_mean(Inferred_D_Sim_1$GF_Start,Inferred_D_Sim_1$GF_Stop)
 Inferred_D_Sim_1$Demography <- "Inferred"
 Inferred_D_Sim_1$Recomb.rate <- "0_constant"
 Inferred_D_Sim_1$Sim_id <- ifelse(Inferred_D_Sim_1$Ascertained==0,"Inferred_D_Sim_LES_0","Inferred_D_Sim_HES_0")
 Inferred_D_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
-#Inferred_D_Sim_2 <- Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 Inferred_D_Sim_2$Gamma_mean <- Get_gamma_mean(Inferred_D_Sim_2$GF_Start,Inferred_D_Sim_2$GF_Stop)
 Inferred_D_Sim_2$Demography <- "Inferred"
 Inferred_D_Sim_2$Recomb.rate <- "0_constant"
@@ -912,14 +903,12 @@ Recom_Sim_2$Recomb.rate <- "variable"
 Recom_Sim_2$m <- Recom_Sim_2$m
 Recom_Sim_2$Sim_id <- ifelse(Recom_Sim_2$Ascertained==0,"Recom_D_Sim_LES_1","Recom_D_Sim_HES_1")
 Recom_Sim_and_Inf_1 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_recomb_map_-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
-#Recom_Sim_and_Inf_1 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 Recom_Sim_and_Inf_1$Gamma_mean <- Get_gamma_mean(Recom_Sim_and_Inf_1$GF_Start,Recom_Sim_and_Inf_1$GF_Stop)
 Recom_Sim_and_Inf_1$Demography <- "Inferred"
 Recom_Sim_and_Inf_1$Recomb.rate <- "variable"
 Recom_Sim_and_Inf_1$m <- Recom_Sim_and_Inf_1$m
 Recom_Sim_and_Inf_1$Sim_id <- ifelse(Recom_Sim_and_Inf_1$Ascertained==0,"Recom_Sim_and_Inf_LES_0","Recom_Sim_and_Inf_HES_0")
 Recom_Sim_and_Inf_2 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_recomb_map_-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
-#Recom_Sim_and_Inf_2 <-  Results_Table("~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Results_Fig_1_2/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 Recom_Sim_and_Inf_2$Gamma_mean <- Get_gamma_mean(Recom_Sim_and_Inf_2$GF_Start,Recom_Sim_and_Inf_2$GF_Stop)
 Recom_Sim_and_Inf_2$Demography <- "Inferred"
 Recom_Sim_and_Inf_2$Recomb.rate <- "variable"
@@ -1298,7 +1287,6 @@ Result.Table.fn <- function(Result.Table.path,Sampling.time.from.GF.End,name){
   Result.Table$Sample_Time <- Sampling.time.from.GF.End
   Result.Table$True_GF_length <- Result.Table$GF.End-Result.Table$GF.Start
   Result.Table$True_mean_GF <- ((Result.Table$GF.End+Result.Table$GF.Start)/2)-(Result.Table$GF.Start-Result.Table$Sample_Time)
-  Result.Table$True_gamma_mean_GF <- Get_gamma_mean(Result.Table$GF.Start,Result.Table$GF.End)
   Result.Table$mean_GF_exp <- 1/Result.Table$s.exp
   Result.Table$mean_GF_lomax_s <- 1/Result.Table$s.lomax
   Result.Table.comparison <- True_params(Result.Table)
@@ -1314,7 +1302,7 @@ Plot_sampling_50_gen_t_GF <- function(ggdata_t.GF,cbPalette_viridis,Ptitle){
   ggplot(ggdata_t.GF,aes(x=variable,y=as.numeric(as.character(value)),colour=factor(Name)))+
     geom_boxplot(show.legend = T)+
     facet_grid(~as.factor(True_GF_length),switch = "x")+
-    geom_hline( aes(yintercept = True_gamma_mean_GF ))+
+    geom_hline( aes(yintercept = True_mean_GF ))+
     ggtitle(Ptitle) +
     labs(x = "Admixture Duration")+
     labs(y = "Estimated Admixture Time")+
@@ -1349,7 +1337,7 @@ Plot_sampling_varying_gen_t_GF <- function(ggdata_t.GF_varying,cbPalette_viridis
   ggplot(ggdata_t.GF_varying,aes(x=variable,y=as.numeric(as.character(value)),colour=factor(Name)))+
     geom_boxplot()+
     facet_grid(~as.factor(Sample_Time),switch = "x")+
-    geom_hline( aes(yintercept = True_gamma_mean_GF ))+
+    geom_hline( aes(yintercept = True_mean_GF ))+
     ggtitle(Ptitle) +
     labs(x = "Generations Sampled After End of Admixture")+
     labs(y = "Estimated Admixture Time")+
@@ -1381,25 +1369,25 @@ Plot_sampling_varying_gen_GF_Length <- function(ggdata_l.GF_varying,cbPalette_vi
                        labels = c("Constant Recombination","HapMap AAMap corrected","HapMap HapMap corrected","HapMap not corrected"))
 }
 
-Result.Table.path_Recent_50 <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_no_correction <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_AAMap_correction <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+Result.Table.path_Recent_50 <-'Result_Files_new_Plot/Corrected_Versions/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_no_correction <-'Result_Files_new_Plot/Corrected_Versions/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_AAMap_correction <-'Result_Files_new_Plot/Corrected_Versions/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction <-'Result_Files_new_Plot/Corrected_Versions/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
 
 Result.Table.path_Recent_50_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_no_correction_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_AAMap_correction_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_no_correction_fixed_Lambda <-'Result_Files_new_Plot/Corrected_Versions/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction_correct_rr.txt'
+Result.Table.path_Recent_50_Recomb_Map_AAMap_correction_fixed_Lambda <-'Result_Files_new_Plot/Corrected_Versions/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda <-'Result_Files_new_Plot/Corrected_Versions/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
 
 Result.Table.path_Recent_Varying <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
 Result.Table.path_Recent_Varying_Recomb_Map_no_correction <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
 Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
 Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
 
-Result.Table.path_Recent_Varying_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_Varying_Recomb_Map_no_correction_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
-Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda <-'Result_Files_new_Plot/Fixed_Lambda/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+Result.Table.path_Recent_Varying_fixed_Lambda <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_no_correction_fixed_Lambda <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction_fixed_Lambda <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda <-'Result_Files_new_Plot/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
 
 
 Plot.data_50<-rbind(
@@ -1409,9 +1397,9 @@ Plot.data_50<-rbind(
   Recent_50_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction,50,'Recent_50_HapMap_HapMap_correction')
 )
 
-ggdata_t.GF_50_mean_GF_exp <- melt(Plot.data_50,measure.vars =  c('mean_GF_exp'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name'))
-ggdata_t.GF_50_mean_GF_lomax <- melt(Plot.data_50,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name'))
-ggdata_l.GF_50 <- melt(Plot.data_50,measure.vars =  c('length_GF'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name'))
+ggdata_t.GF_50_mean_GF_exp <- melt(Plot.data_50,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_t.GF_50_mean_GF_lomax <- melt(Plot.data_50,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_l.GF_50 <- melt(Plot.data_50,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
 
 Plot.data_50_fixed_Lambda<-rbind(
   Recent_50_constant_fixed_Lambda<- Result.Table.fn(Result.Table.path_Recent_50_fixed_Lambda,50,'Recent_50_constant'),
@@ -1420,8 +1408,8 @@ Plot.data_50_fixed_Lambda<-rbind(
   Recent_50_HapMap_HapMap_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda,50,'Recent_50_HapMap_HapMap_correction')
 )
 
-ggdata_t.GF_50_fixed_Lambda <- melt(Plot.data_50_fixed_Lambda,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name'))
-ggdata_l.GF_50_fixed_Lambda <- melt(Plot.data_50_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name'))
+ggdata_t.GF_50_fixed_Lambda <- melt(Plot.data_50_fixed_Lambda,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_l.GF_50_fixed_Lambda <- melt(Plot.data_50_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
 
 Plot.data_varying<-rbind(
   Recent_varying_constant<- Result.Table.fn(Result.Table.path_Recent_Varying,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_constant'),
@@ -1430,9 +1418,9 @@ Plot.data_varying<-rbind(
   Recent_varying_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_HapMap_correction')
 )
 
-ggdata_t.GF_varying_mean_GF_exp <- melt(Plot.data_varying,measure.vars =  c('mean_GF_exp'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name','Sample_Time'))
-ggdata_t.GF_varying_mean_GF_lomax <- melt(Plot.data_varying,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name','Sample_Time'))
-ggdata_l.GF_varying <- melt(Plot.data_varying,measure.vars =  c('length_GF'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_t.GF_varying_mean_GF_exp <- melt(Plot.data_varying,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_t.GF_varying_mean_GF_lomax <- melt(Plot.data_varying,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_l.GF_varying <- melt(Plot.data_varying,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
 
 Plot.data_varying_fixed_Lambda<-rbind(
   Recent_varying_constant_fixed_Lambda<- Result.Table.fn(Result.Table.path_Recent_Varying_fixed_Lambda,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_constant'),
@@ -1441,8 +1429,8 @@ Plot.data_varying_fixed_Lambda<-rbind(
   Recent_varying_HapMap_HapMap_correction_fixed_Lambda <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction_fixed_Lambda,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_HapMap_correction')
 )
 
-ggdata_t.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name','Sample_Time'))
-ggdata_l.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_gamma_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_t.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_l.GF_varying_fixed_Lambda <- melt(Plot.data_varying_fixed_Lambda,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
 
 
 New.P1_mean_GF_exp <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_exp,cbPalette_viridis, "Sampled 50 Gen. From End Of Admixture")
@@ -1955,7 +1943,7 @@ Conclusions:
 
 
 \section{Supplement}\label{supplement}
-```{r figS1, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS1} The two tested demographies of humans splitting into African population (AFR) and non-African (non-AFR) with admixture from Neandertals (NEA) into non-Africans. The simple demographic model with constant population sizes and the complex with rapid population size changes (1), substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the out-of-Africa event (2) and additional gene flow between Africans and non-Africans after the Neandertal admixture (3)."}
+```{r eval=FALSE, message=FALSE, echo=FALSE,warning=FALSE,}
 
 Demography_graphic <- readPNG(source = "Paper_Graphics_demography_only.png",native = F,info = T)
 im_B <- ggplot() + 
@@ -1964,6 +1952,54 @@ im_B <- ggplot() +
     # This ensures that the image leaves some space at the edges
     theme(plot.margin = margin(t=1, l=1, r=1, b=1, unit = "cm"))
 im_B
+```
+
+```{r figS1, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS1} Demographic models of Neandertal admixture with non-Africans used for the simulations. A) Simple demographic model used for ALD simulations with constant population sizes. B) Complex demographic model with substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the final split and additional gene flow between Africans and non-Africans after the Neandertal admixture. The  population sizes after the (final) split are taken fome MSMC/PSMC estimates for the respective populations. C) Demographic model for the direct inference of Neandertal segments in non-Africans taken and modified from Skov et al. 2018."}
+
+
+
+Simple_Demo <- readPNG(source = "Simple_Demographic_model.png",native = F)
+Complex_Demo <- readPNG(source = "Complex_Demographic_model.png",native = F)
+Skov_Demo <- readPNG(source = "Direct_Inference_Demographic_model.png",native = F)
+#im_AA <- rasterGrob(Intro_graphic)
+
+Simple_Demo <- ggplot() + 
+    background_image(Simple_Demo) +
+    theme_bw()+
+    #theme(plot.margin = margin(t=0, l=0, r=0, b=0, unit = "cm")
+    #,panel.border = element_blank()
+    theme(plot.margin = margin(t=0, l=1, r=1, b=1, unit = "cm"))
+ggsave(file="Simple_Demo.png", width=10, height=8, dpi=300)
+
+Complex_Demo <- ggplot() + 
+    background_image(Complex_Demo) +
+    theme_bw()+
+    #theme(plot.margin = margin(t=0, l=0, r=0, b=0, unit = "cm")
+    #,panel.border = element_blank()
+    theme(plot.margin = margin(t=0, l=1, r=1, b=1, unit = "cm"))
+ggsave(file="Complex_Demo.png", width=10, height=8, dpi=300)
+
+Skov_Demo <- ggplot() + 
+    background_image(Skov_Demo) +
+    theme_bw()+
+    #theme(plot.margin = margin(t=0, l=0, r=0, b=0, unit = "cm")
+    #,panel.border = element_blank()
+    theme(plot.margin = margin(t=0, l=1, r=1, b=1, unit = "cm"))
+ggsave(file="Skov_Demo.png", width=10, height=8, dpi=300)
+
+
+Im_Simple_Demo <- cowplot::ggdraw() +
+  cowplot::draw_image("Simple_Demo.png")
+
+Im_Complex_Demo <- cowplot::ggdraw() +
+  cowplot::draw_image("Complex_Demo.png")
+
+Im_Skov_Demo <- cowplot::ggdraw() +
+  cowplot::draw_image("Skov_Demo.png")
+
+ggarrange(Im_Simple_Demo,Im_Complex_Demo,Im_Skov_Demo,
+          labels = c("A","B", "C"),
+          ncol = 3, nrow = 1)
 ```
 
 ```{r figS2, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 relicates respectively. Dotted line represents the model prediction with the 5.5 % and 94.5 % compatibility intervals solid lines. Dotted horizontal line indicates no difference between ture and estimated time. "}
@@ -2403,7 +2439,7 @@ Segment_simulation_result <- ggarrange(P_Sim_Frag_Expo,P_Sim_Frag_Lomax,
 Segment_simulation_result
 ```
 
-```{r figS5, message=FALSE, echo=FALSE,warning=FALSE,fig6.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig5} Different admixure duration models ranging from a one generation pulse tu 2500 generations for Neandertal admixture using directly infered introgressed segments from Skov et al. 2020"}
+```{r figS5, message=FALSE, echo=FALSE,warning=FALSE,fig6.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig5} Different admixure duration models ranging from a one generation pulse tu 2500 generations for Neandertal admixture using directly infered introgressed segments from Skov & Coll Macia et al. 2020"}
 ### For the paper plot cutoff 0.05 - 1.2 cM
 #### Real Data Results
 lower_trunc=0.05
@@ -2422,6 +2458,10 @@ Icelandic_Expo_est=Get_Expo_est_fn(Icelandic_Fragments_cM,lower_trunc,upper_trun
 Icelandic_Expo_lomax=Get_Lomax_est_fn(Icelandic_Fragments_cM,Icelandic_Expo_est,4,5)
 
 Icelandic_Expo_lomax_fixed=Get_Lomax_fixed_shape_est_fn(t_d,Icelandic_Fragments_cM,Icelandic_Expo_est,3,4,5)
+
+Icelandic_LRT_lomax_fixed=LRT_Lomax_fn(Icelandic_Expo_lomax_fixed,t_d )
+
+Icelandic_max_gf_duration_compatible=max(Icelandic_LRT_lomax_fixed$GF_Length_Model_2[Icelandic_LRT_lomax_fixed$GF_Length_Model_1==1 & Icelandic_LRT_lomax_fixed$LRT<=4])
 
 Plot_Icelandic_Fragments=hist(Icelandic_Fragments_cM$length_cM[Icelandic_Fragments_cM$length_cM>=lower_trunc &
                                                               Icelandic_Fragments_cM$length_cM<=upper_trunc   ],breaks = 300,plot=F)
