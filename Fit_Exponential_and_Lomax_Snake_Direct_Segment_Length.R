@@ -1,16 +1,28 @@
+suppressPackageStartupMessages({
+  library("DPQ")
+  library("MASS")
+  library("VGAM")
+})
 Path_to_Fragment_File = as.character(snakemake@input[[1]])
 replication=as.integer(snakemake@wildcards[['number']])
-header = as.logic(snakemake@params[['header']])
-recomb_rate = as.numeric(snakemake@params[['recomb_rate']])
+header = as.logical(snakemake@params[['header']])
+recomb_rate = as.numeric(snakemake@params[['recombination_rate']])
 Path_to_Recomb_Map= as.character(snakemake@params[['Recombination_Map']])
 upper_trunc = as.numeric(snakemake@params[['upper_trunc']])
 n_Haploid= as.integer(snakemake@params[['n_Haploids']])
 Snake_output=as.character(snakemake@output[[1]])
 
 
+print(header)
+print(upper_trunc)
+print(recomb_rate)
+print(Path_to_Recomb_Map)
+print(n_Haploid)
+
+
 ### Functions
 Get_Filtered_Simulated_Fragments_fn <- function(Path_to_Fragment_File,header,recomb_rate,n_Haploid){
-  Segments <- read.table(Path_to_Fragment_File,stringsAsFactors = F,header=header)
+  Segments <- read.table(Path_to_Fragment_File,stringsAsFactors = F,header=header,fill=T)
   if(header==F){
     colnames(Segments) = c('Ind','chrom', 'start','end')
   }
@@ -221,6 +233,6 @@ Output <- Results_fit_Simulation(Path_to_Fragment_File,header,Path_to_Recomb_Map
 
 #print output
 outlog <- paste(Snake_output)
-write.csv(Output,file = outlog,quote = F,row.names = F)
+write.table(Output,file = outlog,row.names = F,col.names = F,quote = F,sep = "\t")
 
 
