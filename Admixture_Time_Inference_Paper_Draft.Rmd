@@ -216,8 +216,6 @@ Results_Table <- function(Table_Path) {
   return(Raw_results)
 }
 
-cbPalette <- c( "#56B4E9", "#E69F00", "#009E73", "#F0E442", "#0072B2", "#D55E00")
-cbPalette_viridis <- viridis(6,option = "D")
 
 Get_Data_Table <- function(Data,mean_Gamma=F){
   xx=as.data.frame(table(round(Data$m,digits = 0), paste(Data$GF,Data$mean.t.GF, sep="_"),Data$mean.t.GF,Data$GF,Data$mean.t.GF,Data$length.t.GF))
@@ -405,49 +403,6 @@ Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time
   return(Px)
 }
 
-
-######################## GG PLotting ###########################
-
-## ggplot Figure 1 A
-Plot_Fig_1_A <- function(Data,Colour_P){
-  Px <-  ggplot(Data,aes(x=Var4,y=as.numeric(as.character(Var1)),colour=factor(Var4)))+
-    geom_point(aes(size = Freq),show.legend = F)+
-    geom_boxplot()+
-    facet_grid(~as.factor(Var3),switch = "x")+
-    geom_hline( aes(yintercept = as.numeric(as.character(Data$Var3)) ))+
-    labs(x = "True Admixture Time")+
-    labs(y = "Estimated Admixture Time")+
-    theme(
-      axis.text.x=element_blank(),
-      axis.ticks.x=element_blank())+
-    coord_cartesian(ylim = c(0,2500), expand = 0)+
-    scale_color_manual("Gene Flow Model",
-                       values = c(Colour_P[1],Colour_P[6]),
-                       labels = c("Pulse","Continuous"))
-  return(Px)
-  
-}
-
-
-### Figure 1 ggplot ###
-Plot_Fig_1_B <- function(Data,Colour_P){
-  Px <-  ggplot(Data,aes(x=Var7,y=as.numeric(as.character(Var1)),colour=factor(Var6)))+
-    geom_point(aes(size = Freq),show.legend = F)+
-    geom_boxplot()+
-    facet_grid(~as.factor(Var6),switch = "x")+
-    geom_hline( aes(yintercept = 1500 ))+
-    theme(
-      axis.text.x=element_blank(),
-      axis.ticks.x=element_blank())+
-    labs(x = "Admixture Duration")+
-    labs(y = "Estimated Admixture Time")+
-    scale_color_manual("Admixture Duration",
-                       values = Colour_P  
-                       
-    )
-  return(Px)
-  
-}
 
 ```
 
@@ -839,6 +794,49 @@ time of 1500 generations.
 In conclusion, the differences in mean time estimates between a pulse and a continuous admixture assuming a one-generation pulse are moderate, even for very long continuous admixture scenarios. This makes point estimates for mean admixture time compatible with long continuous admixture.
 
 ```{r fig2,message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=8,fig.height=8,fig.cap="\\label{fig:fig2} A) Comparison of mean admixture time estimates between pulse and continuous gene flow for different admixture times. The length of continuous gene flow corresponds to 50 % of the mean admixture time, black line indicates true mean admixture time. B) Comparison of mean admixture time estimates for simulations with a mean time of admixture of 1500 generations ago, at a varying length of gene flow. Boxplot created from 100 simulation replicates, respectively."}
+######################## GG PLotting ###########################
+
+## ggplot Figure 1 A
+Plot_Fig_1_A <- function(Data,Colour_P){
+  Px <-  ggplot(Data,aes(x=Var4,y=as.numeric(as.character(Var1)),colour=factor(Var4)))+
+    geom_point(aes(size = Freq),show.legend = F)+
+    geom_boxplot()+
+    facet_grid(~as.factor(Var3),switch = "x")+
+    geom_hline( aes(yintercept = as.numeric(as.character(Data$Var3)) ))+
+    labs(x = "True Admixture Time")+
+    labs(y = "Estimated Admixture Time")+
+    theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    coord_cartesian(ylim = c(0,2500), expand = 0)+
+    scale_color_manual("Gene Flow Model",
+                       values = c(Colour_P[1],Colour_P[6]),
+                       labels = c("Pulse","Continuous"))
+  return(Px)
+  
+}
+
+
+### Figure 1 ggplot ###
+Plot_Fig_1_B <- function(Data,Colour_P){
+  Px <-  ggplot(Data,aes(x=Var7,y=as.numeric(as.character(Var1)),colour=factor(Var6)))+
+    geom_point(aes(size = Freq),show.legend = F)+
+    geom_boxplot()+
+    facet_grid(~as.factor(Var6),switch = "x")+
+    geom_hline( aes(yintercept = 1500 ))+
+    theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    labs(x = "Admixture Duration")+
+    labs(y = "Estimated Admixture Time")+
+    scale_color_manual("Admixture Duration",
+                       values = Colour_P  
+                       
+    )
+  return(Px)
+  
+}
+
 ### Plot in one window
 
 P1_1 <- Plot_Fig_1_A(Fig_A_1,Colour_P = cbPalette_viridis)
@@ -867,25 +865,25 @@ Simple_D_Sim_1 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALD
 Simple_D_Sim_1$Gamma_mean <- Get_gamma_mean(Simple_D_Sim_1$GF_Start,Simple_D_Sim_1$GF_Stop)
 Simple_D_Sim_1$Demography <- "0_Simple"
 Simple_D_Sim_1$Recomb.rate <- "0_constant"
-Simple_D_Sim_1$Sim_id <- ifelse(Simple_D_Sim_1$Ascertained==0,"Simple_D_Sim_LES_0","Simple_D_Sim_HES_0")
+Simple_D_Sim_1$Sim_id <- ifelse(Simple_D_Sim_1$Ascertained==0,"Demo_simple_Recomb_const_LES_min_d_2","Demo_simple_Recomb_const_HES_min_d_2")
 
 Simple_D_Sim_2 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 Simple_D_Sim_2$Gamma_mean <- Get_gamma_mean(Simple_D_Sim_2$GF_Start,Simple_D_Sim_2$GF_Stop)
 Simple_D_Sim_2$Demography <- "0_Simple"
 Simple_D_Sim_2$Recomb.rate <- "0_constant"
-Simple_D_Sim_2$Sim_id <- ifelse(Simple_D_Sim_2$Ascertained==0,"Simple_D_Sim_LES_1","Simple_D_Sim_HES_1")
+Simple_D_Sim_2$Sim_id <- ifelse(Simple_D_Sim_2$Ascertained==0,"Demo_simple_Recomb_const_LES_min_d_5","Demo_simple_Recomb_const_HES_min_d_5")
 
 Inferred_D_Sim_1 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 Inferred_D_Sim_1$Gamma_mean <- Get_gamma_mean(Inferred_D_Sim_1$GF_Start,Inferred_D_Sim_1$GF_Stop)
-Inferred_D_Sim_1$Demography <- "Inferred"
+Inferred_D_Sim_1$Demography <- "Complex"
 Inferred_D_Sim_1$Recomb.rate <- "0_constant"
-Inferred_D_Sim_1$Sim_id <- ifelse(Inferred_D_Sim_1$Ascertained==0,"Inferred_D_Sim_LES_0","Inferred_D_Sim_HES_0")
+Inferred_D_Sim_1$Sim_id <- ifelse(Inferred_D_Sim_1$Ascertained==0,"Demo_complex_Recomb_const_LES_min_d_2","Demo_complex_Recomb_const_HES_min_d_2")
 
 Inferred_D_Sim_2 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 Inferred_D_Sim_2$Gamma_mean <- Get_gamma_mean(Inferred_D_Sim_2$GF_Start,Inferred_D_Sim_2$GF_Stop)
-Inferred_D_Sim_2$Demography <- "Inferred"
+Inferred_D_Sim_2$Demography <- "Complex"
 Inferred_D_Sim_2$Recomb.rate <- "0_constant"
-Inferred_D_Sim_2$Sim_id <- ifelse(Inferred_D_Sim_2$Ascertained==0,"Inferred_D_Sim_LES_1","Inferred_D_Sim_HES_1")
+Inferred_D_Sim_2$Sim_id <- ifelse(Inferred_D_Sim_2$Ascertained==0,"Demo_complex_Recomb_const_LES_min_d_5","Demo_complex_Recomb_const_HES_min_d_5")
 
 Recom_Sim_1_1 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0_comp.txt")
 Recom_Sim_1_2 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-1_comp.txt")
@@ -895,7 +893,7 @@ Recom_Sim_1$Gamma_mean <- round(Recom_Sim_1$mean.t.GF)
 Recom_Sim_1$Demography <- "0_Simple"
 Recom_Sim_1$Recomb.rate <- "variable"
 Recom_Sim_1$m <- Recom_Sim_1$m
-Recom_Sim_1$Sim_id <- ifelse(Recom_Sim_1$Ascertained==0,"Recom_D_Sim_LES_0","Recom_D_Sim_HES_0")
+Recom_Sim_1$Sim_id <- ifelse(Recom_Sim_1$Ascertained==0,"Demo_simple_Recomb_varying_LES_min_d_2","Demo_simple_Recomb_varying_HES_min_d_2")
 
 Recom_Sim_2_1 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0_comp.txt")
 Recom_Sim_2_2 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-1_comp.txt")
@@ -905,7 +903,7 @@ Recom_Sim_2$Gamma_mean <- round(Recom_Sim_2$mean.t.GF)
 Recom_Sim_2$Demography <- "0_Simple"
 Recom_Sim_2$Recomb.rate <- "variable"
 Recom_Sim_2$m <- Recom_Sim_2$m
-Recom_Sim_2$Sim_id <- ifelse(Recom_Sim_2$Ascertained==0,"Recom_D_Sim_LES_0","Recom_D_Sim_HES_0")
+Recom_Sim_2$Sim_id <- ifelse(Recom_Sim_2$Ascertained==0,"Demo_simple_Recomb_varying_LES_min_d_5","Demo_simple_Recomb_varying_HES_min_d_5")
 
 Recom_Sim_and_Inf_1_1 <-  Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0_comp.txt")
 Recom_Sim_and_Inf_1_2 <-  Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-1_comp.txt")
@@ -915,17 +913,17 @@ Recom_Sim_and_Inf_1$Gamma_mean <- round(Recom_Sim_and_Inf_1$mean.t.GF)
 Recom_Sim_and_Inf_1$Demography <- "Inferred"
 Recom_Sim_and_Inf_1$Recomb.rate <- "variable"
 Recom_Sim_and_Inf_1$m <- Recom_Sim_and_Inf_1$m
-Recom_Sim_and_Inf_1$Sim_id <- ifelse(Recom_Sim_and_Inf_1$Ascertained==0,"Recom_Sim_and_Inf_LES_0","Recom_Sim_and_Inf_HES_0")
+Recom_Sim_and_Inf_1$Sim_id <- ifelse(Recom_Sim_and_Inf_1$Ascertained==0,"Demo_complex_Recomb_varying_LES_min_d_2","Demo_complex_Recomb_varying_HES_min_d_2")
 
 Recom_Sim_and_Inf_2_1 <-  Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0_comp.txt")
 Recom_Sim_and_Inf_2_2 <-  Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-1_comp.txt")
 Recom_Sim_and_Inf_2 <- rbind(Recom_Sim_and_Inf_2_1,Recom_Sim_and_Inf_2_2)
 rm(Recom_Sim_and_Inf_2_1,Recom_Sim_and_Inf_2_2)
 Recom_Sim_and_Inf_2$Gamma_mean <- round(Recom_Sim_and_Inf_2$mean.t.GF)
-Recom_Sim_and_Inf_2$Demography <- "Inferred"
+Recom_Sim_and_Inf_2$Demography <- "Complex"
 Recom_Sim_and_Inf_2$Recomb.rate <- "variable"
 Recom_Sim_and_Inf_2$m <- Recom_Sim_and_Inf_2$m
-Recom_Sim_and_Inf_2$Sim_id <- ifelse(Recom_Sim_and_Inf_2$Ascertained==0,"Recom_Sim_and_Inf_LES_0","Recom_Sim_and_Inf_HES_0")
+Recom_Sim_and_Inf_2$Sim_id <- ifelse(Recom_Sim_and_Inf_2$Ascertained==0,"Demo_complex_Recomb_varying_LES_min_d_5","Demo_complex_Recomb_varying_HES_min_d_5")
 
 # first build model only with Simple and Inferred demography
 #xdata <- rbind(Simple_D_Sim_1,Simple_D_Sim_2,Inferred_D_Sim_1,Inferred_D_Sim_2)
@@ -934,7 +932,7 @@ Recom_Sim_and_Inf_2$Sim_id <- ifelse(Recom_Sim_and_Inf_2$Ascertained==0,"Recom_S
 # full model with Ascertainement, min dist, Demographi and recombination rate as predictore but no interactions
 xdata.M.3 <- rbind(Simple_D_Sim_1,Simple_D_Sim_2,Recom_Sim_1,Recom_Sim_2,Inferred_D_Sim_1,Inferred_D_Sim_2,Recom_Sim_and_Inf_1,Recom_Sim_and_Inf_2)
 rm(Simple_D_Sim_1,Simple_D_Sim_2,Recom_Sim_1,Recom_Sim_2,Inferred_D_Sim_1,Inferred_D_Sim_2,Recom_Sim_and_Inf_1,Recom_Sim_and_Inf_2)
-xdata.M.3$TID <- ifelse(xdata.M.3$GF=='0_Pulse',paste(xdata.M.3$Sim_id,'P',sep = '_'),paste(xdata.M.3$Sim_id,'C',sep = '_')) 
+xdata.M.3$TID <- ifelse(xdata.M.3$GF=='0_Pulse',paste(xdata.M.3$Sim_id,'GF_model_Pulse',sep = '_'),paste(xdata.M.3$Sim_id,'GF_model_Continuous',sep = '_')) 
 
 
 #xdata.M.3$Diff <- xdata.M.3$m - xdata.M.3$mean.t.GF
@@ -1106,8 +1104,7 @@ ggplot(Post_effect_size_est,aes(x=row.names(Post_effect_size_est),y=as.numeric(a
   scale_x_discrete(labels= c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
                     )+
   scale_color_manual("Gene Flow Model",
-                     values = c(cbPalette_viridis[1],cbPalette_viridis[6],
-                                cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1]),
+                     values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
                      label=c("Pulse","Continuous"))
 
 ```
@@ -1819,17 +1816,20 @@ Plot_Fig_2_A <- function(Data,x.axes.lables){
   
 }
 
+#x.axes.lables= as.data.frame(as.character(unique(Plot_model$Combination)))
 
-x.axes.lables=c("HES\n0.02\nInf\nCon","HES\n0.02\nInf\nCon","HES\n0.05\nInf\nCon","HES\n0.05\nInf\nCon"
-                ,"LES\n0.02\nInf\nCon","LES\n0.02\nInf\nCon","LES\n0.05\nInf\nCon","LES\n0.05\nInf\nCon"
-                ,"HES\n0.02\nSim\nVar","HES\n0.02\nSim\nVar","HES\n0.05\nSim\nVar","HES\n0.05\nSim\nVar"
-                ,"LES\n0.02\nSim\nVar","LES\n0.02\nSim\nVar","LES\n0.05\nSim\nVar","LES\n0.05\nSim\nVar"
+
+x.axes.lables=c("HES\n0.02\nCom\nCon","HES\n0.02\nCom\nCon","HES\n0.05\nCom\nCon","HES\n0.05\nCom\nCon"
+                ,"LES\n0.02\nCom\nCon","LES\n0.02\nCom\nCon","LES\n0.05\nCom\nCon","LES\n0.05\nCom\nCon"
                 ,"HES\n0.02\nCom\nVar","HES\n0.02\nCom\nVar","HES\n0.05\nCom\nVar","HES\n0.05\nCom\nVar"
                 ,"LES\n0.02\nCom\nVar","LES\n0.02\nCom\nVar","LES\n0.05\nCom\nVar","LES\n0.05\nCom\nVar"
                 ,"HES\n0.02\nSim\nCon","HES\n0.02\nSim\nCon","HES\n0.05\nSim\nCon","HES\n0.05\nSim\nCon"
-                ,"LES\n0.02\nSim\nCon","LES\n0.02\nSim\nCon","LES\n0.05\nSim\nCon","LES\n0.05\nSim\nCon")
+                ,"LES\n0.02\nSim\nCon","LES\n0.02\nSim\nCon","LES\n0.05\nSim\nCon","LES\n0.05\nSim\nCon"
+                ,"HES\n0.02\nSim\nVar","HES\n0.02\nSim\nVar","HES\n0.05\nSim\nVar","HES\n0.05\nSim\nVar"
+                ,"LES\n0.02\nSim\nVar","LES\n0.02\nSim\nVar","LES\n0.05\nSim\nVar","LES\n0.05\nSim\nVar")
 
 Plot_Fig_2_A(Plot_model,x.axes.lables)
+
 ```
 
 
@@ -1872,57 +1872,6 @@ kable(Param_Est_Tabel , "latex",col.names = c("Model","Parameter","Estimate","2.
 
 ```{r message=FALSE, echo=FALSE,warning=FALSE}
 ### Functions
-Get_Filtered_Simulated_Fragments_fn <- function(Path_to_Fragment_File,header,recomb_rate,n_Haploid){
-  Segments <- read.table(Path_to_Fragment_File,stringsAsFactors = F,header=header)
-  if(header==F){
-    colnames(Segments) = c('Ind','chrom', 'start','end')
-  }
-  
-  Segments$length_bp <- as.numeric(Segments$end) - as.numeric(Segments$start)
-  m=sum(Segments$length_bp)/(length(unique(Segments$chrom))*n_Haploid*150e6)
-  Segments$length_cM <- Segments$length_bp*(recomb_rate)*100
-  
-  Segments_filtered <- c()
-  for(chr in 1:22){
-    Segments_filtered_chr <- Segments[Segments$chrom==paste("chr",chr,sep = "") & !duplicated(Segments$start) & !duplicated(Segments$end),]
-    Segments_filtered <- rbind(Segments_filtered,Segments_filtered_chr)
-    rm(Segments_filtered_chr)
-  }
-  return(list(Segments_filtered=Segments_filtered,m=m))
-  
-}
-
-Assign_Genetic_distance_Simulation_interpolate_fn <- function(Path_to_Fragment_File,header,Path_to_Recomb_Map,n_Haploid){
-  Fragments <- read.table(Path_to_Fragment_File,stringsAsFactors = F,header=header,fill = T)
-  if(header==F){
-    colnames(Fragments) = c('Ind','chrom', 'start','end')
-  }
-  Fragment_bp=Fragments$end - Fragments$start
-  m=sum(Fragment_bp)/(length(unique(Fragments$chrom))*n_Haploid*150e6)
-  Recomb_Map <- read.table(Path_to_Recomb_Map, header = T)
-  Fragments_cM <- c()
-  for(chr in 1:length(unique(Fragments$chrom))){
-    Recomb_Map_chr <- Recomb_Map
-    Fragments_chr <- Fragments[Fragments$chrom==paste("chr",chr,sep=""),]
-    #Start_Arch_Freg <- approx(x=Recomb_Map_chr[,2]  , y=Recomb_Map_chr[,4], xout=Fragments_chr$start,method = "linear")
-    #Stop_Arch_Freg <- approx(x=Recomb_Map_chr[,2], y=Recomb_Map_chr[,4], xout=Fragments_chr$end,method = "linear")
-    Start_Arch_Freg <- approx(x=Recomb_Map_chr[,2]  , y=Recomb_Map_chr[,4], xout=Fragments_chr$start,method = "constant")
-    Stop_Arch_Freg <- approx(x=Recomb_Map_chr[,2], y=Recomb_Map_chr[,4], xout=Fragments_chr$end,method = "constant")
-    Chr_x <- data.frame(chrom=paste("chr",chr,sep = ""),Start_cM=Start_Arch_Freg$y,End_cM=Stop_Arch_Freg$y,length_bp=Fragments_chr$end - Fragments_chr$start)
-    Fragments_cM <- rbind(Fragments_cM,Chr_x)
-  }
-  Fragments_cM_clean <- Fragments_cM[complete.cases(Fragments_cM$Start_cM),]
-  Fragments_cM_clean <- Fragments_cM_clean[complete.cases(Fragments_cM_clean$End_cM),]
-  Fragments_cM_clean$length_cM <- Fragments_cM_clean$End_cM - Fragments_cM_clean$Start_cM
-  Fragments_cM_clean_filtered <- c()
-  for(chr in 1:22){
-    Fragments_cM_clean_filtered_chr <- Fragments_cM_clean[Fragments_cM_clean$chrom==paste("chr",chr,sep = "") & !duplicated(Fragments_cM_clean$Start_cM) & !duplicated(Fragments_cM_clean$End_cM),]
-    Fragments_cM_clean_filtered <- rbind(Fragments_cM_clean_filtered,Fragments_cM_clean_filtered_chr)
-    rm(Fragments_cM_clean_filtered_chr)
-  }
-  return(list(Fragments_cM_clean_filtered=Fragments_cM_clean_filtered,m=m))
-  
-}
 
 Assign_Genetic_distance_interpolate_fn <- function(Recomb_Map,Fragments){
   Fragments_cM <- c()
@@ -1966,9 +1915,22 @@ fit_exp_optim_rep=function(Fragments,lower_trunc,upper_trunc){
     #f2 = function(par) -sum(n * dtexp(l, (par[1])))
     res = optim(c(0), f, method="L-BFGS-B")
     par =exp(res$par)
-    return(data.frame(rate=par, ll_exp = -res$value))
+    return(data.frame(rate=par, ll_exp = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc))
   }, silent=F)
-  return(data.frame(rate=NA, ll_exp=NA))
+  return(data.frame(rate=NA, ll_exp=NA,lower_trunc=lower_trunc,upper_trunc=upper_trunc))
+}
+
+fit_lomax_optim_rep=function(Fragments,lower_trunc,upper_trunc){
+  l=Fragments[Fragments>=lower_trunc & Fragments<=upper_trunc]
+  n = rep(1, length(l))
+  
+  try({
+    f = function(par)-sum(n * dtlomax(l, scale=par[1], shape=par[2],lower_trunc=lower_trunc,upper_trunc=upper_trunc))
+    res = optim(c(1, 1), f, method="L-BFGS-B", lower=c(1e-5, 1))
+    pars = res$par
+    return(data.frame(scale=pars[1], shape=pars[2],ll_lomax=-res$value))
+  }, silent=F)
+  return(data.frame(scale=NA, shape=NA,ll_lomax=NA))
 }
 
 fit_lomax_optim_fixed_shape_rep=function(Fragments,fixed_shape,lower_trunc,upper_trunc){
@@ -1984,28 +1946,70 @@ fit_lomax_optim_fixed_shape_rep=function(Fragments,fixed_shape,lower_trunc,upper
   return(data.frame(scale=NA, t_m=NA,tm_exp=NA,ll_lomax=NA))
 }
 
-fit_lomax_optim_rep=function(Fragments,lower_trunc,upper_trunc){
+
+fit_lomax_optim_Kozubowski_rep=function(Fragments,lower_trunc,upper_trunc){
   l=Fragments[Fragments>=lower_trunc & Fragments<=upper_trunc]
   n = rep(1, length(l))
-
+  
+  dlomax_Kozubowski <- function(x, scale=scale, shape=shape) {
+    s=scale/shape
+    w=1/shape
+    
+    L=1/s * (1/(1+(w*x)/s))^(1/w+1)
+    return(L)
+    
+  }
+  
+  dlomax_Kozubowski_log <- function(x, scale=scale, shape=shape) {
+    s=scale/shape
+    w=1/shape
+    
+    L=(1/w+1) * log(1/(1+ (x*w)/s)) + log(1/s)
+    return(L)
+    
+  }
+  
+  
+  
+  plomax_Kozubowski <- function(trunc, scale=scale, shape=shape) {
+    s=scale/shape
+    w=1/shape
+    
+    L=(1/(1+(w*trunc)/s))^(1/w)
+    return(L)
+    
+  }
+  
+  plomax_Kozubowski_log <- function(trunc, scale=scale, shape=shape) {
+    s=scale/shape
+    w=1/shape
+    L=(1/w) * log(1/(1+ trunc*w/s))
+    return(L)
+    
+  }
+  #' truncated lomax density
+  dtlomax_Kozubowski <- function(x, scale, shape, lower_trunc, upper_trunc){
+    dlomax_Kozubowski_log(x, scale=scale, shape=shape) -
+      logspace.sub(plomax_Kozubowski_log(lower_trunc, scale=scale, shape=shape),plomax_Kozubowski_log(upper_trunc, scale=scale, shape=shape))
+  }
+  
+  
   try({
-    f = function(par)-sum(n * dtlomax(l, scale=par[1], shape=par[2],lower_trunc=lower_trunc,upper_trunc=upper_trunc))
-    res = optim(c(1, 1), f, method="L-BFGS-B", lower=c(1e-5, 1))
+    f = function(par)-sum(n * dtlomax_Kozubowski(l, scale=par[1], shape=par[2],lower_trunc=lower_trunc,upper_trunc=upper_trunc))
+    res = optim(c(1, 1), f, method="L-BFGS-B", lower=c(1e-8, 1))
     pars = res$par
-    return(data.frame(scale=pars[1], shape=pars[2],t_m_est=pars[2]/pars[1],t_m=(pars[2]/pars[1])*100, ll_lomax=-res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc))
+    return(data.frame(scale_Kozubowski=pars[1], shape_Kozubowski=pars[2],ll_lomax_Kozubowski=-res$value))
   }, silent=F)
-  return(data.frame(scale=NA, shape=NA,t_m=NA,tm_exp=NA,ll_lomax=NA))
+  return(data.frame(scale_Kozubowski=NA, shape_Kozubowski=NA,ll_lomax_Kozubowski=NA))
 }
 
 Get_Expo_est_fn <- function(Fragments,lower_truncs,upper_trunc,m){
   Expo_Res <- c()
   for(i in lower_truncs){
     expo_fit_res=fit_exp_optim_rep(Fragments$length_cM,i,upper_trunc)
-    #expo_fit_res$t_m <- (expo_fit_res$rate*100)/(1-m)
-    expo_fit_res$t_m <- (expo_fit_res$rate*100)
     Expo_Res <- rbind(Expo_Res,expo_fit_res)
   }
- 
+  
   Expo_Res$lower_trunc <- lower_truncs
   Expo_Res$upper_trunc <- upper_trunc
   return(Expo_Res)
@@ -2013,11 +2017,32 @@ Get_Expo_est_fn <- function(Fragments,lower_truncs,upper_trunc,m){
 }
 
 
-Get_Lomax_fixed_shape_est_fn <- function(t_d,Fragments,Expo_Res,Expo_Res_col_tm,Expo_Res_col_lower_trunc,Expo_Res_col_upper_trunc){
+Get_Lomax_est_fn <- function(Fragments,Expo_Res,Expo_Res_col_lower_trunc,Expo_Res_col_upper_trunc){
+  Res_lomax <- c()
+  for(trunc in 1:length(Expo_Res[,1])){
+    Res_Segments_optim_lomax=fit_lomax_optim_rep(Fragments$length_cM,Expo_Res[trunc,Expo_Res_col_lower_trunc],Expo_Res[trunc,Expo_Res_col_upper_trunc])
+    Res_lomax <- rbind(Res_lomax,Res_Segments_optim_lomax)
+  }
+  
+  return(Res_lomax)
+}
+
+Get_Lomax_Kozubowski_est_fn <- function(Fragments,Expo_Res,Expo_Res_col_lower_trunc,Expo_Res_col_upper_trunc){
+  Res_lomax <- c()
+  for(trunc in 1:length(Expo_Res[,1])){
+    Res_Segments_optim_lomax=fit_lomax_optim_Kozubowski_rep(Fragments$length_cM,Expo_Res[trunc,Expo_Res_col_lower_trunc],Expo_Res[trunc,Expo_Res_col_upper_trunc])
+    Res_lomax <- rbind(Res_lomax,Res_Segments_optim_lomax)
+  }
+  
+  return(Res_lomax)
+}
+
+Get_Lomax_fixed_shape_est_fn <- function(t_d,Fragments,Expo_Res,Expo_Res_col_rate,Expo_Res_col_lower_trunc,Expo_Res_col_upper_trunc){
   Res_lomax <- c()
   for(trunc in 1:length(Expo_Res[,1])){
     t_d=t_d
-    t_expo_est=Expo_Res[trunc,Expo_Res_col_tm]
+    t_expo_est=Expo_Res[trunc,Expo_Res_col_rate]
+    t_expo_est=t_expo_est*100
     all_t_lomax_est <- c()
     for(t in 1:length(t_d)){
       fixed_shape= (t_expo_est^2)/((t_d[t]/4)^2)
@@ -2029,20 +2054,9 @@ Get_Lomax_fixed_shape_est_fn <- function(t_d,Fragments,Expo_Res,Expo_Res_col_tm,
   }
   Res_lomax$length_GF <- rep(t_d,length(Expo_Res[,1]))
   Res_lomax$t_expo_est <- rep(Expo_Res$rate,each=length(t_d))
-  Res_lomax$t_m_expo_est <- rep((Expo_Res$t_m),each=length(t_d))
+  Res_lomax$t_m_expo_est <- Res_lomax$t_expo_est*100
   return(Res_lomax)
   
-}
-
-Get_Lomax_est_fn <- function(Fragments,Expo_Res,Expo_Res_col_lower_trunc,Expo_Res_col_upper_trunc){
-  Res_lomax <- c()
-  for(trunc in 1:length(Expo_Res[,1])){
-      Res_Segments_optim_lomax=fit_lomax_optim_rep(Fragments$length_cM,Expo_Res[trunc,Expo_Res_col_lower_trunc],Expo_Res[trunc,Expo_Res_col_upper_trunc])
-      Res_lomax <- rbind(Res_lomax,Res_Segments_optim_lomax)
-  }
-  Res_lomax$length_GF_est <- 1/sqrt(Res_lomax$shape/Res_lomax$t_m_est)*4
-
-  return(Res_lomax)
 }
 
 
@@ -2123,71 +2137,70 @@ Results_fit_Simulation <- function(Path_to_Fragment_File,header,Path_to_Recomb_M
 
 
 ##### Simulation Results #####
-## No Recombination
-# True Pulse no recombination
-True_Pulse_no_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Simulation-merged-_Scenario_1__Archaic_Segments_run_0.bed",header = F,
-                                    recomb_rate = 1.2e-8,upper_trunc = 1.2,n_Haploid=100)
+## Pulse ##
+# Constant Recombination
+Sim_header <- c("Expo_rate","ll_exp","lower_trunc","upper_trunc","scale","shape","ll_lomax","scale_Kozubowski","shape_Kozubowski","ll_lomax_Kozubowski","replication")
 
-# Inferred Pulse no recombination
-Inferred_Pulse_no_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Inferred_Archaic_Tracts-_Scenario_1_-run0_decoded_cutoff_0.9.txt",header=T,
-                                        recomb_rate = 1.2e-8,upper_trunc = 1.2,n_Haploid=100)
+Simulated_True_Pulse_constant_Recombination <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Simulation-merged-_Scenario_1__Archaic_Segments_fitted.csv",col.names = Sim_header)
+Simulated_True_Pulse_constant_Recombination <- Simulated_True_Pulse_constant_Recombination[Simulated_True_Pulse_constant_Recombination$replication<=1,]
 
-# True Continuous no recombination
-True_Continuous_no_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Simulation-merged-_Scenario_2__Archaic_Segments_run_0.bed",header = F,
-                                    recomb_rate = 1.2e-8,upper_trunc = 1.2,n_Haploid=100)
+Simulated_Inferred_Pulse_constant_Recombination <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Inferred_Archaic_Tracts-_Scenario_1__decoded_cutoff_0.9_fitted.csv",col.names = Sim_header)
+Simulated_Inferred_Pulse_constant_Recombination <- Simulated_Inferred_Pulse_constant_Recombination[Simulated_Inferred_Pulse_constant_Recombination$replication<=1,]
 
-# Inferred Continuous no recombination
-Inferred_Continuous_no_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Inferred_Archaic_Tracts-_Scenario_2_-run0_decoded_cutoff_0.9.txt",header=T,
-                                        recomb_rate = 1.2e-8,upper_trunc = 1.2,n_Haploid=100)
+# Varying Recombination
+Simulated_True_Pulse_varying_Recombination_no_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_fitted_Recomb_correction_No_correction.csv",col.names = Sim_header)
 
-## With Recombination
-correction_Map="Scaled_Decode_Map"
-# True Pulse no recombination
-True_Pulse_with_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,
-                                      Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+Simulated_Inferred_Pulse_varying_Recombination_no_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb__decoded_cutoff_0.9_fitted_Recomb_correction_No_correction.csv",col.names = Sim_header)
 
-# Inferred Pulse no recombination
-Inferred_Pulse_with_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header=T,
-                                          Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+Simulated_True_Pulse_varying_Recombination_AAMap_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_fitted_Recomb_correction_AAMap_correction.csv",col.names = Sim_header)
 
-# True Continuous no recombination
-True_Continuous_with_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Simulation-merged-_Scenario_2_Recomb__Archaic_Segments_run_0.bed",header = F,
-                                           Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+Simulated_Inferred_Pulse_varying_Recombination_AAMap_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb__decoded_cutoff_0.9_fitted_Recomb_correction_AAMap_correction.csv",col.names = Sim_header)
 
-# Inferred Continuous no recombination
-Inferred_Continuous_with_Recomb <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Inferred_Archaic_Tracts-_Scenario_2_Recomb_-run0_decoded_cutoff_0.9.txt",header=T,
-                                               Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+Simulated_True_Pulse_varying_Recombination_deCODE_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_fitted_Recomb_correction_deCODE_correction.csv",col.names = Sim_header)
 
-## No population specific map
-correction_Map="Scaled_Genetic_AAMap"
-True_Pulse_with_Recomb_AAMap_corrected <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,
-                                      Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+Simulated_Inferred_Pulse_varying_Recombination_deCODE_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb__decoded_cutoff_0.9_fitted_Recomb_correction_deCODE_correction.csv",col.names = Sim_header)
 
-# Inferred Pulse no recombination
-Inferred_Pulse_with_Recomb_AAMap_corrected <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header=T,
-                                          Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+## Continuous ##
+# Constant Recombination
+Simulated_True_Continuous_constant_Recombination <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Simulation-merged-_Scenario_2__Archaic_Segments_fitted.csv",col.names = Sim_header)
+Simulated_True_Continuous_constant_Recombination <- Simulated_True_Continuous_constant_Recombination[Simulated_True_Continuous_constant_Recombination$replication<=1,]
 
-# True Continuous no recombination
-True_Continuous_with_Recomb_AAMap_corrected <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Simulation-merged-_Scenario_2_Recomb__Archaic_Segments_run_0.bed",header = F,
-                                           Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+Simulated_Inferred_Continuous_constant_Recombination <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Inferred_Archaic_Tracts-_Scenario_2__decoded_cutoff_0.9_fitted.csv",col.names = Sim_header)
+Simulated_Inferred_Continuous_constant_Recombination <- Simulated_Inferred_Continuous_constant_Recombination[Simulated_Inferred_Continuous_constant_Recombination$replication<=1,]
 
-# Inferred Continuous no recombination
-Inferred_Continuous_with_Recomb_AAMap_corrected <- Results_fit_Simulation(Path_to_Fragment_File = "Icelandic_Segments_Paper_Simulation/ALL_Inferred_Archaic_Tracts-_Scenario_2_Recomb_-run0_decoded_cutoff_0.9.txt",header=T,
-                                               Path_to_Recomb_Map=paste("Recombination_Maps/",correction_Map,".txt",sep = ""),upper_trunc = 1.2,n_Haploid=100)
+# Varying Recombination
+Simulated_True_Continuous_varying_Recombination_no_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Simulation-merged-_Scenario_2_Recomb__Archaic_Segments_fitted_Recomb_correction_No_correction.csv",col.names = Sim_header)
 
-All_Simulations_Pulse_expo_fit <- data.frame(t_m=c(True_Pulse_no_Recomb$Expo_res$t_m,True_Pulse_no_Recomb$Expo_res$t_m,True_Continuous_with_Recomb_AAMap_corrected$Expo_res$t_m,Inferred_Pulse_no_Recomb$Expo_res$t_m,Inferred_Pulse_with_Recomb$Expo_res$t_m,Inferred_Pulse_with_Recomb_AAMap_corrected$Expo_res$t_m),Name=rep(c("0_True_P_n_R","1_True_P_w_R","2_True_P_w_R_AAMap_cor","3_Inf_P_n_R","4_Inf_P_w_R","5_Inf_P_w_R_AAMap_cor"),each=9),lower_trunc=True_Pulse_no_Recomb$Expo_res$lower_trunc,upper_trunc=True_Pulse_no_Recomb$Expo_res$upper_trunc,variable="mean GF expo")
+Simulated_Inferred_Continuous_varying_Recombination_no_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Inferred_Archaic_Tracts-_Scenario_2_Recomb__decoded_cutoff_0.9_fitted_Recomb_correction_No_correction.csv",col.names = Sim_header)
 
-All_Simulations_Pulse_lomax_fit <- data.frame(t_m=c(True_Pulse_no_Recomb$Lomax_res$t_m,True_Pulse_no_Recomb$Lomax_res$t_m,True_Continuous_with_Recomb_AAMap_corrected$Lomax_res$t_m,Inferred_Pulse_no_Recomb$Lomax_res$t_m,Inferred_Pulse_with_Recomb$Lomax_res$t_m,Inferred_Pulse_with_Recomb_AAMap_corrected$Lomax_res$t_m),Name=rep(c("0_True_P_n_R","1_True_P_w_R","2_True_P_w_R_AAMap_cor","3_Inf_P_n_R","4_Inf_P_w_R","5_Inf_P_w_R_AAMap_cor"),each=9),lower_trunc=True_Pulse_no_Recomb$Lomax_res$lower_trunc,upper_trunc=True_Pulse_no_Recomb$Lomax_res$upper_trunc,variable="mean GF lomax")
+Simulated_True_Continuous_varying_Recombination_AAMap_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Simulation-merged-_Scenario_2_Recomb__Archaic_Segments_fitted_Recomb_correction_AAMap_correction.csv",col.names = Sim_header)
+
+Simulated_Inferred_Continuous_varying_Recombination_AAMap_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Inferred_Archaic_Tracts-_Scenario_2_Recomb__decoded_cutoff_0.9_fitted_Recomb_correction_AAMap_correction.csv",col.names = Sim_header)
+
+Simulated_True_Continuous_varying_Recombination_deCODE_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Simulation-merged-_Scenario_2_Recomb__Archaic_Segments_fitted_Recomb_correction_deCODE_correction.csv",col.names = Sim_header)
+
+Simulated_Inferred_Continuous_varying_Recombination_deCODE_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Inferred_Archaic_Tracts-_Scenario_2_Recomb__decoded_cutoff_0.9_fitted_Recomb_correction_deCODE_correction.csv",col.names = Sim_header)
+
+## Data Frame for plotting ##
+
+All_Simulations_Pulse_expo_fit <- data.frame(t_m=c(Simulated_True_Pulse_constant_Recombination$Expo_rate*100,Simulated_True_Pulse_varying_Recombination_no_correction$Expo_rate*100,Simulated_True_Pulse_varying_Recombination_AAMap_correction$Expo_rate*100,Simulated_True_Pulse_varying_Recombination_deCODE_correction$Expo_rate*100,Simulated_Inferred_Pulse_constant_Recombination$Expo_rate*100,Simulated_Inferred_Pulse_varying_Recombination_no_correction$Expo_rate*100,Simulated_Inferred_Pulse_varying_Recombination_AAMap_correction$Expo_rate*100,Simulated_Inferred_Pulse_varying_Recombination_deCODE_correction$Expo_rate*100),Name=rep(rep(c("0_True_P_n_R","1_True_P_w_R_no_cor","2_True_P_w_R_AAMap_cor","3_True_P_w_R_deCODE_cor","4_Inf_P_n_R","5_Inf_P_w_R_no_corr","6_Inf_P_w_R_AAMap_cor","7_Inf_P_w_R_deCODE_cor"),each=9),each=2),lower_trunc=Simulated_True_Pulse_constant_Recombination$lower_trunc,upper_trunc=Simulated_True_Pulse_constant_Recombination$upper_trunc,variable="mean GF expo")
+
+All_Simulations_Pulse_lomax_fit <- data.frame(t_m=c((Simulated_True_Pulse_constant_Recombination$shape/Simulated_True_Pulse_constant_Recombination$scale)*100,(Simulated_True_Pulse_varying_Recombination_no_correction$shape/Simulated_True_Pulse_varying_Recombination_no_correction$scale)*100,(Simulated_True_Pulse_varying_Recombination_AAMap_correction$shape/Simulated_True_Pulse_varying_Recombination_AAMap_correction$scale)*100,(Simulated_True_Pulse_varying_Recombination_deCODE_correction$shape/Simulated_True_Pulse_varying_Recombination_deCODE_correction$scale)*100,(Simulated_Inferred_Pulse_constant_Recombination$shape/Simulated_Inferred_Pulse_constant_Recombination$scale)*100,(Simulated_Inferred_Pulse_varying_Recombination_no_correction$shape/Simulated_Inferred_Pulse_varying_Recombination_no_correction$scale)*100,(Simulated_Inferred_Pulse_varying_Recombination_AAMap_correction$shape/Simulated_Inferred_Pulse_varying_Recombination_AAMap_correction$scale)*100,(Simulated_Inferred_Pulse_varying_Recombination_deCODE_correction$shape/Simulated_Inferred_Pulse_varying_Recombination_deCODE_correction$scale)*100),Name=rep(rep(c("0_True_P_n_R","1_True_P_w_R_no_cor","2_True_P_w_R_AAMap_cor","3_True_P_w_R_deCODE_cor","4_Inf_P_n_R","5_Inf_P_w_R_no_corr","6_Inf_P_w_R_AAMap_cor","7_Inf_P_w_R_deCODE_cor"),each=9),each=2),lower_trunc=Simulated_True_Pulse_constant_Recombination$lower_trunc,upper_trunc=Simulated_True_Pulse_constant_Recombination$upper_trunc,variable="mean GF lomax")
+
+All_Simulations_Continuous_expo_fit <- data.frame(t_m=c(Simulated_True_Continuous_constant_Recombination$Expo_rate*100,Simulated_True_Continuous_varying_Recombination_no_correction$Expo_rate*100,Simulated_True_Continuous_varying_Recombination_AAMap_correction$Expo_rate*100,Simulated_True_Continuous_varying_Recombination_deCODE_correction$Expo_rate*100,Simulated_Inferred_Continuous_constant_Recombination$Expo_rate*100,Simulated_Inferred_Continuous_varying_Recombination_no_correction$Expo_rate*100,Simulated_Inferred_Continuous_varying_Recombination_AAMap_correction$Expo_rate*100,Simulated_Inferred_Continuous_varying_Recombination_deCODE_correction$Expo_rate*100),Name=rep(rep(c("0_True_C_n_R","1_True_C_w_R_no_cor","2_True_C_w_R_AAMap_cor","3_True_C_w_R_deCODE_cor","4_Inf_C_n_R","5_Inf_C_w_R_no_corr","6_Inf_C_w_R_AAMap_cor","7_Inf_C_w_R_deCODE_cor"),each=9),each=2),lower_trunc=Simulated_True_Continuous_constant_Recombination$lower_trunc,upper_trunc=Simulated_True_Continuous_constant_Recombination$upper_trunc,variable="mean GF expo")
+
+All_Simulations_Continuous_lomax_fit <- data.frame(t_m=c((Simulated_True_Continuous_constant_Recombination$shape/Simulated_True_Continuous_constant_Recombination$scale)*100,(Simulated_True_Continuous_varying_Recombination_no_correction$shape/Simulated_True_Continuous_varying_Recombination_no_correction$scale)*100,(Simulated_True_Continuous_varying_Recombination_AAMap_correction$shape/Simulated_True_Continuous_varying_Recombination_AAMap_correction$scale)*100,(Simulated_True_Continuous_varying_Recombination_deCODE_correction$shape/Simulated_True_Continuous_varying_Recombination_deCODE_correction$scale)*100,(Simulated_Inferred_Continuous_constant_Recombination$shape/Simulated_Inferred_Continuous_constant_Recombination$scale)*100,(Simulated_Inferred_Continuous_varying_Recombination_no_correction$shape/Simulated_Inferred_Continuous_varying_Recombination_no_correction$scale)*100,(Simulated_Inferred_Continuous_varying_Recombination_AAMap_correction$shape/Simulated_Inferred_Continuous_varying_Recombination_AAMap_correction$scale)*100,(Simulated_Inferred_Continuous_varying_Recombination_deCODE_correction$shape/Simulated_Inferred_Continuous_varying_Recombination_deCODE_correction$scale)*100),Name=rep(rep(c("0_True_C_n_R","1_True_C_w_R_no_cor","2_True_C_w_R_AAMap_cor","3_True_C_w_R_deCODE_cor","4_Inf_C_n_R","5_Inf_C_w_R_no_corr","6_Inf_C_w_R_AAMap_cor","7_Inf_C_w_R_deCODE_cor"),each=9),each=2),lower_trunc=Simulated_True_Continuous_constant_Recombination$lower_trunc,upper_trunc=Simulated_True_Continuous_constant_Recombination$upper_trunc,variable="mean GF lomax")
 
 
 ```
 
-```{r figS4, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS3} Icelandic fragments simulated"}
+```{r figS4, message=FALSE, echo=FALSE,warning=FALSE,fig.width=14,fig.height=6,fig.cap="\\label{fig:figS3} Icelandic fragments simulated"}
+cbPalette_viridis <- viridis(8,option = "D")
 
 P_Sim_Frag_Expo <- ggplot(All_Simulations_Pulse_expo_fit,aes(x=Name,y=as.numeric(as.character(t_m)),colour=factor(Name)))+
                       geom_boxplot()+
                       facet_grid(~as.factor(lower_trunc),switch = "x")+
-                      ggtitle("Exponential PDF fit") +
+                      ggtitle("Exponential PDF fit Pulse GF") +
                       geom_hline( aes(yintercept = 1500 ))+
                       labs(x = "lower cutoff in cM")+
                       labs(y = "Estimated Admixture Time")+
@@ -2196,13 +2209,30 @@ P_Sim_Frag_Expo <- ggplot(All_Simulations_Pulse_expo_fit,aes(x=Name,y=as.numeric
                         axis.ticks.x=element_blank())+
                       coord_cartesian(ylim = c(0,2200), expand = 0)+
                       scale_color_manual("Simulations",
-                                         values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4],cbPalette_viridis[5],cbPalette_viridis[6]),
-                                        labels = c("True Fragments","True Fragments Recombination","True Fragments Recombination AAMap corrected","Inferred Fragments","Inferred Fragments Recombination","Inferred Fragments Recombination AAMap corrected"))
- 
+                                         values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4],cbPalette_viridis[5],cbPalette_viridis[6]
+                                                    ,cbPalette_viridis[7],cbPalette_viridis[8]),
+                                        labels = c("True Fragments","True Fragments Recombination not corrected","True Fragments Recombination AAMap corrected","True Fragments Recombination deCODE corrected","Inferred Fragments","Inferred Fragments Recombination not corrected","Inferred Fragments Recombination AAMap corrected","Inferred Fragments Recombination deCODE corrected"))
+
 P_Sim_Frag_Lomax <- ggplot(All_Simulations_Pulse_lomax_fit,aes(x=Name,y=as.numeric(as.character(t_m)),colour=factor(Name)))+
                       geom_boxplot()+
                       facet_grid(~as.factor(lower_trunc),switch = "x")+
-                      ggtitle("Lomax PDF fit") +
+                      ggtitle("Lomax PDF fit Pulse GF") +
+                      geom_hline( aes(yintercept = 1500 ))+
+                      labs(x = "lower cutoff in cM")+ 
+                      labs(y = "Estimated Admixture Time")+
+                      theme(
+                        axis.text.x=element_blank(),
+                        axis.ticks.x=element_blank())+
+                      coord_cartesian(ylim = c(0,2200), expand = 0)+
+                      scale_color_manual("Simulations",
+                                         values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4],cbPalette_viridis[5],cbPalette_viridis[6]
+                                                    ,cbPalette_viridis[7],cbPalette_viridis[8]),
+                                        labels = c("True Fragments","True Fragments Recombination not corrected","True Fragments Recombination AAMap corrected","True Fragments Recombination deCODE corrected","Inferred Fragments","Inferred Fragments Recombination not corrected","Inferred Fragments Recombination AAMap corrected","Inferred Fragments Recombination deCODE corrected"))
+
+C_Sim_Frag_Expo <- ggplot(All_Simulations_Continuous_expo_fit,aes(x=Name,y=as.numeric(as.character(t_m)),colour=factor(Name)))+
+                      geom_boxplot()+
+                      facet_grid(~as.factor(lower_trunc),switch = "x")+
+                      ggtitle("Exponential PDF fit Continuous GF") +
                       geom_hline( aes(yintercept = 1500 ))+
                       labs(x = "lower cutoff in cM")+
                       labs(y = "Estimated Admixture Time")+
@@ -2211,19 +2241,46 @@ P_Sim_Frag_Lomax <- ggplot(All_Simulations_Pulse_lomax_fit,aes(x=Name,y=as.numer
                         axis.ticks.x=element_blank())+
                       coord_cartesian(ylim = c(0,2200), expand = 0)+
                       scale_color_manual("Simulations",
-                                         values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4],cbPalette_viridis[5],cbPalette_viridis[6]),
-                                         labels = c("True Fragments","True Fragments Recombination","True Fragments Recombination AAMap corrected","Inferred Fragments","Inferred Fragments Recombination","Inferred Fragments Recombination AAMap corrected"))
+                                         values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4],cbPalette_viridis[5],cbPalette_viridis[6]
+                                                    ,cbPalette_viridis[7],cbPalette_viridis[8]),
+                                        labels = c("True Fragments","True Fragments Recombination not corrected","True Fragments Recombination AAMap corrected","True Fragments Recombination deCODE corrected","Inferred Fragments","Inferred Fragments Recombination not corrected","Inferred Fragments Recombination AAMap corrected","Inferred Fragments Recombination deCODE corrected"))
+
+C_Sim_Frag_Lomax <- ggplot(All_Simulations_Continuous_lomax_fit,aes(x=Name,y=as.numeric(as.character(t_m)),colour=factor(Name)))+
+                      geom_boxplot()+
+                      facet_grid(~as.factor(lower_trunc),switch = "x")+
+                      ggtitle("Lomax PDF fit Continuous GF") +
+                      geom_hline( aes(yintercept = 1500 ))+
+                      labs(x = "lower cutoff in cM")+ 
+                      labs(y = "Estimated Admixture Time")+
+                      theme(
+                        axis.text.x=element_blank(),
+                        axis.ticks.x=element_blank())+
+                      coord_cartesian(ylim = c(0,2200), expand = 0)+
+                      scale_color_manual("Simulations",
+                                         values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4],cbPalette_viridis[5],cbPalette_viridis[6]
+                                                    ,cbPalette_viridis[7],cbPalette_viridis[8]),
+                                        labels = c("True Fragments","True Fragments Recombination not corrected","True Fragments Recombination AAMap corrected","True Fragments Recombination deCODE corrected","Inferred Fragments","Inferred Fragments Recombination not corrected","Inferred Fragments Recombination AAMap corrected","Inferred Fragments Recombination deCODE corrected"))
  
-Segment_simulation_result <- ggarrange(P_Sim_Frag_Expo,P_Sim_Frag_Lomax,
+Pulse_Segment_simulation_result <- ggarrange(P_Sim_Frag_Expo,P_Sim_Frag_Lomax,
                    labels = c("A","B"),
                    ncol = 2, nrow = 1,common.legend = T,legend = 'bottom')
 
-Segment_simulation_result
+Continuous_Segment_simulation_result <- ggarrange(C_Sim_Frag_Expo,C_Sim_Frag_Lomax,
+                   labels = c("A","B"),
+                   ncol = 2, nrow = 1,common.legend = T,legend = 'bottom')
+
+Both_Segment_simulation_result <- ggarrange(P_Sim_Frag_Expo,P_Sim_Frag_Lomax,
+                                            C_Sim_Frag_Expo,C_Sim_Frag_Lomax,
+                   labels = c("A","B","C","D"),
+                   ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
+
+Both_Segment_simulation_result
 ```
 
 ```{r figS5, message=FALSE, echo=FALSE,warning=FALSE,fig6.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig5} Different admixure duration models ranging from a one generation pulse tu 2500 generations for Neandertal admixture using directly infered introgressed segments from Skov & Coll Macia et al. 2020"}
 ### For the paper plot cutoff 0.05 - 1.2 cM
 #### Real Data Results
+cbPalette_viridis <- viridis(10,option = "D")
 lower_trunc=0.05
 upper_trunc=1.2
 
@@ -2237,9 +2294,11 @@ Icelandic_Fragments_cM=Assign_Genetic_distance_interpolate_fn(Icelandic_Recomb_M
 
 Icelandic_Expo_est=Get_Expo_est_fn(Icelandic_Fragments_cM,lower_trunc,upper_trunc)
 
-Icelandic_Expo_lomax=Get_Lomax_est_fn(Icelandic_Fragments_cM,Icelandic_Expo_est,4,5)
+Icelandic_lomax_est=Get_Lomax_est_fn(Icelandic_Fragments_cM,Icelandic_Expo_est,3,4)
 
-Icelandic_Expo_lomax_fixed=Get_Lomax_fixed_shape_est_fn(t_d,Icelandic_Fragments_cM,Icelandic_Expo_est,3,4,5)
+Icelandic_lomax_Kozubowski_est <- Get_Lomax_Kozubowski_est_fn(Icelandic_Fragments_cM,Icelandic_Expo_est,3,4)
+
+Icelandic_Expo_lomax_fixed=Get_Lomax_fixed_shape_est_fn(t_d,Icelandic_Fragments_cM,Icelandic_Expo_est,1,3,4)
 
 Icelandic_LRT_lomax_fixed=LRT_Lomax_fn(Icelandic_Expo_lomax_fixed,t_d )
 
