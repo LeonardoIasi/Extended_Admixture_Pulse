@@ -2142,10 +2142,8 @@ Results_fit_Simulation <- function(Path_to_Fragment_File,header,Path_to_Recomb_M
 Sim_header <- c("Expo_rate","ll_exp","lower_trunc","upper_trunc","scale","shape","ll_lomax","scale_Kozubowski","shape_Kozubowski","ll_lomax_Kozubowski","replication")
 
 Simulated_True_Pulse_constant_Recombination <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Simulation-merged-_Scenario_1__Archaic_Segments_fitted.csv",col.names = Sim_header)
-Simulated_True_Pulse_constant_Recombination <- Simulated_True_Pulse_constant_Recombination[Simulated_True_Pulse_constant_Recombination$replication<=1,]
 
 Simulated_Inferred_Pulse_constant_Recombination <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Inferred_Archaic_Tracts-_Scenario_1__decoded_cutoff_0.9_fitted.csv",col.names = Sim_header)
-Simulated_Inferred_Pulse_constant_Recombination <- Simulated_Inferred_Pulse_constant_Recombination[Simulated_Inferred_Pulse_constant_Recombination$replication<=1,]
 
 # Varying Recombination
 Simulated_True_Pulse_varying_Recombination_no_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_fitted_Recomb_correction_No_correction.csv",col.names = Sim_header)
@@ -2163,10 +2161,8 @@ Simulated_Inferred_Pulse_varying_Recombination_deCODE_correction <- read.table("
 ## Continuous ##
 # Constant Recombination
 Simulated_True_Continuous_constant_Recombination <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Simulation-merged-_Scenario_2__Archaic_Segments_fitted.csv",col.names = Sim_header)
-Simulated_True_Continuous_constant_Recombination <- Simulated_True_Continuous_constant_Recombination[Simulated_True_Continuous_constant_Recombination$replication<=1,]
 
 Simulated_Inferred_Continuous_constant_Recombination <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Inferred_Archaic_Tracts-_Scenario_2__decoded_cutoff_0.9_fitted.csv",col.names = Sim_header)
-Simulated_Inferred_Continuous_constant_Recombination <- Simulated_Inferred_Continuous_constant_Recombination[Simulated_Inferred_Continuous_constant_Recombination$replication<=1,]
 
 # Varying Recombination
 Simulated_True_Continuous_varying_Recombination_no_correction <- read.table("Icelandic_Segments_Simulation_Results/Merged_ALL_Simulation-merged-_Scenario_2_Recomb__Archaic_Segments_fitted_Recomb_correction_No_correction.csv",col.names = Sim_header)
@@ -2183,13 +2179,13 @@ Simulated_Inferred_Continuous_varying_Recombination_deCODE_correction <- read.ta
 
 ## Data Frame for plotting ##
 
-All_Simulations_Pulse_expo_fit <- data.frame(t_m=c(Simulated_True_Pulse_constant_Recombination$Expo_rate*100,Simulated_True_Pulse_varying_Recombination_no_correction$Expo_rate*100,Simulated_True_Pulse_varying_Recombination_AAMap_correction$Expo_rate*100,Simulated_True_Pulse_varying_Recombination_deCODE_correction$Expo_rate*100,Simulated_Inferred_Pulse_constant_Recombination$Expo_rate*100,Simulated_Inferred_Pulse_varying_Recombination_no_correction$Expo_rate*100,Simulated_Inferred_Pulse_varying_Recombination_AAMap_correction$Expo_rate*100,Simulated_Inferred_Pulse_varying_Recombination_deCODE_correction$Expo_rate*100),Name=rep(rep(c("0_True_P_n_R","1_True_P_w_R_no_cor","2_True_P_w_R_AAMap_cor","3_True_P_w_R_deCODE_cor","4_Inf_P_n_R","5_Inf_P_w_R_no_corr","6_Inf_P_w_R_AAMap_cor","7_Inf_P_w_R_deCODE_cor"),each=9),each=2),lower_trunc=Simulated_True_Pulse_constant_Recombination$lower_trunc,upper_trunc=Simulated_True_Pulse_constant_Recombination$upper_trunc,variable="mean GF expo")
+All_Simulations_Pulse_expo_fit <- data.frame(t_m=c(Simulated_True_Pulse_constant_Recombination$Expo_rate*100,Simulated_True_Pulse_varying_Recombination_no_correction$Expo_rate*100,Simulated_True_Pulse_varying_Recombination_AAMap_correction$Expo_rate*100,Simulated_True_Pulse_varying_Recombination_deCODE_correction$Expo_rate*100,Simulated_Inferred_Pulse_constant_Recombination$Expo_rate*100,Simulated_Inferred_Pulse_varying_Recombination_no_correction$Expo_rate*100,Simulated_Inferred_Pulse_varying_Recombination_AAMap_correction$Expo_rate*100,Simulated_Inferred_Pulse_varying_Recombination_deCODE_correction$Expo_rate*100),Name=rep(rep(c("0_True_P_n_R","1_True_P_w_R_no_cor","2_True_P_w_R_AAMap_cor","3_True_P_w_R_deCODE_cor","4_Inf_P_n_R","5_Inf_P_w_R_no_corr","6_Inf_P_w_R_AAMap_cor","7_Inf_P_w_R_deCODE_cor"),each=9),each=10),lower_trunc=Simulated_True_Pulse_constant_Recombination$lower_trunc,upper_trunc=Simulated_True_Pulse_constant_Recombination$upper_trunc,variable="mean GF expo")
 
-All_Simulations_Pulse_lomax_fit <- data.frame(t_m=c((Simulated_True_Pulse_constant_Recombination$shape/Simulated_True_Pulse_constant_Recombination$scale)*100,(Simulated_True_Pulse_varying_Recombination_no_correction$shape/Simulated_True_Pulse_varying_Recombination_no_correction$scale)*100,(Simulated_True_Pulse_varying_Recombination_AAMap_correction$shape/Simulated_True_Pulse_varying_Recombination_AAMap_correction$scale)*100,(Simulated_True_Pulse_varying_Recombination_deCODE_correction$shape/Simulated_True_Pulse_varying_Recombination_deCODE_correction$scale)*100,(Simulated_Inferred_Pulse_constant_Recombination$shape/Simulated_Inferred_Pulse_constant_Recombination$scale)*100,(Simulated_Inferred_Pulse_varying_Recombination_no_correction$shape/Simulated_Inferred_Pulse_varying_Recombination_no_correction$scale)*100,(Simulated_Inferred_Pulse_varying_Recombination_AAMap_correction$shape/Simulated_Inferred_Pulse_varying_Recombination_AAMap_correction$scale)*100,(Simulated_Inferred_Pulse_varying_Recombination_deCODE_correction$shape/Simulated_Inferred_Pulse_varying_Recombination_deCODE_correction$scale)*100),Name=rep(rep(c("0_True_P_n_R","1_True_P_w_R_no_cor","2_True_P_w_R_AAMap_cor","3_True_P_w_R_deCODE_cor","4_Inf_P_n_R","5_Inf_P_w_R_no_corr","6_Inf_P_w_R_AAMap_cor","7_Inf_P_w_R_deCODE_cor"),each=9),each=2),lower_trunc=Simulated_True_Pulse_constant_Recombination$lower_trunc,upper_trunc=Simulated_True_Pulse_constant_Recombination$upper_trunc,variable="mean GF lomax")
+All_Simulations_Pulse_lomax_fit <- data.frame(t_m=c((Simulated_True_Pulse_constant_Recombination$shape/Simulated_True_Pulse_constant_Recombination$scale)*100,(Simulated_True_Pulse_varying_Recombination_no_correction$shape/Simulated_True_Pulse_varying_Recombination_no_correction$scale)*100,(Simulated_True_Pulse_varying_Recombination_AAMap_correction$shape/Simulated_True_Pulse_varying_Recombination_AAMap_correction$scale)*100,(Simulated_True_Pulse_varying_Recombination_deCODE_correction$shape/Simulated_True_Pulse_varying_Recombination_deCODE_correction$scale)*100,(Simulated_Inferred_Pulse_constant_Recombination$shape/Simulated_Inferred_Pulse_constant_Recombination$scale)*100,(Simulated_Inferred_Pulse_varying_Recombination_no_correction$shape/Simulated_Inferred_Pulse_varying_Recombination_no_correction$scale)*100,(Simulated_Inferred_Pulse_varying_Recombination_AAMap_correction$shape/Simulated_Inferred_Pulse_varying_Recombination_AAMap_correction$scale)*100,(Simulated_Inferred_Pulse_varying_Recombination_deCODE_correction$shape/Simulated_Inferred_Pulse_varying_Recombination_deCODE_correction$scale)*100),Name=rep(rep(c("0_True_P_n_R","1_True_P_w_R_no_cor","2_True_P_w_R_AAMap_cor","3_True_P_w_R_deCODE_cor","4_Inf_P_n_R","5_Inf_P_w_R_no_corr","6_Inf_P_w_R_AAMap_cor","7_Inf_P_w_R_deCODE_cor"),each=9),each=10),lower_trunc=Simulated_True_Pulse_constant_Recombination$lower_trunc,upper_trunc=Simulated_True_Pulse_constant_Recombination$upper_trunc,variable="mean GF lomax")
 
-All_Simulations_Continuous_expo_fit <- data.frame(t_m=c(Simulated_True_Continuous_constant_Recombination$Expo_rate*100,Simulated_True_Continuous_varying_Recombination_no_correction$Expo_rate*100,Simulated_True_Continuous_varying_Recombination_AAMap_correction$Expo_rate*100,Simulated_True_Continuous_varying_Recombination_deCODE_correction$Expo_rate*100,Simulated_Inferred_Continuous_constant_Recombination$Expo_rate*100,Simulated_Inferred_Continuous_varying_Recombination_no_correction$Expo_rate*100,Simulated_Inferred_Continuous_varying_Recombination_AAMap_correction$Expo_rate*100,Simulated_Inferred_Continuous_varying_Recombination_deCODE_correction$Expo_rate*100),Name=rep(rep(c("0_True_C_n_R","1_True_C_w_R_no_cor","2_True_C_w_R_AAMap_cor","3_True_C_w_R_deCODE_cor","4_Inf_C_n_R","5_Inf_C_w_R_no_corr","6_Inf_C_w_R_AAMap_cor","7_Inf_C_w_R_deCODE_cor"),each=9),each=2),lower_trunc=Simulated_True_Continuous_constant_Recombination$lower_trunc,upper_trunc=Simulated_True_Continuous_constant_Recombination$upper_trunc,variable="mean GF expo")
+All_Simulations_Continuous_expo_fit <- data.frame(t_m=c(Simulated_True_Continuous_constant_Recombination$Expo_rate*100,Simulated_True_Continuous_varying_Recombination_no_correction$Expo_rate*100,Simulated_True_Continuous_varying_Recombination_AAMap_correction$Expo_rate*100,Simulated_True_Continuous_varying_Recombination_deCODE_correction$Expo_rate*100,Simulated_Inferred_Continuous_constant_Recombination$Expo_rate*100,Simulated_Inferred_Continuous_varying_Recombination_no_correction$Expo_rate*100,Simulated_Inferred_Continuous_varying_Recombination_AAMap_correction$Expo_rate*100,Simulated_Inferred_Continuous_varying_Recombination_deCODE_correction$Expo_rate*100),Name=rep(rep(c("0_True_C_n_R","1_True_C_w_R_no_cor","2_True_C_w_R_AAMap_cor","3_True_C_w_R_deCODE_cor","4_Inf_C_n_R","5_Inf_C_w_R_no_corr","6_Inf_C_w_R_AAMap_cor","7_Inf_C_w_R_deCODE_cor"),each=9),each=10),lower_trunc=Simulated_True_Continuous_constant_Recombination$lower_trunc,upper_trunc=Simulated_True_Continuous_constant_Recombination$upper_trunc,variable="mean GF expo")
 
-All_Simulations_Continuous_lomax_fit <- data.frame(t_m=c((Simulated_True_Continuous_constant_Recombination$shape/Simulated_True_Continuous_constant_Recombination$scale)*100,(Simulated_True_Continuous_varying_Recombination_no_correction$shape/Simulated_True_Continuous_varying_Recombination_no_correction$scale)*100,(Simulated_True_Continuous_varying_Recombination_AAMap_correction$shape/Simulated_True_Continuous_varying_Recombination_AAMap_correction$scale)*100,(Simulated_True_Continuous_varying_Recombination_deCODE_correction$shape/Simulated_True_Continuous_varying_Recombination_deCODE_correction$scale)*100,(Simulated_Inferred_Continuous_constant_Recombination$shape/Simulated_Inferred_Continuous_constant_Recombination$scale)*100,(Simulated_Inferred_Continuous_varying_Recombination_no_correction$shape/Simulated_Inferred_Continuous_varying_Recombination_no_correction$scale)*100,(Simulated_Inferred_Continuous_varying_Recombination_AAMap_correction$shape/Simulated_Inferred_Continuous_varying_Recombination_AAMap_correction$scale)*100,(Simulated_Inferred_Continuous_varying_Recombination_deCODE_correction$shape/Simulated_Inferred_Continuous_varying_Recombination_deCODE_correction$scale)*100),Name=rep(rep(c("0_True_C_n_R","1_True_C_w_R_no_cor","2_True_C_w_R_AAMap_cor","3_True_C_w_R_deCODE_cor","4_Inf_C_n_R","5_Inf_C_w_R_no_corr","6_Inf_C_w_R_AAMap_cor","7_Inf_C_w_R_deCODE_cor"),each=9),each=2),lower_trunc=Simulated_True_Continuous_constant_Recombination$lower_trunc,upper_trunc=Simulated_True_Continuous_constant_Recombination$upper_trunc,variable="mean GF lomax")
+All_Simulations_Continuous_lomax_fit <- data.frame(t_m=c((Simulated_True_Continuous_constant_Recombination$shape/Simulated_True_Continuous_constant_Recombination$scale)*100,(Simulated_True_Continuous_varying_Recombination_no_correction$shape/Simulated_True_Continuous_varying_Recombination_no_correction$scale)*100,(Simulated_True_Continuous_varying_Recombination_AAMap_correction$shape/Simulated_True_Continuous_varying_Recombination_AAMap_correction$scale)*100,(Simulated_True_Continuous_varying_Recombination_deCODE_correction$shape/Simulated_True_Continuous_varying_Recombination_deCODE_correction$scale)*100,(Simulated_Inferred_Continuous_constant_Recombination$shape/Simulated_Inferred_Continuous_constant_Recombination$scale)*100,(Simulated_Inferred_Continuous_varying_Recombination_no_correction$shape/Simulated_Inferred_Continuous_varying_Recombination_no_correction$scale)*100,(Simulated_Inferred_Continuous_varying_Recombination_AAMap_correction$shape/Simulated_Inferred_Continuous_varying_Recombination_AAMap_correction$scale)*100,(Simulated_Inferred_Continuous_varying_Recombination_deCODE_correction$shape/Simulated_Inferred_Continuous_varying_Recombination_deCODE_correction$scale)*100),Name=rep(rep(c("0_True_C_n_R","1_True_C_w_R_no_cor","2_True_C_w_R_AAMap_cor","3_True_C_w_R_deCODE_cor","4_Inf_C_n_R","5_Inf_C_w_R_no_corr","6_Inf_C_w_R_AAMap_cor","7_Inf_C_w_R_deCODE_cor"),each=9),each=10),lower_trunc=Simulated_True_Continuous_constant_Recombination$lower_trunc,upper_trunc=Simulated_True_Continuous_constant_Recombination$upper_trunc,variable="mean GF lomax")
 
 
 ```
@@ -2326,8 +2322,82 @@ ggplot(data=Icelandic_Fit_Results,aes(x = x, y = y,color=as.factor(GF_length),fi
   geom_line(data=Icelandic_Fit_Results,aes(x = x, y = y,color=as.factor(GF_length)))+
   scale_color_manual("Admixture Duration",
                      values = c(c(cbPalette_viridis[1],cbPalette_viridis)),
-                     labels = c(c("Pulse",c(0,t_d))))+
+                     labels = c(c("Pulse",c(t_d))))+
   scale_fill_manual( values = c(c(cbPalette_viridis[1],cbPalette_viridis)))+
   labs(x = "Genetic distance (cM)")+
   labs(y = "density") 
+
+## CI for mean time ##
+# Manual CI for the mean time of admixture by a normal approximation 
+Get_CI_lambda_approx_fn <- function(lambda,n_data,lower_trunc,upper_trunc){
+  n=length(n_data$length_cM[n_data$length_cM>=lower_trunc & n_data$length_cM<=upper_trunc])
+  lwr_approx <- lambda*(1-(1.96/sqrt(n)))
+  upr_approx <- lambda*(1+(1.96/sqrt(n)))
+  param_CI <- c(round(lambda*100),round(lwr_approx*100),round(upr_approx*100))
+  return(param_CI)
+}
+
+Icelandic_fit_tabel_exp <- c(Get_CI_lambda_approx_fn(Icelandic_Expo_est$rate,Icelandic_Fragments_cM,lower_trunc,upper_trunc),round(Icelandic_Expo_est$ll_exp,1))
+
+Icelandic_fit_tabel_fixed_lomax <- c()
+for(i in 1:length(Icelandic_Expo_lomax_fixed$scale)){
+  Icelandic_fit_tabel_fixed_lomax_x <- c(Get_CI_lambda_approx_fn(Icelandic_Expo_lomax_fixed[i,3],Icelandic_Fragments_cM,lower_trunc,upper_trunc),round(Icelandic_Expo_lomax_fixed[i,5],1))
+  Icelandic_fit_tabel_fixed_lomax <- rbind(Icelandic_fit_tabel_fixed_lomax,Icelandic_fit_tabel_fixed_lomax_x)
+}
+
+
+```
+
+```{r message=FALSE, echo=FALSE,warning=FALSE}
+
+Get_CI_s_approx_fn <- function(fit,i,n_data){
+  org <- coef(fit)[[i]]
+  lwr_approx <- coef(fit)[[i]]*(1-(1.96/sqrt(length(n_data[,1]))))
+  upr_approx <- coef(fit)[[i]]*(1+(1.96/sqrt(length(n_data[,1]))))
+  param_CI <- c(1/org,1/upr_approx,1/lwr_approx)
+  return(param_CI)
+}
+
+Get_CI_other_approx_fn <- function(fit,i,n_data,sigma){
+  org <- coef(fit)[[i]]
+  lwr_approx <- coef(fit)[[i]]-1.96*(sigma/sqrt(length(n_data[,1])))
+  upr_approx <- coef(fit)[[i]]+1.96*(sigma/sqrt(length(n_data[,1])))
+  param_CI <- c(org,lwr_approx,upr_approx)
+  return(param_CI)
+}
+
+A_param=Get_CI_other_approx_fn(Expo_fit_result,1,xdata,summary(Expo_fit_result)$sigma)
+t_m=Get_CI_s_approx_fn(Expo_fit_result,2,xdata)
+c_param=Get_CI_other_approx_fn(Expo_fit_result,3,xdata,summary(Expo_fit_result)$sigma)
+Expo_fit_tabel <- rbind(A_param,t_m,c_param)
+
+Lomax_fit_tabel <- c()
+for(model in all_t_lomax_est){
+  A_parm=Get_CI_other_approx_fn(model,2,xdata,summary(model)$sigma)
+  t_m=Get_CI_s_approx_fn(model,1,xdata)
+  c_param=Get_CI_other_approx_fn(model,3,xdata,summary(Expo_fit_result)$sigma)
+  Lomax_fit_tabel_x <- rbind(A_param,t_m,c_param)
+  Lomax_fit_tabel <- rbind(Lomax_fit_tabel,Lomax_fit_tabel_x)
+}
+
+
+
+```
+
+```{r tableS3, echo=FALSE,results='asis',warning=FALSE, message=FALSE }
+
+Icelandic_Param_Est_Tabel <- rbind(Icelandic_fit_tabel_exp,Icelandic_fit_tabel_fixed_lomax)
+Models <- c("Exponential","Lomax (td=1)" 
+           ,"Lomax (td=100)","Lomax (td=200)"
+            ,"Lomax (td=400)","Lomax (td=800)"
+            ,"Lomax (td=1000)","Lomax (td=1500)"
+            ,"Lomax (td=2000)","Lomax (td=2500)")
+Params_name <- rep(c("mean time"),10)
+Icelandic_Param_Est_Tabel <- cbind(Models,Params_name,Icelandic_Param_Est_Tabel)
+
+
+kable(Icelandic_Param_Est_Tabel , "latex",col.names = c("Model","Parameter","Estimate","2.5 %", "97.5 %","Likelihood"),row.names = FALSE,
+      caption = "\\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit") %>%
+  #collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
 ```
