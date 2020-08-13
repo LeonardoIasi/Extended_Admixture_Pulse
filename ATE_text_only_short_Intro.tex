@@ -105,95 +105,85 @@ Anthropology, MPI EVA), Dr.~Benjamin Marco Peter (MPI EVA,
 
 \section{Introduction}\label{introduction}
 
-Admixture, i.e. gene flow between populations, is a major evolutionary force that shapes genetic diversity and allows the potential exchange of beneficial variants. Genomic studies have shown that admixture is prevalent across species (\cite{Salazar_Hybrid_speciation_2010, rieseberg_hybridization_2007,kronforst_multilocus_2006,kolbe_multiple_2007}) and facilitates adaptation (\cite{harrison_hybridization_2014,hedrick_adaptive_2013, shaw_genes_2011,payseur_using_2010}).
+In recent years, genetic evidence for the direct contact and interbreeding of modern humans with other hominin populations, such as Neandertals \citep{green_draft_2010,prufer_complete_2013,vernot_resurrecting_2014,fu_early_2015,fu_genome_2014,sankararaman_genomic_2014,prufer_high-coverage_2017} and Denisovans \citep{reich_genetic_2010,meyer_high-coverage_2012,sankararaman_combined_2016,vernot_excavating_2016,malaspinas_genomic_2016} was discovered. These admixture events are often used to resolve the timing and duration of biogeographical events by dating them \citep{sankararaman_date_2012,jacobs_multiple_2019,vyas_analyses_2019}. One particular event of interest is the time and duration of interbreeding between Neandertals and modern humans, when their range overlapped. Archaeological evidence suggest a range overlap between the first modern humans out-of-Africa at around 188 thousand years ago (kya) \citep{stringer_when_2018,hershkovitz_earliest_2018} and a possible extinction of Neandertals around 37 kya \citep{zilhao_precise_2017} and 39 kya \citep{higham_timing_2014} at the end of the Mousterian. This leaves a potential time frame for Neandertal and modern human interaction of approximately 140,000 years. Detailed genetic dating of Neandertal and modern human admixture is hoped to unveil more evidence of the timing and especially duration of this interaction,
+potentially holding a clue of the debated question of extinction of these hominin populations. Another example is the geographical range distribution of Denisovans that is inferred by admixture proportions and time estimates from present day population and their geographical distribution \citep{jacobs_multiple_2019}. 
 
-The advent of wide-spread full-genome sequencing methods makes it easier to detect admixture events
-between populations (\cite{sousa_understanding_2013}). In humans, the sequencing of
-the Neandertal genome (\cite{green_draft_2010}) revealed that all humans outside Africa carry low proportions of Neandertal ancestry
-(\cite{green_draft_2010,prufer_complete_2013,vernot_resurrecting_2014,fu_early_2015,fu_genome_2014,sankararaman_genomic_2014,prufer_high-coverage_2017}). In addition, the  Denisovan genome (\cite{reich_genetic_2010})
-showed low proportions of Denisovan ancestry being widespread in Oceania and to a smaller extent in East-Asia
-(\cite{reich_genetic_2010,meyer_high-coverage_2012,sankararaman_combined_2016,vernot_excavating_2016,malaspinas_genomic_2016}).
-
-
-
-This genetic evidence for the direct contact and interbreeding of modern humans with other hominin populations is often used to resolve the timing and duration of biogeographical events using admixture dates (\cite{sankararaman_date_2012,jacobs_multiple_2019,vyas_analyses_2019}). One particular event of interest is the time and duration of interbreeding between Neandertals and modern humans, when their range overlapped. Archaeological evidence suggest a range overlap between the first modern humans out-of-Africa at around 188 thousand years ago (kya) (\cite{stringer_when_2018,hershkovitz_earliest_2018}) and a possible extinction of Neandertals around 37 kya (\cite{zilhao_precise_2017}) and 39 kya (\cite{higham_timing_2014}) at the end of the Mousterian. This leaves a potential timeframe for Neandertal and modern human interaction of approximately 140,000 years. Detailed genetic dating of Neandertal and modern human admixture is hoped to unveil more evidence of the timing and especially duration of this interaction,
-potentially holding a clue of the debated question of extinction of these hominin populations. Another example is the geographical range distribution of Denisovans that is inferred by admixture proportions and time estimates from present day population and their geographical distribution (\cite{jacobs_multiple_2019}). 
+The accuracy and information content of admixture dates are dependent on the model used and its assumptions.
+The most widely used admixture model is one where gene flow is constant through time \citep{nielsen_distinguishing_2001,hey_multilocus_2004}, which does not have a time component. However, for dating admixture, it is generally assumed that gene flow
+happens over a very short time period, in a single \textit{admixture pulse} \citep{moorjani_history_2011}, usually modelled as a single generation
+of gene flow. While convenient for inference, one cannot use this approach to distinguish an extend period of admixture from an admixture pulse \citep{pickrell_toward_2014}. 
+Here, we are chiefly interested in gene flow between Neandertals and modern humans, which was previously modeled assuming a one-generation pulse of admixture. Dating the duration of the admixture event accurately would inform several questions of  great importance, but not always the same aspect of the admixture is the one of primary interest. For example, if we are interested in dating the out-of-Africa migration of our ancestors, the start of the gene flow between Neandertals and modern humans is of primary interest, as this establishes modern humans and Neandertals in sympatry, likely outside of Africa.
+In contrast, the date of the most recent gene flow between Neandertals and modern humans may be informative for dating the extinction of Neandertals. Under an admixture pulse model, which assumes that these two times coincide, hypotheses about the impact of modern human colonization of Eurasia on Neandertal extinction cannot be evaluated.
 
 \subsection{Admixture on the genomic level and basic idea how to date
 it}\label{admixture-on-the-genomic-level-and-basic-idea-how-to-date-it}
-
-On the genomic level, admixture introduces  divergent chromosomes
+To obtain informations about admixture dates from genetic data one uses the length distribution of introgressed segments.
+On the genomic level, admixture introduces  divergent chromosomes from previously isolated populations 
 into the admixed population. Over time, meiotic recombination
-progressively breaks these chromosomes down into introgressed segments, whose size decreases with time (\cite{falush_inference_2003}). 
+progressively breaks these chromosomes down into introgressed segments, whose size decreases with time \citep{falush_inference_2003}. 
 Assuming that recombination events are
 independent from each other, the length of these segments  is roughly inversely proportional to  the number of
 generations since admixture
-(\cite{moorjani_history_2011,pool_inference_2009,gravel_population_2012,liang_lengths_2014}).
+\citep{moorjani_history_2011,pool_inference_2009,gravel_population_2012,liang_lengths_2014}.
 Hence, using this 'recombination clock', the length distribution of introgressed chromosomal segments
  can be used to inferred the time since the
 admixture event 
-(\cite{moorjani_history_2011,pugach_dating_2011,sankararaman_date_2012,loh_inferring_2013,sankararaman_combined_2016,pugach_gateway_2018,jacobs_multiple_2019,hellenthal_genetic_2014}).
+\citep{moorjani_history_2011,pugach_dating_2011,sankararaman_date_2012,loh_inferring_2013,sankararaman_combined_2016,pugach_gateway_2018,jacobs_multiple_2019,hellenthal_genetic_2014}.
 
 
 \subsection{The two approaches and their application to find archaic admixture dates}\label{the-two-approaches-and-their-application-to-find-archaic-admixture-dates}
 
-The first step in dating admixture events from genetic data is estimating the length distribution of admixture segments.  There are two main approaches for this; a first approach is to use patterns of linkage along a chromosome to estimate the length distribution, without explicitly inferring the genomic location of these segments. In contrast, a second set of methods first aims to identify all admixture segments over a certain length, and then use these segments for inference. 
-(\cite{chimusa_dating_2018}) (Figure \ref{fig:fig1} A).
+The first step in dating admixture events from genetic data is therefore estimating the length distribution of admixture segments.  There are two main approaches for this; a first approach is to use patterns of linkage along a chromosome to estimate the length distribution, without explicitly inferring the genomic location of these segments. In contrast, a second set of methods first aims to identify all admixture segments over a certain length, and then use these segments for inference. 
+(\citep{chimusa_dating_2018}) (Figure \ref{fig:fig1} A).
 
 The first approach uses the admixture-induced linkage disequilibrium
 (ALD) decay. Variants on introgressed archaic segments are
 expected to be in high linkage disequilibrium to each other at the time
 of admixture
-(\cite{chakraborty_admixture_1988,stephens_mapping_1994,wall_detecting_2000}). The extent of linkage between introgressed variants decreases over generations as genetic distance increases. Hence, in case of a recent
+\citep{chakraborty_admixture_1988,stephens_mapping_1994,wall_detecting_2000}. The extent of linkage between introgressed variants decreases over generations as genetic distance increases. Hence, in case of a recent
 admixture event a few tens of generations ago, ALD stretches  over long genetic distances
-(\cite{patterson_methods_2004}) and is therefore easily distinguishable
-from short range LD due to other processes (\cite{moorjani_history_2011}). For ancient
-admixture events however, ALD is quite similar to the genomic background. To circumvent this issue for dating the Neandertal-human admixture time, an ascertainment scheme was used to calculate LD only for markers that are nearly differentially fixed between the two taxa. In this case, the presence of apparent Neandertal alleles in close-range LD is a signature of a locally introgressed locus
-(\cite{sankararaman_date_2012}). Typically, estimation of admixture dates proceeds by fitting a decay curve of pairwise LD as a function of
+\citep{patterson_methods_2004} and is therefore easily distinguishable
+from short range LD due to other processes \citep{moorjani_history_2011}. For ancient
+admixture events however, ALD is quite similar to the genomic background. To circumvent this issue for dating the Neandertal-human admixture time, an ascertainment scheme was used to calculate LD only for markers that are nearly deferentially fixed between the two taxa. In this case, the presence of apparent Neandertal alleles in close-range LD is a signature of a locally introgressed locus
+\citep{sankararaman_date_2012}. Typically, estimation of admixture dates proceeds by fitting a decay curve of pairwise LD as a function of
 genetic distance, using an exponential distribution whose parameters are informative for the time of an admixture pulse
-(\cite{moorjani_history_2011,loh_inferring_2013}). Using this approach Sankararaman et al. dated the Neandertal-human admixture time to
-be  between 37,000--86,000 ya (years ago) (\cite{sankararaman_date_2012}). Later,
+\citep{moorjani_history_2011,loh_inferring_2013}. Using this approach Sankararaman et al. dated the Neandertal-human admixture pulse to
+be  between 37,000--86,000 ya (years ago) \citep{sankararaman_date_2012}. Later,
 this date was refined to 40,510--54,454 ya (95\% CI) using a different
 ascertainment scheme combined with a different genetic map
-(\cite{moorjani_genetic_2016}). A date was also obtained from an ancient
+\citep{moorjani_genetic_2016}. A date was also obtained from an ancient
 genome to be 50,000 - 60,000 ya by adding the time since the admixture obtained from the
 ancient individual, by the decay of pairwise covariance between
 introgressed SNPs, to the specimens radiocarbon date
-(\cite{fu_genome_2014}).
+\citep{fu_genome_2014}.
 
 A higher amount of Neandertal admixture segments in present-day East-Asians was identified by using the second set of approaches. To explain the higher amount of Neandertal ancestry in these populations a second admixture event was suggested at the same time as the admixture between Neandertals and
-all non-Africans (\cite{kim_selection_2015,vernot_complex_2015}).  The identification of segments is largely independent from the later dating, and can be done using a variety of methods.(\cite{racimo_signatures_2017,seguin_orlando_paleogenomics_2014,vernot_excavating_2016,sankararaman_combined_2016,skov_detecting_2018}). The length distribution of the obtained fragments is then used to estimate the time of the admixture pulse, typically using an exponential model.
+all non-Africans \citep{kim_selection_2015,vernot_complex_2015}.  The identification of segments is largely independent from the later dating, and can be done using a variety of methods.\citep{racimo_signatures_2017,seguin_orlando_paleogenomics_2014,vernot_excavating_2016,sankararaman_combined_2016,skov_detecting_2018}. The length distribution of the obtained fragments is then used to estimate the time of the admixture pulse, typically using an exponential model.
 
 The Denisovan human
 admixture time point was dated to lie in the interval between 44,000--54,000 ya using the ALD
-approach on modern day genomes (\cite{sankararaman_combined_2016}).
+approach on modern day genomes \citep{sankararaman_combined_2016}.
 
-Direct identification of archaic segments in genomes from present day Southeast-Asians revealed a proportion of previously unknown Denisovan ancestry private to these populations. The segments from this ancestry are more diverged from the high-coverage Denisovan genome then previously found ones. This suggests an additional admixture event from a different population of Denisovans (\cite{browning_analysis_2018}).
+Direct identification of archaic segments in genomes from present day Southeast-Asians revealed a proportion of previously unknown Denisovan ancestry private to these populations. The segments from this ancestry are more diverged from the high-coverage Denisovan genome then previously found ones. This suggests an additional admixture event from a different population of Denisovans \citep{browning_analysis_2018}.
 Comparing the mean length of the formerly known and newly identified Denisovan segments did, however, not reveal
 significant differences, suggesting a lack of power to distinguish the
-two events by time (\cite{browning_analysis_2018,jacobs_multiple_2019}).
+two events by time \citep{browning_analysis_2018,jacobs_multiple_2019}.
 Analysing genomes from Papuan individuals revealed two time separated
 admixture events with Denisovans, one in line with previous estimates at
 45.7 kya (95\% CI 31.9-60.7 kya) and one exclusive to Papuans dated to
 be around 29.8 kya (95\% CI 14.4-50.4 kya)
-(\cite{jacobs_multiple_2019}).
+\citep{jacobs_multiple_2019}.
 
-Here, we are manly interested in the admixture model these studies used and its implication.
 
-The most widely used model is one where gene flow is constant through time (\cite{nielsen_distinguishing_2001,hey_multilocus_2004}), which does not have a time component. However, for dating admixture, it is generally assumed that gene flow
-happens over a very short time period, in a single \textit{admixture pulse} (\cite{moorjani_history_2011}), usually modelled as a single generation
-of gene flow. While convenient for inference, one cannot use this approach to distinguish an extend period of admixture from an admixture pulse (\cite{pickrell_toward_2014}). 
-Here, we are chiefly interested in gene flow between Neandertals and modern humans, which was previously modeled assuming a one-generation pulse of admixture. Dating the duration of the admixture event accurately would inform several questions of  great importance, but not always the same aspect of the adixture is the one of primary interest. For example, if we are interested in dating the out-of-Africa migration of our ancestors, the start of the gene flow between Neandertals and modern humans is of primary interest, as this establishes modern humans and Neandertals in sympatry, likely outside of Africa.
-In contrast, the date of the most recent gene flow between Neandertals and modern humans may be informative for dating the extinction of Neandertals. Under an admixture pulse model, which assumes that these two times coincide, hypotheses about the impact of modern human colonization of Eurasia on Neandertal extinction cannot be evaluated.
-
-Thus, our goal here is to examine when an admixture pulse can be rejected for more general models of continuous admixture (Figure \ref{fig:fig1}).  Using a continuous model, we are interested in establishing the start and end of admixture between Neandertals and modern humans, not just the mean admixture time. This is a difficult problem, as it requires deconvoluting an exponential mixture, which is notoriously hard (\cite{dasgupta_mixture_2008}). Thus, we also need to carefully evaluate the potential technical and biological factors that may introduce additional biases (\cite{pool_inference_2009,gravel_population_2012,liang_lengths_2014}).
-For this purpose, we explore these factors influencing the inferred time of admixture pulses, to gauge their relative importance.
+These studies assumed admixture to be a pulse like event.
+Our goal is to examine the implication that assumption has and when an admixture pulse can be rejected for more general models of continuous admixture (Figure \ref{fig:fig1}).  Using a continuous model, we are interested in establishing the start and end of admixture between Neandertals and modern humans, not just the mean admixture time. This is a difficult problem, as it requires deconvoluting an exponential mixture, which is notoriously hard \citep{dasgupta_mixture_2008}. Thus, we also need to carefully evaluate the potential technical and biological factors and assumptions that may introduce additional biases \citep{pool_inference_2009,gravel_population_2012,liang_lengths_2014}.
+For this purpose, we explore these factors and assumptions influencing the inferred time of admixture pulses, to gauge their relative importance.
 
 
 
 \subsection{Assumptions on the data}\label{assumptions-on-the-data}
 
-In general the model assumes that introgressed segments are rare and inbreeding is not significant (\cite{pool_inference_2009}). The segments act neutral (\cite{shchur_distribution_2019}) and the recombination clock is constant over time and populations (\cite{gravel_population_2012}). We will adopt these assumptions. Instead we focus on the one-generation pulse and technical assumptions. It is usually assumed that the demography is known or its effects negligible, the recombination map known or recombination is constant. Beside that it is assumed that the ascertainment scheme sufficiently represent the variation in the true introgressing archaic population.
+In general the model assumes that introgressed segments are rare and inbreeding is not significant \citep{pool_inference_2009}. The segments act neutral \citep{shchur_distribution_2019} and the recombination clock is constant over time and populations \citep{gravel_population_2012}. We will adopt these assumptions. Instead we focus on the one-generation pulse and technical assumptions. It is usually assumed that the demography is known or its effects negligible, the recombination map known or recombination is constant. Beside that it is assumed that the ascertainment scheme sufficiently represent the variation in the true introgressing archaic population.
 
 Violations of these assumptions are known to influence the mean time
 estimates. Hence, the effect of assuming a one-generation pulse has to
@@ -204,10 +194,10 @@ pulse-like and multi-generation continuous admixture.
 \subsection{complex migration models}
 
 To relax the one-generation pulse assumption we have to generalize the admixture model.
-The simplest generalization of the admixture pulse model to more complex scenarios is to assume a model with two or more pulses. In such a case,  each segment will have entered in one of the pulses, and the resulting admixture tracts will be a discrete mixture of the constituent distributions (\cite{pickrell_ancient_2014}), weighted by the relative migration rates. Zhou et al. 2017 (\cite{zhou_modeling_2017}) showed that this model, in principle, can be used for continuous mixtures as well, using a polynomial function as a mixture density. However, they found that even for relatively short admixture events, the large number of parameters led to an underestimate of admixture duration (\cite{zhou_inference_2017}), and the beginning and end of admixture were not well inferred
-(\cite{zhou_modeling_2017,zhou_inference_2017}). 
+The simplest generalization of the admixture pulse model to more complex scenarios is to assume a model with two or more pulses. In such a case,  each segment will have entered in one of the pulses, and the resulting admixture tracts will be a discrete mixture of the constituent distributions \citep{pickrell_ancient_2014}, weighted by the relative migration rates. Zhou et al. 2017 \citep{zhou_modeling_2017} showed that this model, in principle, can be used for continuous mixtures as well, using a polynomial function as a mixture density. However, they found that even for relatively short admixture events, the large number of parameters led to an underestimate of admixture duration \citep{zhou_inference_2017}, and the beginning and end of admixture were not well inferred
+\citep{zhou_modeling_2017,zhou_inference_2017}. 
 
-Here we use a simpler model of continuous admixture with just two parameters, and one less than the two-pulse model of Pickrell et al. 2014 (\cite{pickrell_ancient_2014}). One parameter reflects the mean admixture time, and the other the duration of the admixture event; letting this parameter go to zero thus recovers the (nested) pulse model. 
+Here we use a simpler model of continuous admixture with just two parameters, and one less than the two-pulse model of Pickrell et al. 2014 \citep{pickrell_ancient_2014}. One parameter reflects the mean admixture time, and the other the duration of the admixture event; letting this parameter go to zero thus recovers the (nested) pulse model. 
 This model is particularly simple if we assume that migration rate over time is Gamma distributed, in which case the distribution of admixture segment lengths has a closed form (Figure \ref{fig:fig1} B & C).
 
 \subsection{What we want to do}\label{what-we-want-to-do}
@@ -246,28 +236,26 @@ admixture compared to a pulse under ideal circumstances. We changed
 recombination and demographic parameters to simulate more realistic
 models. We compared the effect of these parameters together with
 analysis parameters to the effect of continuous admixture on the
-estimates. After assessing these effects we evaluate the possible
+estimates. After assessing these effects we evaluated the possible
 parameter range for using a Lomax distribution to fit the ALD decay,
-enabling to obtain a duration of continuous admixture. We used both admixture models on real data. We fitted several admixture scenarios with different durations to ALD data from the 1000 Genomes Project with 3 high coverage Neandertals and to directly inferred Neandertal segments using data from Skov \& Coll Maci\`{a} et al. 2020 \cite{skov_nature_2020}.
+enabling to obtain a duration of continuous admixture. We used both admixture models on real data. We fitted several admixture scenarios with different durations to ALD data from the 1000 Genomes Project \citep{the_1000_genomes_project_consortium_global_2015} with 3 high coverage Neandertals \citep{prufer_complete_2013,prufer_high-coverage_2017,mafessoni_high_coverage_2020} and to directly inferred Neandertal segments using data from Skov \& Coll Maci\`{a} et al. 2020 \citep{skov_nature_2020}.
 
 \subsection{Simulations}\label{simulations}
 
 We used the msprime coalescent simulator
-(\cite{kelleher_efficient_2016}) for simulations with sample sizes
+\citep{kelleher_efficient_2016} for simulations with sample sizes
 chosen to reflect presently available data. For ALD simulations we simulate 176 diploid
 African individuals and 170 diploid non-Africans, corresponding to the
 number of Yoruba (YRI) and Central Europeans from Utah (CEU)
-sequences in the 1000 Genomes project data
-(\cite{the_1000_genomes_project_consortium_global_2015}). Since three
-high coverage Neandertal sequences are available
-(\cite{prufer_complete_2013,prufer_high-coverage_2017,mafessoni_high_coverage_2020}) we choose to
+sequences in the 1000 Genomes project data. Since three
+high coverage Neandertal sequences are available we choose to
 simulate three diploid genomes. For each individual we simulated 20
 chromosomes with a length of 150 Mb each. The mutation rate was set for
 all simulations to \(2*10^{-8}\) per base per generation. The
 recombination rate was set to \(1*10^{-8}\) per base pair per generation
 unless specified otherwise. The demographic parameters are based on
 previous studies dating Neandertal admixture
-(\cite{sankararaman_date_2012,fu_genome_2014,moorjani_genetic_2016}). In
+\citep{sankararaman_date_2012,fu_genome_2014,moorjani_genetic_2016}. In
 the ``simple'' model (Supplement Figure\ref{fig:figS1} A), the effective
 population size is assumed constant at Ne=10000 for all populations, the
 split time between modern humans and Neandertals is 10000 generations
@@ -276,14 +264,14 @@ generations ago. The migration rate from Neandertals into non-Africans
 was set to zero before the split from Africans, to ensure no Neandertal
 ancestry in Africans. Each simulation was repeated 100 times. 
 
-We used a simplified version of the demographic model described in Skov et al. 2018 (\cite{skov_detecting_2018}) for the direct inference of admixture segments (Supplement Figure \ref{fig:figS1} C). Here we simulate 100 haploid non-Africans with a starting effective population size of 3899. The mutation rate and recombination rate are  \(1.2*10^{-8}\) per base per generation. Number of chromosomes, length of the chromosome and all split times are the same as in the simple demographic ALD simulations. We sampled 500 haploid Africans as outgroup individuals. Ech simulation was repeated 10 times.
+We used a simplified version of the demographic model described in Skov et al. 2018 \citep{skov_detecting_2018} for the direct inference of admixture segments (Supplement Figure \ref{fig:figS1} C). Here we simulate 100 haploid non-Africans with a starting effective population size of 3899. The mutation rate and recombination rate are  \(1.2*10^{-8}\) per base per generation. Number of chromosomes, length of the chromosome and all split times are the same as in the simple demographic ALD simulations. We sampled 500 haploid Africans as outgroup individuals. Each simulation was repeated 10 times.
 
 \subsubsection{Gene Flow}\label{gene flow}
 
 In the admixture pulse model, gene flow is a one generation long pulse,
 resulting in an exponentially distributed segment length or admixture-induced linkage
 disequilibrium (ALD) decay curve (Eq. \ref{eq:1}), with $\lambda$ as
-the rate parameter of the exponential distribution holding the  time since the admixture event $t$ with $l$ ,here being either the genetic length of an admixture segment or the genetic
+the rate parameter of the Exponential distribution holding the  time since the admixture event $t$ with $l$, here being either the genetic length of an admixture segment or the genetic
 distance \(d\) between two SNPs,
 
 \begin{equation}
@@ -294,7 +282,7 @@ L_i &\sim exp(\lambda) \\
 \end{split}
 \end{equation}
 
-Continuous gene flow $m$ over time with the random variable $t \in \{t_1,t_2,...,t_n\}$ was modeled as a gamma distribution (Eq.
+Continuous gene flow $m$ over time with the random variable $t \in \{t_1,t_2,...,t_n\}$ was modeled as a Gamma distribution (Eq.
 \ref{eq:2})
 
 \begin{equation}
@@ -304,7 +292,7 @@ m_i \sim \Gamma(k,\theta)
 
 Where k is the shape and \(\theta\) the scale parameter. The parameter
 values are chosen such that the mean length of the
-exponentially distributed ALD decay or segment length curve resulting from the one
+exponentially distributed segment length or ALD decay curve resulting from the one
 generation admixture pulse, is equal to the mean length as a result of continuous migration with the same total amount of
 migrants, modeled using a Lomax distribution with shape being $k+1$ and the scale $\frac{1}{\theta}$ (Eq. \ref{eq:3})
 
@@ -328,15 +316,15 @@ where \qquad k=t_m \, \frac{1}{\theta} \qquad and \qquad \theta=\frac{1}{t_{m}Va
 
 Equation (Eq. \ref{eq:4}) shows the relationships between the
 distribution parameters such that the resulting decay mean length are
-equal. Here \(l\) is in generations. $t_{m}$ is the mean time of admixture equal to the mean of the Gamma distribution ($\mathbb{E}[m]$) and $Var[m]=(\frac{t_d}{4})^2$ its variance with $t_d$ as the duration of admixture in generations.
+equal. Here  $t_{m}$ is the mean time of admixture equal to the mean of the Gamma distribution ($\mathbb{E}[m]$) and $Var[m]=(\frac{t_d}{4})^2$ its variance with $t_d$ as the duration of admixture in generations.
 
 \subsubsection{Recombination map}\label{recombination map}
 
 Uncertainties in the recombination map were previously shown to bias
 admixture time estimates. To investigate the effect of more realistic
 recombination rate variation we simulated samples using a recombination map. For ALD simulations we
-either used the African-American-Map (\cite{hinch_landscape_2011} or
-the HapMap phase 3 (\cite{HapMapConsortium_second_2007}) for simulations
+either used the African-American-Map \citep{hinch_landscape_2011} or
+the HapMap phase 3 \citep{HapMapConsortium_second_2007} for simulations
 under a variable recombination rate, for simplicity, we used the same
 recombination map (150 Mb of chromosome 1, excluding the first 10 Mb)
 for all simulated chromosomes. The mean recombination rate was
@@ -344,25 +332,25 @@ calculated from the 150 Mb map (\(1.017 \, \frac{cM}{Mb}\) AAMap and
 \(0.992 \, \frac{cM}{Mb}\) HapMap). To emulate uncertainties in the
 genetic map we either: used the mean recombination rate from the
 respective map to calculate the genetic distance from the physical
-distance for each SNP, used the other map to assign distances
+distance for each SNP (assuming recombination to be constant), used the other map to assign distances
 (e.g.~AAMap used for the msprime simulation and HapMap used to assign
-genetic distances) or used the same map for simulation and assigning
-genetic distances. For simulating the Icelandic fragment we used 150 Mb of chromosome 1 from the deCODE map \cite{kong_fine-scale_2010} \(0.914 \, \frac{cM}{Mb}\).
+genetic distances, emulating uncertainties in the recombination map) or used the same map for simulation and assigning
+genetic distances (population specific map). For simulating the Icelandic fragment we used 150 Mb of chromosome 1 from the deCODE map \citep{kong_fine-scale_2010} \(0.914 \, \frac{cM}{Mb}\).
 
 \subsubsection{Complex demography}\label{inferred demography}
 
 Demography such as population size changes are known to influence LD
 patterns and can create false admixture signals. To test the impact of
 demographic history on admixture time estimates, we simulate a more
-realistic and complex demographic history with substructure in the ancestral human population and additional gene flow between Africans and non-Africans after the Neandertal admixture (Figure \ref{fig:figS1}). The 
+realistic and complex demographic history with substructure in the ancestral human population and additional gene flow between Africans and non-Africans after the Neandertal admixture (Sup. Fig. \ref{fig:figS1} B). The 
 effective population
 sizes are based on estimates from Neandertal and present-day human
 genomes. MSMC estimates from YRI as representatives for Africans and CEU
 for non-Africans from Schiffles \& Durbin 2014
-(\cite{schiffels_inferring_2014}) were used together with PSMC
-(\cite{li_inference_2011}) inferred demographic model for Neandertals
+\citep{schiffels_inferring_2014} were used together with PSMC
+\citep{li_inference_2011} inferred demographic model for Neandertals
 based on the Vindija33.19 high-coverage genome
-(\cite{prufer_high-coverage_2017}). In order to use the effective
+\citep{mafessoni_high_coverage_2020}. In order to use the effective
 population size estimates at a given time point for modern humans from
 Schiffels \& Durbin 2014 (Figure 4 Excel Table) for our simulations, we
 first transformed the time points given in years back to generations by
@@ -372,18 +360,18 @@ rates (\(1.25*10^{-8} \frac{bp}{gen}\)), we corrected all estimates for
 the mutation rate used in the simulations
 (\(2*10^{-8} \frac{bp}{gen}\)). The split times between Neandertals and
 modern humans was kept the
-same as in the simple simulations (10000 generations ago). In the complex model we simulated substructure in Africa starting from 3550 till the final split at 2550 generations ago with a per generation migration rate between the two subpopulations of 0.001. The population size of the ancestor of Neandertals and
+same as in the simple simulations (10000 generations ago) (Sup. Fig. \ref{fig:figS1} A). In the complex model, we simulated an earlier initial split between populations in Africa 3550 generations ago. With substructure starting from 3200 till the final split at 2550 generations ago with a per generation migration rate between the two subpopulations of 0.001. The population size of the ancestor of Neandertals and
 humans before the split was set to 18296 (taken from the MSMC results). To simulate branch shortening
 caused by the extinction of Neandertals, Neandertals were sampled 750
 generations before the Africans and non-Africans. We simulated an additional admixture event between African and non-African populations with a total migration rate of 0.01 starting from 200 till 50 generations ago.
 
 \subsection{1000 Genomes Data}\label{1000 Genomes Data}
 
-We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagyrskaya high coverage Neandertals.  We filtered for all unrelated individuals from the YRI as representatives of unadmixed Africans and all CEU as admixed Europeans. We only considered biallelic sites. The sites were polarized relative to the Chimpanzee base (panTro4). We used the CEU specific fine-scale recombination map (\cite{spence_inference_2019}) to convert the physical distance between sites into genetic distance. 
+We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagyrskaya high coverage Neandertals.  We filtered for all unrelated individuals from the YRI as representatives of unadmixed Africans and all CEU as admixed Europeans. We only considered biallelic sites. The sites were polarized relative to the Chimpanzee base (panTro4). We used the CEU specific fine-scale recombination map \citep{spence_inference_2019} to convert the physical distance between sites into genetic distance. 
 
 \subsection{Neandertal segments in Icelanders}\label{1000 Genomes Data}
 
-We used the identified archaic segments from Skov \& Coll Maci\`{a} et al. 2020. The segments are pre-filtered using a posterior probability cutoff of 0.9 for identified archaic segments. We filtered the data set for archaic segments identified as Neandertal (Altai and Vindija). We used the DeCode genetic map to convert the physical segment length in bp to genetic length in cM. We used a lower and upper cutoff of 0.05 - 1.2 cM for the length of segments
+We used the identified archaic segments from Skov \& Coll Maci\`{a} et al. 2020. The segments are pre-filtered using a posterior probability cutoff of 0.9 for identified archaic segments. We filtered the data set for archaic segments identified as Neandertal (Altai and Vindija). We used the deCode genetic map to convert the physical segment length in bp to genetic length in cM. We used a lower and upper cutoff of 0.05 - 1.2 cM for the length of segments
 
 \subsection{Admixture time estimates}\label{admixture time estimates}
 
@@ -392,13 +380,13 @@ We used the identified archaic segments from Skov \& Coll Maci\`{a} et al. 2020.
 Ascertainment schemes are used to select certain variable positions of
 interest in a genome. Ascertainment schemes can be used to enrich for
 Neandertal informative sites in the test population to remove noise and
-amplify the ALD signal (\cite{sankararaman_date_2012}). Two
+amplify the ALD signal \citep{sankararaman_date_2012}. Two
 ascertainment schemes were tested to enrich for Neandertal informative
 sites, which were used previously
-(\cite{sankararaman_date_2012,fu_genome_2014}). The lower-enrichment
-ascertainment scheme filters for SNPs fixed for the ancestral state in
+\citep{sankararaman_date_2012,fu_genome_2014}. The lower-enrichment
+ascertainment scheme (LES) filters for SNPs fixed for the ancestral state in
 Africans and polymorphic in Neandertals. The higher-enrichment
-ascertainment scheme restricts the analysis on SNPs fixed for the
+ascertainment scheme (HES) restricts the analysis on SNPs fixed for the
 ancestral state in Africans, polymorphic in Neandertals and polymorphic
 in non-Africans.
 
@@ -406,20 +394,20 @@ in non-Africans.
 
 The pairwise weighted LD between the ascertained SNPs a certain genetic
 distance \(d\) apart was calculated using ALDER
-(\cite{loh_inferring_2013}). A minimal genetic distance \(d_0\) between
-SNPs is set either to 0.02 cM and 0.05 cM. This minimal distance cutoff
+\citep{loh_inferring_2013}. A minimal genetic distance \(d_0\) between
+SNPs was set either to 0.02 cM and 0.05 cM. This minimal distance cutoff
 removes extreme short range LD likely confounded by non-ALD,
 facilitating the fitting procedure. To obtain the mean time estimates
-the data is fitted with an exponential distribution (one generation pulse model) shown in equation
+the data is fitted with an Exponential distribution (one generation pulse model) shown in equation
 \ref{eq:5}, using a non-linear least-square optimization algorithm
-implemented in R (\cite{R_Core_Team_2019}). Where \emph{A} is the
+implemented in R \citep{R_Core_Team_2019}. Where \emph{A} is the
 intercept, $t_m$ the mean time since the admixture event in generations,
 \emph{d} the genetic distance in cM and \emph{c} is a constant modeling
 background LD. The model was fitted following Moorjani et al 2016
-(\cite{moorjani_genetic_2016}). The duration of continuous admixture is
+\citep{moorjani_genetic_2016}. The duration of continuous admixture is
 modeled using the Lomax fit shown in Eq. \ref{eq:6}. We used the
-notation from Kozubowski et al. 2008 (\cite{Kozubowski_Testing_2008}). Holding $\frac{1}{\theta} = \frac{t_m}{k}$.
-The starting value of $t_m$  is taken from the exponential fit to ensure
+notation from Kozubowski et al. 2008 \citep{Kozubowski_Testing_2008}. Holding $\frac{1}{\theta} = \frac{t_m}{k}$.
+The starting value of $t_m$  is taken from the Exponential fit to ensure
 convergence of the model.
 
 
@@ -435,10 +423,11 @@ ALD \sim\ A\,\left( \frac{1}{1 + \frac{1}{k}t_m \:d}\right) ^k+c
 
 \subsubsection{Directly inferred segment length and fitting }\label{Fitting of directly inferred segments length distribution}
 
-For simulations, we used the HMM introduced in Skov et al. 2018 to directly infer introgressed segments. We used the default starting parameters for training the HMM. Segments were filtered according to theit posterior probability being higher the 0.9.
+For simulations, we used the Hidden Markov Model (HMM) introduced in Skov et al. 2018 to directly infer introgressed segments. We used the default starting parameters for training the HMM. Segments were filtered according to theit posterior probability being higher the 0.9.
 
-The length in bp of identified segments was translated into genetic length in cM. 
-We fitted the density of the length of directly inferred introgressed segments either to the exponential (Eq. \ref{eq:7}) or lomax (Eq. \ref{eq:8}) probability density function. We set a lower and upper length cutoff, to account for non uniform detection capability of the Skov et al. 2018 model across different length of introgressed segments. To correct our parameter estimate from the respective pdf we divided it by the interval between the lower and upper cutoff of the pdf. 
+
+We fitted the density of the length in cM of identified Neandertal segments from the real data
+either to the Exponential (Eq. \ref{eq:7}) or Lomax (Eq. \ref{eq:8}) probability density function. We set a lower and upper length cutoff, to account for non uniform detection capability of the Skov et al. 2018 model across different length of introgressed segments. To correct our parameter estimate from the respective pdf we divided it by the interval between the lower and upper cutoff of the pdf. For simulations we varied the lower cutoff (0.001 cM, 0.002 cM, 0.005 cM, 0.01 cM, 0.05 cM, 0.1 cM, 0.15 cM, 0.2 cM, 0.5 cM) and the upper was kept at 1.2 cM. For the real data we used a lower cutoff of 0.05 cM and an upper cutoff of 1.2 cM.
 
 \begin{equation}
 \label{eq:7}
@@ -453,12 +442,12 @@ Pr(l_{lower}<=L=<l_{upper}) \sim \frac{lomax(l,k+1,\frac{1}\theta)}{lomax(L>=l_{
 \subsection{Modeling parameter effect sizes}\label{modeling prameter effect sizes}
 
 To model and compare parameter effect sizes we simulated 100
-replications for each combination of potentially influencing
+replicates for each combination of potentially influencing
 parameters: ascertainment scheme ($A_i$ = LES/HES), minimal genetic distance
 ($M_i$ = \(d_{0}=0.02\,cM\)/\(d_{0}=0.05\,cM\)), demography ($D_i$ = simple/complex),
 recombination rate ($R_i$ = constant/variable), gene flow model
 ($G_i$ = pulse/continuous). Results of simulations where the nls-optimization to
-fit the ALD decay curve did not converge were removed (11 out of 3200).
+fit the ALD decay curve did not converge were removed (10 out of 3200).
 We used a Generalized Linear Model (GLM)  to estimate the effect
 size of the different parameters (Eq.
 \ref{eq:8}). The difference between the estimated
@@ -482,7 +471,7 @@ E_i &\sim Normal(\mu_i,\sigma) \\
 
 \subsection{Introduction to result}\label{introduction to result}
 
-We used coalescent simulations of Neandertal admixture into non-African humans to investigate multi-generation continuous admixture, using a Gamma distribution describing the per generation migration rate. Focusing on the ALD approach, the ALDER program was used to infer the decay of LD between ascertained sites informative for Neandertal introgression in non-Africans. The ascertained ALD was fitted with an exponential distribution assuming a one-generation admixture pulse.  We simulated this scenario using different conditions of recombination and demography as well as deploying different ascertainment schemes and LD cutoffs. A Generalized Linear Model (GLM) was used to compare all these factors with the effect of multi-generation continuous admixture on the pulse assumption. To get the duration of the admixture we introduce a new fitting approach deploying the LOMAX distribution. We test this new fitting with the most inferential factors from the previous analysis on simulated and real data using the ALD and the direct inference of introgressed segment approaches.
+We used coalescent simulations of Neandertal admixture into non-African humans to investigate multi-generation continuous admixture, using a Gamma distribution describing the per generation migration rate. Focusing on the ALD approach, the ALDER program was used to infer the decay of LD between ascertained sites informative for Neandertal introgression in non-Africans. The ascertained ALD was fitted with an exponential distribution assuming a one-generation admixture pulse.  We simulated this scenario using different conditions of recombination and demography as well as deploying different ascertainment schemes and LD cutoffs. A Generalized Linear Model (GLM) was used to compare all these factors with the effect of multi-generation continuous admixture on the pulse assumption. To get the duration of the admixture we introduce a new fitting approach deploying the Lomax distribution. We test this new fitting with the most inferential factors from the previous analysis on simulated and real data using the ALD and the direct inference of introgressed segment approaches.
 
 \subsection{Theoretical framework for continuous admixture}\label{theoretical framework for continuous admixture}
 
@@ -497,12 +486,12 @@ be written as
 L_i \sim exp(t)
 \end{equation}
 
-where $t$ is the time when the fragment entered the population. The mean fragment length will vary  depending on the model assumptions and
-recombination rate \(r\) (\citep{liang_lengths_2014}). E.g under the SMC,
-\(L_i = t(1-m)r\), and under the SMC' allowing for back coalescence,
-\(L_i = 2N(1-m)(1-exp^{-t/2N})r\). For Neandertal admixture where
+where $t$ is the time when the segments entered the population. The mean segments length will vary  depending on the model assumptions and
+recombination rate \(r\) \citep{liang_lengths_2014}. E.g under the SMC,
+\(L_i = t(1-m)\), and under the SMC' allowing for back coalescence,
+\(L_i = 2N(1-m)(1-exp^{-t/2N})\). For Neandertal admixture where
 \(m\), the admixture fraction, is typically low, the exponential
-assumption is satisfied (\cite{liang_lengths_2014}). For scenarios where
+assumption is satisfied \citep{liang_lengths_2014}. For scenarios where
 the length of admixture tracts is not exponential, e.g. because
 admixture is recent or very old, our results do not apply.
 
@@ -520,11 +509,11 @@ advantages:
     \item We just need two parameter $k$ and $\theta$, that can be interpreted as the duration of gene flow, instead of the minimal of two additional parameters required for the pulse model.
     \item The segment length distribution $L_i$ follows a Lomax-distribution, i.e. has the analytical density $Pr(L=l) = \frac{1}{\theta k-1} (1+l\frac{1}{\theta})^{-(k-1)}$
     \item The mean segment-length is  $\frac{1}{k \theta}$ for all $k > 0$, and undefined otherwise. 
-    \item As $k$ approaches infinity, we recover the exponential distribution. Thus, if segment length are directly inferred, one can use a likelihood-ratio test to distinguish continuous from discrete gene flow. As the special case of exponentially lies on the boundary of the parameter space, the test-statistic does not follow a $\chi^2$-distribution (\cite{Kozubowski_Testing_2008}). Model selection using a LRT is however not possible when segment length are indirectly inferred by ALD.
+    \item As $k$ approaches infinity, we recover the exponential distribution. Thus, if segment length are directly inferred, one can use a likelihood-ratio test to distinguish continuous from discrete gene flow. As the special case of exponentially lies on the boundary of the parameter space, the test-statistic does not follow a $\chi^2$-distribution \citep{Kozubowski_Testing_2008}. Model selection using a LRT is however not possible when segment length are indirectly inferred by ALD.
 \end{itemize}
 
 Using this model we i) examining the effect of continuous admixture on
-the admixture time estimates calculated using the exponential model
+the admixture time estimates calculated using the Exponential model
 assuming a pulse like admixture. ii) comparing this effect to the
 effects by demography, recombination rate and analysis parameters used
 for the indirect inference of admixture segment length using ALD, namely
@@ -543,7 +532,7 @@ we compared the deviation from the true mean time of admixture for simulations u
 The total amount of gene flow \(m\) from Neandertals into non-Africans
 in the two models is equal. Gene flow is modeled using a Gamma
 distribution (Eq. \ref{eq:2}) holding the migration rate per generation
-for different length of continuous gene flow (Figure \ref{fig:fig1} B).
+for different length of gene flow (Figure \ref{fig:fig1} B).
 The shape and scale parameter of the Gamma distribution are chosen such
 that the resulting weighted LD decay curves as functions of genetic
 distance share the same mean for a pulse (Eq. \ref{eq:1}) and a
@@ -610,7 +599,7 @@ Having established that the duration of continuous admixture under ideal
 circumstances is only marginally influential on admixture time
 estimates, we want to compare its effect to more realistic simulation scenarios. Two common assumptions, namely knowing the recombination pattern and knowing the demographic history, were implicitly used in the previous simulations.
 Previous studies reported that violations of these assumptions can have an effect on the admixture time estimates.
-Hence, we used the African-American genetic map and a more complex demography with substructure in the ancestral human population and additional gene flow between Africans and non-Africans after the Neadertal admixture ended (Supp. Fig. \ref{fig:figS1} B), for simulations under more realistic parameters. The genetic distance was assigned using the average recombination rate of the African-American genetic map.
+Hence, we used the African-American genetic map and a more complex demography with substructure in the ancestral human population and additional gene flow between Africans and non-Africans after the Neadertal admixture ended (Supp. Fig. \ref{fig:figS1} B), for simulations under more realistic parameters. The genetic distance was assigned using the average recombination rate of the African-American genetic map (assuming a constant recombination rate).
 Furthermore, we altered the used scheme for ascertainment of SNPs for admixture informative sites. We compared the LES where only
 positions in the admixed population are considered where both source
 populations are diverged from each other, to an even stricter scheme. The Higher-Enrichment Scheme (HES) requiring additional
@@ -632,7 +621,7 @@ previously observed overestimation of the standard model was estimated
 to be 0.12 (0.08 - 0.16 95 \% CI) standard deviation from the true
 admixture time.
 
-Every parameter change results in lower estimates compared to the
+Every parameter change, except using \(d_{0} = 0.02 cM\), results in lower estimates compared to the
 standard model, with the biggest difference between a constant and a
 varying recombination (-1.76 - -1.7 95 \% CI). The
 underestimation caused by the continuous gene flow model (-0.34 -
@@ -646,14 +635,14 @@ between the simple and complex demography is evident (Supp. Fig.
 \ref{fig:figS2}).
 
 Overall the bias introduced by the ascertainment, minimal distance
-cutoff, demography and admixture model are  around +/-0.25 standard deviations or less.. The major uncertainties in the admixture time
+cutoff, demography and admixture model are  around +/-0.25 standard deviations or less. The major uncertainties in the admixture time
 estimate arise from assuming a constant recombination rate. The
 admixture time estimates for a pulse or a multi-generation admixture are similarly effected by the other modeling parameters.
 
 \begin{figure}
 \centering
 \includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig3-1.pdf}
-\caption{\label{fig:fig3} Comparison of the standardized difference between true and estimated admixture time for each parameter and the standard model of 100 replications each. . Dotted horizontal line indicates unbiased admixture estimates.}
+\caption{\label{fig:fig3} Comparison of the standardized difference between true and estimated admixture time for each parameter and the standard model of 100 replications each. Dotted horizontal line indicates unbiased admixture estimates.}
 \end{figure}
 
 \subsection{Estimating the Lomax-parameters under different conditions}\label{estimating the Lomax-parameters under different conditions}
@@ -669,7 +658,7 @@ estimate its duration. Since the recombination map was shown to be highly
 influential, we tested the duration estimates under a constant and variable
 recombination using the HapMap genetic map. Here, we correct the
 genetic distance by: assuming a constant rate, using the AAMap (uncertainty in the recombination map) or the
-HapMap itself (knowing the population recombination map). We used the LES ascertainment scheme in combination with
+HapMap itself (having a  population specific recombination map). We used the LES ascertainment scheme in combination with
 a minimal distance of 0.05 cM. To fit the Lomax we can take advantage of
 the fact that the bias of the mean time estimates using the simplified
 one generation pulse model is relatively accurate. We can thus estimate
@@ -677,14 +666,14 @@ the mean time first by fitting an exponential and in a second step estimating k
 using a Lomax distribution with a starting parameter for the mean time received
 from the Exponential fit, to archive better convergent. Figure \ref{fig:fig4} A and C show the mean
 time estimates received from the Lomax fit. For simulations under a
-constant recombination the mean time received from the Lomax fit can be estimated confidently for different durations and different sampling times after the end of the admixture event. Estimates for simulation under a recombination map only
-assuming a constant rate when calculating the LD results in high uncertainty and overestimation. This is different for an estimates under an Exponential distribution (Supp. Fig.  \ref{fig:figS2}). Using the AAMap yields
+constant recombination the mean time can be estimated confidently for different durations and different sampling times after the end of the admixture event. Estimates for simulation under a recombination map only
+assuming a constant rate when calculating the LD results in high uncertainty and overestimation. This is different for estimates under an Exponential distribution (Supp. Fig.  \ref{fig:figS2}). Using the AAMap yields
 results closer to the true value and less biased, however only
 using the exact same genetic map gives unbiased results. Figure
 \ref{fig:fig4} B and D shows the corresponding admixture duration estimates by the
 Lomax fit. Accurate estimates can be obtained throughout the different
 admixture durations under a constant recombination rate, when sampled
-recent from the end of the continuous admixture. Sampling further away from the end of the admixture results in less accurate estimates.  All simulations using a recombination map show a much higher
+recently from the end of the continuous admixture. Sampling further away from the end of the admixture results in less accurate estimates.  All simulations using a recombination map show a much higher
 variance in the estimates. Especially for admixture durations longer then
 800 generations or sampled later then 50 generations away from the end
 of the admixture, the estimates are not reliably. If no precise genetic map
@@ -714,9 +703,9 @@ generations of gene flow. D) Lomax duration estimate of the scenario}
 
 
 We can also demonstrate this using real data.
-Figure \ref{fig:fig5} shows multiple gene flow duration scenarios ranging from a one generation pulse to 2500 generations of continuous admixture. All scenarios are compatible with the ALD data from 1000 Genome's CEU computed using YRI and the Altai, Vindija and Chagyrskaya high coverage as reference populations and a CEU specific fine-scale genetic map \cite{spence_inference_2019}.
+Figure \ref{fig:fig5} (Sup. table \ref{tab:tableS2}) shows multiple gene flow duration scenarios ranging from a one generation pulse to 2500 generations of continuous admixture. All scenarios are compatible with the ALD data from 1000 Genome's CEU computed using YRI and the Altai, Vindija and Chagyrskaya high coverage as reference populations and a CEU specific fine-scale genetic map \citep{spence_inference_2019}.
 
-We repeated the analysis on directly inferred Neandertal segments found in 27,566 high coverage genomes from Iceland \cite{skov_nature_2020} using the deCODE map \cite{kong_fine-scale_2010} as a population specific map for Icelanders (Supplement Figure \ref{fig:figS5}). However, the mean time estimates of Neandertal admixture obtained are way younger then expected both from previous genetic and archaeological studies. The young mean time estimates (\textasciitilde{}670 gen) is causing long continuous admixture (longer then 200 generations ) to be less compatible with the data. We suspect uncertainties in the recombination map paired with the uncertainties in inferring introgressed segments by the HMM to cause this young date (Supplement Figure \ref{fig:figS4}).
+We repeated the analysis on directly inferred Neandertal segments found in 27,566 high coverage genomes from Iceland \citep{skov_nature_2020} using the deCODE map \citep{kong_fine-scale_2010} as a population specific map for Icelanders (Supplement Figure \ref{fig:figS5} \& Supplement table \ref{tab:tableS3}). However, the mean time estimates of Neandertal admixture obtained are way younger then expected both from previous genetic and archaeological studies. The young mean time estimates (\textasciitilde{}670 generations ago) is causing long continuous admixture (longer then 200 generations ) to be less compatible with the data. We suspect uncertainties in the recombination map paired with the uncertainties in inferring introgressed segments by the HMM to cause this young date (Supplement Figure \ref{fig:figS4}).
 
 
 \begin{figure}
@@ -731,21 +720,21 @@ with all YRI and 3 high coverage Neandertals as reference populations. A) Weight
 \section{Discussion}\label{discussion}
 
 How, where and when Neandertals and early modern humans interacted remains contentious.  
-Archaeological evidence bounds the timing of interactions to times when their range overlapped; from the first out-of-Africa migrations of modern humans around 188 k years ago (\cite{stringer_when_2018,hershkovitz_earliest_2018}) to the extinction of Neandertals around 37 - 39 kya \cite{higham_timing_2014,zilhao_precise_2017}), leaving a time-span of roughly 140ky.
+Archaeological evidence bounds the timing of interactions to times when their range overlapped; from the first out-of-Africa migrations of modern humans around 188 k years ago \citep{stringer_when_2018,hershkovitz_earliest_2018} to the extinction of Neandertals around 37 - 39 kya \citep{higham_timing_2014,zilhao_precise_2017}, leaving a time-span of roughly 140ky.
 
-Genetic data has revealed that gene flow between Neandertals and modern humans did occur \cite{green_draft_2010}; and it's mean age is estimated to 47,000–65,000 ya \citep{sankararaman_date_2012}, assuming the interaction occurred at an instantaneous pulse.
+Genetic data has revealed that gene flow between Neandertals and modern humans did occur \citep{green_draft_2010}; and it's mean age is estimated to 47,000–65,000 ya (\citep{sankararaman_date_2012}), assuming the interaction occurred at an instantaneous pulse.
 
-Here, we contrasted this pulse model with scenarios involving more long-standing gene flow.  Our model, assumes that migration rates  follow a Gamma distribution, which results in an simple closed-form expressions for the introgressed segment lengths or ALD  distributions. 
+Here, we contrasted this pulse model with scenarios involving more long-standing gene flow.  Our model, assumes that migration rates  follow a Gamma distribution, which results in an simple closed-form expression for the introgressed segment lengths or ALD  distributions. 
 
 In our analyses using the extended model, we find that most methods focus on the mean time of gene flow, and are mostly accurate in its inference. However, we also show that even gene flow lasting thousands of generations may yield data that are practically indistinguishable from a pulse, and that other modelling and method assumptions have an impact on estimates that are of a similar magnitude or much higher. Particularly the assumption of a constant recombination rate will lead to sever underestimations of admixture times, therefore reliable mean time estimates can only be obtained using population specific recombination maps.
 
-The major implication of our result is that one has to be extremely cautious when interpreting results of genetic dating; the data are entirely consistent with gene flow occurring both earlier and later than the confidence intervals of the mean gene flow timing might indicate. This is of great practical importance as it might be tempting to link the genetic admixture date estimates with biogeographical events \cite{sankararaman_date_2012,lazaridis_genomic_2016,jacobs_multiple_2019,vyas_analyses_2019,douka_age_2019}. For example, the lower bounds on admixture time estimates might be used as dates of Neandertal extinction, and likewise use the earliest dates of gene flow as evidence when the out-of-Africa migration happened \citep{sankararaman_date_2012}. Our results show that both of these analyses might be misleading.
+The major implication of our result is that one has to be extremely cautious when interpreting results of genetic dating; the data are entirely consistent with gene flow occurring both earlier and later than the confidence intervals of the mean gene flow timing might indicate. This is of great practical importance as it might be tempting to link the genetic admixture date estimates with biogeographical events \citep{sankararaman_date_2012,lazaridis_genomic_2016,jacobs_multiple_2019,vyas_analyses_2019,douka_age_2019}. For example, the lower bounds on admixture time estimates might be used as dates of Neandertal extinction, and likewise use the earliest dates of gene flow as evidence when the out-of-Africa migration happened \citep{sankararaman_date_2012}. Our results show that both of these interpretations might be misleading.
 
 
 While our results show that drawing concrete conclusions from admixture time estimates can be misleading, other avenues for differentiating different gene flow events remain fruitful.
-In particular, measures based on population differentiation (e.g \cite{browning_analysis_2018,wall_higher_2013,villanea_multiple_2019,jacobs_multiple_2019}) are very promising to understand the different events that contributed to archaic ancestry in present-day humans. 
+In particular, measures based on population differentiation (e.g \citep{browning_analysis_2018,wall_higher_2013,villanea_multiple_2019,jacobs_multiple_2019}) are very promising to understand the different events that contributed to archaic ancestry in present-day humans. 
 
-The other major avenue are ancient DNA samples from early modern humans that lived around or immediately after gene flow between archaic and modern humans occurred. The \textit{Oase 1} genome is a prime example, as it directly demonstrates that some gene flow must have occurred in Europe, around 40,000 years ago, concurrently with when \textit{Oase 1} lived. More generally, detailed analyses of ancient genomes from the initial upper paleolithic should provide more accurate mean dates, as they are much closer to the gene flow, and may give better evidence about the duration of the gene flow. The drawback is that some of the gene flow these individuals experience may be private to their population, as has e.g. been suggested for \textit{Oase 1}(\cite{fu_genome_2014}). Larger numbers of early modern human genomes, as well as methods to accurately infer admixture tracts or ALD in low-coverage data will likely enable this line of research. 
+The other major avenue are ancient DNA samples from early modern humans that lived around or immediately after gene flow between archaic and modern humans occurred. The \textit{Oase 1} \citep{fu_genome_2014} genome is a prime example, as it directly demonstrates that some gene flow must have occurred in Europe, around 40,000 years ago, concurrently with when \textit{Oase 1} lived. More generally, detailed analyses of ancient genomes from the initial upper paleolithic should provide more accurate mean dates, as they are much closer to the gene flow, and may give better evidence about the duration of the gene flow. The drawback is that some of the gene flow these individuals experience may be private to their population, as has e.g. been suggested for \textit{Oase 1}. Larger numbers of early modern human genomes, as well as methods to accurately infer admixture tracts or ALD in low-coverage data will likely enable this line of research. 
 
 
 \hypertarget{refs}{}
@@ -762,7 +751,7 @@ The other major avenue are ancient DNA samples from early modern humans that liv
 \begin{figure}
 \centering
 \includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS1-1.pdf}
-\caption{\label{fig:figS1} Demographic models of Neandertal admixture with non-Africans used for the simulations. A) Simple demographic model used for ALD simulations with constant population sizes. B) Complex demographic model with substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the final split and additional gene flow between Africans and non-Africans after the Neandertal admixture. The  population sizes after the (final) split are taken fome MSMC/PSMC estimates for the respective populations. C) Demographic model for the direct inference of Neandertal segments in non-Africans taken and modified from Skov et al. 2018. (\cite{skov_detecting_2018})}
+\caption{\label{fig:figS1} Demographic models of Neandertal admixture with non-Africans used for the simulations. A) Simple demographic model used for ALD simulations with constant population sizes. B) Complex demographic model with substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the final split and additional gene flow between Africans and non-Africans after the Neandertal admixture. The  population sizes after the (final) split are taken fome MSMC/PSMC estimates for the respective populations. C) Demographic model for the direct inference of Neandertal segments in non-Africans taken and modified from Skov et al. 2018. (\citep{skov_detecting_2018})}
 \end{figure}
 
 \begin{figure}
@@ -878,7 +867,7 @@ Lomax (td=2500) & c & -6.57497391994452e-07 & -5.0302627605347e-06 & 3.715267976
 \begin{figure}
 \centering
 \includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS4-1.pdf}
-\caption{\label{fig:figS4} Icelandic fragments simulated}
+\caption{\label{fig:figS4} Mean admixture time estimates from true and directly inferred Neandertal segments from 100 simulated haploid Icelandic genomes under different recombination parameter and different lower cutoffs. Upper cutoff is set to 1.2 cM A) Pulse-like admixture 1500 generations ago fitted using an Exponential PDF. B) Same simulation fitted using a Lomax PDF C) 1000 generation of continuous admixture with a mean time of 1500 generations ago fitted using an Exponential PDF. D) Same simulation fitted using a Lomax PDF.}
 \end{figure}
 
 \begin{figure}
