@@ -938,6 +938,7 @@ xdata.M.3$TID <- ifelse(xdata.M.3$GF=='0_Pulse',paste(xdata.M.3$Sim_id,'GF_model
 #xdata.M.3$Diff <- xdata.M.3$m - xdata.M.3$mean.t.GF
 xdata.M.3$Diff <- xdata.M.3$m - xdata.M.3$Gamma_mean
 # remove all estimates where nls reported an error
+n_error=xdata.M.3[xdata.M.3$error=="nls_error",]
 xdata.M.3_no_error <- xdata.M.3[xdata.M.3$error=="no_error",]
 xdata.M.3_no_error$Sim_id_int <- as.integer(as.factor(xdata.M.3_no_error$TID))
 
@@ -2207,7 +2208,7 @@ P_Sim_Frag_Expo <- ggplot(All_Simulations_Pulse_expo_fit,aes(x=Name,y=as.numeric
                       scale_color_manual("Simulations",
                                          values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4],cbPalette_viridis[5],cbPalette_viridis[6]
                                                     ,cbPalette_viridis[7],cbPalette_viridis[8]),
-                                        labels = c("True Fragments","True Fragments Recombination not corrected","True Fragments Recombination AAMap corrected","True Fragments Recombination deCODE corrected","Inferred Fragments","Inferred Fragments Recombination not corrected","Inferred Fragments Recombination AAMap corrected","Inferred Fragments Recombination deCODE corrected"))
+                                        labels = c("True segments constant recomb.","True seg. varying recomb. not corrected","True seg. varying recomb. AAMap corrected","True seg. varying recomb. deCODE corrected","Inferred seg. constant recomb.","Inferred seg. varying recomb. not corrected","Inferred seg. varying recomb. AAMap corrected","Inferred seg. varying recomb. deCODE corrected"))
 
 P_Sim_Frag_Lomax <- ggplot(All_Simulations_Pulse_lomax_fit,aes(x=Name,y=as.numeric(as.character(t_m)),colour=factor(Name)))+
                       geom_boxplot()+
@@ -2223,7 +2224,7 @@ P_Sim_Frag_Lomax <- ggplot(All_Simulations_Pulse_lomax_fit,aes(x=Name,y=as.numer
                       scale_color_manual("Simulations",
                                          values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4],cbPalette_viridis[5],cbPalette_viridis[6]
                                                     ,cbPalette_viridis[7],cbPalette_viridis[8]),
-                                        labels = c("True Fragments","True Fragments Recombination not corrected","True Fragments Recombination AAMap corrected","True Fragments Recombination deCODE corrected","Inferred Fragments","Inferred Fragments Recombination not corrected","Inferred Fragments Recombination AAMap corrected","Inferred Fragments Recombination deCODE corrected"))
+                                        labels = c("True segments constant recomb.","True seg. varying recomb. not corrected","True seg. varying recomb. AAMap corrected","True seg. varying recomb. deCODE corrected","Inferred seg. constant recomb.","Inferred seg. varying recomb. not corrected","Inferred seg. varying recomb. AAMap corrected","Inferred seg. varying recomb. deCODE corrected"))
 
 C_Sim_Frag_Expo <- ggplot(All_Simulations_Continuous_expo_fit,aes(x=Name,y=as.numeric(as.character(t_m)),colour=factor(Name)))+
                       geom_boxplot()+
@@ -2239,7 +2240,7 @@ C_Sim_Frag_Expo <- ggplot(All_Simulations_Continuous_expo_fit,aes(x=Name,y=as.nu
                       scale_color_manual("Simulations",
                                          values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4],cbPalette_viridis[5],cbPalette_viridis[6]
                                                     ,cbPalette_viridis[7],cbPalette_viridis[8]),
-                                        labels = c("True Fragments","True Fragments Recombination not corrected","True Fragments Recombination AAMap corrected","True Fragments Recombination deCODE corrected","Inferred Fragments","Inferred Fragments Recombination not corrected","Inferred Fragments Recombination AAMap corrected","Inferred Fragments Recombination deCODE corrected"))
+                                        labels = c("True segments constant recomb.","True seg. varying recomb. not corrected","True seg. varying recomb. AAMap corrected","True seg. varying recomb. deCODE corrected","Inferred seg. constant recomb.","Inferred seg. varying recomb. not corrected","Inferred seg. varying recomb. AAMap corrected","Inferred seg. varying recomb. deCODE corrected"))
 
 C_Sim_Frag_Lomax <- ggplot(All_Simulations_Continuous_lomax_fit,aes(x=Name,y=as.numeric(as.character(t_m)),colour=factor(Name)))+
                       geom_boxplot()+
@@ -2255,7 +2256,7 @@ C_Sim_Frag_Lomax <- ggplot(All_Simulations_Continuous_lomax_fit,aes(x=Name,y=as.
                       scale_color_manual("Simulations",
                                          values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4],cbPalette_viridis[5],cbPalette_viridis[6]
                                                     ,cbPalette_viridis[7],cbPalette_viridis[8]),
-                                        labels = c("True Fragments","True Fragments Recombination not corrected","True Fragments Recombination AAMap corrected","True Fragments Recombination deCODE corrected","Inferred Fragments","Inferred Fragments Recombination not corrected","Inferred Fragments Recombination AAMap corrected","Inferred Fragments Recombination deCODE corrected"))
+                                        labels = c("True segments constant recomb.","True seg. varying recomb. not corrected","True seg. varying recomb. AAMap corrected","True seg. varying recomb. deCODE corrected","Inferred seg. constant recomb.","Inferred seg. varying recomb. not corrected","Inferred seg. varying recomb. AAMap corrected","Inferred seg. varying recomb. deCODE corrected"))
  
 Pulse_Segment_simulation_result <- ggarrange(P_Sim_Frag_Expo,P_Sim_Frag_Lomax,
                    labels = c("A","B"),
