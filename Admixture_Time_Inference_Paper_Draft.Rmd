@@ -408,7 +408,7 @@ Fig_A_1_Means_diff_continuous <- round(range(Fig_A_1_Means_diff[6:10,]*100))
 
 
 
-```{r fig2,message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=8,fig.height=8,fig.cap="\\label{fig:fig2} A) Comparison of mean admixture time estimates between pulse and continuous gene flow for different admixture times. The length of continuous gene flow corresponds to 50 % of the mean admixture time, black line indicates true mean admixture time. B) Comparison of mean admixture time estimates for simulations with a mean time of admixture of 1500 generations ago, at a varying length of gene flow. Boxplot created from 100 simulation replicates, respectively."}
+```{r fig2,message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:fig2} A) Comparison of mean admixture time estimates between pulse and continuous gene flow for different admixture times. The length of continuous gene flow corresponds to 50 % of the mean admixture time, black line indicates true mean admixture time. B) Comparison of mean admixture time estimates for simulations with a mean time of admixture of 1500 generations ago, at a varying length of gene flow. Boxplot created from 100 simulation replicates, respectively."}
 ######################## GG PLotting ###########################
 
 ## ggplot Figure 1 A
@@ -651,7 +651,7 @@ B_model_result <- precis(Effect_size_fixed_s_2,prob = 0.95)
 
 
 
-```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig3} Comparison between the effect sizes of the estimated parameters on the standardized difference between true and estimated admixture time"}
+```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=9,fig.height=8,fig.cap="\\label{fig:fig3} Comparison between the effect sizes of the estimated parameters on the standardized difference between true and estimated admixture time"}
 
 post_effect_size_model <- extract.samples(Effect_size_fixed_s_2,n = 1e5)
 Post_effect_size_est=data.frame(mean=c(
@@ -871,7 +871,7 @@ New.P4 <- Plot_sampling_varying_gen_GF_Length(ggdata_l.GF_varying,cbPalette_viri
 
 
 
-``` {r fig4, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig4} Parameter estimate for different sampling and admixture duration times using different methods for assigning genetic length A) Mean time estimates from the continuous model fit of different gene flow length all sampled 50 generations after the gene flow enden. B) Lomax duration estimat of the scenario C) Mean time estimates from the continuous model fit of different sampling times after the end of 800 generations of gene flow. D) Lomax duration estimat of the scenario"}
+``` {r fig4, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:fig4} Parameter estimate for different sampling and admixture duration times using different methods for assigning genetic length A) Mean time estimates from the continuous model fit of different gene flow length all sampled 50 generations after the gene flow enden. B) Lomax duration estimat of the scenario C) Mean time estimates from the continuous model fit of different sampling times after the end of 800 generations of gene flow. D) Lomax duration estimat of the scenario"}
 
 
 Lomax.Fig_mean_lomax <- ggarrange(New.P1_mean_GF_lomax,New.P2,New.P3_mean_GF_lomax,New.P4,
@@ -1263,7 +1263,7 @@ im_B <- ggplot() +
 im_B
 ```
 
-```{r figS1, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS1} Demographic models of Neandertal admixture with non-Africans used for the simulations. A) Simple demographic model used for ALD simulations with constant population sizes. B) Complex demographic model with substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the final split and additional gene flow between Africans and non-Africans after the Neandertal admixture. The  population sizes after the (final) split are taken fome MSMC/PSMC estimates for the respective populations. C) Demographic model for the direct inference of Neandertal segments in non-Africans taken and modified from Skov et al. 2018."}
+```{r figS1, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS1} Demographic models of Neandertal admixture with non-Africans used for the simulations. A) Simple demographic model used for ALD simulations with constant population sizes. B) Complex demographic model with substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the final split and additional gene flow between Africans and non-Africans after the Neandertal admixture. The  population sizes after the (final) split are taken fome MSMC/PSMC estimates for the respective populations. C) Demographic model for the direct inference of Neandertal segments in non-Africans taken and modified from Skov et al. 2018."}
 
 
 
@@ -1315,7 +1315,7 @@ ggarrange(Im_Simple_Demo,Im_Complex_Demo,
           ncol = 2, nrow = 1)
 ```
 
-```{r figS2, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 relicates respectively. Dotted line represents the model prediction with the 5.5 % and 94.5 % compatibility intervals solid lines. Dotted horizontal line indicates no difference between ture and estimated time. "}
+```{r figS2, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 relicates respectively. Dotted line represents the model prediction with the 5.5 % and 94.5 % compatibility intervals solid lines. Dotted horizontal line indicates no difference between ture and estimated time. "}
 
 Plot_model <- data.frame(table(Diff_s=round(xdata.M.3_no_error$Diff_s,digits = 2),GF=xdata.M.3_no_error$GF,Asc=xdata.M.3_no_error$Ascertainment,d0=xdata.M.3_no_error$min_dist,True_GF=xdata.M.3_no_error$mean.t.GF,Demo=xdata.M.3_no_error$Demography,Recomb=xdata.M.3_no_error$Recomb.rate,Combination=xdata.M.3_no_error$TID))
 Plot_model <- subset(Plot_model,Freq>0)
