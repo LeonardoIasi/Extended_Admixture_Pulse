@@ -1,0 +1,208 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fontshttps://de.overleaf.com/project/5e85b0680d0bed00011ea790
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={The dating of the Human-Neandertal introgression event estimated from present-day human genomes is compatible with a multitude of admixture durations},
+            pdfauthor={Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary Anthropology, MPI EVA), Dr.~Benjamin Marco Peter (MPI EVA, benjamin\_peter@eva.mpg.de)},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{natbib}
+\bibliographystyle{plainnat}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{The dating of the Human-Neandertal introgression event estimated from present-day human genomes is compatible with a multitude of admixture durations}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary
+Anthropology, MPI EVA), Dr.~Benjamin Marco Peter (MPI EVA,
+\href{mailto:benjamin_peter@eva.mpg.de}{\nolinkurl{benjamin\_peter@eva.mpg.de}})}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{2020-03-24}
+
+\usepackage{setspace}
+\doublespacing
+\usepackage[none]{hyphenat}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{xcolor}
+\floatplacement{figure}{H}
+
+\begin{document}
+\maketitle
+
+\subsubsection{Admixture Models}\label{admixture models}
+
+In the admixture pulse model, gene flow is a one generation long pulse,
+resulting in an exponentially distributed segment length or admixture-induced linkage
+disequilibrium (ALD) decay curve (Eq. \ref{eq:1}), with $\lambda$ as
+the rate parameter of the Exponential distribution holding the  time since the admixture event $t$ with $l$, here being either the genetic length of an admixture segment or the genetic
+distance \(d\) between two SNPs,
+
+\begin{equation}
+\begin{split}
+\label{eq:1}
+L_i &\sim exp(\lambda) \\
+\mathbb{E}[l] &= \frac{1}{\lambda} = \frac{1}{t}
+\end{split}
+\end{equation}
+
+Continuous gene flow $m$ over time with the random variable $t \in \{t_1,t_2,...,t_n\}$ was modeled as a Gamma distribution (Eq.
+\ref{eq:2})
+
+\begin{equation}
+\label{eq:2}
+m_i \sim \Gamma(k,\theta)
+\end{equation}
+
+Where k is the shape and \(\theta\) the scale parameter. The parameter
+values are chosen such that the mean length of the
+exponentially distributed segment length or ALD decay curve resulting from the one
+generation admixture pulse, is equal to the mean length as a result of continuous migration with the same total amount of
+migrants, modeled using a Lomax distribution with shape being $k+1$ and the scale $\frac{1}{\theta}$ (Eq. \ref{eq:3})
+
+\begin{equation}
+\begin{split}
+\label{eq:3}
+L_i &\sim Lomax(k+1,\frac{1}{\theta}) \\
+\mathbb{E}[l] &= \frac{1}{\lambda} = \frac{1}{k\theta}
+\end{split}
+\end{equation}
+
+\begin{equation}
+\label{eq:4}
+t_{m}=\mathbb{E}[m] = k \theta
+\end{equation}
+
+\begin{equation*}
+\nonumber
+where \qquad k=t_m \, \frac{1}{\theta} \qquad and \qquad \theta=\frac{1}{t_{m}Var[m]}
+\end{equation*}
+
+Equation (Eq. \ref{eq:4}) shows the relationships between the
+distribution parameters such that the resulting decay mean length are
+equal. Here  $t_{m}$ is the mean time of admixture equal to the mean of the Gamma distribution ($\mathbb{E}[m]$) and $Var[m]=(\frac{t_d}{4})^2$ its variance with $t_d$ as the duration of admixture in generations.
+
+\subsection{Theoretical framework for continuous admixture}\label{theoretical framework for continuous admixture}
+
+First we want to establish the model of continuous admixture and an
+expectation of the segment length distribution under this model in an
+ideal-case from perfect data. For this purpose, we assume that the
+lengths of introgressed segments are perfectly known. In this case, under
+some models, the distribution of introgressed segment lengths \(L_i\) can
+be written as
+
+\begin{equation}
+L_i \sim exp(t)
+\end{equation}
+
+where $t$ is the time when the segments entered the population. The mean segments length will vary  depending on the model assumptions and
+recombination rate \(r\) \citep{liang_lengths_2014}. E.g under the SMC,
+\(L_i = t(1-m)\), and under the SMC' allowing for back coalescence,
+\(L_i = 2N(1-m)(1-exp^{-t/2N})\). For Neandertal admixture where
+\(m\), the admixture fraction, is typically low, the exponential
+assumption is satisfied \citep{liang_lengths_2014}. For scenarios where
+the length of admixture tracts is not exponential, e.g. because
+admixture is recent or very old, our results do not apply.
+
+It is widely assumed that Neandertal ancestry entered the modern human
+population over a very short period (one-generation admixture pulse). As an alternative model describing multi-generation admixture, we need to
+consider \(t\) not as a single point in time, but as a random variable
+itself that follows a mixture distribution \(\mathcal{D}_t\). The most
+widely studied is a small number of discrete ``pulses'' of admixture, in
+which case \(\mathcal{D}_t\) is categorical. Here, we instead assume a
+continuous multi-generation admixture \(\mathcal{D}_t\); more precisely we assume \(\mathcal{D}_t\)
+follows a \(\Gamma(k, \theta)\)-distribution. This has a number of
+advantages:
+
+\begin{itemize}
+    \item We just need two parameter $k$ and $\theta$, that can be interpreted as the duration of gene flow, instead of the minimal of two additional parameters required for the pulse model.
+    \item The segment length distribution $L_i$ follows a Lomax-distribution, i.e. has the analytical density $Pr(L=l) = \frac{1}{\theta k-1} (1+l\frac{1}{\theta})^{-(k-1)}$
+    \item The mean segment-length is  $\frac{1}{k \theta}$ for all $k > 0$, and undefined otherwise. 
+    \item As $k$ approaches infinity, we recover the exponential distribution. Thus, if segment length are directly inferred, one can use a likelihood-ratio test to distinguish continuous from discrete gene flow. As the special case of exponentially lies on the boundary of the parameter space, the test-statistic does not follow a $\chi^2$-distribution \citep{Kozubowski_Testing_2008}. Model selection using a LRT is however not possible when segment length are indirectly inferred by ALD.
+\end{itemize}
+
+Using this model we i) examining the effect of continuous admixture on
+the admixture time estimates calculated using the Exponential model
+assuming a pulse like admixture. ii) comparing this effect to the
+effects by demography, recombination rate and analysis parameters used
+for the indirect inference of admixture segment length using ALD, namely
+the ascertainment scheme and the minimal distance between SNPs. iii) are
+interested under which conditions the parameters of the
+Lomax-distribution can be estimated accurately for a scenario of
+Neandertal admixture and if it is possible to distinguish a pulse-like
+admixture event (resulting in exponentially-distributed ALD)
+from a continuous event (resulting in Lomax-distributed ALD).
+
+
+\end{document}
