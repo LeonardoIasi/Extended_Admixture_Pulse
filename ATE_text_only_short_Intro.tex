@@ -231,14 +231,12 @@ decay modeled as a Lomax distribution for the different length.}
 
 \section{Methods}\label{methods}
 
-We conducted various simulations to assess the effect of continuous
-admixture compared to a pulse under ideal circumstances. We changed
-recombination and demographic parameters to simulate more realistic
-models. We compared the effect of these parameters together with
-analysis parameters to the effect of continuous admixture on the
-estimates. After assessing these effects we evaluated the possible
-parameter range for using a Lomax distribution to fit the ALD decay,
-enabling to obtain a duration of continuous admixture. We used both admixture models on real data. We fitted several admixture scenarios with different durations to ALD data from the 1000 Genomes Project \citep{the_1000_genomes_project_consortium_global_2015} with 3 high coverage Neandertals \citep{prufer_complete_2013,prufer_high-coverage_2017,mafessoni_high_coverage_2020} and to directly inferred Neandertal segments using data from Skov \& Coll Maci\`{a} et al. 2020 \citep{skov_nature_2020}.
+We conducted simulations to assess the effect of continuous
+admixture compared to a pulse under ideal circumstances. 
+We also evaluate the impact of different recombination and demographic scenarios and the effect of different analysis parameters for estimates under an instantaneous pulse model.
+After assessing these effects we evaluated the possible
+parameter range for using the extended pulse model on ALD data,
+enabling to obtain a duration of continuous admixture. We used both admixture models on real data. We fitted several admixture scenarios with different durations to ALD data from the 1000 Genomes Project \citep{the_1000_genomes_project_consortium_global_2015} with 3 high coverage Neandertals \citep{prufer_complete_2013,prufer_high-coverage_2017,mafessoni_high_coverage_2020}.
 
 \subsection{Simulations}\label{simulations}
 
@@ -247,8 +245,8 @@ We used the msprime coalescent simulator
 chosen to reflect presently available data. For ALD simulations we simulate 176 diploid
 African individuals and 170 diploid non-Africans, corresponding to the
 number of Yoruba (YRI) and Central Europeans from Utah (CEU)
-sequences in the 1000 Genomes project data. Since three
-high coverage Neandertal sequences are available we choose to
+sequences in the 1000 Genomes project data \citep{the_1000_genomes_project_consortium_global_2015}. Since three
+high coverage Neandertal sequences are available \citep{prufer_complete_2013,prufer_high-coverage_2017,mafessoni_high_coverage_2020} we choose to
 simulate three diploid genomes. For each individual we simulated 20
 chromosomes with a length of 150 Mb each. The mutation rate was set for
 all simulations to \(2*10^{-8}\) per base per generation. The
@@ -256,15 +254,13 @@ recombination rate was set to \(1*10^{-8}\) per base pair per generation
 unless specified otherwise. The demographic parameters are based on
 previous studies dating Neandertal admixture
 \citep{sankararaman_date_2012,fu_genome_2014,moorjani_genetic_2016}. In
-the ``simple'' model (Supplement Figure\ref{fig:figS1} A), the effective
-population size is assumed constant at Ne=10000 for all populations, the
+the ``simple'' model (S \ref{fig:figS1} A), the effective
+population size is assumed constant at \textit{Ne}=10000 for all populations, the
 split time between modern humans and Neandertals is 10000 generations
 ago and the split between Africans and non-Africans is 2550
 generations ago. The migration rate from Neandertals into non-Africans
 was set to zero before the split from Africans, to ensure no Neandertal
 ancestry in Africans. Each simulation was repeated 100 times. 
-
-We used a simplified version of the demographic model described in Skov et al. 2018 \citep{skov_detecting_2018} for the direct inference of admixture segments (Supplement Figure \ref{fig:figS1} C). Here we simulate 100 haploid non-Africans with a starting effective population size of 3899. The mutation rate and recombination rate are  \(1.2*10^{-8}\) per base per generation. Number of chromosomes, length of the chromosome and all split times are the same as in the simple demographic ALD simulations. We sampled 500 haploid Africans as outgroup individuals. Each simulation was repeated 10 times.
 
 \subsubsection{Gene Flow}\label{gene flow}
 
@@ -321,28 +317,28 @@ equal. Here  $t_{m}$ is the mean time of admixture equal to the mean of the Gamm
 \subsubsection{Recombination map}\label{recombination map}
 
 Uncertainties in the recombination map were previously shown to bias
-admixture time estimates. To investigate the effect of more realistic
-recombination rate variation we simulated samples using a recombination map. For ALD simulations we
+admixture time estimates \citep{sankararaman_date_2012,sankararaman_combined_2016,fu_genome_2014}. To investigate the effect of more realistic
+recombination rate variation, we simulated samples using a recombination map. For ALD simulations we
 either used the African-American-Map \citep{hinch_landscape_2011} or
 the HapMap phase 3 \citep{HapMapConsortium_second_2007} for simulations
 under a variable recombination rate, for simplicity, we used the same
 recombination map (150 Mb of chromosome 1, excluding the first 10 Mb)
 for all simulated chromosomes. The mean recombination rate was
 calculated from the 150 Mb map (\(1.017 \, \frac{cM}{Mb}\) AAMap and
-\(0.992 \, \frac{cM}{Mb}\) HapMap). To emulate uncertainties in the
+\(0.992 \, \frac{cM}{Mb}\) HapMap). To examine the effect of uncertainties in the
 genetic map we either: used the mean recombination rate from the
 respective map to calculate the genetic distance from the physical
 distance for each SNP (assuming recombination to be constant), used the other map to assign distances
 (e.g.~AAMap used for the msprime simulation and HapMap used to assign
 genetic distances, emulating uncertainties in the recombination map) or used the same map for simulation and assigning
-genetic distances (population specific map). For simulating the Icelandic fragment we used 150 Mb of chromosome 1 from the deCODE map \citep{kong_fine-scale_2010} \(0.914 \, \frac{cM}{Mb}\).
+genetic distances (population specific map). 
 
 \subsubsection{Complex demography}\label{inferred demography}
 
 Demography such as population size changes are known to influence LD
-patterns and can create false admixture signals. To test the impact of
-demographic history on admixture time estimates, we simulate a more
-realistic and complex demographic history with substructure in the ancestral human population and additional gene flow between Africans and non-Africans after the Neandertal admixture (Sup. Fig. \ref{fig:figS1} B). The 
+patterns \citep{gravel_population_2012,liang_lengths_2014}. To test the impact of
+demographic history on admixture time estimates, we contsrast our standart model with
+realistic and complex demographic histories. This includes substructure in the ancestral human population and additional gene flow between Africans and non-Africans after the Neandertal admixture (S \ref{fig:figS1} B). The 
 effective population
 sizes are based on estimates from Neandertal and present-day human
 genomes. MSMC estimates from YRI as representatives for Africans and CEU
@@ -352,9 +348,9 @@ for non-Africans from Schiffles \& Durbin 2014
 based on the Vindija33.19 high-coverage genome
 \citep{mafessoni_high_coverage_2020}. In order to use the effective
 population size estimates at a given time point for modern humans from
-Schiffels \& Durbin 2014 (Figure 4 Excel Table) for our simulations, we
+Schiffels \& Durbin 2014 for our simulations, we
 first transformed the time points given in years back to generations by
-using 30 years for one generation, as assumed in the original study.
+using 30 years for one generation, as assumed in Schiffels \& Durbin.
 Second, since the original estimates are based on a different mutation
 rates (\(1.25*10^{-8} \frac{bp}{gen}\)), we corrected all estimates for
 the mutation rate used in the simulations
@@ -365,25 +361,14 @@ humans before the split was set to 18296 (taken from the MSMC results). To simul
 caused by the extinction of Neandertals, Neandertals were sampled 750
 generations before the Africans and non-Africans. We simulated an additional admixture event between African and non-African populations with a total migration rate of 0.01 starting from 200 till 50 generations ago.
 
-\subsection{1000 Genomes Data}\label{1000 Genomes Data}
-
-We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagyrskaya high coverage Neandertals.  We filtered for all unrelated individuals from the YRI as representatives of unadmixed Africans and all CEU as admixed Europeans. We only considered biallelic sites. The sites were polarized relative to the Chimpanzee base (panTro4). We used the CEU specific fine-scale recombination map \citep{spence_inference_2019} to convert the physical distance between sites into genetic distance. 
-
-\subsection{Neandertal segments in Icelanders}\label{1000 Genomes Data}
-
-We used the identified archaic segments from Skov \& Coll Maci\`{a} et al. 2020. The segments are pre-filtered using a posterior probability cutoff of 0.9 for identified archaic segments. We filtered the data set for archaic segments identified as Neandertal (Altai and Vindija). We used the deCode genetic map to convert the physical segment length in bp to genetic length in cM. We used a lower and upper cutoff of 0.05 - 1.2 cM for the length of segments
-
 \subsection{Admixture time estimates}\label{admixture time estimates}
 
 \subsubsection{Ascertainment scheme}\label{asceteinment scheme}
 
-Ascertainment schemes are used to select certain variable positions of
-interest in a genome. Ascertainment schemes can be used to enrich for
+For the ALD method, SNPs need to be ascertained to enrich for
 Neandertal informative sites in the test population to remove noise and
-amplify the ALD signal \citep{sankararaman_date_2012}. Two
-ascertainment schemes were tested to enrich for Neandertal informative
-sites, which were used previously
-\citep{sankararaman_date_2012,fu_genome_2014}. The lower-enrichment
+amplify the ALD signal \citep{sankararaman_date_2012}. 
+We evaluate the impact of the ascertainment scheme by contrasting two distinct schemes \citep{sankararaman_date_2012,fu_genome_2014}. The lower-enrichment
 ascertainment scheme (LES) filters for SNPs fixed for the ancestral state in
 Africans and polymorphic in Neandertals. The higher-enrichment
 ascertainment scheme (HES) restricts the analysis on SNPs fixed for the
@@ -396,8 +381,7 @@ The pairwise weighted LD between the ascertained SNPs a certain genetic
 distance \(d\) apart was calculated using ALDER
 \citep{loh_inferring_2013}. A minimal genetic distance \(d_0\) between
 SNPs was set either to 0.02 cM and 0.05 cM. This minimal distance cutoff
-removes extreme short range LD likely confounded by non-ALD,
-facilitating the fitting procedure. To obtain the mean time estimates
+removes extremely short-range LD, which might be due to incomplete lineage sorting (ILS). To obtain the mean time estimates
 the data is fitted with an Exponential distribution (one generation pulse model) shown in equation
 \ref{eq:5}, using a non-linear least-square optimization algorithm
 implemented in R \citep{R_Core_Team_2019}. Where \emph{A} is the
@@ -406,9 +390,8 @@ intercept, $t_m$ the mean time since the admixture event in generations,
 background LD. The model was fitted following Moorjani et al 2016
 \citep{moorjani_genetic_2016}. The duration of continuous admixture is
 modeled using the Lomax fit shown in Eq. \ref{eq:6}. We used the
-notation from Kozubowski et al. 2008 \citep{Kozubowski_Testing_2008}. Holding $\frac{1}{\theta} = \frac{t_m}{k}$.
-The starting value of $t_m$  is taken from the Exponential fit to ensure
-convergence of the model.
+notation from Kozubowski et al. 2008 \citep{Kozubowski_Testing_2008}. Setting $\frac{1}{\theta} = \frac{t_m}{k}$.
+The starting value of $t_m$  is taken from the Exponential fit.
 
 
 \begin{equation}
@@ -421,28 +404,11 @@ ALD \sim\ A\,e^{-t_m \:d}+c
 ALD \sim\ A\,\left( \frac{1}{1 + \frac{1}{k}t_m \:d}\right) ^k+c
 \end{equation}
 
-\subsubsection{Directly inferred segment length and fitting }\label{Fitting of directly inferred segments length distribution}
-
-For simulations, we used the Hidden Markov Model (HMM) introduced in Skov et al. 2018 to directly infer introgressed segments. We used the default starting parameters for training the HMM. Segments were filtered according to theit posterior probability being higher the 0.9.
-
-
-We fitted the density of the length in cM of identified Neandertal segments from the real data
-either to the Exponential (Eq. \ref{eq:7}) or Lomax (Eq. \ref{eq:8}) probability density function. We set a lower and upper length cutoff, to account for non uniform detection capability of the Skov et al. 2018 model across different length of introgressed segments. To correct our parameter estimate from the respective pdf we divided it by the interval between the lower and upper cutoff of the pdf. For simulations we varied the lower cutoff (0.001 cM, 0.002 cM, 0.005 cM, 0.01 cM, 0.05 cM, 0.1 cM, 0.15 cM, 0.2 cM, 0.5 cM) and the upper was kept at 1.2 cM. For the real data we used a lower cutoff of 0.05 cM and an upper cutoff of 1.2 cM.
-
-\begin{equation}
-\label{eq:7}
-Pr(l_{lower}<=L=<l_{upper}) \sim \frac{exp(l,\lambda)}{exp(L>=l_{lower},\lambda)-exp(L<=l_{upper},\lambda)}
-\end{equation}
-
-\begin{equation}
-\label{eq:8}
-Pr(l_{lower}<=L=<l_{upper}) \sim \frac{lomax(l,k+1,\frac{1}\theta)}{lomax(L>=l_{lower},k+1,\frac{1}\theta)-lomax(L<=l_{upper},k+1,\frac{1}\theta)}
-\end{equation}
 
 \subsection{Modeling parameter effect sizes}\label{modeling prameter effect sizes}
 
 To model and compare parameter effect sizes we simulated 100
-replicates for each combination of potentially influencing
+replicates for each combination of
 parameters: ascertainment scheme ($A_i$ = LES/HES), minimal genetic distance
 ($M_i$ = \(d_{0}=0.02\,cM\)/\(d_{0}=0.05\,cM\)), demography ($D_i$ = simple/complex),
 recombination rate ($R_i$ = constant/variable), gene flow model
@@ -453,7 +419,7 @@ size of the different parameters (Eq.
 \ref{eq:8}). The difference between the estimated
 admixture time and the true admixture time, the error in the estimate,
 was standardized using the true time as the mean. The standardized error in this model is the response to the parameters as model
-predictors. We choose the Normal distribution as the likelihood function being the maximum entropy distribution in our case. The mean of the Normal distribution is then described by a fixed effect size model of the predictors (factors) coded as indicator variables. We obtained the posterior probability using a Hamiltonian Monte Carlo MCMC algorithm. The Markov chains converged to the target distribution (Rhat = 1) and efficiently sampled from the posterior (Supplement Table \ref{tab:tableS1}).  
+predictors. We choose the Normal distribution as the likelihood function being the maximum entropy distribution in our case. The mean of the Normal distribution is then described by a fixed effect size model of the predictors (factors) coded as indicator variables. We obtained the posterior probability using a Hamiltonian Monte Carlo MCMC algorithm, as implemented in STAN using an R interface \. The Markov chains converged to the target distribution (Rhat = 1) and efficiently sampled from the posterior (Supplement Table \ref{tab:tableS1}).  
 
 \begin{equation}\label{eq:8}
 \begin{split}
@@ -465,7 +431,9 @@ E_i &\sim Normal(\mu_i,\sigma) \\
 \end{split}
 \end{equation}
 
+\subsection{Estimating admixture time from real data}\label{Estimating admixture time from real data}
 
+We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagyrskaya high coverage Neandertals.  We filtered for all unrelated individuals from the YRI as representatives of unadmixed Africans and all CEU as admixed Europeans. We only considered biallelic sites. The sites were polarized relative to the Chimpanzee base (panTro4). We used the CEU specific fine-scale recombination map \citep{spence_inference_2019} to convert the physical distance between sites into genetic distance. 
 
 \section{Results}\label{results}
 
