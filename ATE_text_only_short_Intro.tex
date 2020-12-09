@@ -146,13 +146,13 @@ Using this approach, Sankararaman et al. dated the Neandertal-human admixture pu
 
 Using D-statistics \citep{green_draft_2010} and by directly inferring introgressed segments, it was found that the amount of Neandertal ancestry is 24\% higher in present-day East-Asians compared to Europeans \citep{meyer_high-coverage_2012 ,  wall_higher_2013}. A second admixture event private to East-Asians around the same time as the interbreeding event between Neandertals and all non-Africans is suggested to explain the higher amount of ancestry \citep{kim_selection_2015,vernot_complex_2015}.
 
-Compared to the relatively simple patterns of inference in Neandertal ancestry, Denisovan ancestry in modern humans is more complex. Present-day Papuans have more  Denisovan  ancestry than East-Asians \citep{reich_genetic_2010,meyer_high-coverage_2012}
-It is suggested that there was a common admixture event into both populations by a population distantly related to the sequenced Denisovan genome, with an additional event into East-Asians from a more closely related Denisovan population \citep{browning_analysis_2018}. These different admixture events are distinguished due to population differentiation of the admixing Denisovan populations. The comparison of the mean length of the two diverged Denisovan segments did not reveal significant differences, suggesting a lack of power to distinguish the two events by time \citep{browning_analysis_2018}. Analysing genomes from Papuan individuals revealed another admixture event exclusive to Papuans dated to be around 29.8 kya (95\% CI 14.4-50.4 kya) \citep{jacobs_multiple_2019}. Together, these findings indicate that there were multiple interbreeding events over time between modern human and different Denisovan populations populations.
+Compared to the relatively simple patterns of inference in Neandertal ancestry, Denisovan ancestry in modern humans is more complex. Among present-day populations, Papuans and Melanesians have the highest amount of Denisovan ancestry (6\%), much more than East-Asians (0.2\%) \citep{reich_genetic_2010,meyer_high-coverage_2012}.
+However, the Denisovan ancestry segments in East Asians are made up of two distinct groups, one from a population only distantly related to the sequenced Denisovan genome, and another one that is more closely related \citep{browning_analysis_2018}. In contrast, Papuans and Melanesians only have segments from the first of this group, despite them having much more overall ancestry.
+One explanation is that there has been a common admixture event into an ancestor of both populations, and a second event that only contributed to East Asians; however the admixture fragment lengths of these two sets of populations are not significantly different from each other, suggesting either a lack of power to distinguish the two events by time, or that they occured roughly at the same time\citep{browning_analysis_2018}.
 
- 
 
 
-The evidence for more complex Neandertal gene flow is more spotty: One direct example of  Neandertal gene flow private to a local population is the identification of admixture segments spanning several Mbp in \textit{Oase 1}, the genome of an early modern human from Romania. He had a recent Neandertal ancestor less than 200 years before he lived (~37–42 kya). (, later than the age of the \textit{Ust'Ishim} modern human which is already admixed with Neadertals. \textit{Oase 1} did however not contribute substantially to present-day human populations  \citep{fu_genome_2014,fu_early_2015}.)
+The evidence for more complex patterns of Neandertal gene flow is more spotty, as most Neandertal admxiture segments have a similar divergence to the sequenced Neandertals \cite{browning_analysis_2018}. However, several examples of  Neandertal gene flow private to a local population is the identification of admixture segments spanning several Mbp in \textit{Oase 1}, the genome of an early modern human from Romania. He had a recent Neandertal ancestor less than 200 years before he lived (~37–42 kya). (, later than the age of the \textit{Ust'Ishim} modern human which is already admixed with Neadertals. \textit{Oase 1} did however not contribute substantially to present-day human populations  \citep{fu_genome_2014,fu_early_2015}.)
 
 
 \subsection{Limitations of the pulse model}\label{Why can't we us the pulse model}
@@ -267,11 +267,16 @@ For the extended pulse model, we assume that the $T_i$ follow a Gamma distributi
 \label{eq:RV_extended_pulse}
   P(T)=\left\{
   \begin{array}{@{}ll@{}}
-    \Gamma(k,\frac{t_m}{k}), & \text{if}\ T\geq 0\ \text{and}\ k\ \geq 1\\
+    \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}T_i^{k-1}e^{-T_i\frac{k}{t_m}}, & \text{if}\ T\geq 0\ \text{and}\ k\ \geq 1\\
     0, & \text{otherwise}
   \end{array}\right.
 \end{equation} 
 
+Maybe just use
+\begin{equation}
+\label{eq:RV_extended_pulse}
+  P(T_i=t)=\frac{1}{\Gamma(k)(\frac{t_m}{k})^k}t^{k-1}e^{-t\frac{k}{t_m}}.
+\end{equation} 
 with,
 
 \begin{equation}
@@ -279,12 +284,13 @@ with,
 \label{eq:RV_extended_pulse_properties}
 \mathbb{E}[T]&=t_{m} \\
 Var[T]&=\frac{t_{m}^2}{k} = \bigg(\frac{t_d}{4} \bigg)^2  \\
-\Gamma(k,\frac{t_m}{k})&= \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}t^{k-1}e^{-t\frac{k}{t_m}}
 \end{split}
 \end{equation}
 
-Where $t_{m}$ is the mean time of admixture and $Var[T]$ is defined as $(\frac{t_d}{4})^2$ with $t_{d}$ giving the admixture duration.
-To get the likelihood function for the segment length distribution $P(L_i)$ under a multi-generation continuous extended pulse we have to solve the following integral:
+Here, we define the admixture duration $t_d= (..)$, which is a convenient measure for the duration of gene flow.
+
+\subsection{Move to appendix}
+To get the likelihood function for the segment length distribution $P(L_i)$ under the extended pulse we have to solve the following integral:
 
 \begin{equation}
 \label{eq:Likelihood_function_extended_pulse_1}
@@ -298,6 +304,7 @@ we can factor out all terms not depending on $t$:
     P(L=l) = \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \int_{0}^{\infty}\ t^{k-1}e^{-t\frac{k}{t_m}}\ t\ e^{-tl} \ dt 
 \end{equation}
 
+ 
 we can re-write the integral into the  form of the known integral $\int_{0}^{\infty}\ x^n e^{-\alpha x} \ dx= \frac{\Gamma{n+1}}{\alpha^{n+1}}$
 
 \begin{equation}
@@ -310,6 +317,7 @@ we can re-write the integral into the  form of the known integral $\int_{0}^{\in
 
 since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
 
+\subsection{end of appendix }
 \begin{equation}
 \begin{split}
 \label{eq:Likelihood_function_extended_pulse_final}
@@ -320,29 +328,46 @@ since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
 \end{split}
 \end{equation}
 
-The result of equation \ref{eq:Likelihood_function_extended_pulse_final} is a density function known as $Lomax$ or $Pareto-II$-distribution . Hence, we can define the likelihood function for a Gamma distributed extended admixture pulse as being Lomax distributed with parameters $L(k+1,\frac{k}{t_{m}})$, where $k$ can be interpreted as a measure of the duration of the interbreeding.
+\begin{equation}
+    P(L=l) = t_{m}^{-k} \ \Bigg( \frac{k}{l+\frac{k}{t_{m}}}\Bigg)^{k+1}
+\end{equation}
 
-The expected segment length distribution for the mean time of admixture under the extended pulse model is:
+The distribution  \ref{eq:Likelihood_function_extended_pulse_final} is known as a \emph{Lomax} or \emph{Pareto-II} distribution, which is a heavier-tailed relative of the Exponential distribution. It is typically parameterized using a shape parameter $\alpha=t_m irgendwas$ and scale parameter $\lambda = k irgendwas$. 
+
+Therefore, the expected segment length distribution under the extended pulse model is the same as under the simple pulse model (\ref{eq:Expected_l_simple_pulse}):
 
 \begin{equation}
 \label{eq:Expected_l_extended_pulse}
 \mathbb{E}[L] = \frac{1}{t_{m}}
 \end{equation}
 
-So the expected segment length distribution for the mean time of admixture between the simple and extended pulse is equal (Eq. \ref{eq:Expected_l_simple_pulse} and  \ref{eq:Expected_l_extended_pulse}). Moreover, as $k$ approaches infinity, we recover the (nested) simple pulse model.
+However, the variance of segment lengths is different:
+
+
+As $k$ approaches infinity, we recover the (nested) simple pulse model.
+
+
 
 \subsubsection{Admixture time estimates}\label{admixture time estimates}
+For inference, the admixture fragment lengths are unknown. Here, rather than estimating fragments, we follow \cite{moorjani_history_2011} and use the decay of ALD  as a statistic. Instead of the density $P(L_i)$, we need the probability that two markers a given distance $d$ apart are separated by at least one recombination event. This probability is given by the the tail function $P(L_i > d$.
 
-For our estimates we do not infer the segments length directly, rather using the decay of admixture-induced LD. This is straight forward, since the formulas given in \ref{eq:Likelihood_function_simple_pulse} and \ref{eq:Likelihood_function_extended_pulse_final} can be easily adapted by considering $P(D_i=d)$ at a given distance $D_i$ in Morgan instead of the length $L_i$. Therefore, we calculated the LD between Neandertal informative sides a given distance $D_i$ apart from each other.
-We are using the complement cumulative distribution of the likelihood functions given in \ref{eq:Likelihood_function_simple_pulse} and \ref{eq:Likelihood_function_extended_pulse_final} describing $P(D \geq d_0)$, whereas $d_0$ gives the minimal distance (Eq. \ref{eq:simple_pulse_ccdf} and \ref{eq:extended_pulse_ccdf}). Here \emph{A} is the
+The tail functions under both the simple and extended pulse models are 
+\begin{equation}
+\label{eq:simple_pulse_ccdf}
+P(L_i > d) = e^{-t_m \:d}
+\end{equation}
+
+\begin{equation}
+\label{eq:extended_pulse_ccdf}
+ALD \sim\ A\,\left( \frac{1}{1 + \frac{k}{tm} \:d}\right) ^k+c
+\end{equation}
+
+For inference, following \cite{moorjani_history_2011}, we add an intercept $A$ and a background LD $c$.
+
+We are using the complement cumulative distribution of the likelihood functions given in \ref{eq:Likelihood_function_simple_pulse} and \ref{eq:Likelihood_function_extended_pulse_final} describing $P(D \geq d_0)$, whereas $d_0$ gives the minimal distance cutoff (Eq. \ref{eq:simple_pulse_ccdf} and \ref{eq:extended_pulse_ccdf}). Here \emph{A} is the
 intercept, $t_m$ the mean time since the admixture event in generations,
 \emph{d} the genetic distance in cM and \emph{c} is a constant modeling
-background LD. The simple pulse model is fitted following Moorjani et al 2016
-\citep{moorjani_genetic_2016} (Eq. \ref{eq:simple_pulse_ccdf}). The extended pulse model is
-modeled using the Lomax ccdf (Eq. \ref{eq:extended_pulse_ccdf}).  We fitted the distribution to the data using a non-linear least-square optimization algorithm
-implemented in R \citep{R_Core_Team_2019}.
-
-
+background LD. 
 
 
 \begin{equation}
@@ -354,6 +379,12 @@ ALD \sim\ A\,e^{-t_m \:d}+c
 \label{eq:extended_pulse_ccdf}
 ALD \sim\ A\,\left( \frac{1}{1 + \frac{k}{tm} \:d}\right) ^k+c
 \end{equation}
+
+The simple pulse model is fitted following Moorjani et al 2016
+\citep{moorjani_genetic_2016} (Eq. \ref{eq:simple_pulse_ccdf}). The extended pulse model is
+modeled using the Lomax ccdf (Eq. \ref{eq:extended_pulse_ccdf}).  We fitted the distribution to the data using a non-linear least-square optimization algorithm
+implemented in the R \citep{R_Core_Team_2019}.
+
 
 \subsection{Simulations}\label{simulations}
 
