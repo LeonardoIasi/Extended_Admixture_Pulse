@@ -148,7 +148,7 @@ Using D-statistics \citep{green_draft_2010} and by directly inferring introgress
 
 Compared to the relatively simple patterns of inference in Neandertal ancestry, Denisovan ancestry in modern humans is more complex. Among present-day populations, Papuans and Melanesians have the highest amount of Denisovan ancestry (6\%), much more than East-Asians (0.2\%) \citep{reich_genetic_2010,meyer_high-coverage_2012}.
 However, the Denisovan ancestry segments in East Asians are made up of two distinct groups, one from a population only distantly related to the sequenced Denisovan genome, and another one that is more closely related \citep{browning_analysis_2018}. In contrast, Papuans and Melanesians only have segments from the first of this group, despite them having much more overall ancestry.
-One explanation is that there has been a common admixture event into an ancestor of both populations, and a second event that only contributed to East Asians; however the admixture fragment lengths of these two sets of populations are not significantly different from each other, suggesting either a lack of power to distinguish the two events by time, or that they occured roughly at the same time\citep{browning_analysis_2018}.
+One explanation is that there has been a common admixture event into an ancestor of both populations, and a second event that only contributed to East Asians; however the admixture fragment lengths of these two sets of populations are not significantly different from each other, suggesting either a lack of power to distinguish the two events by time, or that they occurred roughly at the same time\citep{browning_analysis_2018}.
 
 
 
@@ -211,12 +211,15 @@ Finally, we apply our methods to distinguish several admixture scenarios with di
 
 In this section, we present formal definitions of the admixture models used.  We assume we have $n$ admixture segments. We denote the length of the $i$-th segment as $L_i$. Further, the random variable $T_i$ represents the time when fragment $L_i$ entered the population. We assume that the $L_i$ and $T_i$ are both realizations from more general distributions $L$ and $T$ that reflect the overall segment length and admixture time distributions, respectively. 
 
-Given $T_i$, we assume that $L_i$ is exponentially distributed
+Given $T_i$, we assume that $L_i$ is exponentially distributed with rate parameter given the admixture time $t_a$ and the recombination rate $r$.
 \begin{equation}
-    L_i|T_i \sim \text{Exp}[T_i r]
+\label{eq:generall_length_distribution}
+    P(L_i=l|T_i=t) \sim \text{Exp}[t_a r]
 \end{equation}
 
-We assume that  $T_i$ is drawn from a distribution $T$. In that case, we need to integrate over all possible values of $T_i$
+If we measure the length of each segment $L_i$ in the recombination distance Morgan (M), $r=1$.
+
+We assume that  $T_i$ is drawn from a distribution $T$. In that case, we need to integrate over all possible values of $T_i$. 
 
 \begin{equation}
 \label{eq:standard_likelihood_definintion}
@@ -229,13 +232,13 @@ Thus, the distribution of the admixture times $T_i$ can be thought of as the mix
 \subsubsection{The Simple Pulse Model}\label{The Simple Pulse Model}
 
 
-In the simple pulse model, we assume that all fragments enter the population at the same time $T_{admix}$. Therefore all $T_i$ have the same value $T_{admix}$, and $T$ thus is a constant distribution:
+In the simple pulse model, we assume that all fragments enter the population at the same time $t_a$. Therefore all $T_i$ have the same value $t_a$, and $T$ thus is a constant distribution. We can realize this by using a Dirac delta function, which is zero everywhere except at $t_a$ and integrates to 1 over the entirety of the distribution:
 
 \begin{equation}
 \label{eq:RV_simple_pulse}
   P(T_i)=\left\{
   \begin{array}{@{}ll@{}}
-    1, & \text{if}\ T_i=T_{admix} \\
+    1, & \text{if}\ T_i=t_a \\
     0, & \text{otherwise}
   \end{array}\right.
 \end{equation} 
@@ -245,8 +248,7 @@ Therefore,
 \begin{equation}
 \begin{split}
 \label{eq:Likelihood_function_simple_pulse}
-    P(L_i=l) &=  1  P(L_i=l | T_i=t) \\
-    &= 1 T_{admix}e^{-T_{admix}L_i}
+    P(L_i=l) &= t_ae^{-t_a l}
 \end{split}
 \end{equation}
 
@@ -254,30 +256,21 @@ The expected segment length under a simple pulse model is given by,
 
 \begin{equation}
 \label{eq:Expected_l_simple_pulse}
-    \mathbb{E}[L]=\frac{1}{T_{admix}}
+    \mathbb{E}[L]=\frac{1}{t_a}
 \end{equation}
 
-Note that this definition of the segment length distribution is independent from the migration rate $m$ at $T_{admix}$. Hence, the model does not consider the (higher) probability of admixture segments recombining with each other when the migration rate is high. This can be done following Gravel et al. 2012 \citep{gravel_population_2012}. For Neandertal admixture where $m$, the admixture fraction, is typically low, the exponential assumption is satisfied \citep{liang_lengths_2014}.
+Note that this definition of the segment length distribution is independent from the migration rate $m$ at $t_a$. Hence, the model does not consider the (higher) probability of admixture segments recombining with each other when the migration rate is high. This can be done following Gravel et al. 2012 \citep{gravel_population_2012}. For Neandertal admixture where $m$, the admixture fraction, is typically low, the exponential assumption is satisfied \citep{liang_lengths_2014}.
 
 \subsubsection{The Extended Pulse Model}\label{The Extended Pulse Model}
 
 For the extended pulse model, we assume that the $T_i$ follow a Gamma distribution. It is convenient to parametrize the Gamma distribution by its mean $t_m$ and its shape parameter $k$.  $\Gamma(k,\frac{t_m}{k})$, hence
 
-\begin{equation}
-\label{eq:RV_extended_pulse}
-  P(T)=\left\{
-  \begin{array}{@{}ll@{}}
-    \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}T_i^{k-1}e^{-T_i\frac{k}{t_m}}, & \text{if}\ T\geq 0\ \text{and}\ k\ \geq 1\\
-    0, & \text{otherwise}
-  \end{array}\right.
-\end{equation} 
 
-Maybe just use
 \begin{equation}
 \label{eq:RV_extended_pulse}
   P(T_i=t)=\frac{1}{\Gamma(k)(\frac{t_m}{k})^k}t^{k-1}e^{-t\frac{k}{t_m}}.
 \end{equation} 
-with,
+with, $t \geq 0$ and $k \geq 1$.
 
 \begin{equation}
 \begin{split}
@@ -287,52 +280,20 @@ Var[T]&=\frac{t_{m}^2}{k} = \bigg(\frac{t_d}{4} \bigg)^2  \\
 \end{split}
 \end{equation}
 
-Here, we define the admixture duration $t_d= (..)$, which is a convenient measure for the duration of gene flow.
+Here, we define the admixture duration $t_d=4\sqrt{\frac{t_m^2}{k}}$, which is a convenient measure for the duration of gene flow. The distribution of segment length is then given by:
 
-\subsection{Move to appendix}
-To get the likelihood function for the segment length distribution $P(L_i)$ under the extended pulse we have to solve the following integral:
 
 \begin{equation}
-\label{eq:Likelihood_function_extended_pulse_1}
-    P(L_i=l) = \int_{0}^{\infty} \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}t^{k-1}e^{-t\frac{k}{t_m}}\ t\ e^{-tl} \ dt 
-\end{equation}
-
-we can factor out all terms not depending on $t$:
-
-\begin{equation}
-\label{eq:Likelihood_function_extended_pulse_2}
-    P(L=l) = \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \int_{0}^{\infty}\ t^{k-1}e^{-t\frac{k}{t_m}}\ t\ e^{-tl} \ dt 
-\end{equation}
-
- 
-we can re-write the integral into the  form of the known integral $\int_{0}^{\infty}\ x^n e^{-\alpha x} \ dx= \frac{\Gamma{n+1}}{\alpha^{n+1}}$
-
-\begin{equation}
-\begin{split}
-\label{eq:Likelihood_function_extended_pulse_3}
-    P(L=l) &= \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \int_{0}^{\infty}\ t^{k}e^{-(l+\frac{k}{t_m})t} \ dt \\ 
-    P(L=l) &= \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \frac{\Gamma(k+1)}{l+\frac{k}{t_m})^{k+1}} 
-\end{split}
-\end{equation}
-
-since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
-
-\subsection{end of appendix }
-\begin{equation}
-\begin{split}
-\label{eq:Likelihood_function_extended_pulse_final}
-    P(L=l) &= \frac{k}{(\frac{t_m}{k})^k \ (l+\frac{k}{t_m})^{k+1}} \\
-    &= \frac{k(\frac{k}{t_m})^k} {(l+\frac{k}{t_{m}})^{k+1}}  \\
-    &= \frac{k^{k+1}} { t_{m}^k \ (l+\frac{k}{t_{m}})^{k+1}}  \\
-    P(L=l) &= t_{m} \ \Bigg( \frac{k}{t_{m}(l+\frac{k}{t_{m}})}\Bigg)^{k+1}
-\end{split}
-\end{equation}
-
-\begin{equation}
+\label{eq:Likelihood_function_extended_pulse}
     P(L=l) = t_{m}^{-k} \ \Bigg( \frac{k}{l+\frac{k}{t_{m}}}\Bigg)^{k+1}
 \end{equation}
 
-The distribution  \ref{eq:Likelihood_function_extended_pulse_final} is known as a \emph{Lomax} or \emph{Pareto-II} distribution, which is a heavier-tailed relative of the Exponential distribution. It is typically parameterized using a shape parameter $\alpha=t_m irgendwas$ and scale parameter $\lambda = k irgendwas$. 
+The distribution  in equation \ref{eq:Likelihood_function_extended_pulse} is known as a \emph{Lomax} or \emph{Pareto-II} distribution, which is a heavier-tailed relative of the Exponential distribution. It is typically parameterized using a shape parameter $\alpha=k$ and scale parameter $\lambda = \frac{t_m}{k}$. 
+
+\begin{equation}
+\label{eq:Classic_Lomax}
+    p(x) = \frac{\alpha}{\lambda} \Bigg( \frac{k}{1+\frac{x}{\lambda}}\Bigg)^{-(\alpha+1)}
+\end{equation}
 
 Therefore, the expected segment length distribution under the extended pulse model is the same as under the simple pulse model (\ref{eq:Expected_l_simple_pulse}):
 
@@ -343,13 +304,18 @@ Therefore, the expected segment length distribution under the extended pulse mod
 
 However, the variance of segment lengths is different:
 
+\begin{equation}
+\label{eq:Var_l_extended_pulse}
+Var[L] = \frac{(\frac{t_m}{k})^2k}{(k-1)(k-2)}
+\end{equation}
+
 
 As $k$ approaches infinity, we recover the (nested) simple pulse model.
 
 
 
 \subsubsection{Admixture time estimates}\label{admixture time estimates}
-For inference, the admixture fragment lengths are unknown. Here, rather than estimating fragments, we follow \cite{moorjani_history_2011} and use the decay of ALD  as a statistic. Instead of the density $P(L_i)$, we need the probability that two markers a given distance $d$ apart are separated by at least one recombination event. This probability is given by the the tail function $P(L_i > d$.
+For inference, the admixture fragment lengths are unknown. Here, rather than estimating fragments, we follow \cite{moorjani_history_2011} and use the decay of ALD  as a statistic. Instead of the density $P(L_i)$, we need the probability that two markers a given distance $d$ apart are separated by at least one recombination event. This probability is given by the the tail function $P(L_i > d)$.
 
 The tail functions under both the simple and extended pulse models are 
 \begin{equation}
@@ -359,10 +325,10 @@ P(L_i > d) = e^{-t_m \:d}
 
 \begin{equation}
 \label{eq:extended_pulse_ccdf}
-ALD \sim\ A\,\left( \frac{1}{1 + \frac{k}{tm} \:d}\right) ^k+c
+P(L_i > d) = \left( \frac{1}{1 + \frac{k}{tm} \:d}\right) ^k
 \end{equation}
 
-For inference, following \cite{moorjani_history_2011}, we add an intercept $A$ and a background LD $c$.
+For inference, following \cite{moorjani_genetic_2016}, we add an intercept $A$ and a constant modelling background LD $c$. to the tail functions. The genetic distance $d$ is measured in centMogran (cM).
 
 We are using the complement cumulative distribution of the likelihood functions given in \ref{eq:Likelihood_function_simple_pulse} and \ref{eq:Likelihood_function_extended_pulse_final} describing $P(D \geq d_0)$, whereas $d_0$ gives the minimal distance cutoff (Eq. \ref{eq:simple_pulse_ccdf} and \ref{eq:extended_pulse_ccdf}). Here \emph{A} is the
 intercept, $t_m$ the mean time since the admixture event in generations,
@@ -727,6 +693,53 @@ The other major avenue are ancient DNA samples from early modern humans that liv
 
 \section{Supplement}\label{supplement}
 
+\subsection{Extended Pulse Model}
+
+In this section, we describe in detail the derivation of the extended pulse model, where the gene flow over time is modeled as a Gamma distribution with shape parameter $k$ and scale parameter $\frac{k}{t_m}$. Here, $L_i$ is the length of a segment entered at time $T_i$. We assume each segment length at time $T_i$ to be described by an exponential distribution (eq. \ref{eq:generall_length_distribution}).
+
+To get the likelihood function for the segment length distribution $P(L_i)$ under the extended pulse we have to solve the following integral:
+
+\begin{equation}
+\label{eq:Likelihood_function_extended_pulse_1}
+    P(L_i=l) = \int_{0}^{\infty} \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}t^{k-1}e^{-t\frac{k}{t_m}}\ t\ e^{-tl} \ dt 
+\end{equation}
+
+we can factor out all terms not depending on $t$:
+
+\begin{equation}
+\label{eq:Likelihood_function_extended_pulse_2}
+    P(L=l) = \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \int_{0}^{\infty}\ t^{k-1}e^{-t\frac{k}{t_m}}\ t\ e^{-tl} \ dt 
+\end{equation}
+
+ 
+we can re-write the integral into the  form of the known integral $\int_{0}^{\infty}\ x^n e^{-\alpha x} \ dx= \frac{\Gamma{n+1}}{\alpha^{n+1}}$
+
+\begin{equation}
+\begin{split}
+\label{eq:Likelihood_function_extended_pulse_3}
+    P(L=l) &= \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \int_{0}^{\infty}\ t^{k}e^{-(l+\frac{k}{t_m})t} \ dt \\ 
+    P(L=l) &= \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \frac{\Gamma(k+1)}{l+\frac{k}{t_m})^{k+1}} 
+\end{split}
+\end{equation}
+
+since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
+
+
+
+\begin{equation}
+\begin{split}
+\label{eq:Likelihood_function_extended_pulse_final}
+    P(L=l) &= \frac{k}{(\frac{t_m}{k})^k \ (l+\frac{k}{t_m})^{k+1}} \\
+    &= \frac{k(\frac{k}{t_m})^k} {(l+\frac{k}{t_{m}})^{k+1}}  \\
+    &= \frac{k^{k+1}} { t_{m}^k \ (l+\frac{k}{t_{m}})^{k+1}}  \\
+    &= t_{m} \ \Bigg( \frac{k}{t_{m}(l+\frac{k}{t_{m}})}\Bigg)^{k+1} \\
+    P(L=l) &= t_{m}^{-k} \ \Bigg( \frac{k}{(l+\frac{k}{t_{m}})}\Bigg)^{k+1}
+\end{split}
+\end{equation}
+
+
+\subsection{Supplement Figures }
+
 \begin{figure}
 \centering
 \includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS1-1.pdf}
@@ -771,6 +784,8 @@ sigma & 0.46 & 0.01 & 0.44 & 0.47 & 2239.47 & 1\\
 admixture durations all sampled 50 generations after the admixture ended. B) Mean time estimates for different sampling times after the end of 800
 generations of continuous admixture.}
 \end{figure}
+
+\subsection{Supplement Tables}
 
 \begin{table}[H]
 \caption{\label{tab:tableS2}\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit}
