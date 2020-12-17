@@ -223,14 +223,15 @@ Figure_1_C_2 <- function(Timespan_GF_Models,time_l,Split_time,Mean_Time,Colour_P
     
     GF_gamma <- dgamma(x=time,shape = a,scale = 1/b)
     GF_gamma[GF_gamma < 1e-6] = 0
-    GF_gamma <- GF_gamma[1:Split_time]
+    GF_gamma <- GF_gamma[1:time_l]
     m2 <- c()
     for (i in GF_gamma){
       x <- i*(0.03/sum(GF_gamma))
       m2 <- c(m2,x)
     }
-    m2 <- c(m2,rep(0,time_l-Split_time))
-    cutoff_in_Percent=(sum(m2[2550:5001])/0.03)*100
+    #m2 <- c(m2,rep(0,time_l-Split_time))
+    #m2 <- c(m2,rep(0,time_l))
+    #cutoff_in_Percent=(sum(m2[2550:5001])/0.03)*100
     
     GF <- c(m2)
     return(GF)
@@ -244,16 +245,21 @@ Figure_1_C_2 <- function(Timespan_GF_Models,time_l,Split_time,Mean_Time,Colour_P
   GF <- as.data.frame(GF)
   colnames(GF) <- c('Time',Timespan_GF_Models)
   GF.melted <- melt(GF, id = "Time")
-  Px <-  ggplot(data =GF.melted, aes(x = Time, y = value,color=variable)) +
+  Px <-  ggplot(data =GF.melted, mapping=aes(x = Time, y = value,color=variable)) +
+    geom_area(position = 'identity',mapping = aes(x = ifelse(Time>Mean_Time-(as.numeric(as.character(variable))/2) & 
+                                                               Time< Mean_Time+(as.numeric(as.character(variable))/2) , Time, NA),
+                                                  fill=variable),show.legend = F,alpha = 0.33) +
     geom_line(show.legend = F)+
-    coord_cartesian(ylim = c(0,max(GF[max_y])),xlim = c(0,max_x),expand = 0)+
+    coord_cartesian(ylim = c(0,2.5e-04),xlim = c(0,3050),expand = 0)+
     geom_vline(xintercept=Split_time,linetype=3,color='black')+
     scale_color_manual(values = Colour_P)+
+    scale_fill_manual(values = Colour_P)+
     labs(x = "Time in Generations")+
     labs(y = "Migration Rate")+
     labs(color="Admixture Duration")
   return(Px)
 }
+
 
 Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time,Mean_Time,Intercept,Colour_P){
   n_GF_Models=length(Timespan_GF_Models)
@@ -309,9 +315,10 @@ Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time
 
 
 t_d=c(1,100,200,400,800,1000,1500,2000,2500)
+t_d=c(1,100,200,400,800,1000,1500,2000)
 cbPalette_viridis <- viridis(length(t_d),option = "D")
 
-P_Gamma <- Figure_1_C_2(c(t_d),3000,2550,1500,Colour_P = cbPalette_viridis,3,3100)
+P_Gamma <- Figure_1_C_2(c(t_d),3100,2550,1500,Colour_P = cbPalette_viridis,3,3100)
 
 P_Lomax <-Theoratical_Lomax(c(t_d),0.5,2550,1500,0.0004,Colour_P = cbPalette_viridis)
 
@@ -338,7 +345,6 @@ im_AA <- cowplot::ggdraw() +
 
 im_BB <- cowplot::ggdraw() +
   cowplot::draw_image("GG_New_Intro_fig_2.png")
-
 
 ggarrange(im_AA,im_BB,P_Gamma,P_Lomax,
           labels = c("A","B","C", "D"),
@@ -406,7 +412,8 @@ Fig_A_1_Means_diff_pulse <- round(range(Fig_A_1_Means_diff[1:5,]*100))
 Fig_A_1_Means_diff_continuous <- round(range(Fig_A_1_Means_diff[6:10,]*100))
 ```
 
-
+Differece simple pulse = `r Fig_A_1_Means_diff_pulse`.
+Differece extended pulse = `r Fig_A_1_Means_diff_continuous`.
 
 ```{r fig2,message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:fig2} A) Comparison of mean admixture time estimates between pulse and continuous gene flow for different admixture times. The length of continuous gene flow corresponds to 50 % of the mean admixture time, black line indicates true mean admixture time. B) Comparison of mean admixture time estimates for simulations with a mean time of admixture of 1500 generations ago, at a varying length of gene flow. Boxplot created from 100 simulation replicates, respectively."}
 ######################## GG PLotting ###########################
@@ -459,11 +466,19 @@ P1_1 <- Plot_Fig_1_A(Fig_A_1,Colour_P = cbPalette_viridis)
 Fig_B_1 <- Get_Data_Table(Figure_1_B_Data)
 Fig_B_1$Var7 <- rep('xx',length(Fig_B_1$Var1))
 P1_2 <- Plot_Fig_1_B(Fig_B_1,Colour_P = cbPalette_viridis)
+Fig_B_1_Means <- data.frame(est=rep(as.numeric(as.character(Fig_B_1$Var1)),Fig_B_1$Freq),
+                               duration=rep(as.numeric(as.character(Fig_B_1$Var6)),Fig_B_1$Freq))
+Fig_1_B_Means_per_duration <- Fig_B_1_Means %>%
+    group_by(duration) %>% 
+    summarise_each(funs(mean))
 
+Fig_1_B_Means_per_duration$relative_dif <- 1-(1500/Fig_1_B_Means_per_duration$est)
+kable(Fig_1_B_Means_per_duration)
 ggarrange(P1_1,P1_2,
           labels = c("A","B"),
           ncol = 2, nrow = 2,common.legend = F,legend = 'bottom', align = "h")
 ```
+
 
 
 \subsection{Comparing effect sizes}\label{comparing effect sizes}
@@ -651,7 +666,7 @@ B_model_result <- precis(Effect_size_fixed_s_2,prob = 0.95)
 
 
 
-```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=9,fig.height=8,fig.cap="\\label{fig:fig3} Comparison between the effect sizes of the estimated parameters on the standardized difference between true and estimated admixture time"}
+```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:fig3} Comparison between the effect sizes of the estimated parameters on the standardized difference between true and estimated admixture time"}
 
 post_effect_size_model <- extract.samples(Effect_size_fixed_s_2,n = 1e5)
 Post_effect_size_est=data.frame(mean=c(
@@ -678,16 +693,21 @@ HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2])
 #,row.names = c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
 )
 
+Post_effect_size_est_table <- Post_effect_size_est
+row.names(Post_effect_size_est_table) <- c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+
+kable(Post_effect_size_est_table)
 
 ggplot(Post_effect_size_est,aes(x=row.names(Post_effect_size_est),y=as.numeric(as.character(mean))))+
-      geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F)+
+      geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F,size=2)+
     geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(row.names(Post_effect_size_est))),col="black",width=0.2)+
   geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
   labs(x = "")+
-  labs(y = "Standardized difference between true and estimated time")+
+  labs(y = "Standardized dif. est./sim. time")+
   theme(plot.title = element_text(hjust = 0.5,size = 12))+
-  scale_x_discrete(labels= c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
-                    )+
+  #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
+  scale_x_discrete(labels= c("Standard Model","Continuous GF","Variying recombination","Complex Demography","d0=0.02 cM","HES")
+                  ,guide = guide_axis(angle = 90))+
   scale_color_manual("Gene Flow Model",
                      values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
                      label=c("Pulse","Continuous"))
@@ -696,7 +716,7 @@ ggplot(Post_effect_size_est,aes(x=row.names(Post_effect_size_est),y=as.numeric(a
 
 \subsection{Estimating the Lomax-parameters under different conditions}\label{estimating the Lomax-parameters under different conditions}
 
-```{r message=FALSE, echo=FALSE,warning=FALSE}
+```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
 #### New Figure for Paper using recent sampling (50 gen): constant RR, RM no correction, RM diff RM correction, RM correction same RM ####
 
 cbPalette_viridis <- viridis(6,option = "D")
@@ -765,7 +785,7 @@ Plot_sampling_50_gen_t_GF <- function(ggdata_t.GF,cbPalette_viridis,Ptitle){
     coord_cartesian(ylim = c(0,1500), expand = 0)+
     scale_color_manual("Simulations",
                        values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
-                       labels = c("Constant Recombination","HapMap AAMap corrected","HapMap HapMap corrected","HapMap not corrected"))
+                       labels = c("Constant Recombination","HapMap not corrected","HapMap AAMap corrected","HapMap HapMap corrected"))
   
 }
 
@@ -783,8 +803,9 @@ Plot_sampling_50_gen_GF_Length <- function(ggdata_l.GF,cbPalette_viridis,Ptitle)
     coord_cartesian(ylim = c(0,4000), expand = 0)+
     scale_color_manual("Simulations",
                        values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
-                       labels = c("Constant Recombination","HapMap AAMap corrected","HapMap HapMap corrected","HapMap not corrected"))
+                       labels = c("Constant Recombination","HapMap not corrected","HapMap AAMap corrected","HapMap HapMap corrected"))
 }
+
 
 Plot_sampling_varying_gen_t_GF <- function(ggdata_t.GF_varying,cbPalette_viridis,Ptitle){
   ggplot(ggdata_t.GF_varying,aes(x=variable,y=as.numeric(as.character(value)),colour=factor(Name)))+
@@ -800,7 +821,7 @@ Plot_sampling_varying_gen_t_GF <- function(ggdata_t.GF_varying,cbPalette_viridis
     coord_cartesian(ylim = c(0,2000), expand = 0)+
     scale_color_manual("Simulations",
                        values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
-                       labels = c("Constant Recombination","HapMap AAMap corrected","HapMap HapMap corrected","HapMap not corrected"))
+                       labels = c("Constant Recombination","HapMap not corrected","HapMap AAMap corrected","HapMap HapMap corrected"))
   
 }
 
@@ -819,7 +840,7 @@ Plot_sampling_varying_gen_GF_Length <- function(ggdata_l.GF_varying,cbPalette_vi
     coord_cartesian(ylim = c(0,4000), expand = 0)+
     scale_color_manual("Simulations",
                        values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
-                       labels = c("Constant Recombination","HapMap AAMap corrected","HapMap HapMap corrected","HapMap not corrected"))
+                       labels = c("Constant Recombination","HapMap not corrected","HapMap AAMap corrected","HapMap HapMap corrected"))
 }
 
 Result.Table.path_Recent_50 <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
@@ -858,28 +879,252 @@ ggdata_t.GF_varying_mean_GF_lomax <- melt(Plot.data_varying,measure.vars =  c('m
 ggdata_l.GF_varying <- melt(Plot.data_varying,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
 
 
+ggdata_reodering_fn <- function(ggdata,odering){
+  ggdata$Name <- factor(ggdata$Name,
+    levels = odering,ordered = TRUE)
+  return(ggdata)
+}
 
+New.P1_mean_GF_exp <- Plot_sampling_50_gen_t_GF(ggdata_reodering_fn(ggdata_t.GF_50_mean_GF_exp,c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction")),cbPalette_viridis, "Sampled 50 Gen. From End Of Admixture")
+New.P1_mean_GF_lomax <- Plot_sampling_50_gen_t_GF(ggdata_reodering_fn(ggdata_t.GF_50_mean_GF_lomax,c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction")),cbPalette_viridis,"Sampled 50 Gen. From End Of Admixture")
+New.P2 <- Plot_sampling_50_gen_GF_Length(ggdata_reodering_fn(ggdata_l.GF_50,c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction")),cbPalette_viridis,"Sampled 50 Gen. From End Of Admixture")
 
-New.P1_mean_GF_exp <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_exp,cbPalette_viridis, "Sampled 50 Gen. From End Of Admixture")
-New.P1_mean_GF_lomax <- Plot_sampling_50_gen_t_GF(ggdata_t.GF_50_mean_GF_lomax,cbPalette_viridis,"Sampled 50 Gen. From End Of Admixture")
-New.P2 <- Plot_sampling_50_gen_GF_Length(ggdata_l.GF_50,cbPalette_viridis,"Sampled 50 Gen. From End Of Admixture")
-New.P3_mean_GF_exp <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_exp,cbPalette_viridis,"Admixture Duration = 800 Gen.")
-New.P3_mean_GF_lomax <- Plot_sampling_varying_gen_t_GF(ggdata_t.GF_varying_mean_GF_lomax,cbPalette_viridis,"Admixture Duration = 800 Gen.")
-New.P4 <- Plot_sampling_varying_gen_GF_Length(ggdata_l.GF_varying,cbPalette_viridis,"Admixture Duration = 800 Gen.")
+New.P3_mean_GF_exp <- Plot_sampling_varying_gen_t_GF(ggdata_reodering_fn(ggdata_t.GF_varying_mean_GF_exp,c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction")),cbPalette_viridis,"Admixture Duration = 800 Gen.")
+New.P3_mean_GF_lomax <- Plot_sampling_varying_gen_t_GF(ggdata_reodering_fn(ggdata_t.GF_varying_mean_GF_lomax,c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction")),cbPalette_viridis,"Admixture Duration = 800 Gen.")
+New.P4 <- Plot_sampling_varying_gen_GF_Length(ggdata_reodering_fn(ggdata_l.GF_varying,c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction")),cbPalette_viridis,"Admixture Duration = 800 Gen.")
+
 
 ```
 
+```{r message=FALSE, echo=FALSE,warning=FALSE}
+#### New Figure for Paper using recent sampling (50 gen): constant RR, RM no correction, RM diff RM correction, RM correction same RM ####
+
+cbPalette_viridis <- viridis(6,option = "D")
+
+Filter_Result_Table <- function(Result.Table){
+  Result.Table=read.table(Result.Table,header=F,sep = " ")
+  Result.names <- c('A.exp', 's.exp', 'c.exp', 'RSS_Expo','AIC_Expo', 'A.lomax', 's.lomax', 'w.lomax','c.lomax', 'RSS_Lomax','AIC_Lomax', 'F_Test','Scenario.name','GF.Start','GF.End','AS','minDist','GF.Model')
+  colnames(Result.Table) <- Result.names
+  #Result.Table <- Result.Table[(1/Result.Table$s.exp)>0,]
+  #Result.Table <- Result.Table[(1/Result.Table$s.exp)<5000,]
+  #Result.Table <- Result.Table[Result.Table$RSS_Lomax<1e-2,]
+  return(Result.Table)
+}
+
+#### True values
+True_params <- function(Result.Table){
+  True_params_Calc <- function(True_GF_length,True_mean_GF){
+    EX= True_mean_GF
+    GF_Len <-True_GF_length
+    VarX= ((GF_Len)/4)**2
+    b= EX/VarX
+    a=EX*b
+    a=a
+    True_W=1/a
+    True_S=b/(1/True_W)
+    xx=c(True_W,True_S)
+    return(xx)
+  }
+  True.params <- c()
+  for (i in 1:length(Result.Table$F_Test)) {
+    xx=True_params_Calc(Result.Table$True_GF_length[i],Result.Table$True_mean_GF[i])
+    True.params <- rbind(True.params,xx)
+  }
+  True.params <- as.data.frame(True.params)
+  return(True.params)
+}
+
+Result.Table.fn <- function(Result.Table.path,Sampling.time.from.GF.End,name){
+  Result.Table <- Filter_Result_Table(Result.Table.path)
+  Result.Table$Name <- name
+  Result.Table$Sample_Time <- Sampling.time.from.GF.End
+  Result.Table$True_GF_length <- Result.Table$GF.End-Result.Table$GF.Start
+  Result.Table$True_mean_GF <- ((Result.Table$GF.End+Result.Table$GF.Start)/2)-(Result.Table$GF.Start-Result.Table$Sample_Time)
+  Result.Table$mean_GF_exp <- 1/Result.Table$s.exp
+  Result.Table$mean_GF_lomax_s <- 1/Result.Table$s.lomax
+  Result.Table.comparison <- True_params(Result.Table)
+  Result.Table$True_W <- Result.Table.comparison$V1
+  Result.Table$True_S <- Result.Table.comparison$V2
+  Result.Table.comparison$length_GF <- (sqrt(Result.Table$mean_GF_lomax_s/(((1/Result.Table$w.lomax))*Result.Table$s.lomax)))*4
+  Result.Table$length_GF <- Result.Table.comparison$length_GF
+  
+  return(Result.Table)
+}
+
+Plot_all_together_samples_50_gen_flipped <- function(ggdata,cbPalette_viridis){
+  ggdata$Model <- factor(ggdata$Model,
+                          levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
+  ggdata$Name <- factor(ggdata$Name,
+                        levels = c("Recent_50_HapMap_HapMap_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_no_correction","Recent_50_constant"),ordered = TRUE)
+  ggplot(data = ggdata, aes(y=factor(Name),x=as.numeric(as.character(value)),colour=factor(Name))) +
+    geom_boxplot(show.legend = F)+ 
+    #facet_grid(as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = True_mean_GF ))+
+    labs(x = "Estimated Admixture Mean Time")+
+    #labs(y = "Simulated Admixture Duration \n Simulated Admixture Mean")+
+    labs(y = "Sampling Time \n Simulated Admixture Duration \n Simulated Admixture Mean")+
+    theme(
+      axis.text.y=element_blank(),
+      axis.ticks.y=element_blank())+
+    coord_cartesian(xlim = c(0,1700), expand = 0)+
+    scale_x_continuous(breaks = seq(0, 1600, by = 500))+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("Constant Recombination","HapMap not corrected","HapMap AAMap corrected","HapMap HapMap corrected"))
+  
+}
+
+
+Plot_sampling_50_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis){
+  ggdata$Name <- factor(ggdata$Name,
+                        levels = c("Recent_50_HapMap_HapMap_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_no_correction","Recent_50_constant"),ordered = TRUE)
+  ggplot(ggdata,aes(y=variable,x=as.numeric(as.character(value)),colour=factor(Name)))+
+    geom_boxplot(show.legend = F)+
+    #facet_grid(as.factor(True_GF_length)+as.factor(True_mean_GF) ~ Model, switch = "y")+
+    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = True_GF_length ))+
+    #ggtitle(Ptitle) +
+    labs(y = "")+
+    labs(x = "Estimated Admixture Duration")+
+    theme(
+      axis.text.y=element_blank(),
+      axis.ticks.y=element_blank())+
+    coord_cartesian(xlim = c(0,4100), expand = 0)+
+    scale_x_continuous(breaks = seq(0, 4100, by = 500))+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("Constant Recombination","HapMap not corrected","HapMap AAMap corrected","HapMap HapMap corrected"))
+}
+
+Plot_all_together_sampling_varying_gen_t_GF <- function(ggdata,cbPalette_viridis){
+    ggdata$Model <- factor(ggdata$Model,
+                          levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
+  ggdata$Name <- factor(ggdata$Name,
+                        levels = c("Recent_50_HapMap_HapMap_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_no_correction","Recent_50_constant"),ordered = TRUE)
+  ggplot(data = ggdata, aes(y=factor(Name),x=as.numeric(as.character(value)),colour=factor(Name))) +
+    geom_boxplot(show.legend = T)+ 
+    #facet_grid(as.factor(Sample_Time)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = True_mean_GF ))+
+    #ggtitle(Ptitle) +
+    labs(x = "Estimated Admixture Mean Time")+
+    #labs(y = "Generations Sampled After End of Admixture \n Simulated Admixture Mean")+
+    labs(y = "Sampling Time \n Simulated Admixture Duration \n Simulated Admixture Mean")+
+    theme(
+      axis.text.y=element_blank(),
+      axis.ticks.y=element_blank())+
+    coord_cartesian(xlim = c(0,1700), expand = 0)+
+    scale_x_continuous(breaks = seq(0, 1600, by = 500))+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("Constant Recombination","HapMap not corrected","HapMap AAMap corrected","HapMap HapMap corrected"))
+  
+}
+
+Plot_sampling_varying_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis){
+  ggdata$Name <- factor(ggdata$Name,
+                        levels = c("Recent_50_HapMap_HapMap_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_no_correction","Recent_50_constant"),ordered = TRUE)
+  ggplot(ggdata,aes(y=variable,x=as.numeric(as.character(value)),colour=factor(Name)))+
+    geom_boxplot(show.legend = F)+
+    #facet_grid(as.factor(True_GF_length)+as.factor(Sample_Time) ~ Model, switch = "y")+
+    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = True_GF_length ))+
+    #ggtitle(Ptitle) +
+    labs(y = "")+
+    labs(x = "Estimated Admixture Duration")+
+    theme(
+      axis.text.y=element_blank(),
+      axis.ticks.y=element_blank())+
+    coord_cartesian(xlim = c(0,4100), expand = 0)+
+    scale_x_continuous(breaks = seq(0, 4100, by = 500))+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("Constant Recombination","HapMap not corrected","HapMap AAMap corrected","HapMap HapMap corrected"))
+}
+
+Result.Table.path_Recent_50 <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_no_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_AAMap_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+
+Result.Table.path_Recent_Varying <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_no_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+
+
+Plot.data_50<-rbind(
+  Recent_50_constant<- Result.Table.fn(Result.Table.path_Recent_50,50,'Recent_50_constant'),
+  Recent_50_HapMap_no_correction <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_no_correction,50,'Recent_50_HapMap_no_correction'),
+  Recent_50_HapMap_AAMap_correction <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_AAMap_correction,50,'Recent_50_HapMap_AAMap_correction'),
+  Recent_50_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction,50,'Recent_50_HapMap_HapMap_correction')
+)
+
+ggdata_t.GF_50_mean_GF_exp <- melt(Plot.data_50,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_t.GF_50_mean_GF_lomax <- melt(Plot.data_50,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_l.GF_50 <- melt(Plot.data_50,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+
+
+
+Plot.data_varying<-rbind(
+  Recent_varying_constant<- Result.Table.fn(Result.Table.path_Recent_Varying,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_constant'),
+  Recent_varying_HapMap_no_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_no_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_no_correction'),
+  Recent_varying_HapMap_AAMap_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_AAMap_correction'),
+  Recent_varying_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_HapMap_correction')
+)
+
+ggdata_t.GF_varying_mean_GF_exp <- melt(Plot.data_varying,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_t.GF_varying_mean_GF_lomax <- melt(Plot.data_varying,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_l.GF_varying <- melt(Plot.data_varying,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+
+
+ggdata_reodering_fn <- function(ggdata){
+  ggdata$Name <- factor(ggdata$Name,
+    levels = c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction"),ordered = TRUE)
+  return(ggdata)
+}
+
+# Plot 50 gen from Admixture
+ggdata_t.GF_50_mean_GF_exp$Model <- "Simple Pulse"
+ggdata_t.GF_50_mean_GF_lomax$Model <- "Extended Pulse"
+ggdata_all_together_samples_50_t_m <- rbind(ggdata_reodering_fn(ggdata_t.GF_50_mean_GF_exp),ggdata_reodering_fn(ggdata_t.GF_50_mean_GF_lomax))
+ggdata_all_together_samples_50_t_m$Sample_Time <- 50
+ggdata_sampling_50_gen_GF_Length <- ggdata_reodering_fn(ggdata_l.GF_50)
+ggdata_sampling_50_gen_GF_Length$Model <- "Extended Pulse"
+ggdata_sampling_50_gen_GF_Length$Sample_Time <- 50
+
+Mean_GF_F_50 <- Plot_all_together_samples_50_gen_flipped(ggdata_all_together_samples_50_t_m,cbPalette_viridis)
+Duration_GF_F_50 <- Plot_sampling_50_gen_GF_Length_flipped(ggdata_sampling_50_gen_GF_Length,cbPalette_viridis)
+Constant_sampling_time <- ggarrange(Mean_GF_F_50,Duration_GF_F_50,
+          ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
+
+# Plot varying gen from Admixture
+ggdata_t.GF_varying_mean_GF_exp $Model <- "Simple Pulse"
+ggdata_t.GF_varying_mean_GF_lomax$Model <- "Extended Pulse"
+ggdata_all_together_samples_varying_t_m <- rbind(ggdata_reodering_fn(ggdata_t.GF_varying_mean_GF_exp ),ggdata_reodering_fn(ggdata_t.GF_varying_mean_GF_lomax))
+
+ggdata_sampling_varying_gen_GF_Length <- ggdata_reodering_fn(ggdata_l.GF_varying)
+ggdata_sampling_varying_gen_GF_Length$Model <- "Extended Pulse"
+
+Mean_GF_F_varying <- Plot_all_together_sampling_varying_gen_t_GF(ggdata_all_together_samples_varying_t_m,cbPalette_viridis)
+Duration_GF_F_varying <- Plot_sampling_varying_gen_GF_Length_flipped(ggdata_sampling_varying_gen_GF_Length,cbPalette_viridis)
+Varying_sampling_time <- ggarrange(Mean_GF_F_varying,Duration_GF_F_varying,
+          ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
+
+```
 
 
 ``` {r fig4, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:fig4} Parameter estimate for different sampling and admixture duration times using different methods for assigning genetic length A) Mean time estimates from the continuous model fit of different gene flow length all sampled 50 generations after the gene flow enden. B) Lomax duration estimat of the scenario C) Mean time estimates from the continuous model fit of different sampling times after the end of 800 generations of gene flow. D) Lomax duration estimat of the scenario"}
 
 
-Lomax.Fig_mean_lomax <- ggarrange(New.P1_mean_GF_lomax,New.P2,New.P3_mean_GF_lomax,New.P4,
-                   labels = c("A","B","C","D"),
-                   ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
+#Lomax.Fig_mean_lomax <- ggarrange(New.P1_mean_GF_lomax,New.P2,New.P3_mean_GF_lomax,New.P4,
+#                   labels = c("A","B","C","D"),
+#                   ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
+# Plot Together
+Extended_Pulse_Evaluation <- ggarrange(Constant_sampling_time,Varying_sampling_time,nrow = 2,labels = c("A","B"),common.legend = T,legend = 'bottom')
 
-
-Lomax.Fig_mean_lomax
+Extended_Pulse_Evaluation
 
 ```
 
@@ -1369,7 +1614,7 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r figS3, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS3} Exponential estimates for the mean time."}
+```{r figS3, eval=F,message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=6,fig.cap="\\label{fig:figS3} Exponential estimates for the mean time."}
 
 Lomax.Fig_mean_exp <- ggarrange(New.P1_mean_GF_exp,New.P3_mean_GF_exp,
                    labels = c("A","B"),
