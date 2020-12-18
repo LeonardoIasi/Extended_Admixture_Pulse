@@ -192,9 +192,8 @@ We conclude that while current methods are sufficient to estimate the mean admix
 compared to the background . The ALD approach estimates linkage
 between the introgressed variants (green circles), wheres the haplotype approach tries
 to estimate the segment directly (grey area). C) Migration rate per generation
-modeled using a Gamma distribution for different admixture durations,
-dotted line indicates maximum time of gene flow. D) The expected LD
-decay under the extended pulse model.}
+modeled using the extended pulse model for different admixture durations (colored lines). The filled area under the curve indicates the discreat realization of the duration of gene flow $t_d$.
+The dotted line indicates the maximum time of gene flow. D) The expected LDdecay under the extended pulse model.}
 \end{figure}
 
 \section{Methods}\label{methods}
@@ -469,7 +468,7 @@ distance for each SNP (assuming recombination to be constant with the average re
 (e.g.~AAMap  for the \texttt{msprime} simulation and HapMap  to assign genetic distances, emulating uncertainties in the recombination map) or use the same map for simulation and assigning
 genetic distances (population specific map). 
 
-\subsubsection{Parameter estimation under extended pulse model}
+\subsubsection{Parameter estimation under the extended pulse model}
 We next aim to evaluate when $t_d$, i.e.~the duration of the admixture, can be inferred.  For this purpose, the most important parameter is the time $t_{a}$ since admixture happened, as we expect the inference problem to be easier the more recent admixture happened. Inference is then performed using the standard set of parameters defined above. In addition, we also  evaluate the effect of  recombination rate variation. For this purpose, we simulate under both a constant recombination rate and using the empirical HapMap genetic map. Inference is performed using either  a constant recombination rate, using the HapMap (i.e. exact same map as in the simulations) or the AAMap recombination maps (to mimic uncertainty and population differences in estimated recombination maps). 
 
 \subsection{Estimating admixture time from real data}\label{Estimating admixture time from real data}
@@ -547,60 +546,35 @@ admixture time estimates for a simple or extended admixture pulse are similarly 
 \begin{figure}
 \centering
 \includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig3-1.pdf}
-\caption{\label{fig:fig3} Effect size estimates for each parameter on the standardized difference between true and estimated admixture time. Dotted horizontal line indicates unbiased admixture estimates.}
+\caption{\label{fig:fig3} GLM effect size estimates for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model pluse the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates.}
 \end{figure}
 
 
-% facet_wrap(~ tm + td, labeller="label_both")
-
 \subsection{Parameter estimation under the extended pulse model}\label{estimating the Lomax-parameters under different conditions}
-In Figure 4, we show the accuracy of $t_d$ and $t_m$ estimates in two sets of simulations. In panels A and B we increase both $t_m$ and $t_d$ at a similar rate, such that gene flow ends 50 generations before sampling ($t_{end}=50$, where $t_{end}= t_m - \frac{t_d}{2}$). In panels C and D $t_d$ is kept fixed at 800, but we increase $t_m$.. We further vary recombination rate settings as i) inference and simulation under constant recombination rate, ii) simulation using hapmap, no correction, iii) simulation using hapmap, correction using AAMap, iv) inference and simulation using hapmap. 
+In Figure \ref{fig:fig4}, we show the accuracy of $t_d$ and $t_m$ estimates in two sets of simulations. In panels A and B we increase both $t_m$ and $t_d$ at a similar rate, such that gene flow ends 50 generations before sampling ($t_{end}=50$, where $t_{end}= t_m - \frac{t_d}{2}$). In panels C and D $t_d$ is kept fixed at 800, but we increase $t_m$. We further vary recombination rate settings as i) inference and simulation under constant recombination rate, ii) simulation using HapMap, no correction, iii) simulation using HapMap, correction using AAMap, iv) inference and simulation using HapMap. 
 
 Figure \ref{fig:fig4} A and C show the mean
-time estimates received from the Lomax fit. For simulations under a
-constant recombination the mean time can be estimated confidently for different durations and different sampling times after the end of the admixture event. 
+time estimates received from the simple and extended pulse model fit. For simulations under a
+constant recombination the mean time can be estimated confidently for different durations and different sampling times after the end of the admixture event in both cases. 
 
-Under constant recombination settings, we find that parameters are well-estimated in all scenarios, although we observe a small overestimate of both $t_m$ and $t_d$, for very long admixture durations in the very distant past. In contrast, inference under the simple pulse model results in a slight underestimate \ref{fig:fig2, fig:figS3}.
+Under constant recombination settings, we find that parameters under the extended pulse are well-estimated in all scenarios, although we observe a small overestimate of both $t_m$ and $t_d$, for very long admixture durations in the very distant past. In contrast, inference under the simple pulse model results in a slight underestimate (Figure \ref{fig:fig2}, \ref{fig:fig4}).
 
-We also find that the simple pulse model is fairly robust to changes in recombination settings, both using the ``correct'' and a empirically similar recombination map. Only when we do not correct for recombination rate variation, we observe a substantial underestimate by almost a factor of two for more distant admixture \ref{fig:S3}. 
+We also find that the simple pulse model is fairly robust to changes in recombination settings, both using the ``correct'' and a empirically similar recombination map. Only when we do not correct for recombination rate variation, we observe a substantial underestimate by almost a factor of two for more distant admixture \ref{fig:fig4}. 
 
 In contrast, estimates under the extended pulse model are substantially more spread out under variable recombination maps, but we do not observer the systematic bias towards more recent admxiture times as in the simple-pulse model. In contrast, the uncorrected scenario results in extremely poor estimates with very high variation, and is clearly unsuitable for this purpose \ref{fig:fig4}. 
 
 We also find that estimates of $t_d$ differ substantially between recombination rate settings. Under constant rates, $t_d$ is well-estimated in all scenarios, and if the recombination rate is known, we get reasonably accurate estimates, at least if admixture is not very old. However, under the scenarios where recombination rates differ between simulation and inference, results become more erratic; For the cases of $t_d=200$ and $t_d=400$, many simulations infer an admixture time of near zero; in contrast, very old admixture results in a large overestimate.
 
-. is substantially less resilient to deviations in the recombination rate. 
-Estimates for simulation under a recombination map only
-assuming a constant rate when calculating the LD results in high uncertainty and overestimation. This is different for estimates under an Exponential distribution (S.  \ref{fig:figS3}). Using the AAMap yields
-results closer to the true value and less biased, however only
-using the exact same genetic map gives unbiased results. Figure
-\ref{fig:fig4} B and D shows the corresponding admixture duration estimates by the
-Lomax fit. Accurate estimates can be obtained throughout the different
-admixture durations under a constant recombination rate, when sampled
-recently from the end of the continuous admixture. Sampling further away from the end of the admixture results in less accurate estimates.  All simulations using a recombination map show a much higher
-variance in the estimates. Especially for admixture durations longer then
-800 generations or sampled later then 50 generations away from the end
-of the admixture, the estimates are not reliably. If no precise genetic map
-is used to infer the genetic distance between SNPs, no accurate
-duration estimates can be obtained. Even for estimates using the population specific map, the variation is considerable for admixture durations longer then 800 generations or sampled later then 200 generations after the end of the gene flow.
 
-Under a realistic scenario with a varying recombination
-rate, the duration can only be accurately estimated with a highly
-precise map for recent continuous admixture events not longer then 400
-generations. With regard to scenarios of Neandertal admixture,
-accurately estimating the duration of possible continuous admixture from
-present day human genomes even under a constant rate seems
-under powered. 
 
 
 \begin{figure}
 \centering
 \includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig4-1.pdf}
-\caption{\label{fig:fig4} Lomax parameter estimate for different sampling and
-admixture duration times using different methods for assigning genetic
-length A) Mean time estimates for different gene
+\caption{\label{fig:fig4} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene
 flow length all sampled 50 generations after the gene flow ended. B)
-Duration estimate of the scenario C) Mean time estimates for different sampling times after the end of 800
-generations of gene flow. D) Duration estimate of the scenario}
+Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times after the end of 800
+generations of gene flow. D) Duration estimate of the same scenario. All scenarious are simulated either under a constant recombination rate or an empirical (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate, using a different map, using the same map.  }
 \end{figure}
 
 \subsection{Application to Neandertal data}
