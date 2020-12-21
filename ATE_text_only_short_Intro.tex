@@ -142,7 +142,7 @@ Typically, estimation of admixture dates proceeds by fitting a decay curve of pa
 
 \subsection{What is known about admixture}
 
-Using this approach, Sankararaman et al. dated the Neandertal-human admixture pulse to be  between 37--86 kya (most likely range of 47–65 kya)  \citep{sankararaman_date_2012}. Later, this date was refined to 41 kya -- 54 kya (95\% CI) using a different ascertainment scheme combined with a different genetic map for European populations \citep{moorjani_genetic_2016}. A date of 50 -- 60 kya was obtained from the analysis of the \textit{Ust-Ishim} early modern human from Siberia \citep{fu_genome_2014}.
+Using this approach, Sankararaman et al. dated the Neandertal-human admixture pulse to be  between 37--86 kya (most likely range of 47–65 kya)  \citep{sankararaman_date_2012}. Later, this date was refined to 41 -- 54 kya ($CI_{95\%}$) using a different ascertainment scheme combined with a different genetic map for European populations \citep{moorjani_genetic_2016}. A date of 50 -- 60 kya was obtained from the analysis of the \textit{Ust-Ishim} early modern human from Siberia \citep{fu_genome_2014}.
 
 Using D-statistics \citep{green_draft_2010} and by directly inferring introgressed segments, it was found that the amount of Neandertal ancestry is 24\% higher in present-day East-Asians compared to Europeans \citep{meyer_high-coverage_2012 ,  wall_higher_2013}. A second admixture event private to East-Asians around the same time as the interbreeding event between Neandertals and all non-Africans is suggested to explain the higher amount of ancestry \citep{kim_selection_2015,vernot_complex_2015}.
 
@@ -578,8 +578,8 @@ generations of gene flow. D) Duration estimate of the same scenario. All scenari
 \end{figure}
 
 \subsection{Application to Neandertal data}
-In the previous section, we have shown using simulations that it might be difficult to distinguish admixture scenarios of various durations particularly if it happened a long time ago. To evaluate that this is also true for real data, we aim to estimate the Neandretal admixture pulse from the 1000 genomes data, by fitting pulses of durations ranging from one generation up to 2,5000 generations to the ALD decay curve (
-Figure \ref{fig:fig5}, S. Table \ref{tab:tableS2}). Plotting these best-fit ALD curves (Figure \ref{fig:fig5}A) on a y-axis in natural scale shows the extremely slight difference predicted under these drastically different gene flow scenarios. The difference between scenarios becomes more apparent if we log-transform the y-axis (\ref{fig:fig5}B), where we see that ongoing gene flow results in a heavier tail in the ALD distributions. However, due to finite size of the genome.
+
+In the previous section, we have shown using simulations that it might be difficult to distinguish admixture scenarios of various durations particularly if it happened a long time ago. To evaluate that this is also true for real data, we aim to estimate the Neandretal admixture pulse from the 1000 genomes data, by fitting pulses of durations ranging from one generation up to 2,500 generations to the ALD decay curve (Figure \ref{fig:fig5}, S. Table \ref{tab:tableS2}). Plotting these best-fit ALD curves (Figure \ref{fig:fig5}A) on a y-axis in natural scale shows the extremely slight difference predicted under these drastically different gene flow scenarios. The difference between scenarios becomes more apparent if we log-transform the y-axis (\ref{fig:fig5}B), where we see that ongoing gene flow results in a heavier tail in the ALD distributions. However, these LD values are very close to zero, and are thus only very noisly estimated. Therefore, we find that all scenarios are compatible with the observed data, and that there is little power to differentiate different cases.
 
 
 
@@ -595,26 +595,24 @@ with all YRI and 3 high coverage Neandertals as reference populations. A) Weight
 \section{Discussion}\label{discussion}
 While it is now well-established that early modern humans interbred with Neandertals, less consensus exists about when and where these interactions might have happened. Here we focus on genetic dating, one of the major approaches used to refine the plausible dates.
 
-Previous estimates to date Neandertal-human gene flow have focused almost entirely on the mean time of gene flow, for which reasonably tight confidence intervals can be estimated \citep{green_draft_2010, sankararaman_date_2012}. Here, we show that these models cannot be used to establish bounds on when gene flow happened, as models involving hundreds of generations of gene flow are virtually indistinguishable from instantaneous gene flow. Thus, it is important to realize that the estimated time of gene flow of between 41 kya -- 54 kya \cite{moorjani_genetic_2016} is a confidence range for the mean time of gene flow, and does not bound when gene flow happened. This is of great practical importance as it might be tempting to link the genetic admixture date estimates with biogeographical events \citep{sankararaman_date_2012,lazaridis_genomic_2016,jacobs_multiple_2019,vyas_analyses_2019,douka_age_2019}. Indeed, our results show that substantial gene flow could also have happened tens of thousands of years before or after the mean time of gene flow. These dates are thus entirely consistent with early modern human genomes that have recent Neandertal ancestors \cite{fu_genome_2014, hajdinjak_bk_paper}. As we also show that mean time estimates are biased towards more recent dates, substantial gene flow might have happened before 54 kya. 
+Previous estimates to date Neandertal-human gene flow have focused almost entirely on the mean time of gene flow, for which reasonably tight confidence intervals can be estimated \citep{green_draft_2010, sankararaman_date_2012}. Here, we show that these models cannot be used to establish bounds on when gene flow happened, as models involving hundreds of generations of gene flow are virtually indistinguishable from instantaneous gene flow. Thus, it is important to realize that the estimated time of gene flow of between 41 kya -- 54 kya \citep{moorjani_genetic_2016} is a confidence range for the mean time of gene flow, and does not bound when gene flow happened. This is of great practical importance as it might be tempting to link the genetic admixture date estimates with biogeographical events \citep{sankararaman_date_2012,lazaridis_genomic_2016,jacobs_multiple_2019,vyas_analyses_2019,douka_age_2019}. Indeed, our results show that substantial gene flow could also have happened tens of thousands of years before or after the mean time of gene flow. These dates are thus entirely consistent with early modern human genomes that have recent Neandertal ancestors \cite{fu_genome_2014, hajdinjak_bk_paper}. As we also show that mean time estimates are biased towards more recent dates, substantial gene flow might have happened before 54 kya. 
 
-This is also important in the context of selection against Neandertal introgression \citep{harris_nielsen_2017, juric_plos_gen_2017}. 
-READ UP ON THIS.
+In addition, recombination rate variation may pose a practical limitation to the accuracy of admixture date estimates, and has to be very carefully considered when making inferences about admixture times. This is because both an extended pulse, as well as a non-homogeneous recombination map, lead to an admixture segment distribution that deviates from the expected exponential distribution. Correcting for just one of these factors may thus potentially conflate these issues, and may lead to a substantial underestimate of mean admixture times \cite{sankararaman_date_2012}. Therefore, accurate and population-specific fine-scale recombination maps are needed for accurate admixture time estimates, at least in the case for archaic admixture that happened more than a thousand generations ago; more recent admixture does appear to be somewhat more robust, perhaps because coarser-scale recombination maps are better estimated and differ less between populations \cite{hinch_landscape_2011}. 
 
-To further refine these dates, data from more early modern human and Neandertal genomes are likely needed. In particular, measures based on population differentiation (e.g \citep{browning_analysis_2018,wall_higher_2013,villanea_multiple_2019}) are very promising to understand the different events that contributed to archaic ancestry in present-day humans. While Neandertal ancestry in present-day people has been largely homogenized due to the substantial gene flow between populations, samples from both the Neandertal and early modern human populations immediately involved with the gene flow could likely refine when and where this gene flow happened. 
+Neandertal alleles have been suggested to be deleterious in modern human populations due to an increased mutation load \cite{harris_genetic_2016, juric_strength_2016}. Some details of these models may be slightly affected if migration occurred over a longer time. For example, \cite{harris_genetic_2016} suggested that an initial pulse of gene flow of up to 10\% Neandertal ancestry might be necessary, with very high variance in the first few generations after gene flow. More gradual introgression might mean that such high admixture proportions were never achieved, but rather a continuous migration-selection balance process persisted for the contact period, where deleterious Neandertal alleles continually entered the modern human populations, but were selected against immediately. 
+However, in terms of the overall frequencies achieved, there is likely little difference. For example, Juric et al. showed using a two-locus model that the frequencies of Neandertal haplotypes alone cannot be used to distinguish different admixture histories.
 
-
-In addition, we show that particularly recombination rate variation has to be very carefully considered when making inferences about admixture times. This is because both an extended pulse, as well as a non-homogeneous recombination map, lead to an admixture track distribution that deviates from the expected exponential distribution. Correcting for just one of these factors may thus potentially conflate these issues, and may lead to a substantial underestimate of mean admixture times \cite{sankararaman_date_2012}. Therefore, accurate and population-specific fine-scale recombination maps are likely needed for accurate admixture time estimates, at least in the case for archaic admixture that happened more than a thousand generations ago; more recent admixture does appear to be somewhat more robust, perhaps because coarser-scale recombination maps are better estimated and differ less between populations \cite{hinch_landscape_2011}. 
-
+To further refine these dates, time series data from more early modern human and Neandertal genomes are likely needed. In particular, measures based on population differentiation (e.g \citep{browning_analysis_2018,wall_higher_2013,villanea_multiple_2019}) are very promising to understand the different events that contributed to archaic ancestry in present-day humans. While Neandertal ancestry in present-day people has been largely homogenized due to the substantial gene flow between populations, samples from both the Neandertal and early modern human populations immediately involved with the gene flow could likely refine when and where this gene flow happened. 
 
 
 
 
 
 
-Form our analyses using the extended model, we find that mean admixture time estimates vary little between models. However, we also show that even gene flow lasting thousands of generations may yield data that are practically indistinguishable from a one-generation pulse, and that other modelling and method assumptions have an impact on estimates that are of a similar magnitude or much higher. Particularly assumptions on the recombination rate are highly impactfull, and will lead to sever underestimations of admixture times. Therefore reliable mean time estimates can only be obtained using population specific recombination maps.
+Form our analyses using the extended model, we find that mean admixture time estimates vary little between models. However, we also show that even gene flow lasting thousands of generations may yield data that are practically indistinguishable from a one-generation pulse, and that other modelling and method assumptions have an impact on estimates that are of a similar magnitude or much higher. Particularly assumptions on the recombination rate are highly impactful, and will lead to sever underestimations of admixture times. Therefore reliable mean time estimates can only be obtained using population specific recombination maps.
 
 
-
+OLD
 
 Here, we contrasted this pulse model with scenarios involving more long-standing gene flow.  Our model, assumes that migration rates  follow a Gamma distribution, which results in a simple closed-form expression for the introgressed segment lengths or ALD  distributions. 
 
@@ -690,7 +688,7 @@ since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
 \begin{figure}
 \centering
 \includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS1-1.pdf}
-\caption{\label{fig:figS1} Demographic models of Neandertal admixture with non-Africans used for the simulations. A) Simple demographic model used for ALD simulations with constant population sizes. B) Complex demographic model with substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the final split and additional gene flow between Africans and non-Africans after the Neandertal admixture. The  population sizes after the (final) split are taken fome MSMC/PSMC estimates for the respective populations. C) Demographic model for the direct inference of Neandertal segments in non-Africans taken and modified from Skov et al. 2018. (\citep{skov_detecting_2018})}
+\caption{\label{fig:figS1} Demographic models of Neandertal admixture with non-Africans used for the simulations. A) Simple demographic model used for ALD simulations with constant population sizes. B) Complex demographic model with substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the final split and additional gene flow between Africans and non-Africans after the Neandertal admixture. The  population sizes after the (final) split are taken fome MSMC/PSMC estimates for the respective populations.}
 \end{figure}
 
 \begin{figure}
@@ -698,6 +696,9 @@ since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
 \includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS2-1.pdf}
 \caption{\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time.}
 \end{figure}
+
+
+\subsection{Supplement Tables}
 
 \begin{table}[H]
 
@@ -724,82 +725,74 @@ sigma & 0.46 & 0.01 & 0.44 & 0.47 & 2239.47 & 1\\
 \end{tabular}
 \end{table}
 
-\begin{figure}
-\centering
-\includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS3-1.pdf}
-\caption{\label{fig:figS3} Mean time estimates of the Exponential model A) Mean time estimates for different 
-admixture durations all sampled 50 generations after the admixture ended. B) Mean time estimates for different sampling times after the end of 800
-generations of continuous admixture.}
-\end{figure}
-
-\subsection{Supplement Tables}
 
 \begin{table}[H]
+
 \caption{\label{tab:tableS2}\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit}
 \centering
-\begin{tabular}{l|l|l|l|l}
+\begin{tabular}[t]{l|l|l|l|l}
 \hline
 Model & Parameter & Estimate & 2.5 \% & 97.5 \%\\
 \hline
-Exponential & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
+Exponential & A & 0.018 & 0.018 & 0.018\\
 \hline
-Exponential & mean time & 1540.51741259424 & 1486.87051449324 & 1598.18041766271\\
+Exponential & mean time & 1541 & 1487 & 1598\\
 \hline
-Exponential & c & 1.04922402241663e-05 & 6.11947485562607e-06 & 1.48650055927066e-05\\
+Exponential & c & 1e-05 & 6e-06 & 1.5e-05\\
 \hline
-Lomax (td=1) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
+Lomax (td=1) & A & 0.018 & 0.018 & 0.018\\
 \hline
-Lomax (td=1) & mean time & 1540.54690341371 & 1486.89897832594 & 1598.21101235108\\
+Lomax (td=1) & mean time & 1541 & 1487 & 1598\\
 \hline
-Lomax (td=1) & c & 1.04949518630901e-05 & 6.12218649454983e-06 & 1.48677172316303e-05\\
+Lomax (td=1) & c & 1e-05 & 6e-06 & 1.5e-05\\
 \hline
-Lomax (td=100) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
+Lomax (td=100) & A & 0.018 & 0.018 & 0.018\\
 \hline
-Lomax (td=100) & mean time & 1541.21552745233 & 1487.54431823588 & 1598.90466361173\\
+Lomax (td=100) & mean time & 1541 & 1488 & 1599\\
 \hline
-Lomax (td=100) & c & 1.04778971116211e-05 & 6.10513174308087e-06 & 1.48506624801614e-05\\
+Lomax (td=100) & c & 1e-05 & 6e-06 & 1.5e-05\\
 \hline
-Lomax (td=200) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
+Lomax (td=200) & A & 0.018 & 0.018 & 0.018\\
 \hline
-Lomax (td=200) & mean time & 1543.30241011905 & 1489.55852740936 & 1601.0696602451\\
+Lomax (td=200) & mean time & 1543 & 1490 & 1601\\
 \hline
-Lomax (td=200) & c & 1.04341296352963e-05 & 6.06136426675609e-06 & 1.48068950038366e-05\\
+Lomax (td=200) & c & 1e-05 & 6e-06 & 1.5e-05\\
 \hline
-Lomax (td=400) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
+Lomax (td=400) & A & 0.018 & 0.018 & 0.018\\
 \hline
-Lomax (td=400) & mean time & 1551.70459843938 & 1497.66811836146 & 1609.78635031902\\
+Lomax (td=400) & mean time & 1552 & 1498 & 1610\\
 \hline
-Lomax (td=400) & c & 1.02583870973029e-05 & 5.88562172876263e-06 & 1.46311524658431e-05\\
+Lomax (td=400) & c & 1e-05 & 6e-06 & 1.5e-05\\
 \hline
-Lomax (td=800) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
+Lomax (td=800) & A & 0.018 & 0.018 & 0.018\\
 \hline
-Lomax (td=800) & mean time & 1586.19945700954 & 1530.96172977427 & 1645.57238365183\\
+Lomax (td=800) & mean time & 1586 & 1531 & 1646\\
 \hline
-Lomax (td=800) & c & 9.54350178205991e-06 & 5.17073641351966e-06 & 1.39162671506002e-05\\
+Lomax (td=800) & c & 1e-05 & 5e-06 & 1.4e-05\\
 \hline
-Lomax (td=1000) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
+Lomax (td=1000) & A & 0.018 & 0.018 & 0.018\\
 \hline
-Lomax (td=1000) & mean time & 1613.04056713235 & 1556.86812647683 & 1673.41818158693\\
+Lomax (td=1000) & mean time & 1613 & 1557 & 1673\\
 \hline
-Lomax (td=1000) & c & 8.99447037087496e-06 & 4.62170500233471e-06 & 1.33672357394152e-05\\
+Lomax (td=1000) & c & 9e-06 & 5e-06 & 1.3e-05\\
 \hline
-Lomax (td=1500) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
+Lomax (td=1500) & A & 0.018 & 0.018 & 0.018\\
 \hline
-Lomax (td=1500) & mean time & 1713.23411309364 & 1653.57253761458 & 1777.36206551997\\
+Lomax (td=1500) & mean time & 1713 & 1654 & 1777\\
 \hline
-Lomax (td=1500) & c & 6.99221511836012e-06 & 2.61944974981987e-06 & 1.13649804869004e-05\\
+Lomax (td=1500) & c & 7e-06 & 3e-06 & 1.1e-05\\
 \hline
-Lomax (td=2000) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
+Lomax (td=2000) & A & 0.018 & 0.018 & 0.018\\
 \hline
-Lomax (td=2000) & mean time & 1874.70574615156 & 1809.42109093705 & 1944.87773256239\\
+Lomax (td=2000) & mean time & 1875 & 1809 & 1945\\
 \hline
-Lomax (td=2000) & c & 3.90606333903974e-06 & -4.66702029500504e-07 & 8.27882870757999e-06\\
+Lomax (td=2000) & c & 4e-06 & 0 & 8e-06\\
 \hline
-Lomax (td=2500) & A & 0.0177951442439937 & 0.0177907714786252 & 0.0177995170093623\\
+Lomax (td=2500) & A & 0.018 & 0.018 & 0.018\\
 \hline
-Lomax (td=2500) & mean time & 2128.77896518946 & 2054.64647743473 & 2208.46114940615\\
+Lomax (td=2500) & mean time & 2129 & 2055 & 2208\\
 \hline
-Lomax (td=2500) & c & -6.57497391994452e-07 & -5.0302627605347e-06 & 3.7152679765458e-06\\
+Lomax (td=2500) & c & -1e-06 & -5e-06 & 4e-06\\
 \hline
 \end{tabular}
 \end{table}
