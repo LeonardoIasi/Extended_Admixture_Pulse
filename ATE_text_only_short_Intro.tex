@@ -205,7 +205,7 @@ We conclude that while current methods are sufficient to estimate the mean admix
 compared to the background . The ALD approach estimates linkage
 between the introgressed variants (green circles), wheres the haplotype approach tries
 to estimate the segment directly (grey area). C) Migration rate per generation
-modeled using the extended pulse model for different admixture durations (colored lines). The filled area under the curve indicates the discreat realization of the duration of gene flow $t_d$.
+modeled using the extended pulse model for different admixture durations (colored lines). The filled area under the curve indicates the boundaries of the discreat realization of the duration of gene flow $t_d$.
 The dotted line indicates the maximum time of gene flow. D) The expected LD decay under the extended pulse model.}
 \end{figure}
 
@@ -305,21 +305,21 @@ Here, we define the admixture duration $t_d=4t_m k^{-\frac{1}{2}} $, which is a 
     P(L=l) = t_{m}^{-k} \ \Bigg( \frac{k}{l+\frac{k}{t_{m}}}\Bigg)^{k+1}
 \end{equation}
 
-The distribution  in equation \ref{eq:Likelihood_function_extended_pulse} is known as a \emph{Lomax} or \emph{Pareto-II} distribution, which is a heavier-tailed relative of the Exponential distribution. It is typically parameterized using a shape parameter $\alpha=k$ and scale parameter $\lambda = \frac{k}{t_m}$. 
+The distribution  in equation \ref{eq:Likelihood_function_extended_pulse} is known as a \emph{Lomax} or \emph{Pareto-II} distribution, which is a heavier-tailed relative of the Exponential distribution. It is typically parameterized using a shape parameter $\alpha=k-1$ and scale parameter $\lambda = \frac{k}{t_m}$. 
 
 
 Therefore, the expected segment length distribution under the extended pulse model is the same as under the simple pulse model (\ref{eq:Expected_l_simple_pulse}):
 
 \begin{equation}
 \label{eq:Expected_l_extended_pulse}
-\mathbb{E}[L] = \frac{k}{k-1}\frac{1}{t_{m}}
+\mathbb{E}[L] = \frac{1}{t_{m}}
 \end{equation}
 
 And the variance for $k>2$ is 
 
 \begin{equation}
 \label{eq:Var_l_extended_pulse}
-Var[L] = \frac{1}{t_m^2}\frac{k^3}{(k-1)^2(k-2)}\text{.}
+Var[L] = \frac{1}{t_m^2}\frac{k+1}{k-1}\text{.}
 \end{equation}
 
 
@@ -551,7 +551,7 @@ We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagy
 
 We use coalescent simulations of Neandertal admixture into non-African humans to investigate multi-generation continuous admixture, using a Gamma distribution describing the per generation migration rate (the extended pulse model). Focusing on the ALD approach, we use the ALDER program to infer the decay of LD between ascertained sites informative for Neandertal introgression in non-Africans. The ascertained ALD is fitted with an exponential distribution assuming a one-generation admixture pulse (the simple pulse model).  We simulate this scenario using different conditions of recombination and demography as well as deploying different ascertainment schemes and LD cutoffs. A Generalized Linear Model (GLM) is used to compare all these factors with the effect of an extended pulse on the one-generation assumption. The Lomax distribution describing the ALD under an extended admixture pulse is deployed for fitting the data to obtain the duration of admixture. We test this new fitting with the most inferential factors from the previous analysis on simulated and real data using the ALD.
 
-
+Having established the expectations of the segment length for gene flow under a simple and extended pulse, we want to test the effects of these models using coalescent simulations. First, we compare the inference of simulations under a simple and extended pulse of gene flow while assuming only one generation of gene flow. We contrast this effect with the effect of other model assumptions and analysis parameters. Taking in consideration the most impactive effects, we establish the conditions under which we can use the extended pulse model for gene flow duration inference. Finally, we apply our model the 1000 Genomes data.
 
 
 
