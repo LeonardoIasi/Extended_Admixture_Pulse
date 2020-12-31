@@ -115,6 +115,14 @@ In simulations, we find that while the mean time of admixture is robust to devia
 
 Thus, we find that the mean time alone is not sufficient to infer the characterize the admixture event, and that gene flow could have happened hundreds of generations before or afterwards. Ancient genomes from during the admixture event are thus likely required to further resolve the question when humans and Neandertals admixed.
 
+The time of gene flow between Neandertals and modern humans is an event of great importance in human genetic history. However, most models assume an instantaneous admixture pulse, where all gene flow happens in a single generation. 
+
+Here, we introduce an extended pulse model, that allows for ongoing gene flow. This model introduces a single parameter for the duration of gene flow whilst retaining much of the mathematical simplicity of the simple pulse model. 
+
+In simulations, we find that while the mean time of admixture is robust to deviations in gene flow model, in most cases it is difficult to estimate the duration of gene flow, particularly when the gene flow is very old. We also find that technical parameters, in particular the fine-scale recombination map potentially introduces a major bias.
+
+We conclude that the mean time alone is not sufficient to characterize the admixture event, and that gene flow could have happened hundreds of generations before or afterwards. Ancient genomes from the time around the admixture event are thus likely required to further resolve the question when and for how long humans and Neandertals admixed.
+
 \section{Introduction}\label{introduction}
 
 
@@ -549,7 +557,7 @@ We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagy
 
 \subsection{Introduction to results}\label{introduction to result}
 
-We use coalescent simulations of Neandertal admixture into non-African humans to investigate multi-generation continuous admixture, using a Gamma distribution describing the per generation migration rate (the extended pulse model). Focusing on the ALD approach, we use the ALDER program to infer the decay of LD between ascertained sites informative for Neandertal introgression in non-Africans. The ascertained ALD is fitted with an exponential distribution assuming a one-generation admixture pulse (the simple pulse model).  We simulate this scenario using different conditions of recombination and demography as well as deploying different ascertainment schemes and LD cutoffs. A Generalized Linear Model (GLM) is used to compare all these factors with the effect of an extended pulse on the one-generation assumption. The Lomax distribution describing the ALD under an extended admixture pulse is deployed for fitting the data to obtain the duration of admixture. We test this new fitting with the most inferential factors from the previous analysis on simulated and real data using the ALD.
+
 
 Having established the expectations of the segment length for gene flow under a simple and extended pulse, we want to test the effects of these models using coalescent simulations. First, we compare the inference of simulations under a simple and extended pulse of gene flow while assuming only one generation of gene flow. We contrast this effect with the effect of other model assumptions and analysis parameters. Taking in consideration the most impactive effects, we establish the conditions under which we can use the extended pulse model for gene flow duration inference. Finally, we apply our model the 1000 Genomes data.
 
