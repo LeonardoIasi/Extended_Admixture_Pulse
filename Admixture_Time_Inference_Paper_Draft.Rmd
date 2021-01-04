@@ -245,12 +245,15 @@ Figure_1_C_2 <- function(Timespan_GF_Models,time_l,Split_time,Mean_Time,Colour_P
   GF <- as.data.frame(GF)
   colnames(GF) <- c('Time',Timespan_GF_Models)
   GF.melted <- melt(GF, id = "Time")
-  Px <-  ggplot(data =GF.melted, mapping=aes(x = Time, y = value,color=variable)) +
-    geom_area(position = 'identity',mapping = aes(x = ifelse(Time>Mean_Time-(as.numeric(as.character(variable))/2) & 
-                                                               Time< Mean_Time+(as.numeric(as.character(variable))/2) , Time, NA),
-                                                  fill=variable),show.legend = F,alpha = 0.33) +
+  Px <-  ggplot(data =GF.melted, mapping=aes(x = Time, y = value,color=variable,fill=variable)) +
+    # outcomented part colors the area of t_d
+    #geom_area(position = 'identity',mapping = aes(x = ifelse(Time>Mean_Time-(as.numeric(as.character(variable))/2) & Time< Mean_Time+(as.numeric(as.character(variable))/2) , Time, NA),fill=variable),show.legend = F,alpha = 0.33)+
+    geom_area(position = 'identity',mapping = aes(x = ifelse(Time<Mean_Time-(as.numeric(as.character(variable))/2) 
+     , Time, NA),fill=variable),show.legend = F,alpha = 0.33)+
+    geom_area(position = 'identity',mapping = aes(x = ifelse(Time>Mean_Time+(as.numeric(as.character(variable))/2) 
+       , Time, NA),fill=variable),show.legend = F,alpha = 0.33)+
     geom_line(show.legend = F)+
-    coord_cartesian(ylim = c(0,2.5e-04),xlim = c(0,3050),expand = 0)+
+    coord_cartesian(ylim = c(0,1e-04),xlim = c(0,3050),expand = 0)+
     geom_vline(xintercept=Split_time,linetype=3,color='black')+
     scale_color_manual(values = Colour_P)+
     scale_fill_manual(values = Colour_P)+
@@ -315,7 +318,6 @@ Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time
 
 
 t_d=c(1,100,200,400,800,1000,1500,2000,2500)
-t_d=c(1,100,200,400,800,1000,1500,2000)
 cbPalette_viridis <- viridis(length(t_d),option = "D")
 
 P_Gamma <- Figure_1_C_2(c(t_d),3100,2550,1500,Colour_P = cbPalette_viridis,3,3100)
@@ -706,7 +708,7 @@ ggplot(Post_effect_size_est,aes(x=row.names(Post_effect_size_est),y=as.numeric(a
   labs(y = "Standardized dif. est./sim. time")+
   theme(plot.title = element_text(hjust = 0.5,size = 12))+
   #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
-  scale_x_discrete(labels= c("Standard Model","Continuous GF","Variying recombination","Complex Demography","d0=0.02 cM","HES")
+  scale_x_discrete(labels= c("Standard Model","Extended GF","Variying recombination","Complex Demography","d0=0.02 cM","HES")
                   ,guide = guide_axis(angle = 90))+
   scale_color_manual("Gene Flow Model",
                      values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
@@ -1096,7 +1098,7 @@ ggdata_sampling_50_gen_GF_Length$Sample_Time <- 50
 
 Mean_GF_F_50 <- Plot_all_together_samples_50_gen_flipped(ggdata_all_together_samples_50_t_m,cbPalette_viridis)
 Duration_GF_F_50 <- Plot_sampling_50_gen_GF_Length_flipped(ggdata_sampling_50_gen_GF_Length,cbPalette_viridis)
-Constant_sampling_time <- ggarrange(Mean_GF_F_50,Duration_GF_F_50,
+Constant_sampling_time <- ggarrange(Mean_GF_F_50,Duration_GF_F_50,labels = c("A","B"),
           ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
 
 # Plot varying gen from Admixture
@@ -1109,7 +1111,7 @@ ggdata_sampling_varying_gen_GF_Length$Model <- "Extended Pulse"
 
 Mean_GF_F_varying <- Plot_all_together_sampling_varying_gen_t_GF(ggdata_all_together_samples_varying_t_m,cbPalette_viridis)
 Duration_GF_F_varying <- Plot_sampling_varying_gen_GF_Length_flipped(ggdata_sampling_varying_gen_GF_Length,cbPalette_viridis)
-Varying_sampling_time <- ggarrange(Mean_GF_F_varying,Duration_GF_F_varying,
+Varying_sampling_time <- ggarrange(Mean_GF_F_varying,Duration_GF_F_varying,labels = c("C","D"),
           ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
 
 ```
@@ -1122,7 +1124,7 @@ Varying_sampling_time <- ggarrange(Mean_GF_F_varying,Duration_GF_F_varying,
 #                   labels = c("A","B","C","D"),
 #                   ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
 # Plot Together
-Extended_Pulse_Evaluation <- ggarrange(Constant_sampling_time,Varying_sampling_time,nrow = 2,labels = c("A","B"),common.legend = T,legend = 'bottom')
+Extended_Pulse_Evaluation <- ggarrange(Constant_sampling_time,Varying_sampling_time,nrow = 2,common.legend = T,legend = 'bottom')
 
 Extended_Pulse_Evaluation
 
@@ -1227,7 +1229,6 @@ for(i in list(Expo_fit_result,all_t_lomax_est[[1]],all_t_lomax_est[[2]],all_t_lo
 ```
 
 ```{r message=FALSE, echo=FALSE,warning=FALSE}
-
 Get_CI_s_approx_fn <- function(fit,i,n_data){
   org <- coef(fit)[[i]]
   lwr_approx <- coef(fit)[[i]]*(1-(1.96/sqrt(length(n_data[,1]))))
@@ -1244,16 +1245,16 @@ Get_CI_other_approx_fn <- function(fit,i,n_data,sigma){
   return(param_CI)
 }
 
-A_param=Get_CI_other_approx_fn(Expo_fit_result,1,xdata,summary(Expo_fit_result)$sigma)
-t_m=Get_CI_s_approx_fn(Expo_fit_result,2,xdata)
-c_param=Get_CI_other_approx_fn(Expo_fit_result,3,xdata,summary(Expo_fit_result)$sigma)
+A_param=round(Get_CI_other_approx_fn(Expo_fit_result,1,xdata,summary(Expo_fit_result)$sigma),3)
+t_m=round(Get_CI_s_approx_fn(Expo_fit_result,2,xdata),0)
+c_param=round(Get_CI_other_approx_fn(Expo_fit_result,3,xdata,summary(Expo_fit_result)$sigma),6)
 Expo_fit_tabel <- rbind(A_param,t_m,c_param)
 
 Lomax_fit_tabel <- c()
 for(model in all_t_lomax_est){
-  A_parm=Get_CI_other_approx_fn(model,2,xdata,summary(model)$sigma)
-  t_m=Get_CI_s_approx_fn(model,1,xdata)
-  c_param=Get_CI_other_approx_fn(model,3,xdata,summary(Expo_fit_result)$sigma)
+  A_parm=round(Get_CI_other_approx_fn(model,2,xdata,summary(model)$sigma),3)
+  t_m=round(Get_CI_s_approx_fn(model,1,xdata),0)
+  c_param=round(Get_CI_other_approx_fn(model,3,xdata,summary(Expo_fit_result)$sigma),6)
   Lomax_fit_tabel_x <- rbind(A_param,t_m,c_param)
   Lomax_fit_tabel <- rbind(Lomax_fit_tabel,Lomax_fit_tabel_x)
 }
