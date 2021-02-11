@@ -49,6 +49,11 @@ bibliography: References/MyLibraryATE.bib
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r, echo=FALSE, message = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE, dev = "cairo_pdf")
+```
+
 ```{r echo=FALSE}
 #Make code wrap text so it doesn't go off the page when Knitting to PDF
 library(knitr)
@@ -84,6 +89,7 @@ text-align: justify}
 
 ```{r message=FALSE, echo=F,warning=FALSE}
 suppressPackageStartupMessages({
+  library(extrafont)
   library(VGAM)
   library(tidyverse)
   library(ggplot2)
@@ -99,6 +105,8 @@ suppressPackageStartupMessages({
   library(bbmle)
   library(DPQ)
 })
+
+loadfonts()
 
 Results_Table <- function(Table_Path) {
   header_for_Result=c("A","m","c","RSS_Expo","error","Scenario","GF_Start","GF_Stop","Ascertained","min_dist","Gene_Flow_Model")
