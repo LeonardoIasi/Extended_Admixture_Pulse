@@ -2,7 +2,7 @@
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
-\usepackage{fixltx2e} % provides \textsubscript
+%\usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
@@ -67,6 +67,24 @@
 \let\rmarkdownfootnote\footnote%
 \def\footnote{\protect\rmarkdownfootnote}
 
+%%% HELPER CODE FOR DEALING WITH EXTERNAL REFERENCES
+\usepackage{xr}
+\makeatletter
+\newcommand*{\addFileDependency}[1]{
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\makeatother
+
+\newcommand*{\myexternaldocument}[1]{
+    \externaldocument{#1}
+    \addFileDependency{#1.tex}
+    \addFileDependency{#1.aux}
+}
+%%% END HELPER CODE
+
+\myexternaldocument{Supplements}
 
 \usepackage{setspace}
 \doublespacing
@@ -91,14 +109,14 @@
 
 
         \vspace*{1cm}
+    \begin{center}       
+        \Huge
+        \vspace{1cm}
+        An extended admixture pulse model reveals the limits to the dating of Human-Neandertal introgression
         
-            \Huge
-        \vspace*{1cm}
-            \centering\textf{An extended admixture pulse model reveals the limits to the dating of Human-Neandertal introgression}
-        
-       \vspace{1.0cm}
+        \vspace{1.0cm}
         \large
-        \text{Iasi, Leonardo N. M. \textsuperscript{1,2} and Peter , Benjamin M. \textsuperscript{1,3}} \\ 
+        Iasi, Leonardo N. M. \textsuperscript{1,2} and Peter , Benjamin M. \textsuperscript{1,3} \\ 
         
         \vspace{1.0cm}
         
@@ -110,7 +128,7 @@
         benjamin\_peter@eva.mpg.de \\
         \vspace{1.0cm}
         \text{February 11, 2021}
-
+    \end{center}  
      
 
             
@@ -186,7 +204,7 @@ Here, we first define the extended admixture pulse model and derive the resultin
 
 \begin{figure}
 \centering
-\includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig1-1.pdf}
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig1-1.pdf}
 \caption{\label{fig:fig1} A) Neandertal introgression into non-Africans with a multitude of potential admixture durations. B) The time and duration of admixture results in different length distributions of introgressed chromosomal segments (grey) containing  Neandertal variants (green circles)  in high LD to each other
 compared to the background (human variants white stars). The ALD approach estimates linkage
 between the introgressed variants (green circles), whereas the haplotype approach tries
@@ -366,7 +384,7 @@ admixture time estimates, we compare scenarios where $t_m$ is fixed at 1500 and 
 
 \begin{figure}
 \centering
-\includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig2-1.pdf}
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig2-1.pdf}
 \caption{\label{fig:fig2} A) Comparison of mean admixture time estimates
 between simple and extended pulse gene flow for different admixture times in generations.
 The duration of continuous gene flow $t_d$ corresponds to 50\% of the mean
@@ -401,7 +419,7 @@ admixture time estimates for a simple or extended admixture pulse are similarly 
 
 \begin{figure}
 \centering
-\includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig3-1.pdf}
+\includegraphics[width=8cm,height=16cm,keepaspectratio]{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig3-1.pdf}
 \caption{\label{fig:fig3} GLM effect size estimates and 95\% C.I. for the parameters: gene flow model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates.}
 \end{figure}
 
@@ -426,7 +444,7 @@ We also find that estimates of $t_d$ differ substantially between recombination 
 
 \begin{figure}
 \centering
-\includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig4-1.pdf}
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig4-1.pdf}
 \caption{\label{fig:fig4} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene
 flow durations $t_d$ all sampled 50 generations after the gene flow ended. B)
 Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times following 800
@@ -442,7 +460,7 @@ In the previous section, we have shown using simulations that it might be diffic
 
 \begin{figure}
 \centering
-\includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig5-1.pdf}
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig5-1.pdf}
 \caption{\label{fig:fig5} Different admixture duration models ranging
 from a one generation pulse to 2500 generations of gene flow for Neandertal interbreeding using all 1k Genome CEU individuals as the admixed population
 with all YRI and 3 high coverage Neandertals as reference populations. A) Weighted LD normal scaled B) Weighted LD log scaled.}
@@ -576,6 +594,10 @@ To evaluate when we can reject a given admixture durations (including a one gene
 
 We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagyrskaya high coverage Neandertals, including the 107 unrelated individuals from the YRI as representatives of unadmixed Africans and all CEU as admixed Europeans. We only consider biallelic sites, and determine the ancestral allele using  the Chimpanzee reference genome (panTro4). We used the CEU specific fine-scale recombination map \citep{spence_inference_2019} to convert the physical distance between sites into genetic distance. The compatibility intervals for the mean time estimates are obtained by using then normal approximation to the chi-squared distribution. 
 
+\section{Acknowledgments}
+
+We thank Janet Kelso, Fabrizio Mafessoni, St\'{e}phan Peyr\'{e}gne and Laurits Skov for helpful comments and discussions.
+This work was supported by the Max Planck Society.
 
 
 
@@ -584,174 +606,11 @@ We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagy
 \bibliography{References/MyLibraryATE}
 
 
-\pagebreak
-\setcounter{figure}{0} \renewcommand{\figurename}{Fig. S}
-\renewcommand{\tablename}{Tab. S}
-
-\section{Supplement}\label{supplement}
-
-\subsection{Extended Pulse Model}
-
-In this section, we describe in detail the derivation of the extended pulse model, where the gene flow over time is modeled as a Gamma distribution with shape parameter $k$ and scale parameter $\frac{k}{t_m}$. Here, $L_i$ is the length of a segment entered at time $T_i$. We assume each segment length at time $T_i$ to be described by an exponential distribution (eq. \ref{eq:generall_length_distribution}).
-
-To get the likelihood function for the segment length distribution $P(L_i)$ under the extended pulse we have to solve the following integral:
-
-\begin{equation}
-\label{eq:Likelihood_function_extended_pulse_1}
-    P(L_i=l) = \int_{0}^{\infty} \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}t^{k-1}e^{-t\frac{k}{t_m}}\ t\ e^{-tl} \ dt 
-\end{equation}
-
-we can factor out all terms not depending on $t$:
-
-\begin{equation}
-\label{eq:Likelihood_function_extended_pulse_2}
-    P(L=l) = \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \int_{0}^{\infty}\ t^{k-1}e^{-t\frac{k}{t_m}}\ t\ e^{-tl} \ dt 
-\end{equation}
-
- 
-we can re-write the integral into the  form of the known integral $\int_{0}^{\infty}\ x^n e^{-\alpha x} \ dx= \frac{\Gamma{n+1}}{\alpha^{n+1}}$
-
-\begin{equation}
-\begin{split}
-\label{eq:Likelihood_function_extended_pulse_3}
-    P(L=l) &= \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \int_{0}^{\infty}\ t^{k}e^{-(l+\frac{k}{t_m})t} \ dt \\ 
-    P(L=l) &= \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \frac{\Gamma(k+1)}{(l+\frac{k}{t_m})^{k+1}} 
-\end{split}
-\end{equation}
-
-since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
+%\pagebreak
+%\setcounter{figure}{0} %\renewcommand{\figurename}{Fig. S}
+%\renewcommand{\tablename}{Tab. S}
 
 
 
-\begin{equation}
-\begin{split}
-\label{eq:Likelihood_function_extended_pulse_final}
-    P(L=l) &= \frac{k}{(\frac{t_m}{k})^k \ (l+\frac{k}{t_m})^{k+1}} \\
-    &= \frac{k(\frac{k}{t_m})^k} {(l+\frac{k}{t_{m}})^{k+1}}  \\
-    &= \frac{k^{k+1}} { t_{m}^k \ (l+\frac{k}{t_{m}})^{k+1}}  \\
-    &= t_{m} \ \Bigg( \frac{k}{t_{m}(l+\frac{k}{t_{m}})}\Bigg)^{k+1} \\
-    P(L=l) &= t_{m}^{-k} \ \Bigg( \frac{k}{(l+\frac{k}{t_{m}})}\Bigg)^{k+1}
-\end{split}
-\end{equation}
-
-
-\subsection{Supplement Figures}
-
-\begin{figure}
-\centering
-\includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS1-1.pdf}
-\caption{\label{fig:figS1} Demographic models of Neandertal admixture with non-Africans used for the simulations. A) Simple demographic model used for ALD simulations with constant population sizes. B) Complex demographic model with substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the final split and additional gene flow between Africans and non-Africans after the Neandertal admixture. The  population sizes after the (final) split are taken fome MSMC/PSMC estimates for the respective populations.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS2-1.pdf}
-\caption{\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time.}
-\end{figure}
-
-
-\subsection{Supplement Tables}
-
-\begin{table}[H]
-
-\caption{\label{tab:tableS1}\label{tab:tableS1} Mean, standart deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
-\centering
-\begin{tabular}{l|r|r|r|r|r|r}
-\hline
-  & mean & sd & 5.5\% & 94.5\% & n\_eff & Rhat\\
-\hline
-a & 0.12 & 0.02 & 0.08 & 0.16 & 1220.94 & 1\\
-\cline{1-7}
-bG & -0.31 & 0.02 & -0.34 & -0.28 & 1559.84 & 1\\
-\cline{1-7}
-bR & -1.73 & 0.02 & -1.76 & -1.70 & 2112.69 & 1\\
-\cline{1-7}
-bD & -0.22 & 0.02 & -0.25 & -0.19 & 2036.66 & 1\\
-\cline{1-7}
-bm & 0.13 & 0.02 & 0.10 & 0.17 & 1657.66 & 1\\
-\cline{1-7}
-bA & -0.32 & 0.02 & -0.35 & -0.29 & 1721.62 & 1\\
-\cline{1-7}
-sigma & 0.46 & 0.01 & 0.44 & 0.47 & 2239.47 & 1\\
-\hline
-\end{tabular}
-\end{table}
-
-
-\begin{table}[H]
-
-\caption{\label{tab:tableS2}\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit}
-\centering
-\begin{tabular}[t]{l|l|l|l|l}
-\hline
-Model & Parameter & Estimate & 2.5 \% & 97.5 \%\\
-\hline
-Exponential & A & 0.018 & 0.018 & 0.018\\
-\hline
-Exponential & mean time & 1541 & 1487 & 1598\\
-\hline
-Exponential & c & 1e-05 & 6e-06 & 1.5e-05\\
-\hline
-Lomax (td=1) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=1) & mean time & 1541 & 1487 & 1598\\
-\hline
-Lomax (td=1) & c & 1e-05 & 6e-06 & 1.5e-05\\
-\hline
-Lomax (td=100) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=100) & mean time & 1541 & 1488 & 1599\\
-\hline
-Lomax (td=100) & c & 1e-05 & 6e-06 & 1.5e-05\\
-\hline
-Lomax (td=200) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=200) & mean time & 1543 & 1490 & 1601\\
-\hline
-Lomax (td=200) & c & 1e-05 & 6e-06 & 1.5e-05\\
-\hline
-Lomax (td=400) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=400) & mean time & 1552 & 1498 & 1610\\
-\hline
-Lomax (td=400) & c & 1e-05 & 6e-06 & 1.5e-05\\
-\hline
-Lomax (td=800) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=800) & mean time & 1586 & 1531 & 1646\\
-\hline
-Lomax (td=800) & c & 1e-05 & 5e-06 & 1.4e-05\\
-\hline
-Lomax (td=1000) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=1000) & mean time & 1613 & 1557 & 1673\\
-\hline
-Lomax (td=1000) & c & 9e-06 & 5e-06 & 1.3e-05\\
-\hline
-Lomax (td=1500) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=1500) & mean time & 1713 & 1654 & 1777\\
-\hline
-Lomax (td=1500) & c & 7e-06 & 3e-06 & 1.1e-05\\
-\hline
-Lomax (td=2000) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=2000) & mean time & 1875 & 1809 & 1945\\
-\hline
-Lomax (td=2000) & c & 4e-06 & 0 & 8e-06\\
-\hline
-Lomax (td=2500) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=2500) & mean time & 2129 & 2055 & 2208\\
-\hline
-Lomax (td=2500) & c & -1e-06 & -5e-06 & 4e-06\\
-\hline
-\end{tabular}
-\end{table}
-
-\section{Acknowledgments}
-
-We thank Janet Kelso, Fabrizio Mafessoni, St\'{e}phan Peyr\'{e}gne and Laurits Skov for helpful comments and discussions.
-This work was supported by the Max Planck Society.
 
 \end{document}
