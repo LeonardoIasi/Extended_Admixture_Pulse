@@ -824,7 +824,7 @@ Plot_sampling_50_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis){
       axis.text.y=element_blank(),
       axis.ticks.y=element_blank())+
     coord_cartesian(xlim = c(0,4100), expand = 0)+
-    scale_x_continuous(breaks = seq(0, 4100, by = 500))+
+    scale_x_continuous(breaks = seq(0, 4100, by = 1000))+
     scale_color_manual("Simulations",
                        values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
                        labels = c("HapMap HapMap corrected","HapMap AAMap corrected","HapMap not corrected","Constant Recombination"),
@@ -872,7 +872,7 @@ Plot_sampling_varying_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis
       axis.text.y=element_blank(),
       axis.ticks.y=element_blank())+
     coord_cartesian(xlim = c(0,4100), expand = 0)+
-    scale_x_continuous(breaks = seq(0, 4100, by = 500))+
+    scale_x_continuous(breaks = seq(0, 4100, by = 1000))+
     scale_color_manual("Simulations",
                        values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
                        labels = c("HapMap HapMap corrected","HapMap AAMap corrected","HapMap not corrected","Constant Recombination"),
@@ -1079,7 +1079,7 @@ Extended_Pulse_Evaluation_2
 dev.off()
 ```
 
-``` {r fig4, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=8,fig.height=10,fig.cap="\\label{fig:fig4} Parameter estimate for different sampling and admixture duration times using different methods for assigning genetic length A) Mean time estimates from the continuous model fit of different gene flow length all sampled 50 generations after the gene flow enden. B) Lomax duration estimat of the scenario C) Mean time estimates from the continuous model fit of different sampling times after the end of 800 generations of gene flow. D) Lomax duration estimat of the scenario"}
+``` {r fig4, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=10,fig.height=12,fig.cap="\\label{fig:fig4} Parameter estimate for different sampling and admixture duration times using different methods for assigning genetic length A) Mean time estimates from the continuous model fit of different gene flow length all sampled 50 generations after the gene flow enden. B) Lomax duration estimat of the scenario C) Mean time estimates from the continuous model fit of different sampling times after the end of 800 generations of gene flow. D) Lomax duration estimat of the scenario"}
 
 Extended_Pulse_Evaluation <- ggarrange(Constant_sampling_time,Varying_sampling_time,nrow = 2,common.legend = T,legend = 'bottom')
 
