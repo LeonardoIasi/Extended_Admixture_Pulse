@@ -25,7 +25,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={Title: Supplements},
+            pdftitle={Title: Human Neandertal Admixture dating limits MBE Supplements},
             pdfauthor={Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary Anthropology, MPI EVA), Dr.~Benjamin Marco Peter (MPI EVA, benjamin\_peter@eva.mpg.de)},
             pdfborder={0 0 0},
             breaklinks=true}
@@ -82,11 +82,13 @@
 \begin{titlepage}
 
 
-        \vspace*{1cm}
+    \vspace*{1cm}
         
+        
+    \begin{center}       
         \large
-        \vspace*{1cm}
-            \centering{An extended admixture pulse model reveals the limits to the dating of Human-Neandertal introgression}
+        \vspace{1cm}
+        An extended admixture pulse model reveals the limits to the dating of Human-Neandertal introgression
         
        \vspace{1.0cm}
         \large
@@ -95,14 +97,14 @@
         \vspace{1.0cm}
             \Huge
             \textbf{Supplement Material}
-     
+    \end{center} 
 
             
 
 \end{titlepage}
 \section{Extended Pulse Model}
 
-In this section, we describe in detail the derivation of the extended pulse model, where the gene flow over time is modeled as a Gamma distribution with shape parameter $k$ and scale parameter $\frac{k}{t_m}$. Here, $L_i$ is the length of a segment entered at time $T_i$. We assume each segment length at time $T_i$ to be described by an exponential distribution (eq. \ref{eq:generall_length_distribution}).
+In this section, we describe in detail the derivation of the extended pulse model, where the gene flow over time is modeled as a Gamma distribution with shape parameter $k$ and scale parameter $\frac{k}{t_m}$. Here, $L_i$ is the length of a segment entered at time $T_i$. We assume each segment length at time $T_i$ to be described by an exponential distribution.
 
 To get the likelihood function for the segment length distribution $P(L_i)$ under the extended pulse we have to solve the following integral:
 
@@ -156,7 +158,7 @@ since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
 \begin{figure}
 \centering
 \includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS2-1.pdf}
-\caption{\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time.}
+\caption{\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for simulations of all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = simple/extended. Simulations under the simple pulse are indicated in purple, extended pulse in turquoise. Each simulation was repeated 100 times. Dotted horizontal line indicates no difference between true and estimated time.}
 \end{figure}
 
 
