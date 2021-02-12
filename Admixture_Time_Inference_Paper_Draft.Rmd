@@ -1562,6 +1562,7 @@ x.axes.lables=c("HES\n0.02\nCom\nCon","HES\n0.02\nCom\nCon","HES\n0.05\nCom\nCon
                 ,"HES\n0.02\nSim\nVar","HES\n0.02\nSim\nVar","HES\n0.05\nSim\nVar","HES\n0.05\nSim\nVar"
                 ,"LES\n0.02\nSim\nVar","LES\n0.02\nSim\nVar","LES\n0.05\nSim\nVar","LES\n0.05\nSim\nVar")
 
+
 Plot_Fig_2_A(Plot_model,x.axes.lables)
 
 ```
