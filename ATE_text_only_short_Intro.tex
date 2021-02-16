@@ -138,7 +138,7 @@
 
 \section{Abstract}\label{abstract}
 
-Neandertal DNA makes up 2-3\% of the genomes of all non-African individuals. The length of Neandertal ancestry segments in modern humans has been used to estimate that the mean time of gene flow occurred during the expansion of modern humans into Eurasia, but the precise dates of this gene flow remain largely unknown. Here, we introduce an extended admixture pulse model that allows joint estimation of the timing and duration of gene flow. This model contains two parameters, one for the mean time of gene flow, and one for the duration of gene flow whilst retaining much of the mathematical simplicity of the simple pulse model. In simulations, we find that estimates of the mean time of admixture are largely robust to details in gene flow models. In contrast, the duration of the gene flow is much more difficult to recover, except under ideal circumstances where gene flow is recent or the exact recombination rate is known. We conclude that gene flow from Neandertals into modern humans could might have happened over hundreds of generations. Ancient genomes from the time around the admixture event are thus likely required to resolve the question when, where and for how long humans and Neandertals interacted.
+Neandertal DNA makes up 2-3\% of the genomes of all non-African individuals. The length of Neandertal ancestry segments in modern humans has been used to estimate that the mean time of gene flow occurred during the expansion of modern humans into Eurasia, but the precise dates of this gene flow remain largely unknown. Here, we introduce an extended admixture pulse model that allows joint estimation of the timing and duration of gene flow. This model contains two parameters, one for the mean time of gene flow, and one for the duration of gene flow whilst retaining much of the mathematical simplicity of the simple pulse model. In simulations, we find that estimates of the mean time of admixture are largely robust to details in gene flow models. In contrast, the duration of the gene flow is much more difficult to recover, except under ideal circumstances where gene flow is recent or the exact recombination rate is known. We conclude that gene flow from Neandertals into modern humans could have happened over hundreds of generations. Ancient genomes from the time around the admixture event are thus likely required to resolve the question when, where, and for how long humans and Neandertals interacted.
 
 \section{Introduction}\label{introduction}
 
@@ -149,14 +149,14 @@ As a second line of evidence, all non-Africans carry genomic segments that are v
 
 %\paragraph{Why do we care about timing of gene flow}.
 
-However, uncertainty remains about when, where and over which period of time this gene flow happened. A better understanding of  the location and timing of the gene flow, would allow us to place  constraints on the timing of movements of early modern humans. It would also affect assumptions about introgressed allele frequencies and their distribution in present-day human genomes and conclusions drawn about the phenotypic effects and selective pressures of introduced alleles.
+However, uncertainty remains about when, where, and over which period of time this gene flow happened. A better understanding of  the location and timing of the gene flow would allow us to place  constraints on the timing of movements of early modern humans. It would also affect assumptions about introgressed allele frequencies and their distribution in present-day human genomes and conclusions drawn about the phenotypic effects and selective pressures of introduced alleles.
 
  
 Archaelogical evidence puts some boundaries on the times when Neandertals and modern humans might have interacted. The earliest modern human remains outside of Africa are dated to around 188 thousand years ago (kya)  \citep{hershkovitz_earliest_2018,stringer_when_2018} and the latest Neandertals are suggested to be between 37 kya and 39 kya old \citep{higham_timing_2014,zilhao_precise_2017}. Thus the time window where Neandertals and modern humans might have been in the same area stretches more than 140,000 years. However, there is less direct evidence of modern humans and Neandertals in the same geographical location at the same time. In Europe, for example, Neandertals and modern humans likely overlapped only for less than 10,000 years \citep{bard_extended_2020}. 
 
 \subsection{Genetic dating of gene flow}\label{Admixture models}
 
-The most common approach to to learn about admixture dates from genetic data uses a \emph{recombination clock} model: Conceptually, admixture segments are the result of the introduced chromosomes being broken down by recombination; the offspring of an archaic and a modern human parent will have one whole chromosome each of either ancestry. Thus, the offsprings' markers are in full ancestry linkage disequilibrium (ALD); all archaic variants are present on one DNA molecule, and all modern human one on the other one.
+The most common approach to learn about admixture dates from genetic data uses a \emph{recombination clock} model: Conceptually, admixture segments are the result of the introduced chromosomes being broken down by recombination; the offspring of an archaic and a modern human parent will have one whole chromosome each of either ancestry. Thus, the offsprings' markers are in full ancestry linkage disequilibrium (ALD); all archaic variants are present on one DNA molecule, and all modern human one on the other one.
 
 If this individual has offspring in a largely modern human population, in each generation meiotic recombination will reshuffle the chromosomes, progressively breaking down the ancestral chromosome down into shorter segments of archaic ancestry \citep{falush_inference_2003, gravel_population_2012,liang_lengths_2014}, and ALD similarly decreases with each generation after gene flow \citep{chakraborty_admixture_1988,stephens_mapping_1994,wall_detecting_2000}.
 
@@ -180,9 +180,9 @@ The segments of putative Neanderthal origin in the \textit{Ust'-Ishim} individua
 
 The admixture pulse model assumes that gene flow occurs over a short time period; however it is currently unclear how short a time could still be consistent with the data. This makes admixture time estimates hard to interpret, as more complex admixture scenarios might be masked, and so gene flow could have happened tens of thousands of years before or after the estimated admixture time.
 
-That admixture histories are often complicated has been shown in the context of Denisovan admixture, where at least two distinct admixture events into East Asians and Papuans were proposed \cite{browning_analysis_2018, jacobs_multiple_2019}. While the length distributions of admixture segments are similar between the populations, there are significant differences in the geographic distribution of admixture fragments, and the similarity to the sequenced high-coverage genome \citep{browning_analysis_2018, massilani_denisovan_2020}. 
+That admixture histories are often complicated has been shown in the context of Denisovan introgression into modern humans, where at least two distinct admixture events into East Asians and Papuans were proposed \citep{browning_analysis_2018, jacobs_multiple_2019}. While the length distributions of admixture segments are similar between the populations, there are significant differences in the geographic distribution of admixture fragments, and the similarity to the sequenced high-coverage genome \citep{browning_analysis_2018, massilani_denisovan_2020}. 
 
-In contrast, all Neandertal admixture segments are most similar to the Vindija genome \cite{prufer_high-coverage_2017}. However, differences in admixture proportions \citep{meyer_high-coverage_2012, wall_higher_2013,kim_selection_2015,vernot_complex_2015,villanea_multiple_2019} and direct evidence from early modern humans with very recent Neandertal ancestry from Oase and Bacho Kiro hint at more complex admixture histories \citep{fu_early_2015,hajdinjak_early_2021}.
+In contrast, all Neandertal admixture segments are most similar to the Vindija genome \citep{prufer_high-coverage_2017}. However, differences in admixture proportions \citep{meyer_high-coverage_2012, wall_higher_2013,kim_selection_2015,vernot_complex_2015,villanea_multiple_2019} and direct evidence from early modern humans with very recent Neandertal ancestry from Oase and Bacho Kiro hint at more complex admixture histories \citep{fu_early_2015,hajdinjak_early_2021}.
 
 %\subsection{Previous attempts of a general admixture model and ours}\label{Previous attempts of a general admixture model and ours}
 
@@ -329,13 +329,13 @@ Var[L] = \frac{k^3}{(k-1)^2 (k-2)} \frac{1}{t_m^2}\text{.}
 \end{equation}
 
 
-Again, the term involving $k$s is strictly larger than one, which matches our intuition that ongoing gene flow should result in a larger variance in admixture segments length. As $k$ approaches infinity, this term approaches one and we recover the moments of the exponential distribution, since $k$ is inversely proportional to the admixture duration.
+Again, the term involving $k$'s is strictly larger than one, which matches our intuition that ongoing gene flow should result in a larger variance in admixture segments length. As $k$ approaches infinity, this term approaches one and we recover the moments of the exponential distribution, since $k$ is inversely proportional to the admixture duration.
 
 
 \subsubsection{Admixture time estimates}\label{admixture time estimates}
 For inference, either the admixture segment lengths or ALD can be used. In cases where the admixture segment length is known, equation \ref{eq:Likelihood_function_extended_pulse} is the likelihood function and can be used for inference. For inference using ALD,  we follow \cite{moorjani_history_2011} and use the decay of ALD with genetic distance as a statistic, and fit the tail function $P(L_i > d)$, which can be calculated by integrating equations \ref{eq:Likelihood_function_simple_pulse} and \ref{eq:Likelihood_function_extended_pulse}.
 
-The tail functions under the simple pulse model is 
+The tail function under the simple pulse model is 
 \begin{equation}
 \label{eq:simple_pulse_tail}
 P(L_i > d) = e^{-t_m \:d}
@@ -367,13 +367,13 @@ using the \texttt{nls} function implemented in the R \texttt{stats v.3.6.2} pack
 
 %\subsection{Introduction to results}\label{introduction to result}
 
-We test our ability to estimate the admixture time and duration from coalescent simulations using \texttt{msprime} \citep{kelleher_efficient_2016}. First, we compare the inference of simulations under simple and extended pulses of gene flow, while assuming only one generation of gene flow for both scenarios. We contrast this effect with the effect of other model assumptions and analysis parameters. Taking in consideration factors with the most substantial effects, we establish the conditions under which we can use the extended pulse model for gene flow duration inference. Finally, we apply our model to the 1000 Genomes data \citep{the_1000_genomes_project_consortium_global_2015}.
+We test our ability to estimate the admixture time and duration from coalescent simulations using \texttt{msprime} \citep{kelleher_efficient_2016}. First, we compare the inference of simulations under simple and extended pulses of gene flow, while assuming only one generation of gene flow for both scenarios. We contrast this effect with the effect of other model assumptions and analysis parameters. Taking in consideration factors with the most substantial effects, we establish the conditions under which we can use the extended pulse model for gene flow duration inference. Finally, we apply our model to the 1000 Genomes Project data \citep{the_1000_genomes_project_consortium_global_2015}.
 
 
 
 \subsection{Model comparisons}\label{Model comparison}
 We first present the result of inference assuming a simple pulse model on simulations under the extended pulse model (Figure \ref{fig:fig2}). Therefore we simulate 3 \% Neandertal admixture into non-Africans using a simple demographic model (Supplement Figure \ref{fig:figS1}A). To enrich for Neandertal informative sites we use the lower-enrichment ascertainment scheme (LES)  which only considers sites that are fixed for the ancestral state in Africans and polymorphic or fixed derived in Neandertals. Pairs of SNPs with a minimal distance smaller 0.05 cM are excluded.
-In Figure \ref{fig:fig2}A, we plot results for both the simple and extended pulse model, for $t_m$ between 250 and 2000 generations, and $t_d = \frac{t_m}{2}$  (i.e. if $t_d= 500$ generations, then $t_d = 250$ and most gene flow occurs between  375 and 625
+In Figure \ref{fig:fig2}A, we plot results for simulations under both the simple and extended pulse model, for $t_m$ between 250 and 2000 generations, and $t_d = \frac{t_m}{2}$  (i.e. if $t_d= 500$ generations, then $t_d = 250$ and most gene flow occurs between  375 and 625
 generations ago). Even for these long periods of gene flow, the mean gene flow time is generally well-estimated, with a deviation of 3\% to 6\% for the simple pulse and 0\% to 5\% for
 the extended pulse.
 
@@ -399,11 +399,11 @@ flow. Boxplot created from 100 simulation replicates.}
 
 As the effect of ongoing gene flow is relatively minor, we next evaluate its relative importance for inference compared to other common assumptions made in the inference of admixture times. 
 
-We contrast the effect of extended gene flow on admixture time inference with  the effects of a complex demographic history (Supplement Figure \ref{fig:figS1}B) and variable recombination map (\emph{i.e.} using an empirical map for simulations but assuming a constant rate for the analysis), as well as the impact of the ascertainment scheme used to amplify Neandertal introgressed variants in the analysis, and the minimum genetic distance between variants ,$d_0$, in the ALD estimation, using a simple and complex setting for each of these parameters. 
+We contrast the effect of extended gene flow on admixture time inference with  the effects of a complex demographic history (Supplement Figure \ref{fig:figS1}B) and a variable recombination map (\emph{i.e.} using an empirical map for simulations but assuming a constant rate for the analysis), as well as the impact of the ascertainment scheme used to amplify Neandertal introgressed variants in the analysis, and the minimum genetic distance between variants ,$d_0$, in the ALD estimation, using a simple and complex setting for each of these parameters. 
 
 In Figure 3, we present the effect sizes of these four predictors on the admixture time inference. These effect sizes are estimated using a GLM on simulations under all possible parameter combinations  (S. \ref{fig:figS2}, Supplement Table \ref{tab:tableS1}).
 
-As a baseline, for comparison, we define a standard model as one using the lower-enrichment ascertainment scheme (LES), \(d_{0} = 0.05 cM\), simple demography and constant recombination rate over the chromosome. 
+As a baseline, for comparison, we define a standard model as one using the lower-enrichment ascertainment scheme (LES), $d_{0}$ = 0.05 cM, simple demography and constant recombination rate over the chromosome. 
 
 As shown in the previous section, under the standard model admixture times are well-estimated, with a mean standardized difference of  -0.03 (-0.07 - 0.02 $C.I._{95\%}$) from the true
 admixture time.
@@ -433,7 +433,7 @@ constant recombination the mean time can be estimated confidently for different 
 
 Under constant recombination settings, we find that parameters under the extended pulse are well-estimated in all scenarios, although we observe a small overestimate of both $t_m$ and $t_d$, for very long admixture durations over 1000 generations in the very distant past (more than 600 generations ago). In contrast, inference under the simple pulse model results in a slight underestimate (Figure \ref{fig:fig2}, \ref{fig:fig4}).
 
-We also find that the simple pulse model is fairly robust to changes in recombination settings, both using the ``correct'' and a empirically similar recombination map. Only when we do not correct for recombination rate variation, we observe a substantial underestimate by almost a factor of two for more distant admixture (Figure \ref{fig:fig4}A \& C, right panels). 
+We also find that the simple pulse model is fairly robust to changes in recombination settings, both using the ``correct'' and an empirically similar recombination map. Only when we do not correct for recombination rate variation, we observe a substantial underestimate by almost a factor of two for more distant admixture (Figure \ref{fig:fig4}A \& C, right panels). 
 
 In contrast, estimates under the extended pulse model are substantially more spread out under variable recombination maps, but we do not observe the systematic bias towards more recent admixture times as in the simple-pulse model. In contrast, the uncorrected scenario results in extremely poor estimates with very high variation, and is clearly unsuitable for this purpose (Figure \ref{fig:fig4}A \& C, left panels)
 
@@ -477,7 +477,7 @@ However, in terms of the overall frequencies achieved, there is likely little di
 In addition, we find that modelling and method assumptions have an impact on admixture time estimates that are of a similar or larger magnitude than the effect of assuming a one-generation pulse. Especially recombination rate variation may pose a practical limitation to the accuracy of admixture date estimates, and has to be very carefully considered when making inferences about admixture times. This is because both an extended pulse, as well as a non-homogeneous recombination map, lead to an admixture segment distribution that deviates from the expected exponential distribution. Correcting for just one of these factors may thus potentially conflate these issues, and can lead to a substantial underestimate of mean admixture times \citep{sankararaman_date_2012}. Therefore, population-specific fine-scale recombination maps are needed for accurate admixture time estimates, at least for admixture that happened more than a thousand generations ago. Estimates of more recent admixture appear to be somewhat more robust, perhaps because coarser-scale recombination maps are better estimated and differ less between populations \citep{hinch_landscape_2011}. 
 
 
-To further refine admixture timing, time series data from more admixed early modern human and Neandertal genomes are  needed. In particular, measures based on population differentiation (e.g \citep{wall_higher_2013,browning_analysis_2018,villanea_multiple_2019}) are very promising to understand the different events that contributed to archaic ancestry in present-day humans. While Neandertal ancestry in present-day people has been largely homogenized due to the substantial gene flow between populations, samples from both the Neandertal and early modern human populations immediately involved with the gene flow could likely refine when and where this gene flow happened. 
+To further refine admixture timing, time series data from more admixed early modern human and Neandertal genomes are  needed. In particular, measures based on population differentiation  \citep[e.g][]{wall_higher_2013,browning_analysis_2018,villanea_multiple_2019} are very promising to understand the different events that contributed to archaic ancestry in present-day humans. While Neandertal ancestry in present-day people has been largely homogenized due to the substantial gene flow between populations, samples from both the Neandertal and early modern human populations immediately involved with the gene flow could likely refine when and where this gene flow happened. 
 
 
 \section{Material \& Methods}\label{methods}
@@ -547,7 +547,7 @@ The pairwise weighted LD between the ascertained SNPs a certain genetic
 distance \(d\) apart is calculated using ALDER
 \citep{loh_inferring_2013}. A minimal genetic distance \(d_0\) between
 SNPs is set either to 0.02 cM and 0.05 cM. This minimal distance cutoff
-removes extremely short-range LD, which might also be due to inheritance of segments from the ancestral population (incomplete lineage sorting ILS)and not gene flow. 
+removes extremely short-range LD, which might also be due to inheritance of segments from the ancestral population (incomplete lineage sorting ILS) and not gene flow. 
 
 
 
@@ -592,12 +592,12 @@ We assume a Normal likelihood because it is the maximum entropy distribution in 
 \subsection{Estimating admixture time from real data}\label{Estimating admixture time from real data}
 To evaluate when we can reject a given admixture durations (including a one generation pulse), we applied the extended pulse model on real data from the 1000 Genomes project \citep{the_1000_genomes_project_consortium_global_2015}.
 
-We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagyrskaya high coverage Neandertals, including the 107 unrelated individuals from the YRI as representatives of unadmixed Africans and all CEU as admixed Europeans. We only consider biallelic sites, and determine the ancestral allele using  the Chimpanzee reference genome (panTro4). We used the CEU specific fine-scale recombination map \citep{spence_inference_2019} to convert the physical distance between sites into genetic distance. The compatibility intervals for the mean time estimates are obtained by using then normal approximation to the chi-squared distribution. 
+We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagyrskaya high coverage Neandertals, including the 107 unrelated individuals from the YRI as representatives of unadmixed Africans and all CEU as admixed Europeans. We only consider biallelic sites, and determine the ancestral allele using  the Chimpanzee reference genome (panTro4). We used the CEU specific fine-scale recombination map \citep{spence_inference_2019} to convert the physical distance between sites into genetic distance. 
 
 \section{Acknowledgments}
 
-We thank Janet Kelso, Fabrizio Mafessoni, St\'{e}phan Peyr\'{e}gne and Laurits Skov for helpful comments and discussions.
-This work was supported by the Max Planck Society.
+We thank Svante P\"a\"abo, Janet Kelso, Fabrizio Mafessoni, St\'{e}phane Peyr\'{e}gne, Laurits Skov, Divyaratan Popli, Alba Bossom Mesa and Arev S\"umer for helpful comments and discussions.
+This work was supported by the Max Planck Society and the European Research Council (grant number: 694707) to Svante P\"a\"abo.
 
 
 
