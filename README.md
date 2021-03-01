@@ -10,7 +10,7 @@ Where, td= 4 tm k^(-1/2).
 
 This results in a heavier tailed length distribution of segments/ALD (Lomax pdf/Lomax tail function). 
 
-The admixture estimates both for ALD or directly inferred segments rely on precise genetic distances. We do not recommend to use a constant recombination rates to convert physical distances into genetic distances, rather population specific recombination maps.
+The admixture estimates both for ALD or directly inferred segments rely on precise genetic distances. We do not recommend to use a constant recombination rate to convert physical distances into genetic distances, rather population specific recombination maps.
 
 ### Fitting using ALD
 
