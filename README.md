@@ -13,7 +13,7 @@ This results in a havier tailed length distribution of segments/ALD (Lomax pdf/L
 ### Fitting using ALD
 
 To fit the simple and extended pulse using ALD, the raw output from the ALDER program (Loh et al. 2013) can be used. The data has 3 columns: col 1 = distance between bins of SNPs the LD is computed for in centiMorgan, col 2 = the LD per bin, col 3 (optional) = bin count.
-The script is based on Moorjani et al. 2016 and can be found in [Extended_Admixture_Pulse_inferrence](Extended_Admixture_Pulse_inferrence/), where one uses an residual sum of squares optimization function (DEoptim) to get good starting parameters for the nls function. Three parameters must be provided lval = lower value of distance between SNPs, hval = maximum value of distance and 
+The script [Fitting_simple_and_extended_pulse_to_ALD.R](Extended_Admixture_Pulse_inferrence/Fitting_simple_and_extended_pulse_to_ALD.R) is based on Moorjani et al. 2016. It uses an residual sum of squares optimization function (DEoptim) to get good starting parameters for the nls function. Three parameters must be provided lval = lower value of distance between SNPs, hval = maximum value of distance and 
 affine = (logical) if a parameter modeling background LD should be used. The lower and upper boundries for the optimization are currently hard coded and are resonable boundries for Neandertal introgression, but one might want to change them for other scenarios.
 
 ### Fitting using segment length
