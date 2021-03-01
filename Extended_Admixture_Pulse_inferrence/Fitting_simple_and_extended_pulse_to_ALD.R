@@ -12,8 +12,6 @@ suppressPackageStartupMessages({
 
 })
 
-
-
 input <- as.character(snakemake@input[[1]]) 		# output from rollof/ALDER 
 
 Output <- as.character("test_output.txt")  		# output file name
