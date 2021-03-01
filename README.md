@@ -8,17 +8,19 @@ The descriptions of the models can be found here (..put biorivx link ...). In br
 The extended pulse relaxes the one generation assumption by modeling the admixture process over a certain duration (td) as a gamma distribution with shape = k and scale = tm/k.
 Where, td= 4 tm k^(-1/2). 
 
-This results in a havier tailed length distribution of segments/ALD (Lomax pdf/Lomax tail function). 
+This results in a heavier tailed length distribution of segments/ALD (Lomax pdf/Lomax tail function). 
+
+The admixture estimates both for ALD or directly inferred segments rely on precise genetic distances. We do not recommend to use a constant recombination rates to convert physical distances into genetic distances, rather population specific recombination maps.
 
 ### Fitting using ALD
 
 To fit the simple and extended pulse using ALD, the raw output from the ALDER program (Loh et al. 2013) can be used. The data has 3 columns: col 1 = distance between bins of SNPs the LD is computed for in centiMorgan, col 2 = the LD per bin, col 3 (optional) = bin count.
 The script [Fitting_simple_and_extended_pulse_to_ALD.R](Extended_Admixture_Pulse_inferrence/Fitting_simple_and_extended_pulse_to_ALD.R) is based on Moorjani et al. 2016. It uses an residual sum of squares optimization function (DEoptim) to get good starting parameters for the nls function. Three parameters must be provided lval = lower value of distance between SNPs, hval = maximum value of distance and 
-affine = (logical) if a parameter modeling background LD should be used. The lower and upper boundries for the optimization are currently hard coded and are resonable boundries for Neandertal introgression, but one might want to change them for other scenarios.
+affine = (logical) if a parameter modeling background LD should be used. The lower and upper boundaries for the optimization are currently hard coded and are reasonable boundaries for Neandertal introgression, but one might want to change them for other scenarios.
 
 ### Fitting using segment length
 
-Comming soon
+Fitting the simple/extended pulses to directly inferred segments (e.g. using Skov et al. 2018) uses the R optim function (method="L-BFGS-B") to fit the data to an exponential or lomax pdf (optionally a truncated pdf). The input data must at least contains one column (length_cM) giving the length of unique fragments in centiMorgan. There are two additional parameters lower and upper truncation which indicates the bounds in which fragments can be relaiably be called (very small fragments will be missing, long segments might be called as multiple seperated segments).
 
 ## Simulation pipeline
 The folder [Simulations](Simulations) contains 
