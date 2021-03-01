@@ -20,7 +20,7 @@ affine = (logical) if a parameter modeling background LD should be used. The low
 
 ### Fitting using segment length
 
-Fitting the simple/extended pulses to directly inferred segments (e.g. using Skov et al. 2018) uses the R optim function (method="L-BFGS-B") to fit the data to an exponential or lomax pdf (optionally a truncated pdf). The input data must at least contains one column (length_cM) giving the length of unique fragments in centiMorgan. There are two additional parameters lower and upper truncation which indicates the bounds in which fragments can be relaiably be called (very small fragments will be missing, long segments might be called as multiple seperated segments).
+Fitting the simple/extended pulses to directly inferred segments (e.g. using Skov et al. 2018) uses the R optim function (method="L-BFGS-B") to fit the data to an exponential or lomax pdf (optionally a truncated pdf which is recommended). The input data must at least contain one column (length_cM) giving the length of unique fragments in centiMorgan. There are two additional parameters lower and upper truncation which indicates the bounds in which fragments can be relaiably be called (very small fragments will be missing, long segments might be called as multiple seperated segments).
 
 ## Simulation pipeline
 The folder [Simulations](Simulations) contains 
