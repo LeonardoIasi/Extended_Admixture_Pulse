@@ -3,16 +3,12 @@
 This repository contains the scripts, pipelines and analysis steps used in this project. 
 
 ## Fitting the simple and extended pulse model
-The descriptions of the models can be found here (..put biorivx link ...). In brife, one approach to learn about admixture dates from genetic data uses a \emph{recombination clock} model: Conceptually, admixture segments are the result of the introduced chromosomes being broken down by recombination; the offspring of an archaic and a modern human parent will have one whole chromosome each of either ancestry. Thus, the offsprings' markers are in full ancestry linkage disequilibrium (ALD); all archaic variants are present on one DNA molecule, and all modern human one on the other one. In each generation meiotic recombination will reshuffle the chromosomes, progressively breaking down the ancestral chromosome down into shorter segments of archaic ancestry and the Admixture induced Linkage Disequilibrium (ALD) similarly decreases with each generation after gene flow. One can fit the decline of segment length or ALD to resolve for the time since the admixture event. The simple pulse model assumes that all admixture happens in one generation and uses an exponential distribution to fit the segment length (using the exponential PDF) or ALD (using the tail function of the exponential) to resolve for the mean time of gene flow ($t_m$). 
+The descriptions of the models can be found here (..put biorivx link ...). In brife, one approach to learn about admixture dates from genetic data uses a \emph{recombination clock} model: Conceptually, admixture segments are the result of the introduced chromosomes being broken down by recombination; the offspring of an archaic and a modern human parent will have one whole chromosome each of either ancestry. Thus, the offsprings' markers are in full ancestry linkage disequilibrium (ALD); all archaic variants are present on one DNA molecule, and all modern human one on the other one. In each generation meiotic recombination will reshuffle the chromosomes, progressively breaking down the ancestral chromosome down into shorter segments of archaic ancestry and the Admixture induced Linkage Disequilibrium (ALD) similarly decreases with each generation after gene flow. One can fit the decline of segment length or ALD to resolve for the time since the admixture event. The simple pulse model assumes that all admixture happens in one generation and uses an exponential distribution to fit the segment length (using the exponential PDF) or ALD (using the tail function of the exponential) to resolve for the mean time of gene flow (tm). 
 
-The extended pulse relaxes the one generation assumption by modeling the admixture process over a ceartain duration ($t_d$) as a gamma distribution with shape = k and scale = tm/k.
-Where, $t_d=4t_m k^{-\frac{1}{2}} $
-
-$$  P(T_i=t)=\frac{1}{\Gamma(k)(\frac{t_m}{k})^k}t^{k-1}e^{-t\frac{k}{t_m}} $$
+The extended pulse relaxes the one generation assumption by modeling the admixture process over a ceartain duration (td) as a gamma distribution with shape = k and scale = tm/k.
+Where, td= 4 tm k^(-1/2). 
 
 This results in a havier tailed length distribution of segments/ALD (Lomax pdf/Lomax tail function). 
-
-$$  P(L=l | k, t_m) = t_{m}^{-k} \ \Bigg( \frac{k}{l+\frac{k}{t_{m}}}\Bigg)^{k+1} $$
 
 ### Fitting using ALD
 
