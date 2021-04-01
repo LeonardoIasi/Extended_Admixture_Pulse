@@ -88,6 +88,8 @@
 
 \usepackage{setspace}
 \onehalfspacing
+\usepackage[left]{lineno}
+\linenumbers
 \usepackage[none]{hyphenat}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -127,7 +129,7 @@
         \textsuperscript{2} leonardo\_iasi@eva.mpg.de \\ \textsuperscript{3} 
         benjamin\_peter@eva.mpg.de \\
         \vspace{1.0cm}
-        \text{February 11, 2021}
+        \today
     \end{center}  
      
 
@@ -138,7 +140,7 @@
 
 \section{Abstract}\label{abstract}
 
-Neandertal DNA makes up 2-3\% of the genomes of all non-African individuals. The length of Neandertal ancestry segments in modern humans has been used to estimate that the mean time of gene flow occurred during the expansion of modern humans into Eurasia, but the precise dates of this gene flow remain largely unknown. Here, we introduce an extended admixture pulse model that allows joint estimation of the timing and duration of gene flow. This model contains two parameters, one for the mean time of gene flow, and one for the duration of gene flow whilst retaining much of the mathematical simplicity of the simple pulse model. In simulations, we find that estimates of the mean time of admixture are largely robust to details in gene flow models. In contrast, the duration of the gene flow is much more difficult to recover, except under ideal circumstances where gene flow is recent or the exact recombination rate is known. We conclude that gene flow from Neandertals into modern humans could have happened over hundreds of generations. Ancient genomes from the time around the admixture event are thus likely required to resolve the question when, where, and for how long humans and Neandertals interacted.
+Neandertal DNA makes up 2-3\% of the genomes of all non-African individuals on average. The length of Neandertal ancestry segments in modern humans has been used to estimate that the mean time of gene flow occurred during the expansion of modern humans into Eurasia, but the precise dates of this gene flow remain largely unknown. Here, we introduce an extended admixture pulse model that allows joint estimation of the timing and duration of gene flow. This model contains two parameters, one for the mean time of gene flow, and one for the duration of gene flow whilst retaining much of the mathematical simplicity of the simple pulse model. In simulations, we find that estimates of the mean time of admixture are largely robust to details in gene flow models. In contrast, the duration of the gene flow is much more difficult to recover, except under ideal circumstances where gene flow is recent or the exact recombination rate is known. We conclude that gene flow from Neandertals into modern humans could have happened over hundreds of generations. Ancient genomes from the time around the admixture event are thus likely required to resolve the question when, where, and for how long humans and Neandertals interacted.
 
 \section{Introduction}\label{introduction}
 
@@ -149,7 +151,7 @@ As a second line of evidence, all non-Africans carry genomic segments that are v
 
 %\paragraph{Why do we care about timing of gene flow}.
 
-However, uncertainty remains about when, where, and over which period of time this gene flow happened. A better understanding of  the location and timing of the gene flow would allow us to place  constraints on the timing of movements of early modern humans. It would also affect assumptions about introgressed allele frequencies and their distribution in present-day human genomes and conclusions drawn about the phenotypic effects and selective pressures of introduced alleles.
+However, uncertainty remains about when, where, and over which period of time this gene flow happened. A better understanding of  the location and timing of the gene flow would allow us to place  constraints on the timing of movements of early modern humans. More certainty in the timing of gene flow also would affect  assumptions about introgressed allele frequencies and their distribution in present-day human genomes and conclusions drawn about the phenotypic effects and selective pressures of introduced alleles.
 
  
 Archaelogical evidence puts some boundaries on the times when Neandertals and modern humans might have interacted. The earliest modern human remains outside of Africa are dated to around 188 thousand years ago (kya)  \citep{hershkovitz_earliest_2018,stringer_when_2018} and the latest Neandertals are suggested to be between 37 kya and 39 kya old \citep{higham_timing_2014,zilhao_precise_2017}. Thus the time window where Neandertals and modern humans might have been in the same area stretches more than 140,000 years. However, there is less direct evidence of modern humans and Neandertals in the same geographical location at the same time. In Europe, for example, Neandertals and modern humans likely overlapped only for less than 10,000 years \citep{bard_extended_2020}. 
@@ -373,7 +375,7 @@ We test our ability to estimate the admixture time and duration from coalescent 
 
 \subsection{Model comparisons}\label{Model comparison}
 We first present the result of inference assuming a simple pulse model on simulations under the extended pulse model (Figure \ref{fig:fig2}). Therefore we simulate 3 \% Neandertal admixture into non-Africans using a simple demographic model (Supplement Figure \ref{fig:figS1}A). To enrich for Neandertal informative sites we use the lower-enrichment ascertainment scheme (LES)  which only considers sites that are fixed for the ancestral state in Africans and polymorphic or fixed derived in Neandertals. Pairs of SNPs with a minimal distance smaller 0.05 cM are excluded.
-In Figure \ref{fig:fig2}A, we plot results for simulations under both the simple and extended pulse model, for $t_m$ between 250 and 2000 generations, and $t_d = \frac{t_m}{2}$  (i.e. if $t_d= 500$ generations, then $t_d = 250$ and most gene flow occurs between  375 and 625
+In Figure \ref{fig:fig2}A, we plot results for simulations under both the simple and extended pulse model, for $t_m$ between 250 and 2000 generations, and $t_d = \frac{t_m}{2}$  (i.e. if $t_m= 500$ generations, then $t_d = 250$ and most gene flow occurs between  375 and 625
 generations ago). Even for these long periods of gene flow, the mean gene flow time is generally well-estimated, with a deviation of 3\% to 6\% for the simple pulse and 0\% to 5\% for
 the extended pulse.
 
@@ -431,7 +433,7 @@ Figure \ref{fig:fig4}A and C show the mean
 time estimates received from the simple and extended pulse model fit. Figure \ref{fig:fig4}B and D show the corresponding admixture duration estimate. For simulations under a
 constant recombination the mean time can be estimated confidently for different durations and different sampling times after the end of the admixture event in both cases. 
 
-Under constant recombination settings, we find that parameters under the extended pulse are well-estimated in all scenarios, although we observe a small overestimate of both $t_m$ and $t_d$, for very long admixture durations over 1000 generations in the very distant past (more than 600 generations ago). In contrast, inference under the simple pulse model results in a slight underestimate (Figure \ref{fig:fig2}, \ref{fig:fig4}).
+Under constant recombination settings, we find that parameters under the extended pulse are well-estimated in all scenarios, although we observe a small overestimate of both $t_m$ and $t_d$, for very long admixture durations over 1000 generations in the very distant past (more than 600 generations ago). In contrast, inference under the simple pulse model results in a slight underestimate (Figure \ref{fig:fig2}, \ref{fig:fig4}A).
 
 We also find that the simple pulse model is fairly robust to changes in recombination settings, both using the ``correct'' and an empirically similar recombination map. Only when we do not correct for recombination rate variation, we observe a substantial underestimate by almost a factor of two for more distant admixture (Figure \ref{fig:fig4}A \& C, right panels). 
 
@@ -523,7 +525,7 @@ Demographic factors such as population size changes are known to influence LD
 patterns, and may thus influence admixture time estimates \citep{gravel_population_2012,liang_lengths_2014}. To test the impact of
 demographic history on admixture time estimates, we contrast our standard model with a more 
 realistic and complex demographic history(S. \ref{fig:figS1} B). The effective population
-sizes change over time, and are based on estimates from Neandertal and present-day human genomes. In particular, we use the MSMC estimates for YRI and CEU to model Africans and Europeans, respectively 
+sizes change over time, are based on estimates from Neandertal and present-day human genomes. In particular, we use the MSMC estimates for YRI and CEU to model Africans and Europeans, respectively 
 \citep{schiffels_inferring_2014}. The Neandertal population size history is modelled after  PSMC estimates \citep{li_inference_2011} using the high-coverage Vindija 33.19 genome
 \citep{prufer_high-coverage_2017}. 
 
@@ -602,7 +604,7 @@ This work was supported by the Max Planck Society and the European Research Coun
 
 \section{Data Availability}\label{Data Availability}
 
-The simulation script and analysis pipeline containing the \emph{Extended Admixture Pulse} model is  available  on  GitHub: \url{https://github.com/LeonardoIasi/Extended_Admixture_Pulse}. No new data were generated for this study.
+The simulation script, the analysis pipeline and the \emph{Extended Admixture Pulse} model is  available  on  GitHub: \url{https://github.com/LeonardoIasi/Extended_Admixture_Pulse}. No new data were generated for this study.
 
 \section{Competing interests}
 
