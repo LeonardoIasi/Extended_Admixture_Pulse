@@ -1,6 +1,6 @@
 configfile:    "config/control.yaml"
-configfile:    "config/master2.yaml"
 configfile:    "config/sim_parameters_new.yaml"
+configfile:    "config/master.yaml"
 configfile:    "config/ALDER.yaml"
 import pandas as pd
 import msprime
@@ -114,6 +114,7 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 
 
     if str(master['GF_Model'][0]) == 'GF_Model_IV':
+        change_sim_model=msprime.SimulationModelChange(time=int(params['sim_time_change']), model="hudson")
         Neandertal_Gene_Flow_absolute_start=msprime.MigrationRateChange(time=int(params['sample_Neandertals_at']),rate=0)
         Neandertal_Gene_Flow_absolute_end=msprime.MigrationRateChange(time=int(params['split_time_non_Africans']),rate=0)
         EUR_AFR_Gene_Flow_start=msprime.MigrationRateChange(time=1,rate=float(params['EUR_AFR_migration_rate_GF']),matrix_index=(0,1) )
@@ -123,7 +124,7 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
         Split_Time_Neandertals=msprime.MassMigration(time=int(params['split_time_Neandertals']),source=0,destination=2,proportion=1.0)
         Split_Time_non_Africans=msprime.MassMigration(time=int(params['split_time_non_Africans']),source=1,destination=0,proportion=1.0)
 
-        demographic_events=[EUR_AFR_Gene_Flow_start,AFR_EUR_Gene_Flow_start,EUR_AFR_Gene_Flow_end,AFR_EUR_Gene_Flow_end,Neandertal_Gene_Flow_absolute_end,Neandertal_Gene_Flow_absolute_start,Split_Time_Neandertals,Split_Time_non_Africans]
+        demographic_events=[change_sim_model,EUR_AFR_Gene_Flow_start,AFR_EUR_Gene_Flow_start,EUR_AFR_Gene_Flow_end,AFR_EUR_Gene_Flow_end,Neandertal_Gene_Flow_absolute_end,Neandertal_Gene_Flow_absolute_start,Split_Time_Neandertals,Split_Time_non_Africans]
 
         demographic_events=GF_Model_IV(TimeSpan=int(params['split_time_non_Africans']),GF_start=int(params['GF_start']),GF_stop=int(params['GF_stop']),demographic_events=demographic_events,GF_rate=float(params['migration_rate_GF']),loc=int(master['GF_Model'][1]),Folder_name=Folder_name,master_name=master_name,number=number,GF_Model=GF_Model)
 
@@ -157,15 +158,16 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
             [0,0,0],
             [0,0,0]]
 
-    check=msprime.DemographyDebugger(
-    population_configurations=population_configuration,
-    migration_matrix=migration_matrix,
-    demographic_events=demographic_events)
-    check.print_history(output=open('{0}/Demography_history-{1}-{2}.txt'.format(Folder_name,master_name,GF_Model), 'w'))
+    #check=msprime.DemographyDebugger(
+    #population_configurations=population_configuration,
+    #migration_matrix=migration_matrix,
+    #demographic_events=demographic_events)
+    #check.print_history(output=open('{0}/Demography_history-{1}-{2}.txt'.format(Folder_name,master_name,GF_Model), 'w'))
 
     if str(master['Recombination_Map'][0]) == 'False':
         simulation=msprime.simulate(
             samples=samples,
+            model="dtwf",
             mutation_rate=float(params['mutation_rate']),
             length=float(params['chr_length']),
             recombination_rate=float(params['recombination_rate']),
@@ -176,6 +178,7 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
     elif str(master['Recombination_Map'][0]) == 'True':
         simulation=msprime.simulate(
             samples=samples,
+            model="dtwf",
             mutation_rate=float(params['mutation_rate']),
             recombination_map=msprime.RecombinationMap.read_hapmap('{0}'.format(str(master['Recombination_Map'][1]))),
             population_configurations=population_configuration,
@@ -191,16 +194,16 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 
 ############################################################################################
 # Choose which Set to process by giving Set_name the name of the Set to be processed #
-Set_name='Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected'
+Set_name='Close_to_GF_End_Recent_GF_corrected_WF'
 
 # Choose number of replicates #
-replicates=100
+replicates=10
 
 # Choose Folder #
-Folder_name='../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected'
+Folder_name='../../Close_to_GF_End_Recent_GF_corrected_WF'
 
 # Choose Result Folder Name #
-Result_Folder='../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_both_Fit_classic_Lomax'
+Result_Folder='../../Close_to_GF_End_Recent_GF_corrected_WF/Result_both_Fit_classic_Lomax'
 
 # Choose if lambda chould be fixed or variable while fitting the AIC_Lomax
 Fix_lambda=False
@@ -382,7 +385,7 @@ rule fit_Curve:
         "{Folder_name}/Raw_ALDER_output-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}-{Recomb_correction}.txt"
     params:
         max_dist=get_max_length,
-        Fix_lambda=Fix_lambda
+        Fix_lambda=Fix_lambda,
         Only_Simple_Pulse_fit=False
     output:
         #"{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"

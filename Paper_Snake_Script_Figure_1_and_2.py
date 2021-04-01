@@ -208,6 +208,7 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 	if str(master['Recombination_Map'][0]) == 'False':
 		simulation=msprime.simulate(
 			samples=samples,
+            model="dtwf",
 			mutation_rate=float(params['mutation_rate']),
 			length=float(params['chr_length']),
 			recombination_rate=float(params['recombination_rate']),
@@ -218,6 +219,7 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 	elif str(master['Recombination_Map'][0]) == 'True':
 		simulation=msprime.simulate(
 			samples=samples,
+            model="dtwf",
 			mutation_rate=float(params['mutation_rate']),
 			recombination_map=msprime.RecombinationMap.read_hapmap('{0}'.format(str(master['Recombination_Map'][1]))),
 			population_configurations=population_configuration,

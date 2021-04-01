@@ -26,6 +26,7 @@ sim_parameters:
               EUR_AFR_migration_start: 50
               EUR_AFR_migration_end: 200
               GAMMA: 'Alternative'
+              sim_time_change : 0
         _MS_fixed_Var_1_:
               GF_start: 250
               GF_stop: 251
@@ -244,3 +245,27 @@ sim_parameters:
               GF_stop: 1800
               sample_Neandertals_at: 750
               sample_non_Africans_at: 0
+        Close_to_End_Recent_GF_fixed_mean_0_WF:
+              GF_start: 50
+              GF_stop: 51
+              sim_time_change : 500
+        Close_to_End_Recent_GF_fixed_mean_1_WF:
+              GF_start: 50
+              GF_stop: 250
+              sim_time_change : 500
+        Close_to_End_Recent_GF_fixed_mean_2_WF:
+              GF_start: 50
+              GF_stop: 450
+              sim_time_change : 500
+        Close_to_End_Recent_GF_fixed_mean_3_WF:
+              GF_start: 50
+              GF_stop: 850
+              sim_time_change : 500
+        Close_to_End_Recent_GF_fixed_mean_4_WF:
+              GF_start: 50
+              GF_stop: 1050
+              sim_time_change : 500
+        Close_to_End_Recent_GF_fixed_mean_5_WF:
+              GF_start: 50
+              GF_stop: 1550
+              sim_time_change : 500
