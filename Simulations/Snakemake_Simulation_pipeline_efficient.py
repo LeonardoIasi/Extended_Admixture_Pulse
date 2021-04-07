@@ -2,20 +2,14 @@ configfile:    "config/control_efficient.yaml"
 configfile:    "config/sim_parameters_efficient.yaml"
 configfile:    "config/master_efficient.yaml"
 configfile:    "config/ALDER.yaml"
+import sys
 import pandas as pd
 import msprime
 import numpy as np
 import random
 import tskit
+import gzip
 from scipy import stats
-import os
-import os.path
-from pathlib import Path
-import matplotlib as mpl
-if os.environ.get('DISPLAY','') == '':
-    print('no display found. Using non-interactive Agg backend')
-    mpl.use('Agg')
-import matplotlib.pyplot as plt
 
 def load_config_master(config,wildcard):
     master = config['_Default_Scenario_'].copy()
@@ -63,6 +57,26 @@ def get_all_snps(ts,pop_names=['AFR','EUR','NEA']):
             index=(v.position for v in t.variants())
         ) for t in [ts]
     )
+
+def write_all_snps(file_name, ts, pop_names=['AFR','EUR','NEA'], chrom='1'):
+    """Write genotype matrix to file.
+
+    More memory efficient than get_all_snps as it iterates over the
+    tree sequence directly.
+
+    """
+    sample_names = []
+    for p in range(len(pop_names)):
+        s_name=pop_names[p]
+        n_pop = len(ts.get_samples(p))
+        sample_names.extend([f"{s_name}{i}" for i in range(n_pop)])
+    with gzip.open(file_name, 'wt') as f:
+        f.write("chrom\tpos\t")
+        f.write("\t".join(samples))
+        f.write("\n")
+        for v in ts.variants():
+            gt = '\t'.join(str(gt) for gt in v.genotypes)
+            f.write(f"{chrom}\t{int(v.site.position)}\t{gt}\n")
 
 def GF_Model_III(a,d,GF_start,demographic_events):
     # 1 minus is for changing the direction of the decline
@@ -210,16 +224,16 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 
 ############################################################################################
 # Choose which Set to process by giving Set_name the name of the Set to be processed #
-Set_name='Fig_2_C_corrected_revision'
+Set_name='Fig_2_D_Complex_corrected_revision'
 
 # Choose number of replicates #
 replicates=25
 
 # Choose Folder #
-Folder_name='../../Fig_2_C_corrected_revision'
+Folder_name='../../Fig_2_D_Complex_corrected_revision'
 
 # Choose Result Folder Name #
-Result_Folder='../../Fig_2_C_corrected_revision/Result_Fit'
+Result_Folder='../../Fig_2_D_Complex_corrected_revision/Result_classic_Exp'
 
 # Choose if lambda chould be fixed or variable while fitting the AIC_Lomax
 Fix_lambda=False
@@ -241,21 +255,28 @@ rule alle:
 rule basic_simulation:
     input:
     output:
-        "{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}.trees"
+        sim_out="{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}.trees"
+        #sim_out="{Folder_name}/sim/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}_snps.tsv.gz"
     run:
         master=load_config_master(config['MASTER'],wildcards.master_name)
         params=load_config_sim_parameters(config['sim_parameters'],master['simulation'])
         simulation_results=simulation(params=params,Folder_name=wildcards.Folder_name,master_name=wildcards.master_name,number=wildcards.number,master=master,GF_Model=wildcards.GF_Model);
         # write whole tree sequence using tskit
         simulation_results.dump('{}'.format(output[0]))
+        #write_all_snps(f"/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Simulations/{output.sim_out}",
+        #                   simulation_results,
+        #                   chrom=wildcards.nChr)
+
 
 rule ascertainment:
     input:
-        "{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}.trees"
+        #sim_in="{Folder_name}/sim/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}_snps.tsv.gz"
+        sim_in="{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}.trees"
     output:
         temp("{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}-ascertainment{Ascertainment}-f.eigenstratgeno"),
         temp("{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}-ascertainment{Ascertainment}-f.snp"),
         temp("{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}-ascertainment{Ascertainment}-f.ind")
+        #snp_data="{Folder_name}/sim/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}_snps.tsv.gz"
         #"{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}-ascertainment{Ascertainment}-f.eigenstratgeno",
         #"{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}-ascertainment{Ascertainment}-f.snp",
         #"{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}-ascertainment{Ascertainment}-f.ind"
@@ -264,11 +285,12 @@ rule ascertainment:
         params=load_config_sim_parameters(config['sim_parameters'],master['simulation'])
         print(wildcards.Ascertainment)
         simulation_results=tskit.load(input[0])
-        AFR = simulation_results.get_samples(0)
-        EUR = simulation_results.get_samples(1)
-        NEA = simulation_results.get_samples(2)
-        # Write geno and snp files
         snps2=get_all_snps(simulation_results)
+        #snps2.to_csv('{}'.format(output.snp_data), float_format="%.5f", index=False,compression='gzip')
+        #snps2 = pd.read_csv(input.sim_in, sep="\t")
+
+        # Write geno and snp files
+
 
         afr_cols = [col for col in snps2.columns if col.startswith("AFR")]
         eur_cols = [col for col in snps2.columns if col.startswith("EUR")]
@@ -315,11 +337,11 @@ rule ascertainment:
         np.savetxt('{}'.format(output[0]), geno_file.astype(int), fmt='%i', delimiter="")
         snp_file.to_csv('{}'.format(output[1]), header=None, index=None, sep='\t', mode='a')
         with open('{}'.format(output[2]),'w') as outind:
-            for i in range(0,int(len(AFR)/2)):
+            for i in range(0,int(n_afr/2)):
                 outind.write('Ind_{0}\tU\tAfricans\n'.format(i))
-            for i in range(0,int(len(EUR)/2)):
+            for i in range(0,int(n_eur/2)):
                 outind.write('Ind_{0}\tU\tNon_Africans\n'.format(i))
-            for i in range(0,int(len(NEA)/2)):
+            for i in range(0,int(n_nea/2)):
                 outind.write('Ind_{0}\tU\tNeandertals\n'.format(i))
             outind.close()
 
@@ -468,24 +490,26 @@ rule fit_Curve:
         Only_Simple_Pulse_fit=Simple_pulse_only
     output:
         #"{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment{Ascertainment}-Recc{Recomb_correction}.log"
-        "{Folder_name}/Model_Fit_classic_Lomax/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment{Ascertainment}-downsampled{downsample}-Recc{Recomb_correction}.log"
+        "{Folder_name}/Model_Fit_classic_Exp/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment{Ascertainment}-downsampled{downsample}-Recc{Recomb_correction}.log"
         #"{Folder_name}/Model_Fit/Plot-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment{Ascertainment}.pdf",
     script:
-        "/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Fit_Exponential_and_Lomax_Snake.R"
-
+        #"/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Fit_Exponential_and_Lomax_Snake.R"
+        "/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Fit_Exponential_new.R"
 
 rule grep_results_and_merge_with_Scenarios:
     input:
         #"{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment{Ascertainment}-Recc{Recomb_correction}.log"
-        "{Folder_name}/Model_Fit_classic_Lomax/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment{Ascertainment}-downsampled{downsample}-Recc{Recomb_correction}.log"
+        "{Folder_name}/Model_Fit_classic_Exp/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment{Ascertainment}-downsampled{downsample}-Recc{Recomb_correction}.log"
     output:
         temp("{Folder_name}/Result-Fit_Output-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment{Ascertainment}-downsampled{downsample}-Recc{Recomb_correction}.txt")
 
     run:
         master=load_config_master(config['MASTER'],wildcards.master_name)
         params=load_config_sim_parameters(config['sim_parameters'],master['simulation'])
-        shell("""grep "A, s, c, RSS_Expo, AIC_Expo, A, s, w,c, RSS_Lomax, AIC_Lomax, F_Test:" {input} |  sed 's/ /\t/g' |
-awk '{{print $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24="{wildcards.master_name}",$25="{params[GF_start]}",$26="{params[GF_stop]}",$27="{wildcards.Ascertainment}",$28="{master[min_dist_Fit]}",$29="{wildcards.downsample}"}}' > {output} """)
+        #shell("""grep "A, s, c, RSS_Expo, AIC_Expo, A, s, w,c, RSS_Lomax, AIC_Lomax, F_Test:" {input} |  sed 's/ /\t/g' |
+#awk '{{print $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24="{wildcards.master_name}",$25="{params[GF_start]}",$26="{params[GF_stop]}",$27="{wildcards.Ascertainment}",$28="{wildcards.min_dist_Fit}",$29="{wildcards.downsample}"}}' > {output} """)
+        shell("""grep "A, m, c, RSS_Expo, nls status:" {input} |  sed 's/ /\t/g' |
+awk '{{print $7,$8,$9,$10,$11,$12="{wildcards.master_name}",$13="{params[GF_start]}",$14="{params[GF_stop]}",$15="{wildcards.Ascertainment}",$16="{wildcards.min_dist_Fit}",$17="{wildcards.downsample}"}}' > {output} """)
 
 
 def merge_all_files(wildcards):

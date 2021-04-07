@@ -1,6 +1,6 @@
 __default__ :
     time : 4:00:00
-    mem : 8G
+    mem : 12G
     cpus-per-task : 1
     output : "autosnake/{{rule}}-\\$JOB_ID.out"
     err : "autosnake/{{rule}}-\\$JOB_ID.err"

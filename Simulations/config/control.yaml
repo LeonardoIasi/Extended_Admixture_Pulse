@@ -66,3 +66,10 @@ CONTROL:
              400_Gen_from_GF_continuous_800_Recomb_Map:
              800_Gen_from_GF_continuous_800_Recomb_Map:
              1000_Gen_from_GF_continuous_800_Recomb_Map:
+       Close_to_GF_End_Recent_GF_corrected_WF:
+             Close_to_End_recent_GF_0:
+             Close_to_End_recent_GF_1:
+             Close_to_End_recent_GF_2:
+             Close_to_End_recent_GF_3:
+             Close_to_End_recent_GF_4:
+             Close_to_End_recent_GF_5:
