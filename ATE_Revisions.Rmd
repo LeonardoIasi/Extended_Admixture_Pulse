@@ -78,10 +78,8 @@ suppressPackageStartupMessages({
   library(rethinking)
   library(kableExtra)
   library(DEoptim)
-  library(png)
   library("MASS")
   library(bbmle)
-  #library(DPQ)
   library(flextable)
   library(officer)
 })
@@ -588,66 +586,86 @@ Constant_sampling_time
 ## Comparing effect sizes for technical covariates now including downsampling
 
 
-```{r eval=F, message=FALSE, echo=FALSE,warning=FALSE, cache=T}
+```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE, cache=T}
 
 ##### GLM for the bais on the admixture dates #####
 
 
 ### Read in data ###
 Read_GLM_indata <- function(path){
-  Result.names <- c('A.exp', 's.exp', 'c.exp', 'RSS_Expo','AIC_Expo', 'A.lomax', 's.lomax', 'w.lomax','c.lomax', 'RSS_Lomax','AIC_Lomax', 'F_Test','Scenario.name','GF.Start','GF.End','AS','minDist','GF.Model')
-  Result.Table=read.table("/mnt/scratch/leonardoi/Paper_Revisions/Fig_2_A_revision/Result_Fit/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A_revision-GF_Model_IV-min_dist_Fit-0.02-ascertainmentI-downsampled100-ReccNo_correction.txt",header=F,sep = " ")
+  file_l=list.files(path = path,full.names = T)
+  #Result.names <- c('A.exp', 's.exp', 'c.exp', 'RSS_Expo','AIC_Expo', 'A.lomax', 's.lomax', 'w.lomax','c.lomax', 'RSS_Lomax','AIC_Lomax', 'F_Test','Scenario.name','GF.Start','GF.End','AS','minDist','downsampling')
+  Result.names <- c('A.exp', 'm.exp', 'c.exp', 'RSS_Expo','status','Scenario.name','GF.Start','GF.End','AS','minDist','downsampling')
+  Result.Table=do.call(rbind, lapply(file_l, function(x) read.table(x,header=F,sep = " ",col.names = Result.names)))
   return(Result.Table)
 }
 
 
+Fig_2_1 <- Read_GLM_indata("/mnt/scratch/leonardoi/Paper_Revisions/Fig_2_A_revision/Result_classic_Exp/")
+Fig_2_1$Demography <- "0_Simple"
+Fig_2_1$Recomb.rate <- "0_constant"
+Fig_2_1$GF_model <- ifelse(Fig_2_1$Scenario.name=="_Scenario_16_","EP","SP")
 
-Simple_D_Sim_1 <- Read_GLM_indata("/mnt/scratch/leonardoi/Paper_Revisions/Fig_2_A_revision/Result_Fit/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A_revision-GF_Model_IV-min_dist_Fit-0.02-ascertainmentI-downsampled100-ReccNo_correction.txt")
-Simple_D_Sim_1$Demography <- "0_Simple"
-Simple_D_Sim_1$Recomb.rate <- "0_constant"
-Simple_D_Sim_1$Sim_id <- ifelse(Simple_D_Sim_1$Ascertained==0,"Demo_simple_Recomb_const_LES_min_d_2","Demo_simple_Recomb_const_HES_min_d_2")
+Fig_2_2 <- Read_GLM_indata("/mnt/scratch/leonardoi/Paper_Revisions/Fig_2_B_complex_revision/Result_classic_Exp/")
+Fig_2_2$Demography <- "0_Complex"
+Fig_2_2$Recomb.rate <- "0_constant"
+Fig_2_2$GF_model <- ifelse(Fig_2_2$Scenario.name=="_Complex_Demographies_Scenario_3_","EP","SP")
 
+Fig_2_3 <- Read_GLM_indata("/mnt/scratch/leonardoi/Paper_Revisions/Fig_2_C_corrected_revision/Result_classic_Exp/")
+Fig_2_3$Demography <- "0_Simple"
+Fig_2_3$Recomb.rate <- "0_varying"
+Fig_2_3$GF_model <- ifelse(Fig_2_3$Scenario.name=="_Recombination_Map_Scenario_3_","EP","SP")
 
+Fig_2_4 <- Read_GLM_indata("/mnt/scratch/leonardoi/Paper_Revisions/Fig_2_D_Complex_corrected_revision/Result_classic_Exp/")
+Fig_2_4$Demography <- "0_Complex"
+Fig_2_4$Recomb.rate <- "0_varying"
+Fig_2_4$GF_model <- ifelse(Fig_2_4$Scenario.name=="_Recombination_Map_and_Complex_Demographies_Scenario_3_","EP","SP")
 
 ######## model with response being the difference between the estimated Admixture time and the true one #####
 # full model with Ascertainement, min dist, Demographi and recombination rate as predictore but no interactions
-xdata.M.3 <- rbind(Simple_D_Sim_1,Simple_D_Sim_2,Recom_Sim_1,Recom_Sim_2,Inferred_D_Sim_1,Inferred_D_Sim_2,Recom_Sim_and_Inf_1,Recom_Sim_and_Inf_2)
-rm(Simple_D_Sim_1,Simple_D_Sim_2,Recom_Sim_1,Recom_Sim_2,Inferred_D_Sim_1,Inferred_D_Sim_2,Recom_Sim_and_Inf_1,Recom_Sim_and_Inf_2)
-xdata.M.3$TID <- ifelse(xdata.M.3$GF=='0_Pulse',paste(xdata.M.3$Sim_id,'GF_model_Pulse',sep = '_'),paste(xdata.M.3$Sim_id,'GF_model_Continuous',sep = '_')) 
+xdata.M.3 <- rbind(Fig_2_1,Fig_2_2,Fig_2_3,Fig_2_4)
+write_csv(x = xdata.M.3,file = "Fig_2_result_tabel.csv")
+xdata.M.3.no_error <- xdata.M.3 %>% filter(status=='no_error')
+#xdata.M.3$TID <- ifelse(xdata.M.3$GF=='0_Pulse',paste(xdata.M.3$Sim_id,'GF_model_Pulse',sep = '_'),paste(xdata.M.3$Sim_id,'GF_model_Continuous',sep = '_')) 
 
+xdata.M.3.no_error <- xdata.M.3.no_error %>% filter(downsampling==100)
+#xdata.M.3 <- xdata.M.3 %>% filter(downsampling!=50)
 
-#xdata.M.3$Diff <- xdata.M.3$m - xdata.M.3$mean.t.GF
-xdata.M.3$Diff <- xdata.M.3$m - xdata.M.3$Gamma_mean
-# remove all estimates where nls reported an error
-n_error=xdata.M.3[xdata.M.3$error=="nls_error",]
-xdata.M.3_no_error <- xdata.M.3[xdata.M.3$error=="no_error",]
-xdata.M.3_no_error$Sim_id_int <- as.integer(as.factor(xdata.M.3_no_error$TID))
-
-xdata.M.3_no_error$Diff_s <- (xdata.M.3_no_error$m - xdata.M.3_no_error$Gamma_mean)/sd(xdata.M.3_no_error$m)
-
-
+xdata.M.3.no_error$True_tm <- (xdata.M.3.no_error$GF.End-xdata.M.3.no_error$GF.Start)/2 + xdata.M.3.no_error$GF.Start
+xdata.M.3.no_error$Diff <- xdata.M.3.no_error$m.exp - xdata.M.3.no_error$True_tm
+xdata.M.3.no_error$Diff_s <- (xdata.M.3.no_error$m.exp - xdata.M.3.no_error$True_tm)/sd(xdata.M.3.no_error$m.exp)
+xdata.M.3.no_error$Sim_id_int <- as.integer(rownames(xdata.M.3.no_error))
 
 Bdata_index_s_2 <- list(
-  E = (xdata.M.3_no_error$Diff_s),
-  Id = xdata.M.3_no_error$Sim_id_int,
-  A = ifelse(xdata.M.3_no_error$Ascertained==0,0,1),
-  MD = ifelse(xdata.M.3_no_error$min_dist=="0.05",0,1),
-  D = ifelse(xdata.M.3_no_error$Demography=="0_Simple",0,1),
-  R = ifelse(xdata.M.3_no_error$Recomb.rate=="0_constant",0,1),
-  GF = ifelse(xdata.M.3_no_error$GF=="0_Pulse",0,1)
+  E = xdata.M.3.no_error$Diff_s,
+  #Id = xdata.M.3$Sim_id_int,
+  A = ifelse(xdata.M.3.no_error$AS=="I",0,1),
+  MD = ifelse(xdata.M.3.no_error$minDist==0.05,0,1),
+  D = ifelse(xdata.M.3.no_error$Demography=="0_Simple",0,1),
+  R = ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant",0,1),
+  GF = ifelse(xdata.M.3.no_error$GF_model=="SP",0,1)
+  #DS = ifelse(xdata.M.3$downsampling==100,0,1)
+  
 )
 
-
-
-Effect_size_fixed_s_2 <- ulam(
+Effect_size_fixed_s_2 <- quap(
   alist(
     E ~ dnorm(mu,sigma),
     mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF ,
     a ~ dnorm( 0 , 2 ),
     c(bA,bm,bD,bR,bG) ~ dnorm( 0 , 2 ),
-    sigma ~ dexp(1)
-  ), data=Bdata_index_s_2, chains=4 , cores=4 , log_lik = T)
+    sigma ~ dexp(1)), data=Bdata_index_s_2)
 
+#Effect_size_fixed_s_2 <- rethinking::ulam(
+#  alist(
+#    E ~ dnorm(mu,sigma),
+#    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bDS*DS,
+#    a ~ dnorm( 0 , 2 ),
+#    c(bA,bm,bD,bR,bG,bDS) ~ dnorm( 0 , 2 ),
+#    sigma ~ dexp(1)
+#  ), data=Bdata_index_s_2, chains=4 , cores=4 , log_lik = T)
+
+precis(Effect_size_fixed_s_2,depth = 2)
 ```
 
 ### changing Plots

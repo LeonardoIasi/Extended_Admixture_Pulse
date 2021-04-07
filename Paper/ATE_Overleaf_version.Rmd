@@ -173,10 +173,10 @@ suppressPackageStartupMessages({
   library(rethinking)
   library(kableExtra)
   library(DEoptim)
-  library(png)
+  #library(png)
   library("MASS")
   library(bbmle)
-  library(DPQ)
+  #library(DPQ)
 })
 
 Results_Table <- function(Table_Path) {
@@ -839,32 +839,32 @@ ggarrange(P1_1,P1_2,
 
 ### Read in data ###
 
-Simple_D_Sim_1 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Simple_D_Sim_1 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 Simple_D_Sim_1$Gamma_mean <- Get_gamma_mean(Simple_D_Sim_1$GF_Start,Simple_D_Sim_1$GF_Stop)
 Simple_D_Sim_1$Demography <- "0_Simple"
 Simple_D_Sim_1$Recomb.rate <- "0_constant"
 Simple_D_Sim_1$Sim_id <- ifelse(Simple_D_Sim_1$Ascertained==0,"Demo_simple_Recomb_const_LES_min_d_2","Demo_simple_Recomb_const_HES_min_d_2")
 
-Simple_D_Sim_2 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Simple_D_Sim_2 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 Simple_D_Sim_2$Gamma_mean <- Get_gamma_mean(Simple_D_Sim_2$GF_Start,Simple_D_Sim_2$GF_Stop)
 Simple_D_Sim_2$Demography <- "0_Simple"
 Simple_D_Sim_2$Recomb.rate <- "0_constant"
 Simple_D_Sim_2$Sim_id <- ifelse(Simple_D_Sim_2$Ascertained==0,"Demo_simple_Recomb_const_LES_min_d_5","Demo_simple_Recomb_const_HES_min_d_5")
 
-Inferred_D_Sim_1 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Inferred_D_Sim_1 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
 Inferred_D_Sim_1$Gamma_mean <- Get_gamma_mean(Inferred_D_Sim_1$GF_Start,Inferred_D_Sim_1$GF_Stop)
 Inferred_D_Sim_1$Demography <- "Complex"
 Inferred_D_Sim_1$Recomb.rate <- "0_constant"
 Inferred_D_Sim_1$Sim_id <- ifelse(Inferred_D_Sim_1$Ascertained==0,"Demo_complex_Recomb_const_LES_min_d_2","Demo_complex_Recomb_const_HES_min_d_2")
 
-Inferred_D_Sim_2 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Inferred_D_Sim_2 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
 Inferred_D_Sim_2$Gamma_mean <- Get_gamma_mean(Inferred_D_Sim_2$GF_Start,Inferred_D_Sim_2$GF_Stop)
 Inferred_D_Sim_2$Demography <- "Complex"
 Inferred_D_Sim_2$Recomb.rate <- "0_constant"
 Inferred_D_Sim_2$Sim_id <- ifelse(Inferred_D_Sim_2$Ascertained==0,"Demo_complex_Recomb_const_LES_min_d_5","Demo_complex_Recomb_const_HES_min_d_5")
 
-Recom_Sim_1_1 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0_comp.txt")
-Recom_Sim_1_2 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-1_comp.txt")
+Recom_Sim_1_1 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Recom_Sim_1_2 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-1.txt")
 Recom_Sim_1 <- rbind(Recom_Sim_1_1,Recom_Sim_1_2)
 rm(Recom_Sim_1_1,Recom_Sim_1_2)
 Recom_Sim_1$Gamma_mean <- round(Recom_Sim_1$mean.t.GF)
@@ -873,8 +873,8 @@ Recom_Sim_1$Recomb.rate <- "variable"
 Recom_Sim_1$m <- Recom_Sim_1$m
 Recom_Sim_1$Sim_id <- ifelse(Recom_Sim_1$Ascertained==0,"Demo_simple_Recomb_varying_LES_min_d_2","Demo_simple_Recomb_varying_HES_min_d_2")
 
-Recom_Sim_2_1 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0_comp.txt")
-Recom_Sim_2_2 <- Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-1_comp.txt")
+Recom_Sim_2_1 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Recom_Sim_2_2 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-1.txt")
 Recom_Sim_2 <- rbind(Recom_Sim_2_1,Recom_Sim_2_2)
 rm(Recom_Sim_2_1,Recom_Sim_2_2)
 Recom_Sim_2$Gamma_mean <- round(Recom_Sim_2$mean.t.GF)
@@ -883,8 +883,8 @@ Recom_Sim_2$Recomb.rate <- "variable"
 Recom_Sim_2$m <- Recom_Sim_2$m
 Recom_Sim_2$Sim_id <- ifelse(Recom_Sim_2$Ascertained==0,"Demo_simple_Recomb_varying_LES_min_d_5","Demo_simple_Recomb_varying_HES_min_d_5")
 
-Recom_Sim_and_Inf_1_1 <-  Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0_comp.txt")
-Recom_Sim_and_Inf_1_2 <-  Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-1_comp.txt")
+Recom_Sim_and_Inf_1_1 <-  Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Recom_Sim_and_Inf_1_2 <-  Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-1.txt ")
 Recom_Sim_and_Inf_1 <- rbind(Recom_Sim_and_Inf_1_1,Recom_Sim_and_Inf_1_2)
 rm(Recom_Sim_and_Inf_1_1,Recom_Sim_and_Inf_1_2)
 Recom_Sim_and_Inf_1$Gamma_mean <- round(Recom_Sim_and_Inf_1$mean.t.GF)
@@ -893,8 +893,8 @@ Recom_Sim_and_Inf_1$Recomb.rate <- "variable"
 Recom_Sim_and_Inf_1$m <- Recom_Sim_and_Inf_1$m
 Recom_Sim_and_Inf_1$Sim_id <- ifelse(Recom_Sim_and_Inf_1$Ascertained==0,"Demo_complex_Recomb_varying_LES_min_d_2","Demo_complex_Recomb_varying_HES_min_d_2")
 
-Recom_Sim_and_Inf_2_1 <-  Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0_comp.txt")
-Recom_Sim_and_Inf_2_2 <-  Results_Table("Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-1_comp.txt")
+Recom_Sim_and_Inf_2_1 <-  Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Recom_Sim_and_Inf_2_2 <-  Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertai")
 Recom_Sim_and_Inf_2 <- rbind(Recom_Sim_and_Inf_2_1,Recom_Sim_and_Inf_2_2)
 rm(Recom_Sim_and_Inf_2_1,Recom_Sim_and_Inf_2_2)
 Recom_Sim_and_Inf_2$Gamma_mean <- round(Recom_Sim_and_Inf_2$mean.t.GF)
