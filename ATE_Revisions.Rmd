@@ -629,12 +629,17 @@ xdata.M.3.no_error <- xdata.M.3 %>% filter(status=='no_error')
 #xdata.M.3$TID <- ifelse(xdata.M.3$GF=='0_Pulse',paste(xdata.M.3$Sim_id,'GF_model_Pulse',sep = '_'),paste(xdata.M.3$Sim_id,'GF_model_Continuous',sep = '_')) 
 
 xdata.M.3.no_error <- xdata.M.3.no_error %>% filter(downsampling==100)
+xdata.M.3.no_error %>% filter(downsampling==100) %>% filter(AS=="I") %>% filter(Demography=='0_Simple') %>% filter(Recomb.rate=='0_constant') %>% 
+  filter(minDist==0.05) %>% summarise(mean(m.exp))
+Fig_2_1 %>% filter(downsampling==100) %>% filter(AS=="I") -> xx2
 #xdata.M.3 <- xdata.M.3 %>% filter(downsampling!=50)
 
 xdata.M.3.no_error$True_tm <- (xdata.M.3.no_error$GF.End-xdata.M.3.no_error$GF.Start)/2 + xdata.M.3.no_error$GF.Start
 xdata.M.3.no_error$Diff <- xdata.M.3.no_error$m.exp - xdata.M.3.no_error$True_tm
-xdata.M.3.no_error$Diff_s <- (xdata.M.3.no_error$m.exp - xdata.M.3.no_error$True_tm)/sd(xdata.M.3.no_error$m.exp)
+xdata.M.3.no_error$Diff_s <- (xdata.M.3.no_error$m.exp - 1500)/sd(xdata.M.3.no_error$m.exp)
 xdata.M.3.no_error$Sim_id_int <- as.integer(rownames(xdata.M.3.no_error))
+
+xx3 %>% filter(A==0) %>% filter(MD==0) %>% filter(D==1) %>% filter(R==0) %>% filter(GF==0) %>% summarise(mean(E))
 
 Bdata_index_s_2 <- list(
   E = xdata.M.3.no_error$Diff_s,
@@ -648,6 +653,7 @@ Bdata_index_s_2 <- list(
   
 )
 
+
 Effect_size_fixed_s_2 <- quap(
   alist(
     E ~ dnorm(mu,sigma),
@@ -656,16 +662,37 @@ Effect_size_fixed_s_2 <- quap(
     c(bA,bm,bD,bR,bG) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_s_2)
 
-#Effect_size_fixed_s_2 <- rethinking::ulam(
-#  alist(
-#    E ~ dnorm(mu,sigma),
-#    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bDS*DS,
-#    a ~ dnorm( 0 , 2 ),
-#    c(bA,bm,bD,bR,bG,bDS) ~ dnorm( 0 , 2 ),
-#    sigma ~ dexp(1)
-#  ), data=Bdata_index_s_2, chains=4 , cores=4 , log_lik = T)
 
 precis(Effect_size_fixed_s_2,depth = 2)
+```
+```{r message=FALSE, echo=FALSE,warning=FALSE, cache=T}
+B_model_result <- precis(Effect_size_fixed_s_2,prob = 0.95)
+
+
+post_effect_size_model <- extract.samples(Effect_size_fixed_s_2,n = 1e5)
+Post_effect_size_est=data.frame(mean=c(
+mean(post_effect_size_model$a),
+mean(post_effect_size_model$a + post_effect_size_model$bG),
+mean(post_effect_size_model$a + post_effect_size_model$bR),
+mean(post_effect_size_model$a + post_effect_size_model$bD),
+mean(post_effect_size_model$a + post_effect_size_model$bm),
+mean(post_effect_size_model$a + post_effect_size_model$bA)),
+HPDI_lower=c(
+HPDI(post_effect_size_model$a,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[1]),
+HPDI_upper=c(
+HPDI(post_effect_size_model$a,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2])
+#,row.names = c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+)
 ```
 
 ### changing Plots

@@ -10,6 +10,8 @@ import random
 import tskit
 import gzip
 from scipy import stats
+import os
+import os.path
 
 def load_config_master(config,wildcard):
     master = config['_Default_Scenario_'].copy()
@@ -72,7 +74,7 @@ def write_all_snps(file_name, ts, pop_names=['AFR','EUR','NEA'], chrom='1'):
         sample_names.extend([f"{s_name}{i}" for i in range(n_pop)])
     with gzip.open(file_name, 'wt') as f:
         f.write("chrom\tpos\t")
-        f.write("\t".join(samples))
+        f.write("\t".join(sample_names))
         f.write("\n")
         for v in ts.variants():
             gt = '\t'.join(str(gt) for gt in v.genotypes)
@@ -127,8 +129,8 @@ def GF_Model_IV(TimeSpan,GF_start,GF_stop,demographic_events,GF_rate,loc,Folder_
 
     return demographic_events
 
-def simulation(params,Folder_name,master_name,number, master,GF_Model):
-
+def simulation(params,Folder_name,output_prefix,master_name,number, master,GF_Model):
+    os.makedirs(os.path.dirname(output_prefix), exist_ok=True)
     samples = [msprime.Sample(population=0, time=int(params['sample_Africans_at']))] * int(params['sample_Africans']) + [msprime.Sample(population=1, time=int(params['sample_non_Africans_at']))]*int(params['sample_non_Africans']) + [msprime.Sample(population=2, time=int(params['sample_Neandertals_at']))]*int(params['sample_Neandertals'])
 
 
@@ -142,20 +144,27 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
         ]
 
 
-    if str(master['GF_Model'][0]) == 'GF_Model_IV':
-        change_sim_model=msprime.SimulationModelChange(time=int(params['sim_time_change']), model="hudson")
-        Neandertal_Gene_Flow_absolute_start=msprime.MigrationRateChange(time=int(params['sample_Neandertals_at']),rate=0)
-        Neandertal_Gene_Flow_absolute_end=msprime.MigrationRateChange(time=int(params['split_time_non_Africans']),rate=0)
-        EUR_AFR_Gene_Flow_start=msprime.MigrationRateChange(time=1,rate=float(params['EUR_AFR_migration_rate_GF']),matrix_index=(0,1) )
-        AFR_EUR_Gene_Flow_start=msprime.MigrationRateChange(time=1,rate=float(params['EUR_AFR_migration_rate_GF']),matrix_index=(1,0) )
-        EUR_AFR_Gene_Flow_end=msprime.MigrationRateChange(time=int(params['split_time_non_Africans']),rate=0,matrix_index=(0,1) )
-        AFR_EUR_Gene_Flow_end=msprime.MigrationRateChange(time=int(params['split_time_non_Africans']),rate=0,matrix_index=(1,0) )
-        Split_Time_Neandertals=msprime.MassMigration(time=int(params['split_time_Neandertals']),source=0,destination=2,proportion=1.0)
-        Split_Time_non_Africans=msprime.MassMigration(time=int(params['split_time_non_Africans']),source=1,destination=0,proportion=1.0)
+    #if str(master['GF_Model'][0]) == 'GF_Model_IV':
+    #change_sim_model=msprime.SimulationModelChange(time=int(params['sim_time_change']), model="hudson")
+    Neandertal_Gene_Flow_absolute_start=msprime.MigrationRateChange(time=int(params['sample_Neandertals_at']),rate=0)
+    Neandertal_Gene_Flow_absolute_end=msprime.MigrationRateChange(time=int(params['split_time_non_Africans']),rate=0)
+    EUR_AFR_Gene_Flow_start=msprime.MigrationRateChange(time=params['EUR_AFR_migration_start'],rate=float(params['EUR_AFR_migration_rate_GF']/(params['EUR_AFR_migration_end']-params['EUR_AFR_migration_start'])),matrix_index=(0,1) )
+    AFR_EUR_Gene_Flow_start=msprime.MigrationRateChange(time=params['EUR_AFR_migration_start'],rate=float(params['EUR_AFR_migration_rate_GF']/(params['EUR_AFR_migration_end']-params['EUR_AFR_migration_start'])),matrix_index=(1,0) )
+    EUR_AFR_Gene_Flow_end=msprime.MigrationRateChange(time=int(params['EUR_AFR_migration_end']),rate=0,matrix_index=(0,1) )
+    AFR_EUR_Gene_Flow_end=msprime.MigrationRateChange(time=int(params['EUR_AFR_migration_end']),rate=0,matrix_index=(1,0) )
+    Substructure_start1=msprime.MigrationRateChange(time=params['Substructure_mig_start'],rate=float(params['Substructure_mig_rate']),matrix_index=(0,1) )
+    Substructure_start2=msprime.MigrationRateChange(time=params['Substructure_mig_start'],rate=float(params['Substructure_mig_rate']),matrix_index=(1,0) )
+    Substructure_end1=msprime.MigrationRateChange(time=params['Substructure_end'],rate=0,matrix_index=(0,1) )
+    Substructure_end2=msprime.MigrationRateChange(time=params['Substructure_end'],rate=0,matrix_index=(1,0) )
+    Split_Time_Neandertals=msprime.MassMigration(time=int(params['split_time_Neandertals']),source=0,destination=2,proportion=1.0)
+    Split_Time_non_Africans=msprime.MassMigration(time=int(params['split_time_non_Africans']),source=1,destination=0,proportion=1.0)
 
-        demographic_events=[change_sim_model,EUR_AFR_Gene_Flow_start,AFR_EUR_Gene_Flow_start,EUR_AFR_Gene_Flow_end,AFR_EUR_Gene_Flow_end,Neandertal_Gene_Flow_absolute_end,Neandertal_Gene_Flow_absolute_start,Split_Time_Neandertals,Split_Time_non_Africans]
+    #demographic_events=[EUR_AFR_Gene_Flow_start,AFR_EUR_Gene_Flow_start,EUR_AFR_Gene_Flow_end,AFR_EUR_Gene_Flow_end,
+    #Substructure_start1,Substructure_start2,Substructure_end1,Substructure_end2,Neandertal_Gene_Flow_absolute_end,Neandertal_Gene_Flow_absolute_start,Split_Time_Neandertals,Split_Time_non_Africans]
+    demographic_events=[EUR_AFR_Gene_Flow_start,AFR_EUR_Gene_Flow_start,EUR_AFR_Gene_Flow_end,AFR_EUR_Gene_Flow_end,
+    Substructure_start1,Substructure_start2,Substructure_end1,Substructure_end2,Neandertal_Gene_Flow_absolute_end,Neandertal_Gene_Flow_absolute_start,Split_Time_Neandertals,Split_Time_non_Africans]
 
-        demographic_events=GF_Model_IV(TimeSpan=int(params['split_time_non_Africans']),GF_start=int(params['GF_start']),GF_stop=int(params['GF_stop']),demographic_events=demographic_events,GF_rate=float(params['migration_rate_GF']),loc=int(master['GF_Model'][1]),Folder_name=Folder_name,master_name=master_name,number=number,GF_Model=GF_Model)
+    demographic_events=GF_Model_IV(TimeSpan=int(params['split_time_non_Africans']),GF_start=int(params['GF_start']),GF_stop=int(params['GF_stop']),demographic_events=demographic_events,GF_rate=float(params['migration_rate_GF']),loc=int(master['GF_Model'][1]),Folder_name=Folder_name,master_name=master_name,number=number,GF_Model=GF_Model)
 
 
     if str(master['Complex_Demography'][0]) == 'True':
@@ -187,16 +196,16 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
             [0,0,0],
             [0,0,0]]
 
-    #check=msprime.DemographyDebugger(
-    #population_configurations=population_configuration,
-    #migration_matrix=migration_matrix,
-    #demographic_events=demographic_events)
-    #check.print_history(output=open('{0}/Demography_history-{1}-{2}.txt'.format(Folder_name,master_name,GF_Model), 'w'))
+    check=msprime.DemographyDebugger(
+    population_configurations=population_configuration,
+    migration_matrix=migration_matrix,
+    demographic_events=demographic_events)
+    check.print_history(output=open(f"{Folder_name}_{master_name}_Demography_history.txt", 'w'))
 
     if str(master['Recombination_Map'][0]) == 'False':
         simulation=msprime.simulate(
             samples=samples,
-            model="dtwf",
+            #model="dtwf",
             mutation_rate=float(params['mutation_rate']),
             length=float(params['chr_length']),
             recombination_rate=float(params['recombination_rate']),
@@ -208,7 +217,7 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
         print("Simulating using empirical recombination maps")
         simulation=msprime.simulate(
             samples=samples,
-            model="dtwf",
+            #model="dtwf",
             mutation_rate=float(params['mutation_rate']),
             recombination_map=msprime.RecombinationMap.read_hapmap('{0}'.format(str(master['Recombination_Map'][1]))),
             population_configurations=population_configuration,
@@ -224,16 +233,16 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 
 ############################################################################################
 # Choose which Set to process by giving Set_name the name of the Set to be processed #
-Set_name='Fig_2_D_Complex_corrected_revision'
+Set_name='Test_1'
 
 # Choose number of replicates #
-replicates=25
+replicates=1
 
 # Choose Folder #
-Folder_name='../../Fig_2_D_Complex_corrected_revision'
+Folder_name='../../Test_1'
 
 # Choose Result Folder Name #
-Result_Folder='../../Fig_2_D_Complex_corrected_revision/Result_classic_Exp'
+Result_Folder='../../Test_1/Result_classic_Exp'
 
 # Choose if lambda chould be fixed or variable while fitting the AIC_Lomax
 Fix_lambda=False
@@ -255,17 +264,18 @@ rule alle:
 rule basic_simulation:
     input:
     output:
-        sim_out="{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}.trees"
+        sim_out=pipe("{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}.trees")
         #sim_out="{Folder_name}/sim/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}_snps.tsv.gz"
     run:
         master=load_config_master(config['MASTER'],wildcards.master_name)
         params=load_config_sim_parameters(config['sim_parameters'],master['simulation'])
-        simulation_results=simulation(params=params,Folder_name=wildcards.Folder_name,master_name=wildcards.master_name,number=wildcards.number,master=master,GF_Model=wildcards.GF_Model);
+        output_prefix=f"{wildcards.Folder_name}/sim/Simulation-{wildcards.master_name}-Chr{wildcards.nChr}-run{wildcards.number}-{wildcards.GF_Model}"
+        simulation_results=simulation(params=params,Folder_name=wildcards.Folder_name,output_prefix=output_prefix,master_name=wildcards.master_name,number=wildcards.number,master=master,GF_Model=wildcards.GF_Model);
         # write whole tree sequence using tskit
         simulation_results.dump('{}'.format(output[0]))
-        #write_all_snps(f"/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Simulations/{output.sim_out}",
+        #write_all_snps(f"{output_prefix}_snps.tsv.gz",
         #                   simulation_results,
-        #                   chrom=wildcards.nChr)
+        #                  chrom=wildcards.nChr)
 
 
 rule ascertainment:
@@ -286,8 +296,9 @@ rule ascertainment:
         print(wildcards.Ascertainment)
         simulation_results=tskit.load(input[0])
         snps2=get_all_snps(simulation_results)
-        #snps2.to_csv('{}'.format(output.snp_data), float_format="%.5f", index=False,compression='gzip')
-        #snps2 = pd.read_csv(input.sim_in, sep="\t")
+        #snps = pd.read_csv(input.sim_in, sep="\t")
+        #snps.pos = snps.pos.astype(int)
+        #snps2 = snps.drop_duplicates(subset=['pos'])
 
         # Write geno and snp files
 
@@ -298,11 +309,13 @@ rule ascertainment:
         n_afr, n_eur, n_nea = len(afr_cols), len(eur_cols), len(nea_cols)
 
         D = dict()
+        #D['rs'] = snps2.inde.astype(int)
         D['rs'] = snps2.index.astype(int)
         D['chrom'] = str(int(wildcards.nChr)+1)
+        #D['pos'] = snps2.pos.astype(int)
+        #D['map'] = snps2.pos.astype(int) * float(params['recombination_rate'])
         D['pos'] = snps2.index.astype(int)
         D['map'] = snps2.index.astype(int) * float(params['recombination_rate'])
-
 
         D["AFR_alt"] = np.sum(snps2[afr_cols], 1)
         D["EUR_alt"] = np.sum(snps2[eur_cols], 1)
@@ -316,7 +329,7 @@ rule ascertainment:
 
         pd.options.mode.chained_assignment = None
         if wildcards.Ascertainment == "I" :
-            filter_ = (geno_snp.AFR_alt == 0) & (geno_snp.NEA_alt > 0)
+            filter_ = (geno_snp.AFR_alt == 0) & (geno_snp.NEA_alt != 0)
             snp_file = geno_snp[filter_]
             snp_file = snp_file[['rs', 'chrom','map','pos']]
             snp_file.iat[0,2] = 0
@@ -324,7 +337,7 @@ rule ascertainment:
             geno_file = snps2[filter_]
             geno_file = pd.DataFrame(np.add.reduceat(geno_file.values, np.arange(len(geno_file.columns))[::2], axis=1))
         elif wildcards.Ascertainment == "II":
-            filter_ = (geno_snp.AFR_alt == 0) & (geno_snp.NEA_alt > 0) & (geno_snp.EUR_alt > 0)
+            filter_ = (geno_snp.AFR_alt == 0) & (geno_snp.NEA_alt != 0) & (geno_snp.EUR_alt != 0)
             snp_file = geno_snp[filter_]
             snp_file = snp_file[['rs', 'chrom','map','pos']]
             snp_file.iat[0,2] = 0
@@ -441,12 +454,14 @@ rule Set_Genetic_Distance:
             shell("""awk '{{print $1,$2, $3=$4*{x}, $4}}' {input} | sed '{{s/ /\t/g}}' > {output} """)
         elif str(master['Recombination_Map'][0]) == 'True' and wildcards.Recomb_correction == 'No_correction':
             cor_rr=get_recomb_rate_for_correctio(wildcards.master_name)
-            print(cor_rr)
+            print('Correcting genetic distance using: ',cor_rr, ' M/bp')
             x=cor_rr
             shell("""awk '{{print $1,$2, $3=$4*{x}, $4}}' {input} | sed '{{s/ /\t/g}}' > {output} """)
         elif str(master['Recombination_Map'][0]) == 'True' and wildcards.Recomb_correction == 'AAMap_correction':
+            print('Correcting genetic distance using: the African-American-Map')
             shell("""Rscript /r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/AAMap_interpolation.R {input[0]} "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Check_Cox_2019_Paper/Recombination_Maps/Scaled_Genetic_AAMap.txt" {output[0]}""")
         elif str(master['Recombination_Map'][0]) == 'True' and wildcards.Recomb_correction == 'HapMap_correction':
+            print('Correcting genetic distance using: the HapMap-Map')
             shell("""Rscript /r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/HapMap_interpolation.R {input[0]} "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Recombination_Maps/Scaled_HapMap.txt" {output[0]}""")
 
 
