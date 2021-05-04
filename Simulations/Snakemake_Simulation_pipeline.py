@@ -194,16 +194,16 @@ def simulation(params,Folder_name,master_name,number, master,GF_Model):
 
 ############################################################################################
 # Choose which Set to process by giving Set_name the name of the Set to be processed #
-Set_name='Close_to_GF_End_Recent_GF_corrected_WF'
+Set_name='Fig_1_B_corrected'
 
 # Choose number of replicates #
-replicates=10
+replicates=100
 
 # Choose Folder #
-Folder_name='../../Close_to_GF_End_Recent_GF_corrected_WF'
+Folder_name='../../Fig_1_B_corrected'
 
 # Choose Result Folder Name #
-Result_Folder='../../Close_to_GF_End_Recent_GF_corrected_WF/Result_both_Fit_classic_Lomax'
+Result_Folder='../../Revisions_Fig_4/Result_both_Fit_classic_Lomax_simple'
 
 # Choose if lambda chould be fixed or variable while fitting the AIC_Lomax
 Fix_lambda=False
@@ -217,8 +217,10 @@ Sim_name=config['MASTER']['%s' % master_Scenario[0]]['simulation']
 
 rule alle:
     input:
-        expand("{Result_Folder}/Result_file_SIM_Raw_ALDER-Fit-{Set_name}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt",master_name=config['CONTROL']['%s' % Set_name],number=range(replicates),Set_name=Set_name,GF_Model=config['MASTER']['%s' % master_Scenario[0]]['GF_Model'][0],Result_Folder=Result_Folder,Folder_name=Folder_name,min_dist_Fit=config['MASTER']['%s' % master_Scenario[0]]['min_dist_Fit']
-,Ascertainment=config['MASTER']['%s' % master_Scenario[0]]['ascertainment'],Recomb_correction=config['MASTER']['%s' % master_Scenario[0]]['Recombination_Correction']),
+        expand("{Result_Folder}/Result_file_SIM_Raw_ALDER-Fit-{Set_name}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.txt",master_name=config['CONTROL']['%s' % Set_name],number=range(replicates),Set_name=Set_name,GF_Model=config['MASTER']['%s' % master_Scenario[0]]['GF_Model'][0],Result_Folder=Result_Folder,Folder_name=Folder_name,min_dist_Fit=config['MASTER']['%s' % master_Scenario[0]]['min_dist_Fit']
+    ,Ascertainment=config['MASTER']['%s' % master_Scenario[0]]['ascertainment'])
+       # expand("{Result_Folder}/Result_file_SIM_Raw_ALDER-Fit-{Set_name}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt",master_name=config['CONTROL']['%s' % Set_name],number=range(replicates),Set_name=Set_name,GF_Model=config['MASTER']['%s' % master_Scenario[0]]['GF_Model'][0],Result_Folder=Result_Folder,Folder_name=Folder_name,min_dist_Fit=config['MASTER']['%s' % master_Scenario[0]]['min_dist_Fit']
+#,Ascertainment=config['MASTER']['%s' % master_Scenario[0]]['ascertainment'],Recomb_correction=config['MASTER']['%s' % master_Scenario[0]]['Recombination_Correction']),
 
 
 rule basic_simulation:
@@ -293,8 +295,8 @@ rule merge_geno_files:
     input:
         merge_geno_files
     output:
-        #temp("{Folder_name}/Ascertained_Simulation_merged-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}.eigenstratgeno")
-        "{Folder_name}/Ascertained_Simulation_merged-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}.eigenstratgeno"
+        temp("{Folder_name}/Ascertained_Simulation_merged-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}.eigenstratgeno")
+        #"{Folder_name}/Ascertained_Simulation_merged-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}.eigenstratgeno"
     run:
         with open('{}'.format(output[0]),'w') as out_merged_geno:
             for i, file in enumerate(input):
@@ -310,8 +312,8 @@ rule merge_snp_files:
     input:
         merge_snp_files
     output:
-        #temp("{Folder_name}/Ascertained_Simulation_merged-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}.snp")
-        "{Folder_name}/Ascertained_Simulation_merged-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}.snp"
+        temp("{Folder_name}/Ascertained_Simulation_merged-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}.snp")
+        #"{Folder_name}/Ascertained_Simulation_merged-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}.snp"
     run:
         with open('{}'.format(output[0]),'w') as out_merged_geno:
             for i, file in enumerate(input):
@@ -382,37 +384,47 @@ def get_max_length(wildcards):
 
 rule fit_Curve:
     input:
-        "{Folder_name}/Raw_ALDER_output-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}-{Recomb_correction}.txt"
+        "{Folder_name}/Raw_ALDER_output-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}.txt"
+        #"{Folder_name}/Raw_ALDER_output-{master_name}-run{number}-{GF_Model}-ascertainment-{Ascertainment}-{Recomb_correction}.txt"
     params:
-        max_dist=get_max_length,
+        #max_dist=get_max_length,
+        max_dist=1,
         Fix_lambda=Fix_lambda,
         Only_Simple_Pulse_fit=False
     output:
-        #"{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
-        "{Folder_name}/Model_Fit_classic_Lomax/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
+        "{Folder_name}/Model_Fit_paper_Lomax_papar_parametrization_simple/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.log"
+        #"{Folder_name}/Model_Fit_classic_Lomax/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
         #"{Folder_name}/Model_Fit/Plot-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.pdf",
     script:
-        "/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Fit_Exponential_and_Lomax_Snake.R"
+        "/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Fit_Exponential_and_Lomax_Snake_simple.R"
+        #"/r1/people/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Fit_Exponential_and_Lomax_Snake.R"
 
 
 rule grep_results_and_merge_with_Scenarios:
     input:
-        #"{Folder_name}/Model_Fit/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
-        "{Folder_name}/Model_Fit_classic_Lomax/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
+        "{Folder_name}/Model_Fit_paper_Lomax_papar_parametrization_simple/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.log"
+        #"{Folder_name}/Model_Fit_classic_Lomax/Summary-Fit-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.log"
     output:
-        temp("{Folder_name}/Result-Fit_Output-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt")
+        temp("{Folder_name}/Result-Fit_Output-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.txt")
+        #temp("{Folder_name}/Result-Fit_Output-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt")
 
     run:
         master=load_config_master(config['MASTER'],wildcards.master_name)
         params=load_config_sim_parameters(config['sim_parameters'],master['simulation'])
-        shell("""grep "A, s, c, RSS_Expo, AIC_Expo, A, s, w,c, RSS_Lomax, AIC_Lomax, F_Test:" {input} |  sed 's/ /\t/g' |
-awk '{{print $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24="{wildcards.master_name}",$25="{params[GF_start]}",$26="{params[GF_stop]}",$27="{master[ascertainment]}",$28="{master[min_dist_Fit]}",$29="{master[GF_Model][0]}"}}' > {output} """)
-
+        #shell("""grep "A, s, c, RSS_Expo, AIC_Expo, A, s, w,c, RSS_Lomax, AIC_Lomax, F_Test:" {input} |  sed 's/ /\t/g' |
+#awk '{{print $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24="{wildcards.master_name}",$25="{params[GF_start]}",$26="{params[GF_stop]}",$27="{master[ascertainment]}",$28="{master[min_dist_Fit]}",$29="{master[GF_Model][0]}"}}' > {output} """)
+        #shell("""grep "A, s, c, RSS_Expo, AIC_Expo, A, s, w,c, RSS_Lomax, AIC_Lomax, F_Test:" {input} |  sed 's/ /\t/g' |
+#awk '{{print $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24="{wildcards.master_name}",$25="{params[GF_start]}",$26="{params[GF_stop]}",$27="{master[ascertainment]}",$28="{master[min_dist_Fit]}",$29="{master[GF_Model][0]}"}}' > {output} """)
+        shell("""grep "A, tm, c, RSS_SP, AIC_SP, A, tm, k,c, RSS_EP, AIC_EP, F_Test:" {input} |  sed 's/ /\t/g' |
+awk '{{print $12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24="{wildcards.master_name}",$25="{params[GF_start]}",$26="{params[GF_stop]}",$27="{wildcards.Ascertainment}",$28="{wildcards.min_dist_Fit}",$29="100"}}' > {output} """)
 
 def merge_all_files(wildcards):
-    files = expand("{Folder_name}/Result-Fit_Output-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt",master_name=config['CONTROL']['%s' % Set_name],
+    files = expand("{Folder_name}/Result-Fit_Output-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.txt",master_name=config['CONTROL']['%s' % Set_name],
     number=range(replicates),Set_name=Set_name,Folder_name=Folder_name,GF_Model=config['MASTER']['%s' % master_Scenario[0]]['GF_Model'][0],min_dist_Fit=config['MASTER']['%s' % master_Scenario[0]]['min_dist_Fit'],
-    Ascertainment=config['MASTER']['%s' % master_Scenario[0]]['ascertainment'],Recomb_correction=wildcards.Recomb_correction)
+    Ascertainment=config['MASTER']['%s' % master_Scenario[0]]['ascertainment'])
+    #files = expand("{Folder_name}/Result-Fit_Output-{master_name}-run{number}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt",master_name=config['CONTROL']['%s' % Set_name],
+    #number=range(replicates),Set_name=Set_name,Folder_name=Folder_name,GF_Model=config['MASTER']['%s' % master_Scenario[0]]['GF_Model'][0],min_dist_Fit=config['MASTER']['%s' % master_Scenario[0]]['min_dist_Fit'],
+    #Ascertainment=config['MASTER']['%s' % master_Scenario[0]]['ascertainment'],Recomb_correction=wildcards.Recomb_correction)
     return files
 
 rule merge_all_files:
@@ -420,7 +432,8 @@ rule merge_all_files:
         merge_all_files
 
     output:
-        "{Result_Folder}/Result_file_SIM_Raw_ALDER-Fit-{Set_name}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt"
+        "{Result_Folder}/Result_file_SIM_Raw_ALDER-Fit-{Set_name}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}.txt"
+        #"{Result_Folder}/Result_file_SIM_Raw_ALDER-Fit-{Set_name}-{GF_Model}-min_dist_Fit-{min_dist_Fit}-ascertainment-{Ascertainment}-{Recomb_correction}.txt"
     run:
         results=list()
         for i in input:
