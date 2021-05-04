@@ -18,6 +18,7 @@ def load_config_master(config,wildcard):
     master.update(config[wildcard])
     return master
 
+
 def load_config_sim_parameters(config,master):
     params=config['_MS_default_'].copy()
     params.update(config[master])
@@ -233,16 +234,16 @@ def simulation(params,Folder_name,output_prefix,master_name,number, master,GF_Mo
 
 ############################################################################################
 # Choose which Set to process by giving Set_name the name of the Set to be processed #
-Set_name='Test_1'
+Set_name='Fig_2_B_complex_revision'
 
 # Choose number of replicates #
-replicates=1
+replicates=25
 
 # Choose Folder #
-Folder_name='../../Test_1'
+Folder_name='../../Fig_2_B_complex_revision'
 
 # Choose Result Folder Name #
-Result_Folder='../../Test_1/Result_classic_Exp'
+Result_Folder='../../Fig_2_B_complex_revision/Result_classic_Exp'
 
 # Choose if lambda chould be fixed or variable while fitting the AIC_Lomax
 Fix_lambda=False
@@ -261,10 +262,11 @@ rule alle:
 ,Ascertainment=config['MASTER']['%s' % master_Scenario[0]]['ascertainment'],downsample=config['MASTER']['%s' % master_Scenario[0]]['downsample'],Recomb_correction=config['MASTER']['%s' % master_Scenario[0]]['Recombination_Correction']),
 
 
+
 rule basic_simulation:
     input:
     output:
-        sim_out=pipe("{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}.trees")
+        sim_out="{Folder_name}/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}.trees"
         #sim_out="{Folder_name}/sim/Simulation-{master_name}-Chr{nChr}-run{number}-{GF_Model}_snps.tsv.gz"
     run:
         master=load_config_master(config['MASTER'],wildcards.master_name)
