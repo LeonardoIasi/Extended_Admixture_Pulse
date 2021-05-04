@@ -1,6 +1,7 @@
 # Extended Admixture Pulse
 
 This repository contains the scripts, pipelines and analysis steps used in this project. 
+This repro is still 'under construction' we will include example files for the model fitting soon.
 
 ## Fitting the simple and extended pulse model
 The descriptions of the models can be found here (..put biorivx link ...). In brief, one approach to learn about admixture dates from genetic data uses a recombination clock model: Conceptually, admixture segments are the result of the introduced chromosomes being broken down by recombination; the offspring of an archaic and a modern human parent will have one whole chromosome each of either ancestry. Thus, the offsprings' markers are in full ancestry linkage disequilibrium (ALD); all archaic variants are present on one DNA molecule, and all modern human one on the other one. In each generation meiotic recombination will reshuffle the chromosomes, progressively breaking down the ancestral chromosome down into shorter segments of archaic ancestry and the Admixture induced Linkage Disequilibrium (ALD) similarly decreases with each generation after gene flow. One can fit the decline of segment length or ALD to resolve for the time since the admixture event. The simple pulse model assumes that all admixture happens in one generation and uses an exponential distribution to fit the segment length (using the exponential PDF) or ALD (using the tail function of the exponential) to resolve for the mean time of gene flow (tm). 
