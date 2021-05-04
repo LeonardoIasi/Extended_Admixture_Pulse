@@ -29,9 +29,9 @@ fit_simple_pulse=function(Segments,lower_trunc,upper_trunc){
   
   try({
     f = function(par) -sum(n * dtexp(l, exp(par[1]), lower_trunc=lower_trunc,upper_trunc = upper_trunc))
-    res = optim(c(-1), f, method="L-BFGS-B")
+    res = optim(c(100), f, method="L-BFGS-B")
     par =exp(res$par)
-    t_m = (par*100)/(1-m)
+    t_m = (par*100)
     return(data.frame(rate=par, ll_exp = -res$value, t_m= t_m))
   }, silent=F)
   return(data.frame(rate=NA, ll_exp=NA, t_m= NA ))
@@ -52,7 +52,7 @@ fit_extended_pulse=function(Segments,lower_trunc,upper_trunc){
   
   try({
     f = function(par)-sum(n * dtlomax(l, scale=exp(par[1]), shape=exp(par[2]), lower_trunc=lower_trunc,upper_trunc=upper_trunc))
-    res = optim(c(-100,-100), f, method="L-BFGS-B")
+    res = optim(c(100,10), f, method="L-BFGS-B")
     pars = exp(res$par)
     return(data.frame(shape=pars[2],scale=pars[1], ll_lomax = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc))
   }, silent=F)
