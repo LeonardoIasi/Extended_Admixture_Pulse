@@ -242,7 +242,7 @@ Given $T_i$, the segment length $L_i$ is exponentially distributed with rate par
 
 \begin{equation}
  \label{eq:generall_length_distribution}
-    P(L_i=l|T_i=t) = t r e^{(-t r l)} 
+    P(L_i=l|T_i=t) = t r e^{-t r l} 
 \end{equation}
 	
 For simplicity, we measure the length of each segment $L_i$ in the recombination distance Morgan (M), so that $r=1$ Morgan per generation, and can be ommited.
@@ -396,7 +396,7 @@ D_t(r) = \delta_x\delta_y M\left( \frac{1}{1 + \frac{t_m}{k} \:r}\right) ^{k-1} 
 	
 \paragraph{The continuous migration model}
 
-The single pulse model can be thought of as the extreme case of the extended pulse model when $k \to \infty$, i.e. the pulse gets infinitely short. The other extreme is for low $k$, where the extended pulse model approaches a model of continuous migration. , i.e. the last migration event at a particular location is exponentially distributed with rate $m$. This is the model considered by \cite{pool_inference_2009}; conceptually, we can think of each lineage in the population to enter at a rate $M$. 
+The single pulse model can be thought of as the extreme case of the extended pulse model when $k \to \infty$, i.e. the pulse gets infinitely short. The other extreme is for low $k$, where the extended pulse model approaches a model of continuous migration, i.e. the last migration event at a particular location is exponentially distributed with rate $m$. This is the model considered by \cite{pool_inference_2009}; conceptually, we can think of each lineage in the population to enter at a rate $M$. 
 	
 Setting $t_m = \frac{2}{m}, k=2$, we obtain
 
@@ -414,7 +414,7 @@ Equation \ref{eq:segments_continuous} differs slighty from eq. 6 in \cite{pool_i
 
 
 \paragraph{Migration fraction and Genetic drift}
-\cite{liang_lengths_2014} examined the effect of genetic drift, recombination between introgressed segements and model violations in a single pulse-model. They showed that under the SMC'-model \citep{wall_smc}, admixture tracts are exponentially distributed with rate
+\cite{liang_lengths_2014} examined the effect of genetic drift, recombination between introgressed segements and model violations in a single pulse-model. They showed that under the SMC'-model \citep{wall_smc}, admixture tracts are exponentially distributed with mean
 \begin{equation}
   \mathbb{E}L_i \sim  \left[t_m(1-M)\left(1-\frac{t_m}{4N}\right)\right]^{-1},
 \end{equation}
@@ -440,7 +440,7 @@ First, we examine the power to differentiate the simple and extended pulse model
 
 \subsection{Power Analysis}\label{Power Analysis}
 
-First, we want to know for which duration and time since admixture we can differentiate an extended from a simple admixture pulse. We take a best case scenario were admixture segments are perfectly known. We compare the likelihood of the simple and extended pulse for data simulated from the extended pulse distribution using different admixture durations and a fixed mean admixture time of 1500 generations ago. We perform a likelihood ratio test to find the parameter region where we can confidently distinguish these models. We use a significance cutoff of + 2 and perform each simulation 100 times with different amount of data. Our maximum amount is 100000 unique segments which is roughly half the number observed in \cite{skov_nature_2020}. The segments are either sampled at present time or at 50 generations after the end of gene flow, i.e. sampling closer to the gene flow event by using ancient samples. Figure \ref{fig:fig1_1} shows that the power to distinguish the two models is highly dependent on the amount of data and second on the sampling time. With 10,000 unique segments and a admixture duration of 1500 generations we are able to confidently distinguish the extended from a simple pulse (\ref{fig:fig1_1}C). By sampling closer to the end of the admixture event we gain power and are able to distinguish an extended pulse already with a duration of only 60 generations.
+First, we want to know for which duration and time since admixture we can differentiate an extended from a simple admixture pulse. We take a best case scenario were admixture segments are perfectly known. We compare the likelihood of the simple and extended pulse for data simulated from the extended pulse distribution using different admixture durations and a fixed mean admixture time of 1500 generations ago. We perform a likelihood ratio test to find the parameter region where we can confidently distinguish these models. We use a significance cutoff of + 2 and perform each simulation 100 times with different amount of data. Our maximum amount is 100000 unique segments which is roughly half the number observed in \cite{skov_nature_2020}. The segments are either sampled at present time or at 50 generations after the end of gene flow, i.e. sampling closer to the gene flow event by using ancient samples. Figure \ref{fig:fig1_1} shows that the power to distinguish the two models is highly dependent on the amount of data and second on the sampling time. With 10,000 unique segments and a admixture duration of 1500 generations we are able to confidently distinguish the extended from a simple pulse (Figure \ref{fig:fig1_1}C). By sampling closer to the end of the admixture event we gain power and are able to distinguish an extended pulse already with a duration of only 60 generations.
 
 \begin{figure}
 \centering
@@ -562,14 +562,15 @@ To further refine admixture timing, time series data from more admixed early mod
 
 \subsection{Power Analysis}\label{power analysis}
 
-To test the power of distinguishing the 
+To test the power of distinguishing the simple from an extended pulse we simulated 100, 1000, 10000 and 100000 unique times $t$ form a Gamma distribution implemented in the R \texttt{stats v.3.6.2} package \citep{R_Core_Team_2019}, with shape parameter $k$ and scale being $k/t_m$. Where $t_m$ is 1500 generations ago. We defined $k$ for different durations as $k=1/((t_d/(4t_m))^2)$. Segment length are obtained by sampled for each $t$ from an exponential distribution (\texttt{stats v.3.6.2} package) with rate parameter $t$ for present day samples and $t_{closer}= t - t_m - t_d/2 -50$ for sampling 50 generations after the end of gene flow.
+We fit the simple (\ref{xx}) and extended pulse (\ref{xx}) using the \texttt{optim} function implemented in the R \texttt{stats v.3.6.2} package. The log likelihoods are compared using a log likelihood ratio test.
 
 \subsection{Coalescent Simulations}\label{coalescent simulations}
 
 We test our approach with coalescence simulations using  \texttt{msprime} 
 \citep{kelleher_efficient_2016}. We focus on scenarios mimicking Neandertal admixture, and choose sample sizes to reflect those available from the 1000 Genomes data \citep{the_1000_genomes_project_consortium_global_2015}. For ALD simulations we simulate 176 diploid
 African individuals and 170 diploid non-Africans, corresponding to the
-number of Yoruba (YRI) and Central Europeans from Utah (CEU). 
+number of Yoruba (YRI) and Central Europeans from Utah (CEU). For segment simulations we simulated 50 diploid diploid non-Africans.
 Since three high coverage Neandertal genomes are available \citep{prufer_complete_2013,prufer_high-coverage_2017,mafessoni_high_coverage_2020} we  simulate three diploid Neandertal genomes. For each individual we simulate 20
 chromosomes with a length of 150 Mb each. The mutation rate is set for
 all simulations to \(2*10^{-8}\) per base per generation. The
@@ -583,7 +584,7 @@ split time between modern humans and Neandertals is 10,000 generations
 ago and the split between Africans and non-Africans is 2,550
 generations ago. The migration rate from Neandertals into non-Africans
 was set to zero before the split from Africans, to ensure that there is no Neandertal
-ancestry in Africans. Each simulation was repeated 100 times. 
+ancestry in Africans. Each simulation was repeated 100 times. For segment simulations we followed  \cite{skov_detecting_2018}, but only simulated the Europeans. The split time of  non-Africans are kept the same as in the ALD simulations (2550 generations ago) (S. Figure \ref{fig:figS1}C).  
 
 
 \subsubsection{Simulating admixture}\label{Simulating the expanded pulse}
@@ -591,11 +592,11 @@ We specify simulations under the extended pulse model using the mean admixture t
 
 \subsubsection{Recombination maps}\label{recombination map}
 Uncertainties in the recombination map were previously shown to influence admixture time estimates \citep{sankararaman_date_2012,fu_genome_2014,sankararaman_combined_2016}. To investigate the effect of more realistic
-recombination rate variation, we perform simulations using empirical recombination maps. We use the  African-American map \citep{hinch_landscape_2011} for simulations to evaluate the relative importance of simulation and modeling parameters for admixture time estimates. The HapMap phase 3 map \citep{HapMapConsortium_second_2007} is used for evaluating inference using the extended pulse model. For simplicity, we use the same
+recombination rate variation, we perform simulations using empirical recombination maps. We use the  African-American map \citep{hinch_landscape_2011} for simulations to evaluate the relative importance of simulation and modeling parameters for admixture time estimates. The HapMap phase 3 map \citep{HapMapConsortium_second_2007} is used for evaluating inference using the extended pulse model. For admixture segment simulations we used the deCODE map . For simplicity, we use the same
 recombination map (150 Mb of chromosome 1, excluding the first 10 Mb)
 for all simulated chromosomes. When simulating under an empirical map, with the analysis assuming a constant rate (\emph{i.e.} no correction), we use the mean recombination rate from the respective map to calculate the genetic distance from the physical distance for each SNP. The mean recombination rate is
-calculated from the 150 Mb map (\(1.017 \, \frac{cM}{Mb}\) AAMap and
-\(0.992 \, \frac{cM}{Mb}\) HapMap).
+calculated from the 150 Mb map (\(1.017 \, \frac{cM}{Mb}\) AAMap,
+\(0.992 \, \frac{cM}{Mb}\) HapMap and \(0.914 \, \frac{cM}{Mb}\) deCODE).
 
 
 
@@ -668,7 +669,10 @@ The response variable $E_i$ for this model are the residuals, \emph{i.e.}, the d
 $$E_i = \frac{t_{est} - t_{sim}}{\sigma_{t_{est}}}$$, where $\sigma$ is the standard deviation of $t_{est}$ , and the model variables $A, M, D, R$ and $G$ are binary predictors.
 We assume a Normal likelihood because it is the maximum entropy distribution in our case. We obtained the posterior probability using a Hamiltonian Monte Carlo MCMC algorithm, as implemented in STAN \citep{carpenter_stan_2017} using an R interface \citep{stan_development_team_rstan_2018,mcelreath_statistical_2020}. The Markov chains converged to the target distribution (Rhat = 1) and efficiently sampled from the posterior (S. Table \ref{tab:tableS1}).  
 
+\subsection{Estimating admixture time from simulated segment data}\label{Estimating admixture time from simulated segment data}
 
+For estimating admixture time and duration from introgressed segments, we used the true segment length obtained from \texttt{msprime} or inferred the segments using the HMM from \cite{skov_detecting_2018}. We only considered inferred segments with a posterior decoding of 0.9 or higher. Furthermore, we use an upper and lower cutoff for inferred segment length of 0.05 cM and 1.2 cM. The genetic length are assigned using the true constant recombination rate for segments simulated under a constant rate. For simulations under an empirical map (deCODE map) we either used the mean recombination rate of the deCODE map, the AAMap or the deCODE map.
+We fit the simple (\ref{xx}) and extended pulse (\ref{xx}) using the \texttt{optim} function implemented in the R \texttt{stats v.3.6.2} package (method="L-BFGS-B") with lower and upper constrains being $1/5000$ for $t_m$ and $2/1e8$ for $k$. The log likelihoods for the two fits are compared using a log likelihood ratio test.
 
 \subsection{Estimating admixture time from real data}\label{Estimating admixture time from real data}
 To evaluate when we can reject a given admixture durations (including a one generation pulse), we applied the extended pulse model on real data from the 1000 Genomes project \citep{the_1000_genomes_project_consortium_global_2015}.
