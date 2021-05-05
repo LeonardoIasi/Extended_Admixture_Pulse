@@ -25,7 +25,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={Title: Human Neandertal Admixture dating limits MBE Supplements},
+            pdftitle={Title: Limitations to the Human Neandertal Admixture dating Supplements},
             pdfauthor={Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary Anthropology, MPI EVA), Dr.~Benjamin Marco Peter (MPI EVA, benjamin\_peter@eva.mpg.de)},
             pdfborder={0 0 0},
             breaklinks=true}
@@ -69,6 +69,8 @@
 
 \usepackage{setspace}
 \onehalfspacing
+\usepackage[left]{lineno}
+\linenumbers
 \usepackage[none]{hyphenat}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -157,16 +159,39 @@ since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
 
 \begin{figure}
 \centering
-\includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-latex/figS2-1.pdf}
+\includegraphics{Admixture_Time_Inference_Paper_Draft_files/figure-late}
 \caption{\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for simulations of all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = simple/extended. Simulations under the simple pulse are indicated in purple, extended pulse in turquoise. Each simulation was repeated 100 times. Dotted horizontal line indicates no difference between true and estimated time.}
 \end{figure}
 
+\begin{figure}
+\centering
+\includegraphics{ATE_Revisions_files/figure-latex/figR3_1-1.pdf}
+\caption{\label{fig:figS3} Simple and extended pulse fitted to ALD data for different gene flow durations with mean admixture time at 1500 gnerations ago. A) Mean time estimates. B) Duration estimate.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{ATE_Revisions_files/figure-latex/figR3_3-1.pdf}
+\caption{\label{fig:figS4} Log likelihood ratio between the simple and extended pulse fitted to ALD data for different gene flow durations with mean admixture time at 1500 gnerations ago.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{ATE_Revisions_files/figure-latex/figR3_4-1.pdf}
+\caption{\label{fig:figS5} Simple and extended pulse fitted to true and inferred segment data for different gene flow durations with mean admixture time at 1500 generations ago. The simulations used either a constant recombination rate or the deCODE map. The genetic distance is assigned using a constant rate, the AAMap or thye deCODE map. A) Mean time estimates. B) Duration estimate.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{ATE_Revisions_files/figure-latex/figR3_5-1.pdf}
+\caption{\label{fig:figS6} Log likelihood ratio between the simple and extended pulse fitted to true and inferred segment data for different gene flow durations with mean admixture time at 1500 gnerations ago.}
+\end{figure}
 
 \section{Supplement Tables}
 
 \begin{table}[H]
 
-\caption{\label{tab:tableS1} Mean, standart deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
+\caption{\label{tab:tableS1} Mean, standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
 \centering
 \begin{tabular}{l|r|r|r|r|r|r}
 \hline
@@ -194,69 +219,29 @@ sigma & 0.46 & 0.01 & 0.44 & 0.47 & 2239.47 & 1\\
 
 \caption{\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit}
 \centering
-\begin{tabular}[t]{l|l|l|l|l}
+\begin{tabular}[t]{l|l|l|l}
 \hline
-Model & Parameter & Estimate & 2.5 \% & 97.5 \%\\
+Model & A & $t_m$ & c\\
 \hline
-Exponential & A & 0.018 & 0.018 & 0.018\\
+Simple Pulse & 0.018 (0.018 - 0.018) & 1541 (1487 - 1598) & 1e-05 (6e-06 - 1.5e-05)\\
 \hline
-Exponential & mean time & 1541 & 1487 & 1598\\
+Extended Pulse (td=1) & 0.018 (0.018 - 0.018) & 1541 (1487 - 1598) & 1e-05 (6e-06 - 1.5e-05)\\
 \hline
-Exponential & c & 1e-05 & 6e-06 & 1.5e-05\\
+Extended Pulse (td=100) & 0.018 (0.018 - 0.018) & 1541 (1488 - 1599) & 1e-05 (6e-06 - 1.5e-05)\\
 \hline
-Lomax (td=1) & A & 0.018 & 0.018 & 0.018\\
+Extended Pulse (td=200) & 0.018 (0.018 - 0.018) & 1543 (1490 - 1601) & 1e-05 (6e-06 - 1.5e-05)\\
 \hline
-Lomax (td=1) & mean time & 1541 & 1487 & 1598\\
+Extended Pulse (td=400) & 0.018 (0.018 - 0.018) & 1552 (1498 - 1610) & 1e-05 (6e-06 - 1.5e-05)\\
 \hline
-Lomax (td=1) & c & 1e-05 & 6e-06 & 1.5e-05\\
+Extended Pulse (td=800) & 0.018 (0.018 - 0.018) & 1586 (1531 - 1646) & 1e-05 (5e-06 1.4e-05)\\
 \hline
-Lomax (td=100) & A & 0.018 & 0.018 & 0.018\\
+Extended Pulse (td=1000) & 0.018 (0.018 - 0.018) & 1613 (1557 - 1673) & 9e-06 (5e-06 - 1.3e-05)\\
 \hline
-Lomax (td=100) & mean time & 1541 & 1488 & 1599\\
+Extended Pulse (td=1500) &  0.018 (0.018 - 0.018) & 1713 (1654 - 1777) & 7e-06 (3e-06 - 1.1e-05)\\
 \hline
-Lomax (td=100) & c & 1e-05 & 6e-06 & 1.5e-05\\
+Extended Pulse (td=2000) & 0.018 (0.018 - 0.018) & 1875 (1809 - 1945) & 4e-06 (0 - 8e-06)\\
 \hline
-Lomax (td=200) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=200) & mean time & 1543 & 1490 & 1601\\
-\hline
-Lomax (td=200) & c & 1e-05 & 6e-06 & 1.5e-05\\
-\hline
-Lomax (td=400) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=400) & mean time & 1552 & 1498 & 1610\\
-\hline
-Lomax (td=400) & c & 1e-05 & 6e-06 & 1.5e-05\\
-\hline
-Lomax (td=800) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=800) & mean time & 1586 & 1531 & 1646\\
-\hline
-Lomax (td=800) & c & 1e-05 & 5e-06 & 1.4e-05\\
-\hline
-Lomax (td=1000) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=1000) & mean time & 1613 & 1557 & 1673\\
-\hline
-Lomax (td=1000) & c & 9e-06 & 5e-06 & 1.3e-05\\
-\hline
-Lomax (td=1500) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=1500) & mean time & 1713 & 1654 & 1777\\
-\hline
-Lomax (td=1500) & c & 7e-06 & 3e-06 & 1.1e-05\\
-\hline
-Lomax (td=2000) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=2000) & mean time & 1875 & 1809 & 1945\\
-\hline
-Lomax (td=2000) & c & 4e-06 & 0 & 8e-06\\
-\hline
-Lomax (td=2500) & A & 0.018 & 0.018 & 0.018\\
-\hline
-Lomax (td=2500) & mean time & 2129 & 2055 & 2208\\
-\hline
-Lomax (td=2500) & c & -1e-06 & -5e-06 & 4e-06\\
+Extended Pulse (td=2500) & 0.018 (0.018 - 0.018) & 2129 (2055 - 2208) & -1e-06 (-5e-06 - 4e-06)\\
 \hline
 \end{tabular}
 \end{table}

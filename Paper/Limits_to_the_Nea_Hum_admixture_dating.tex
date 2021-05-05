@@ -24,7 +24,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={Title: Human Neandertal Admixture dating limits MBE},
+            pdftitle={Title: Limitations to the Human Neandertal Admixture dating},
             pdfauthor={Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary Anthropology, MPI EVA), Dr.~Benjamin Marco Peter (MPI EVA, benjamin\_peter@eva.mpg.de)},
             pdfborder={0 0 0},
             breaklinks=true}
@@ -88,6 +88,8 @@
 
 \usepackage{setspace}
 \onehalfspacing
+\usepackage[left]{lineno}
+\linenumbers
 \usepackage[none]{hyphenat}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -127,7 +129,7 @@
         \textsuperscript{2} leonardo\_iasi@eva.mpg.de \\ \textsuperscript{3} 
         benjamin\_peter@eva.mpg.de \\
         \vspace{1.0cm}
-        \text{February 11, 2021}
+        \today
     \end{center}  
      
 
@@ -138,7 +140,7 @@
 
 \section{Abstract}\label{abstract}
 
-Neandertal DNA makes up 2-3\% of the genomes of all non-African individuals. The length of Neandertal ancestry segments in modern humans has been used to estimate that the mean time of gene flow occurred during the expansion of modern humans into Eurasia, but the precise dates of this gene flow remain largely unknown. Here, we introduce an extended admixture pulse model that allows joint estimation of the timing and duration of gene flow. This model contains two parameters, one for the mean time of gene flow, and one for the duration of gene flow whilst retaining much of the mathematical simplicity of the simple pulse model. In simulations, we find that estimates of the mean time of admixture are largely robust to details in gene flow models. In contrast, the duration of the gene flow is much more difficult to recover, except under ideal circumstances where gene flow is recent or the exact recombination rate is known. We conclude that gene flow from Neandertals into modern humans could have happened over hundreds of generations. Ancient genomes from the time around the admixture event are thus likely required to resolve the question when, where, and for how long humans and Neandertals interacted.
+Neandertal DNA makes up 2-3\% of the genomes of all non-African individuals on average. The length of Neandertal ancestry segments in modern humans has been used to estimate that the mean time of gene flow occurred during the expansion of modern humans into Eurasia, but the precise dates of this gene flow remain largely unknown. Here, we introduce an extended admixture pulse model that allows joint estimation of the timing and duration of gene flow. This model contains two parameters, one for the mean time of gene flow, and one for the duration of gene flow whilst retaining much of the mathematical simplicity of the simple pulse model. In simulations, we find that estimates of the mean time of admixture are largely robust to details in gene flow models. In contrast, the duration of the gene flow is much more difficult to recover, except under ideal circumstances where gene flow is recent or the exact recombination rate is known. We conclude that gene flow from Neandertals into modern humans could have happened over hundreds of generations. Ancient genomes from the time around the admixture event are thus likely required to resolve the question when, where, and for how long humans and Neandertals interacted.
 
 \section{Introduction}\label{introduction}
 
@@ -149,7 +151,7 @@ As a second line of evidence, all non-Africans carry genomic segments that are v
 
 %\paragraph{Why do we care about timing of gene flow}.
 
-However, uncertainty remains about when, where, and over which period of time this gene flow happened. A better understanding of  the location and timing of the gene flow would allow us to place  constraints on the timing of movements of early modern humans. It would also affect assumptions about introgressed allele frequencies and their distribution in present-day human genomes and conclusions drawn about the phenotypic effects and selective pressures of introduced alleles.
+However, uncertainty remains about when, where, and over which period of time this gene flow happened. A better understanding of  the location and timing of the gene flow would allow us to place  constraints on the timing of movements of early modern humans. More certainty in the timing of gene flow also would affect  assumptions about introgressed allele frequencies and their distribution in present-day human genomes and conclusions drawn about the phenotypic effects and selective pressures of introduced alleles.
 
  
 Archaelogical evidence puts some boundaries on the times when Neandertals and modern humans might have interacted. The earliest modern human remains outside of Africa are dated to around 188 thousand years ago (kya)  \citep{hershkovitz_earliest_2018,stringer_when_2018} and the latest Neandertals are suggested to be between 37 kya and 39 kya old \citep{higham_timing_2014,zilhao_precise_2017}. Thus the time window where Neandertals and modern humans might have been in the same area stretches more than 140,000 years. However, there is less direct evidence of modern humans and Neandertals in the same geographical location at the same time. In Europe, for example, Neandertals and modern humans likely overlapped only for less than 10,000 years \citep{bard_extended_2020}. 
@@ -182,11 +184,11 @@ The admixture pulse model assumes that gene flow occurs over a short time period
 
 That admixture histories are often complicated has been shown in the context of Denisovan introgression into modern humans, where at least two distinct admixture events into East Asians and Papuans were proposed \citep{browning_analysis_2018, jacobs_multiple_2019}. While the length distributions of admixture segments are similar between the populations, there are significant differences in the geographic distribution of admixture fragments, and the similarity to the sequenced high-coverage genome \citep{browning_analysis_2018, massilani_denisovan_2020}. 
 
-In contrast, all Neandertal admixture segments are most similar to the Vindija genome \citep{prufer_high-coverage_2017}. However, differences in admixture proportions \citep{meyer_high-coverage_2012, wall_higher_2013,kim_selection_2015,vernot_complex_2015,villanea_multiple_2019} and direct evidence from early modern humans with very recent Neandertal ancestry from Oase and Bacho Kiro hint at more complex admixture histories \citep{fu_early_2015,hajdinjak_early_2021}.
+In contrast, all Neandertal admixture segments are most similar to the Vindija genome \citep{prufer_high-coverage_2017}. However, differences in admixture proportions \citep{meyer_high-coverage_2012, wall_higher_2013,kim_selection_2015,vernot_complex_2015,villanea_multiple_2019} and direct evidence from early modern humans with very recent Neandertal ancestry from Oase hint at more complex admixture histories \citep{fu_early_2015}.
 
 %\subsection{Previous attempts of a general admixture model and ours}\label{Previous attempts of a general admixture model and ours}
 
-One way to refine admixture time estimates is to include two or more distinct admixture pulses. The distribution of admixture segment lengths will then be a mixture of the fragments introduced from each event. This is especially useful if the events are very distinct in time, e.g. if one event is only a few generations back, and the other pulse occurred hundreds of generations ago \citep{fu_genome_2014, fu_early_2015, hajdinjak_early_2021}. In this case, the admixture segments will be either very long if they are recent, or much shorter if they are older.
+One way to refine admixture time estimates is to include two or more distinct admixture pulses. The distribution of admixture segment lengths will then be a mixture of the fragments introduced from each event. This is especially useful if the events are very distinct in time, e.g. if one event is only a few generations back, and the other pulse occurred hundreds of generations ago \citep{fu_genome_2014, fu_early_2015}. In this case, the admixture segments will be either very long if they are recent, or much shorter if they are older.
 
 \cite{zhou_modeling_2017} extended this model to continuous mixtures, using a polynomial function as a mixture density. However, they found that even for relatively short admixture events, the large number of parameters led to an underestimate of admixture duration \citep{zhou_inference_2017}. 
 \subsection{Extended Pulse Model}
@@ -218,162 +220,238 @@ The dotted line indicates the oldest possible time of gene flow (as defined in t
 
 In this section, we present the mathematical description of the admixture models we use in this paper, and introduce inference algorithms for estimating the admixture time and duration from both ALD and segment data. 
 
+
 \subsection{Admixture Models and Inference}\label{admixture models}
+	
+We think of admixture as a series of ``foreign'' chromosomes introduced in a population (for a mechanistic model, see e.g. \citep{pool_inference_2009}). Throughout, we assume that alleles evolve neutrally, and that recombination is independent of local ancestry. In the case of the simple pulse model, it is assumed that all admixture happens in the same generation, (\textit{i.e.} all chromosomes are introduced to the population at the same time). To extend this model, we allow chromosomes to enter at potentially many different time points, such that the migration rate at time $t$ is given by the function $m(t)$ \citep{pool_inference_2009}, and we assume that the total amount of introgressed material $M=\int_0^\infty m(t)dt$ is small. For archaic introgression, $M \approx 0.03$, so this assumption is justified.
 
-We think of admixture as a series of ``foreign'' chromosomes introduced in a population. In the case of the simple pulse model, it is assumed that all admixture happens in the same generation, (\emph{i.e.} all chromosomes are introduced to the population at the same time). To extend this model, we allow chromosomes to enter at potentially many different time points.
+Over time, recombination will split up the chromosome into smaller and smaller pieces, but by the neutrality assumption, the expected amount of total ancestry remains approximately the same. Thus, a chromosome of size $K$ introduced at time $t$ gives rise to an expected number of $rKt$ segments.
 
-Formally, we assume we have $n$ admixture segments. We denote the length of the $i$-th segment as $L_i$. Further, the random variable $T_i$ represents the time when segment $L_i$ entered the population. We assume that the $L_i$ and $T_i$ are both realizations from more general distributions $L$ and $T$ that reflect the overall segment length and admixture time distributions, respectively. 
 
-Given $T_i$, we assume that $L_i$ is exponentially distributed with rate parameter given by the admixture time $t$ and the recombination rate $r$.
+\subsection{Admixture Segment Lengths}
+We assume we observe $n$ admixture segments in a sample. We denote the length of the $i$-th segment as $L_i$. Further, the random variable $T_i$ represents the time when segment $i$ entered the population. We assume that the $L_i$ and $T_i$ are both realizations from more general distributions $L$ and $T$ that reflect the overall segment length and admixture time distributions, respectively. 
+
+To relate $m(t)$ to $T$, we need to take into account that older fragments had more time to split up \cite{pool_inference_2009}. Hence
+
 \begin{equation}
-\label{eq:generall_length_distribution}
-    P(L_i=l|T_i=t) = t r\exp{(-t r l)} 
+	P(T_i=t) = \frac{t r K m(t)}{\int_0^{\infty} t r K  m(t) dt} = \frac{t m(t)}{\int_0^{\infty} t m(t) dt} \label{eq:reweighting}
 \end{equation}
 
-For simplicity, we measure the length of each segment $L_i$ in the recombination distance Morgan (M), so that $r=1$ Morgan per generation, and is omitted from this section.
 
-To model the unconditional distribution of admixture lengths, we need to integrate over all possible $T_i$, which are drawn from the admixture time distribution $T$:
+Given $T_i$, the segment length $L_i$ is exponentially distributed with rate parameter given by the admixture time $t$ and the recombination rate $r$.
 
+\begin{equation}
+ \label{eq:generall_length_distribution}
+    P(L_i=l|T_i=t) = t r e^{-t r l} 
+\end{equation}
+	
+For simplicity, we measure the length of each segment $L_i$ in the recombination distance Morgan (M), so that $r=1$ Morgan per generation, and can be ommited.
+	
+The unconditional distribution of admixture segment lengths is then
+	
 \begin{equation}
 \label{eq:standard_likelihood_definintion}
-    P(L_i=l)=\int_{0}^{\infty} P(T_i=t) P(L_i=l | T_i=t) \ dt \text{,}
+    P(L_i=l)=\int_{0}^{\infty} P(T_i=t) P(L_i=l | T_i=t) \ dt \text{.}
+\end{equation}
+	
+	
+Thus, we can think of $L$ as an exponential mixture distribution with mixture density $T$ \citep{ralph_geography_2013, zhou_modeling_2017}.
+	
+\subsubsection{Ancestry Linkage Disequilibrium}
+Alternatively, the impact of gene flow is often characterized using ALD, particularly when accurate identification of archaic segment lengths is difficult. We follow \cite{loh_inferring_2013} and note that the ALD from gene flow in a single generation is
+
+\begin{equation}
+    D_0 = m(1-m)\Delta_x \Delta_y \approx m \Delta_x\Delta_y\text{,} \label{eq:ald_general}
 \end{equation}
 
+where $\Delta_i$ is the difference in allele frequencies between the admixing populations, and we assume that migration occurs over a short period, so that changes in the allele frequencies in the admixing populations can be neglected. After $t$ generations, the expected LD between two markers a distance $r$ apart is
+\begin{equation}
+    D_t \approx D_0 \exp(-rt)\text{,}
+\end{equation}
+due to genetic drift and the decay of LD \cite[e.g.][]{sankararaman_date_2012}. 
 
-Thus, we can think of $L$ as an exponential mixture distribution with mixture density $T$ \citep{ralph_geography_2013, zhou_modeling_2017}. 
+If $m$ is a function of $t$, we can approximate $D$ as 
+\begin{equation}
+    D(t) = \Delta_x\Delta_y\int_0^\infty m(t)\exp(-rt) dt \text{.} \label{eq:ld_general}
+\end{equation}
+
+Thus, $D(t)$ can be thought of as the tail function of an exponential mixture, but with mixture density $m(t)$ instead of $T$. Alternatively, the integral in equation \ref{eq:ald_general} is also the moment-generating function of $m$ with argument $-d$. 
+
+
+%For ongoing migration, we modify this as
+%\begin{equation}
+%    \frac{D(t)}{dt} = - r D(t) + m(t)\text{.}
+%\end{equation}
+%For $m(t) = 0$, this yields the exponential decay of LD. In general, the %solution is
+%\begin{equation}
+%    D(t) = e^{-rt}\left[D(0) + \int_0^t e^{rx} m(x)dx\right]
+%\end{equation}
+
 
 \subsubsection{The Simple Pulse Model}\label{The Simple Pulse Model}
-
-
+	
+	
 In the simple pulse model, we assume that all fragments enter the population at the same time $t_m$. Therefore all $T_i$ have the same value $t_m$, and $T$ thus is a constant distribution. We can formalize this by using a Dirac delta function:
 
+\begin{subequations}
 \begin{equation}
 \label{eq:RV_simple_pulse}
-  P(T_i)=\delta_{t_m}(T_i),
+	m(t)=  M\delta_{t_m}(T_i),
 \end{equation} 
+	
+\begin{equation}
+\label{eq:RV_simple_pulse}
+	P(T_i)=\delta_{t_m}(T_i),
+\end{equation} 
+\end{subequations}
 which integrates to one if the integration interval includes $t_m$, and zero otherwise.
 
+	
+Therefore, we obtain the exponential distribution of admixture fragments under this model \citep[e.g.][]{moorjani_history_2011}:
 
-Therefore, we obtain the exponential distribution of admixture fragments under this model \citep[e.g.][]{pool_inference_2009}:
-
-\begin{equation}
-\begin{split}
+\begin{subequations}
+\begin{align}
 \label{eq:Likelihood_function_simple_pulse}
-    P(L_i=l) &= t_me^{-t_m l}
-\end{split}
-\end{equation}
+	P(L_i=l) &= t_me^{-t_m l}\\
+	D(t) &= \Delta_x\Delta_y M e^{-t_m r}
+\end{align}
+\end{subequations}	
 
 The expected segment length under a simple pulse model is given by,
-
+	
 \begin{equation}
 \label{eq:Expected_l_simple_pulse}
-    \mathbb{E}[L]=\frac{1}{t_m}
+\mathbb{E}[L]=\frac{1}{t_m}
 \end{equation}
-
+	
 and the variance is
 \begin{equation}
 \label{eq:Expected_v_simple_pulse}
-    \text{Var}[L]=\frac{1}{t_m^2} \text{.}
+\text{Var}[L]=\frac{1}{t_m^2} \text{.}
 \end{equation}
-
-Note that this definition of the segment length distribution is independent from the migration rate $m$ at $t_m$, as we are only concerned about the length distribution of admixture segments, but not the total amount of Neandertal ancestry. However, as we do not consider the  probability of admixture segments recombining with each other, we implicitly assume that $m$ is small \citep{gravel_population_2012, liang_lengths_2014}, which is reasonable for the Neandertal-modern human introgression, where $m \approx 0.02 - 0.03$ . Further we assume that there is no selection \citep{shchur_distribution_2019} and the recombination rate is the same in different populations at all times \citep{gravel_population_2012}.
+	
 
 \subsubsection{The Extended Pulse Model}\label{The Extended Pulse Model}
+	
+For the extended pulse model, we assume that the migration rate $m(t)$ follows a rescaled Gamma distribution so that the total contribution of migrant alleles is $M$.  It is convenient to parameterize the migration rate as $\Gamma(k-1,\frac{t_m}{k})$.
+for $t \geq 0$ and $k \geq 2$. 
 
-For the extended pulse model, we assume that the $T_i$ follow a Gamma distribution.  It is convenient to parameterize the Gamma distribution by its mean $t_m$ and its shape parameter $k$.  $\Gamma(k,\frac{t_m}{k})$, hence the density is
+\begin{subequations}
+The denominator of equation \ref{eq:reweighting} can be evaluated using the expectation of the Gamma distribution and
+and
 
-\begin{equation}
-\label{eq:RV_extended_pulse}
-  P(T_i=t)=\frac{1}{\Gamma(k)(\frac{t_m}{k})^k}t^{k-1}e^{-t\frac{k}{t_m}}
-\end{equation} 
-with, $t \geq 0$ and $k \geq 1$.
-
-The expectation and variance for the admixture times are then
-
+\begin{align}
+    P(T_i=t) &= \frac{k}{k-1}\frac{t }{t_m}m(t)\\
+        &=\frac{1}{\Gamma(k)(\frac{t_m}{k})^k}t^{k-1}e^{-t\frac{k}{t_m}} 
+\end{align}
+\end{subequations}
+for $t \geq 0$ and $k \geq 2$. The latter is the density of a $\Gamma(k, \frac{t_m}{k})$-distribution, and the expectation and variance for $m$ and $T$ are 
+	
 \begin{equation}
 \begin{split}
 \label{eq:RV_extended_pulse_properties}
 \mathbb{E}[T]&=t_{m} \\
-Var[T]&=\frac{t_{m}^2}{k} = \bigg(\frac{t_d}{4} \bigg)^2 \text{.}
+	Var[T]&=\frac{t_{m}^2}{k} =
+\bigg(\frac{t_d}{4} \bigg)^2 \text{.}
 \end{split}
 \end{equation}
-
+	
 Here, we define the admixture duration $t_d=4t_m k^{-\frac{1}{2}} $, which is a convenient measure for the duration of gene flow. If $k$ is low, then $t_d$ will be large and gene flow extends over many generations. In contrast, if $k$ is large, then $t_d \approx 0$ and we recover the simple pulse model (Figure \ref{fig:fig1} C \& D). 
-
-
+	
+	
 The distribution of segment length is calculated by plugging equation \ref{eq:RV_extended_pulse} into  equation  \ref{eq:standard_likelihood_definintion} and integrating:
-
-
+	
+	
 \begin{equation}
 \label{eq:Likelihood_function_extended_pulse}
-    P(L=l | k, t_m) = t_{m}^{-k} \ \Bigg( \frac{k}{l+\frac{k}{t_{m}}}\Bigg)^{k+1} \text{.}
+	P(L=l | k, t_m) = t_{m}^{-k} \ \Bigg( \frac{k}{l+\frac{k}{t_{m}}}\Bigg)^{k+1}
+	\text{.}
 \end{equation}
-
+	
 The distribution  in equation \ref{eq:Likelihood_function_extended_pulse} is known as a \emph{Lomax} or \emph{Pareto-II} distribution, which is a heavier-tailed relative of the Exponential distribution. 
-
-
+	
+	
 Under the extended pulse model, the expected segment length will be larger than under the simple pulse model (\ref{eq:Expected_l_simple_pulse}):
-
+	
 \begin{equation}
 \label{eq:Expected_l_extended_pulse}
-\mathbb{E}[L] = \frac{k}{(k-1)}\frac{1}{t_{m}}
+    \mathbb{E}[L] = \frac{k}{(k-1)}\frac{1}{t_{m}}
 \end{equation}
-
+	
 The fraction $\frac{k}{k-1}$ will be larger for low $k$, which fits previous results that the longest (\emph{i.e.} most recently introgressed) admixture segments have a disproportionate impact on inference, and thus  admixture time estimates from ongoing gene flow are biased towards more recent events \citep{moorjani_history_2011,moorjani_genetic_2016}.
-
+	
 The variance for $k>2$ is 
-
+	
 \begin{equation}
 \label{eq:Var_l_extended_pulse}
-Var[L] = \frac{k^3}{(k-1)^2 (k-2)} \frac{1}{t_m^2}\text{.}
+	Var[L] = \frac{k^3}{(k-1)^2 (k-2)} \frac{1}{t_m^2}\text{.}
+\end{equation}
+	
+We obtain the ALD-function using equations \ref{eq:generall_length_distribution}, or directly from the moment-generating function of $m(t)$:
+\begin{equation}
+\label{eq:extended_pulse_tail}
+D_t(r) = \delta_x\delta_y M\left( \frac{1}{1 + \frac{t_m}{k} \:r}\right) ^{k-1} \text{.}
 \end{equation}
 
+	
+\paragraph{The continuous migration model}
 
-Again, the term involving $k$'s is strictly larger than one, which matches our intuition that ongoing gene flow should result in a larger variance in admixture segments length. As $k$ approaches infinity, this term approaches one and we recover the moments of the exponential distribution, since $k$ is inversely proportional to the admixture duration.
+The single pulse model can be thought of as the extreme case of the extended pulse model when $k \to \infty$, i.e. the pulse gets infinitely short. The other extreme is for low $k$, where the extended pulse model approaches a model of continuous migration, i.e. the last migration event at a particular location is exponentially distributed with rate $m$. This is the model considered by \cite{pool_inference_2009}; conceptually, we can think of each lineage in the population to enter at a rate $M$. 
+	
+Setting $t_m = \frac{2}{m}, k=2$, we obtain
+
+\begin{subequations}
+\begin{align}
+    m(t) &= m \exp(-mt) \sim \Gamma(1, m)\\
+    P(T_i=t) &\sim \Gamma\left(2, m\right)\\
+	P(L_i=l) &= \frac{2m^2}{(m+l)^3}\label{eq:segments_continuous}\\
+	D(t) &= \Delta_X\Delta_Y \frac{M}{M + r}
+\end{align}
+\end{subequations}
+	
+Equation \ref{eq:segments_continuous} differs slighty from eq. 6 in \cite{pool_inference_2009} only because we approximate the expected number of tracts with $n=Kt$, versus theirs $n=1+Kt$. 
+	
+
+
+\paragraph{Migration fraction and Genetic drift}
+\cite{liang_lengths_2014} examined the effect of genetic drift, recombination between introgressed segements and model violations in a single pulse-model. They showed that under the SMC'-model \citep{wall_smc}, admixture tracts are exponentially distributed with mean
+\begin{equation}
+  \mathbb{E}L_i \sim  \left[t_m(1-M)\left(1-\frac{t_m}{4N}\right)\right]^{-1},
+\end{equation}
+ignoring terms of the order $\frac{1}{N^2}$, compared to $t_m$ as we obtained from equation \ref{eq:Expected_l_simple_pulse}. The $(1-M)$-term models recombination between adjacent recombination tracts; and the $\left(1-\frac{t_m}{4N}\right)$ reflects genetic drift. This model is not directly applicable 
+
+\paragraph{Migration fraction and Genetic drift ALD}
+Including drift, the model is
+\begin{align}
+    D_t(r) &= \Delta_x\Delta_y\int_0^\infty m(t)\exp\left(-\frac{t}{4N}\right)\exp(-rt) dt \nonumber\\
+        &= \Delta_x\Delta_y\int_0^\infty m(t)\exp\left(-t(r+(4N)^{-1})\right) dt \label{eq:ld_drift}\\
+&= \Delta_x\Delta_y M\left(1 + \frac{t_m}{k} (r+(4N)^{-1})\right) ^{1-k}        
+\end{align}
 
 
 \subsubsection{Admixture time estimates}\label{admixture time estimates}
-For inference, either the admixture segment lengths or ALD can be used. In cases where the admixture segment length is known, equation \ref{eq:Likelihood_function_extended_pulse} is the likelihood function and can be used for inference. For inference using ALD,  we follow \cite{moorjani_history_2011} and use the decay of ALD with genetic distance as a statistic, and fit the tail function $P(L_i > d)$, which can be calculated by integrating equations \ref{eq:Likelihood_function_simple_pulse} and \ref{eq:Likelihood_function_extended_pulse}.
-
-The tail function under the simple pulse model is 
-\begin{equation}
-\label{eq:simple_pulse_tail}
-P(L_i > d) = e^{-t_m \:d}
-\end{equation}
-
-and under the extended pulse model we obtain 
-\begin{equation}
-\label{eq:extended_pulse_tail}
-P(L_i > d) = \left( \frac{1}{1 + \frac{t_m}{k} \:d}\right) ^k \text{.}
-\end{equation}
-
-For fitting the data, following \cite{moorjani_genetic_2016}, we add an intercept $A$ and a constant modelling background LD $c$, to the tail functions. The genetic distance $d$ is measured in centiMorgan (cM).
-
-
-\begin{equation}
-\label{eq:simple_pulse_tail_inf}
-ALD \sim\ A\,e^{-t_m \:d}+c
-\end{equation}
-
-\begin{equation}
-\label{eq:extended_pulse_tail_inf}
-ALD \sim\ A\,\left( \frac{1}{1 + \frac{t_m}{k} \:d}\right) ^k+c
-\end{equation}
-
-We fitted the distribution to the data with  a non-linear least-square optimization algorithm
-using the \texttt{nls} function implemented in the R \texttt{stats v.3.6.2} package \citep{R_Core_Team_2019}.
+For inference, either the admixture segment lengths or ALD can be used. In cases where the admixture segment length is known, equation \ref{eq:Likelihood_function_extended_pulse} is the likelihood function and can be used for inference. For inference using ALD,  we follow \cite{moorjani_history_2011} and use the decay of ALD with genetic distance as a statistic, and fit the appropriate version of the LD-decay-function (equation \ref{eq:ld_general}). For fitting the data, following \cite{moorjani_genetic_2016}, we add an intercept $A$ and a constant modelling background LD $c$, to the tail functions. The genetic distance $r$ is measured in centiMorgan (cM). We fitted the distribution to the data with  a non-linear least-square optimization algorithm using the \texttt{nls} function implemented in the R \texttt{stats v.3.6.2} package \citep{R_Core_Team_2019}.
 
 \section{Results}\label{results}
 
 %\subsection{Introduction to results}\label{introduction to result}
 
-We test our ability to estimate the admixture time and duration from coalescent simulations using \texttt{msprime} \citep{kelleher_efficient_2016}. First, we compare the inference of simulations under simple and extended pulses of gene flow, while assuming only one generation of gene flow for both scenarios. We contrast this effect with the effect of other model assumptions and analysis parameters. Taking in consideration factors with the most substantial effects, we establish the conditions under which we can use the extended pulse model for gene flow duration inference. Finally, we apply our model to the 1000 Genomes Project data \citep{the_1000_genomes_project_consortium_global_2015}.
+First, we examine the power to differentiate the simple and extended pulse model on perfectly known data using a likelihood ratio framework. Next, we test our ability to estimate the admixture time and duration from coalescent simulations using \texttt{msprime} \citep{kelleher_efficient_2016}. Here, we compare the inference of simulations under simple and extended pulses of gene flow, while assuming only one generation of gene flow for both scenarios. We contrast this effect with the effect of other model assumptions and analysis parameters. Taking in consideration factors with the most substantial effects, we establish the conditions under which we can use the extended pulse model for gene flow duration inference. Finally, we apply our model to the 1000 Genomes Project data \citep{the_1000_genomes_project_consortium_global_2015}.
 
+\subsection{Power Analysis}\label{Power Analysis}
+
+First, we want to know for which duration and time since admixture we can differentiate an extended from a simple admixture pulse. We take a best case scenario were admixture segments are perfectly known. We compare the likelihood of the simple and extended pulse for data simulated from the extended pulse distribution using different admixture durations and a fixed mean admixture time of 1500 generations ago. We perform a likelihood ratio test to find the parameter region where we can confidently distinguish these models. We use a significance cutoff of + 2 and perform each simulation 100 times with different amount of data. Our maximum amount is 100000 unique segments which is roughly half the number observed in \cite{skov_nature_2020}. The segments are either sampled at present time or at 50 generations after the end of gene flow, i.e. sampling closer to the gene flow event by using ancient samples. Figure \ref{fig:fig1_1} shows that the power to distinguish the two models is highly dependent on the amount of data and second on the sampling time. With 10,000 unique segments and a admixture duration of 1500 generations we are able to confidently distinguish the extended from a simple pulse (Figure \ref{fig:fig1_1}C). By sampling closer to the end of the admixture event we gain power and are able to distinguish an extended pulse already with a duration of only 60 generations.
+
+\begin{figure}
+\centering
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figR2-1.pdf}
+\caption{\label{fig:fig1_1} Log likelihood ratio of the simple and extended pulse on perfectly known segments for different admixture durations. Segments are either sampled at the present or 50 generations after the end of gene flow. Log likelihood ratios bigger then 10 are not depicted.}
+\end{figure}
 
 
 \subsection{Model comparisons}\label{Model comparison}
 We first present the result of inference assuming a simple pulse model on simulations under the extended pulse model (Figure \ref{fig:fig2}). Therefore we simulate 3 \% Neandertal admixture into non-Africans using a simple demographic model (Supplement Figure \ref{fig:figS1}A). To enrich for Neandertal informative sites we use the lower-enrichment ascertainment scheme (LES)  which only considers sites that are fixed for the ancestral state in Africans and polymorphic or fixed derived in Neandertals. Pairs of SNPs with a minimal distance smaller 0.05 cM are excluded.
-In Figure \ref{fig:fig2}A, we plot results for simulations under both the simple and extended pulse model, for $t_m$ between 250 and 2000 generations, and $t_d = \frac{t_m}{2}$  (i.e. if $t_d= 500$ generations, then $t_d = 250$ and most gene flow occurs between  375 and 625
+In Figure \ref{fig:fig2}A, we plot results for simulations under both the simple and extended pulse model, for $t_m$ between 250 and 2000 generations, and $t_d = \frac{t_m}{2}$  (i.e. if $t_m= 500$ generations, then $t_d = 250$ and most gene flow occurs between  375 and 625
 generations ago). Even for these long periods of gene flow, the mean gene flow time is generally well-estimated, with a deviation of 3\% to 6\% for the simple pulse and 0\% to 5\% for
 the extended pulse.
 
@@ -384,7 +462,7 @@ admixture time estimates, we compare scenarios where $t_m$ is fixed at 1500 and 
 
 \begin{figure}
 \centering
-\includegraphics[width=16cm,height=18cm,keepaspectratio]{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig2-1.pdf}
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/fig2-1.pdf}
 \caption{\label{fig:fig2} A) Comparison of mean admixture time estimates
 between simple and extended pulse gene flow for different admixture times in generations.
 The duration of continuous gene flow $t_d$ corresponds to 50\% of the mean
@@ -431,11 +509,11 @@ Figure \ref{fig:fig4}A and C show the mean
 time estimates received from the simple and extended pulse model fit. Figure \ref{fig:fig4}B and D show the corresponding admixture duration estimate. For simulations under a
 constant recombination the mean time can be estimated confidently for different durations and different sampling times after the end of the admixture event in both cases. 
 
-Under constant recombination settings, we find that parameters under the extended pulse are well-estimated in all scenarios, although we observe a small overestimate of both $t_m$ and $t_d$, for very long admixture durations over 1000 generations in the very distant past (more than 600 generations ago). In contrast, inference under the simple pulse model results in a slight underestimate (Figure \ref{fig:fig2}, \ref{fig:fig4}).
+Under constant recombination settings, we find that parameters under the extended pulse are well-estimated in all scenarios, although we observe a small overestimate of both $t_m$ and $t_d$, for very long admixture durations over 1000 generations in the very distant past (more than 600 generations ago). In contrast, inference under the simple pulse model results in a slight underestimate (Figure \ref{fig:fig2}, \ref{fig:fig4}A).
 
-We also find that the simple pulse model is fairly robust to changes in recombination settings, both using the ``correct'' and an empirically similar recombination map. Only when we do not correct for recombination rate variation, we observe a substantial underestimate by almost a factor of two for more distant admixture (Figure \ref{fig:fig4}A \& C, right panels). 
+We also find that the simple pulse model is fairly robust to changes in recombination settings, both using the ``correct'' and an empirically similar recombination map. Only when we do not correct for recombination rate variation, we observe a substantial underestimate by almost a factor of two for more distant admixture (Figure \ref{fig:fig4}A \& C, left panels). 
 
-In contrast, estimates under the extended pulse model are substantially more spread out under variable recombination maps, but we do not observe the systematic bias towards more recent admixture times as in the simple-pulse model. In contrast, the uncorrected scenario results in extremely poor estimates with very high variation, and is clearly unsuitable for this purpose (Figure \ref{fig:fig4}A \& C, left panels)
+In contrast, estimates under the extended pulse model are substantially more spread out under variable recombination maps, but we do not observe the systematic bias towards more recent admixture times as in the simple-pulse model. In contrast, the uncorrected scenario results in extremely poor estimates with very high variation, and is clearly unsuitable for this purpose (Figure \ref{fig:fig4}A \& C, right panels)
 
 We also find that estimates of $t_d$ differ substantially between recombination rate settings. Under constant rates, $t_d$ is well-estimated in all scenarios, and if the recombination rate is known, we get reasonably accurate estimates, at least if admixture is not older than 100 generations. However, under the scenarios where recombination rates differ between simulation and inference, results become more erratic; For the cases of $t_d=200$ and $t_d=400$, many simulations infer an admixture time of near zero; in contrast, very old admixture results in a large overestimate.
 
@@ -448,7 +526,7 @@ We also find that estimates of $t_d$ differ substantially between recombination 
 \caption{\label{fig:fig4} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene
 flow durations $t_d$ all sampled 50 generations after the gene flow ended. B)
 Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times following 800
-generations of gene flow. D) Duration estimate of the same scenario. All scenarios are simulated either under a constant recombination rate or an empirical recombination map (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate (HapMap not corrected), using a different map (HapMap AAMap corrected) and using the same map (HapMap HapMap corrected).}
+generations of gene flow. D) Duration estimate of the same scenario. All scenarios are simulated either under a constant recombination rate or an empirical recombination map (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate (HapMap not corrected), using a different map (HapMap AAMap corrected) and using the same map (HapMap HapMap corrected). All times are given in generations.}
 \end{figure}
 
 \subsection{Application to Neandertal data}
@@ -469,7 +547,7 @@ with all YRI and 3 high coverage Neandertals as reference populations. A) Weight
 \section{Discussion}\label{discussion}
 Previous estimates to date Neandertal-human gene flow have focused almost entirely on the mean time of gene flow, for which reasonably tight credible intervals can be estimated \citep{sankararaman_date_2012, moorjani_genetic_2016}. Here, we show that this simple pulse model cannot be used to establish bounds on when gene flow happened, as scenarios involving hundreds of generations of gene flow are virtually indistinguishable from a short interval of gene flow. Thus, it is important to realize that previous estimates of the time of Neandertal gene flow are credible ranges for the mean time of gene flow. This means that while substantial amounts of gene flow happened around these mean times, they do not bound when gene flow happened. This is of great practical importance, as it might be tempting to link the genetic admixture date estimates with biogeographical events \citep{sankararaman_date_2012,lazaridis_genomic_2016,douka_age_2019,jacobs_multiple_2019,vyas_analyses_2019}. Indeed, our results show that substantial gene flow could also have happened tens of thousands of years before or after the mean time of gene flow. 
 
-The discovery of early modern human genomes dated to 40,000 - 45,000 ya with very recent Neandertal ancestors less than ten generations ago \citep{fu_genome_2014, hajdinjak_early_2021} illustrates that gene flow likely happened over at least several thousand years.  In general, inference based on ancient genomes \citep{fu_genome_2014, fu_early_2015, moorjani_genetic_2016, hajdinjak_early_2021} promise to resolve some of these dating issues, as the time difference between gene flow and sampling time is much lower. However, using these genomes for dating leads to further hurdles, particularly pertaining to the spatial distribution of admixture events; whereas we perhaps assume that the spatial structure present in initial upper paleolithic modern humans might be largely homogenized in present-day people, the introgression signals observed in Bacho-Kiro and Oase could be partially private to these populations, and thus these samples may have a different admixture time distribution than present-day people.
+The discovery of early modern human genomes dated to 40,000 - 45,000 ya with very recent Neandertal ancestors less than ten generations ago \citep{fu_genome_2014} illustrates that gene flow likely happened over at least several thousand years.  In general, inference based on ancient genomes \citep{fu_genome_2014, fu_early_2015, moorjani_genetic_2016} promise to resolve some of these dating issues, as the time difference between gene flow and sampling time is much lower. However, using these genomes for dating leads to further hurdles, particularly pertaining to the spatial distribution of admixture events; whereas we perhaps assume that the spatial structure present in initial upper paleolithic modern humans might be largely homogenized in present-day people, the introgression signal observed in Oase could be partially private to this population, and thus these samples may have a different admixture time distribution than present-day people.
 
 The uncertainty over the duration of Neandertal gene flow might also have some implications for selection on introgressed Neandertal haplotypes. Neandertal alleles have been suggested to be deleterious in modern human populations due to an increased mutation load \citep{harris_genetic_2016, juric_strength_2016}. Some details of these models may be slightly affected if migration occurred over a longer time. For example, \cite{harris_genetic_2016} suggested that an initial pulse of gene flow of up to 10\% Neandertal ancestry might be necessary to explain current amounts of Neandertal ancestry, with very high variance in the first few generations after gene flow. More gradual introgression could mean that such high admixture proportions were never achieved, but rather a continuous migration-selection balance process persisted for the contact period, where deleterious Neandertal alleles continually entered the modern human populations, but were selected against immediately. 
 However, in terms of the overall frequencies achieved, there is likely little difference. For example, \cite{juric_strength_2016} showed using a two-locus model that the frequencies of Neandertal haplotypes alone cannot be used to distinguish different admixture histories.
@@ -482,13 +560,17 @@ To further refine admixture timing, time series data from more admixed early mod
 
 \section{Material \& Methods}\label{methods}
 
+\subsection{Power Analysis}\label{power analysis}
 
-\subsection{Simulations}\label{simulations}
+To test the power of distinguishing the simple from an extended pulse we simulated 100, 1000, 10000 and 100000 unique times $t$ form a Gamma distribution implemented in the R \texttt{stats v.3.6.2} package \citep{R_Core_Team_2019}, with shape parameter $k$ and scale being $k/t_m$. Where $t_m$ is 1500 generations ago. We defined $k$ for different durations as $k=1/((t_d/(4t_m))^2)$. Segment length are obtained by sampled for each $t$ from an exponential distribution (\texttt{stats v.3.6.2} package) with rate parameter $t$ for present day samples and $t_{closer}= t - t_m - t_d/2 -50$ for sampling 50 generations after the end of gene flow.
+We fit the simple (\ref{xx}) and extended pulse (\ref{xx}) using the \texttt{optim} function implemented in the R \texttt{stats v.3.6.2} package. The log likelihoods are compared using a log likelihood ratio test.
+
+\subsection{Coalescent Simulations}\label{coalescent simulations}
 
 We test our approach with coalescence simulations using  \texttt{msprime} 
 \citep{kelleher_efficient_2016}. We focus on scenarios mimicking Neandertal admixture, and choose sample sizes to reflect those available from the 1000 Genomes data \citep{the_1000_genomes_project_consortium_global_2015}. For ALD simulations we simulate 176 diploid
 African individuals and 170 diploid non-Africans, corresponding to the
-number of Yoruba (YRI) and Central Europeans from Utah (CEU). 
+number of Yoruba (YRI) and Central Europeans from Utah (CEU). For segment simulations we simulated 50 diploid diploid non-Africans.
 Since three high coverage Neandertal genomes are available \citep{prufer_complete_2013,prufer_high-coverage_2017,mafessoni_high_coverage_2020} we  simulate three diploid Neandertal genomes. For each individual we simulate 20
 chromosomes with a length of 150 Mb each. The mutation rate is set for
 all simulations to \(2*10^{-8}\) per base per generation. The
@@ -496,13 +578,13 @@ recombination rate is set to \(1*10^{-8}\) per base pair per generation
 unless specified otherwise. The demographic parameters are based on
 previous studies dating Neandertal admixture
 \citep{sankararaman_date_2012,fu_genome_2014,moorjani_genetic_2016}. In
-the ``simple'' demographic model (S \ref{fig:figS1} A), the effective
+the ``simple'' demographic model (S. Figure  \ref{fig:figS1} A), the effective
 population size is assumed constant at $N_e=10,000$ for all populations, the
 split time between modern humans and Neandertals is 10,000 generations
 ago and the split between Africans and non-Africans is 2,550
 generations ago. The migration rate from Neandertals into non-Africans
 was set to zero before the split from Africans, to ensure that there is no Neandertal
-ancestry in Africans. Each simulation was repeated 100 times. 
+ancestry in Africans. Each simulation was repeated 100 times. For segment simulations we followed  \cite{skov_detecting_2018}, but only simulated the Europeans. The split time of  non-Africans are kept the same as in the ALD simulations (2550 generations ago) (S. Figure \ref{fig:figS1}C).  
 
 
 \subsubsection{Simulating admixture}\label{Simulating the expanded pulse}
@@ -510,11 +592,11 @@ We specify simulations under the extended pulse model using the mean admixture t
 
 \subsubsection{Recombination maps}\label{recombination map}
 Uncertainties in the recombination map were previously shown to influence admixture time estimates \citep{sankararaman_date_2012,fu_genome_2014,sankararaman_combined_2016}. To investigate the effect of more realistic
-recombination rate variation, we perform simulations using empirical recombination maps. We use the  African-American map \citep{hinch_landscape_2011} for simulations to evaluate the relative importance of simulation and modeling parameters for admixture time estimates. The HapMap phase 3 map \citep{HapMapConsortium_second_2007} is used for evaluating inference using the extended pulse model. For simplicity, we use the same
+recombination rate variation, we perform simulations using empirical recombination maps. We use the  African-American map \citep{hinch_landscape_2011} for simulations to evaluate the relative importance of simulation and modeling parameters for admixture time estimates. The HapMap phase 3 map \citep{HapMapConsortium_second_2007} is used for evaluating inference using the extended pulse model. For admixture segment simulations we used the deCODE map . For simplicity, we use the same
 recombination map (150 Mb of chromosome 1, excluding the first 10 Mb)
 for all simulated chromosomes. When simulating under an empirical map, with the analysis assuming a constant rate (\emph{i.e.} no correction), we use the mean recombination rate from the respective map to calculate the genetic distance from the physical distance for each SNP. The mean recombination rate is
-calculated from the 150 Mb map (\(1.017 \, \frac{cM}{Mb}\) AAMap and
-\(0.992 \, \frac{cM}{Mb}\) HapMap).
+calculated from the 150 Mb map (\(1.017 \, \frac{cM}{Mb}\) AAMap,
+\(0.992 \, \frac{cM}{Mb}\) HapMap and \(0.914 \, \frac{cM}{Mb}\) deCODE).
 
 
 
@@ -522,14 +604,14 @@ calculated from the 150 Mb map (\(1.017 \, \frac{cM}{Mb}\) AAMap and
 Demographic factors such as population size changes are known to influence LD
 patterns, and may thus influence admixture time estimates \citep{gravel_population_2012,liang_lengths_2014}. To test the impact of
 demographic history on admixture time estimates, we contrast our standard model with a more 
-realistic and complex demographic history(S. \ref{fig:figS1} B). The effective population
-sizes change over time, and are based on estimates from Neandertal and present-day human genomes. In particular, we use the MSMC estimates for YRI and CEU to model Africans and Europeans, respectively 
+realistic and complex demographic history(S. Figure \ref{fig:figS1} B). The effective population
+sizes change over time, are based on estimates from Neandertal and present-day human genomes. In particular, we use the MSMC estimates for YRI and CEU to model Africans and Europeans, respectively 
 \citep{schiffels_inferring_2014}. The Neandertal population size history is modelled after  PSMC estimates \citep{li_inference_2011} using the high-coverage Vindija 33.19 genome
 \citep{prufer_high-coverage_2017}. 
 
 The split times between Neandertals and
 modern humans is kept the
-same as in the simple demographic simulations (10,000 generations ago) (S. \ref{fig:figS1} A). We add substructure within Africa starting from 3,200 till 2,550 generations ago with a per generation migration rate between the two subpopulations of 0.001. The population size of the common ancestor of Neandertals and humans  is set to 18,296 (based on MSMC results). To mimic the age of the samples, Neandertals are sampled 750 generations before the Africans and non-Africans. Finally, we add recent gene flow between African and non-African populations with a total migration rate of 0.01 starting from 200 till 50 generations ago \citep{petr_limits_2019}.
+same as in the simple demographic simulations (10,000 generations ago) (S. Figure  \ref{fig:figS1} A). We add substructure within Africa starting from 3,200 till 2,550 generations ago with a per generation migration rate between the two subpopulations of 0.001. The population size of the common ancestor of Neandertals and humans  is set to 18,296 (based on MSMC results). To mimic the age of the samples, Neandertals are sampled 750 generations before the Africans and non-Africans. Finally, we add recent gene flow between African and non-African populations with a total migration rate of 0.01 starting from 200 till 50 generations ago \citep{petr_limits_2019}.
 
 
 
@@ -587,7 +669,10 @@ The response variable $E_i$ for this model are the residuals, \emph{i.e.}, the d
 $$E_i = \frac{t_{est} - t_{sim}}{\sigma_{t_{est}}}$$, where $\sigma$ is the standard deviation of $t_{est}$ , and the model variables $A, M, D, R$ and $G$ are binary predictors.
 We assume a Normal likelihood because it is the maximum entropy distribution in our case. We obtained the posterior probability using a Hamiltonian Monte Carlo MCMC algorithm, as implemented in STAN \citep{carpenter_stan_2017} using an R interface \citep{stan_development_team_rstan_2018,mcelreath_statistical_2020}. The Markov chains converged to the target distribution (Rhat = 1) and efficiently sampled from the posterior (S. Table \ref{tab:tableS1}).  
 
+\subsection{Estimating admixture time from simulated segment data}\label{Estimating admixture time from simulated segment data}
 
+For estimating admixture time and duration from introgressed segments, we used the true segment length obtained from \texttt{msprime} or inferred the segments using the HMM from \cite{skov_detecting_2018}. We only considered inferred segments with a posterior decoding of 0.9 or higher. Furthermore, we use an upper and lower cutoff for inferred segment length of 0.05 cM and 1.2 cM. The genetic length are assigned using the true constant recombination rate for segments simulated under a constant rate. For simulations under an empirical map (deCODE map) we either used the mean recombination rate of the deCODE map, the AAMap or the deCODE map.
+We fit the simple (\ref{xx}) and extended pulse (\ref{xx}) using the \texttt{optim} function implemented in the R \texttt{stats v.3.6.2} package (method="L-BFGS-B") with lower and upper constrains being $1/5000$ for $t_m$ and $2/1e8$ for $k$. The log likelihoods for the two fits are compared using a log likelihood ratio test.
 
 \subsection{Estimating admixture time from real data}\label{Estimating admixture time from real data}
 To evaluate when we can reject a given admixture durations (including a one generation pulse), we applied the extended pulse model on real data from the 1000 Genomes project \citep{the_1000_genomes_project_consortium_global_2015}.
@@ -602,7 +687,7 @@ This work was supported by the Max Planck Society and the European Research Coun
 
 \section{Data Availability}\label{Data Availability}
 
-The simulation script and analysis pipeline containing the \emph{Extended Admixture Pulse} model is  available  on  GitHub: \url{https://github.com/LeonardoIasi/Extended_Admixture_Pulse}. No new data were generated for this study.
+The simulation script, the analysis pipeline and the \emph{Extended Admixture Pulse} model is  available  on  GitHub: \url{https://github.com/LeonardoIasi/Extended_Admixture_Pulse}. No new data were generated for this study.
 
 \section{Competing interests}
 
