@@ -173,7 +173,7 @@ suppressPackageStartupMessages({
   library(rethinking)
   library(kableExtra)
   library(DEoptim)
-  #library(png)
+  library(png)
   library("MASS")
   library(bbmle)
   #library(DPQ)
@@ -403,9 +403,9 @@ P_Gamma <- Figure_1_C_2(c(t_d),3100,2550,1500,Colour_P = cbPalette_viridis,3,310
 
 P_Lomax <-Theoratical_Lomax(c(t_d),0.5,2550,1500,0.0004,Colour_P = cbPalette_viridis)
 
-Intro_graphic_1 <- readPNG(source = "New_intro_fig3.png",native = F)
+Intro_graphic_1 <- readPNG(source = "../New_intro_fig3.png",native = F)
 
-Intro_graphic_2 <- readPNG(source = "Introgressed_fragments_fig.png",native = F)
+Intro_graphic_2 <- readPNG(source = "../Introgressed_fragments_fig.png",native = F)
 
 im_A <- ggplot() + 
     background_image(Intro_graphic_1) +
@@ -939,7 +939,9 @@ Bdata_index_s_2 <- list(
 Effect_size_fixed_s_2 <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
-    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF ,
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF ,ggarrange(Im_Simple_Demo,Im_Complex_Demo,
+          labels = c("A","B"),
+          ncol = 2, nrow = 1)
     a ~ dnorm( 0 , 2 ),
     c(bA,bm,bD,bR,bG) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)
@@ -1635,8 +1637,9 @@ im_B
 
 
 
-Simple_Demo <- readPNG(source = "Simple_Demographic_model.png",native = F)
-Complex_Demo <- readPNG(source = "Complex_Demographic_model.png",native = F)
+Simple_Demo <- readPNG(source = "../Simple_Demographic_model.png",native = F)
+Complex_Demo <- readPNG(source = "../Complex_Demographic_model.png",native = F)
+Skov_Demo <- readPNG(source = "../Skov_Demo.png",native = F)
 
 Simple_Demo <- ggplot() + 
     background_image(Simple_Demo) +
@@ -1644,7 +1647,7 @@ Simple_Demo <- ggplot() +
     #theme(plot.margin = margin(t=0, l=0, r=0, b=0, unit = "cm")
     #,panel.border = element_blank()
     theme(plot.margin = margin(t=0, l=1, r=1, b=1, unit = "cm"))
-ggsave(file="Simple_Demo.png", width=10, height=8, dpi=300)
+ggsave(file="../Simple_Demo.png", width=10, height=8, dpi=300)
 
 Complex_Demo <- ggplot() + 
     background_image(Complex_Demo) +
@@ -1652,19 +1655,1794 @@ Complex_Demo <- ggplot() +
     #theme(plot.margin = margin(t=0, l=0, r=0, b=0, unit = "cm")
     #,panel.border = element_blank()
     theme(plot.margin = margin(t=0, l=1, r=1, b=1, unit = "cm"))
-ggsave(file="Complex_Demo.png", width=10, height=8, dpi=300)
+ggsave(file="../Complex_Demo.png", width=10, height=8, dpi=300)
 
+Skov_Demo <- ggplot() + 
+    background_image(Skov_Demo) +
+    theme_bw()+
+    #theme(plot.margin = margin(t=0, l=0, r=0, b=0, unit = "cm")
+    #,panel.border = element_blank()
+    theme(plot.margin = margin(t=0, l=1, r=1, b=1, unit = "cm"))
+ggsave(file="../Skov_Demo.png", width=10, height=8, dpi=300)
 
 Im_Simple_Demo <- cowplot::ggdraw() +
-  cowplot::draw_image("Simple_Demo.png")
+  cowplot::draw_image("../Simple_Demo.png")
 
 Im_Complex_Demo <- cowplot::ggdraw() +
-  cowplot::draw_image("Complex_Demo.png")
+  cowplot::draw_image("../Complex_Demo.png")
 
+Im_Skov_Demo <- cowplot::ggdraw() +
+  cowplot::draw_image("../Skov_Demo.png")
 
 ggarrange(Im_Simple_Demo,Im_Complex_Demo,
           labels = c("A","B"),
           ncol = 2, nrow = 1)
+
+pdf("../Admixture_Time_Inference_Paper_Draft_files/figure-latex/All_3_demo_models.pdf")
+ggarrange(Im_Simple_Demo,Im_Complex_Demo,Im_Skov_Demo,
+          labels = c("A","B","C"),
+          ncol = 3, nrow = 1,vjust = 1)---
+title: "The dating of the Human-Neandertal introgression event estimated from present-day human genomes is compatible with a multitude of admixture durations"
+
+author: Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary Anthropology,
+  MPI EVA), Dr. Benjamin Marco Peter (MPI EVA, benjamin_peter@eva.mpg.de)
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    keep_tex: yes
+    latex_engine: xelatex
+    fig_caption: yes
+    citation_package: natbib
+#    template: ATE_modified.tex
+#  html_document:
+#    code_folding: hide
+#    toc: yes
+#    toc_depth: 4
+#    toc_float:
+#      collapsed: no
+#    citation_package: natbib
+#  md_document:
+#    toc: yes
+#    variant: markdown_github
+#    citation_package: natbib
+#  word_document:
+#    toc: yes
+#    toc_depth: '4'
+#  github_document:
+#    toc: yes
+#    citation_package: natbib
+header-includes:
+- \usepackage{setspace}
+- \doublespacing
+- \usepackage[none]{hyphenat}
+- \usepackage{amsfonts}
+- \usepackage{amssymb}
+- \usepackage{graphicx}
+- \usepackage{float}
+- \usepackage{xcolor}
+- \floatplacement{figure}{H}
+
+#csl: References/chicago-author-date.csl
+bibliography: References/MyLibraryATE.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+#Make code wrap text so it doesn't go off the page when Knitting to PDF
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+<style>
+body {
+text-align: justify}
+</style>
+
+\maketitle
+\section{Titles}
+\begin{enumerate}
+    \item The dating of the Human-Neandertal introgression event estimated from present-day human genomes is compatible with a multitude of admixture durations
+    \item Limits to the dating of the duration of Human-Neandertal introgression
+    \item An extended admixture pulse model reveals the limits to the dating of Human-Neandertal introgression
+\end{enumerate}
+
+\section{Abstract (tentative)}\label{abstract}
+
+Modern humans encountered, and admixed with Neandertals during their colonization of Eurasia. However, many questions remain about when, and over which duration, this gene flow happened.
+
+Here, we introduce an extended admixture pulse model that allows joint estimation of the timing and duration of gene flow. This model contains two parameters, one for the time of gene flow, and one for the for the duration of gene flow whilst retaining much of the mathematical simplicity of the simple pulse model. 
+
+In simulations, we find that while the mean time of admixture is relatively robust to deviations in gene flow model, in most cases it is difficult to estimate the duration of gene flow, particularly when the gene flow is very old. We also find that technical parameters, in particular uncertainties in the fine-scale recombination map potentially introduces a major bias.
+
+We conclude that the mean time alone is not sufficient to characterize the admixture event, and that gene flow could have happened hundreds of generations before or afterwards. Ancient genomes from the time around the admixture event are thus likely required to further resolve the question when and for how long humans and Neandertals admixed.
+
+\section{Introduction}\label{introduction}
+
+
+
+\subsection{Evidence for Archaic Interbreeding}\label{(Archaic) Interbreeding, genomic consequences and why is it interesting}
+
+The sequencing of Neandertal \citep{green_draft_2010,prufer_complete_2013,prufer_high-coverage_2017, mafessoni_high_coverage_2020} and Denisovan genomes \citep{reich_genetic_2010, meyer_high-coverage_2012} revealed that modern humans outside of Africa interacted, and admixed with these archaic hominins \citep{vernot_resurrecting_2014,fu_genome_2014,fu_early_2015,sankararaman_genomic_2014,sankararaman_combined_2016,vernot_excavating_2016,malaspinas_genomic_2016}. There are two major lines of evidence: First, Neandertals are genome-wide more similar to non-Africans than to Africans \citep{green_draft_2010, meyer_high-coverage_2012}. This shift can be explained by 2-4\% of admixture from Neandertals into non Africans \citep{green_draft_2010, prufer_complete_2013}. Similarly, East Asians, Southeast Asians and Papuans are more similar to Denisovans \citep{meyer_high-coverage_2012} than other human groups, which is likely due to gene flow from Denisovans. 
+
+As a second line of evidence, all non-Africans carry genomic segments that are very similar to the sequenced archaic genomes. As these putative \emph{admixture segments} are up to several hundred kilobases (kb) in length, they are unlikely to predate the split of modern humans from Neandertals and Denisovans \citep{sankararaman_genomic_2014, vernot_resurrecting_2014}. Rather, they entered the modern human populations later through gene flow \citep{sankararaman_date_2012, sankararaman_combined_2016, vernot_excavating_2016, skov_detecting_2018, skov_nature_2020}. 
+
+\paragraph{Why do we care about timing of gene flow}.
+
+While the presence of a gene flow event is well established, much uncertainty remains about when and where this gene flow happened. Studying the location and timing of the gene flow is important because it potentially constrains some major events in human genetic history, as the interactions between Neandertals and modern humans in Eurasia led to the eventual replacement of Neandertals. In particular, as no Neandertals have been found in Africa, the first Out-Of-Africa event is likely the earliest time point where humans and Neandertals could have met. Similarly, gene flow must end with the disappearance of Neandertals. As the earliest modern human remains outside of Africa are dated to around 188 thousand years ago (kya)  \citep{stringer_when_2018,hershkovitz_earliest_2018} and the latest Neandertals are suggested to be between 37 kya and 39 kya old \citep{zilhao_precise_2017, higham_timing_2014}, this leaves a potential time frame for Neandertal and modern human interaction of well over 140,000 years. However, direct evidence of modern humans and Neandertals in the same geographical location at the same time is much spottier; in Europe, for example Neandertals and modern humans likely overlapped only for less than 10,000 years \citep{bard_extended_2020}. Thus, detailed genetic dating of when Neandertals and modern human admixture started and ended could help making the dating of these events more precise.
+
+\subsection{Admixture segment model}\label{Admixture models}
+
+The most common approach to admixture dating is using a ``recombination clock'': Conceptually, admixture segments are the result of recombination breaking down introgressed chromosomes: The offspring of an archaic and modern human parent will have full chromosomes of either ancestry. If this individual has offspring in a largely modern human population, meiotic recombination progressively breaks the ancestry segments of the archaic chromosome  down into smaller and smaller pieces, whose size decrease with time \citep{falush_inference_2003, gravel_population_2012,liang_lengths_2014}. Correspondingly, one would expect the segments of Neandertal ancestry in early modern human specimens to decrease with time, a signal that has been recovered consistently from early modern human genomes \citep{fu_genome_2014,fu_early_2015, moorjani_genetic_2016, sikora_ancient_2017, sikora_population_2019, hajdinjak_early_2021}. 
+
+\subsection{Inference}
+Models to infer the admixture time thus exploit this inverse relationship between admixture time and segment length for inference of the time of an admixture event \citep{pool_inference_2009,moorjani_history_2011,pugach_dating_2011,gravel_population_2012,sankararaman_date_2012,loh_inferring_2013,hellenthal_genetic_2014,liang_lengths_2014,sankararaman_combined_2016,pugach_gateway_2018,jacobs_multiple_2019}. The simplest models assume that admixture segments are rare and inbreeding is not significant, such that admixture segments are unlikely to recombine with each other \citep{pool_inference_2009,liang_lengths_2014}. Further assumptions are that the segments act neutrally \citep{shchur_distribution_2019} and the recombination rate is the same in different populations at all times \citep{gravel_population_2012}. In addition, it is frequently assumed that the admixture happens over a very short time period, in a single \textit{admixture pulse} \citep{moorjani_history_2011}, usually modelled as a single generation of gene flow.
+
+
+\subsection{The two approaches and their application to find archaic admixture dates}\label{the-two-approaches-and-their-application-to-find-archaic-admixture-dates}
+
+The first step in dating admixture events from genetic data is therefore estimating the length distribution of admixture segments.  There are two main approaches for this; a first sets of methods starts with identifying all admixture segments over a certain length, and then use the length distribution of these segments for inference. Alternatively, the length distribution can also be estimated from patterns of linkage along a chromosome directly, without explicitly inferring the genomic location of these segments \citep{chimusa_dating_2018} (Figure \ref{fig:fig1} B).
+
+ In the first set of approaches, the identification of segments is largely independent from the later dating, and can be done using a variety of methods \citep{seguin_orlando_paleogenomics_2014,vernot_excavating_2016,sankararaman_combined_2016,racimo_signatures_2017,skov_detecting_2018}. These approaches are most useful for recent admixture estimated on high-quality data, as uncertainty in the segment identification is not easily fed forward into the timing inference \citep{hellenthal_genetic_2014}.
+
+Thus, methods using admixture-induced linkage disequilibrium (ALD) are more widely used \citep{moorjani_history_2011,sankararaman_date_2012,sankararaman_combined_2016}. As admixture introduces entire chromosomes, variants that result from the differences between the parental chromosomes are all in linkage disequilibrium (LD) \citep{chakraborty_admixture_1988,stephens_mapping_1994,wall_detecting_2000}. As recombination decreases the size of admixture segments over time, the linkage decreases correspondingly \citep{patterson_methods_2004}. 
+
+In case of a recent admixture event a few tens of generations ago, ALD stretches  over long genetic distances and is therefore easily distinguishable from short range LD due to inheritance of chromosomal segments from an ancestral population, or LD caused by bottlenecks and genetic drift after the split from the parental population \citep{moorjani_history_2011}. For ancient admixture events however, ALD is quite similar to the genomic background. To partially circumvent this issue for dating the Neandertal-human admixture time, variants are ascertained such that only  markers that are (nearly) differentially fixed between the two groups are used 
+\citep{sankararaman_date_2012}. 
+
+Typically, estimation of admixture dates proceeds by fitting a decay curve of pairwise LD as a function of genetic distance, using an exponential distribution whose parameter is informative for the time of an admixture pulse \citep{moorjani_history_2011,loh_inferring_2013}. 
+
+
+
+\subsection{What is known about admixture}
+
+Using this approach,   \cite{sankararaman_date_2012}. dated the Neandertal-human admixture pulse to be  between 37--86 kya (most likely range of 47–65 kya). Later, this date was refined to 41 -- 54 kya ($C.I._{95\%}$) using a different ascertainment scheme combined with a different genetic map for European populations \citep{moorjani_genetic_2016}. A date of 50 -- 60 kya was obtained from the analysis of the \textit{Ust-Ishim} early modern human from Siberia \citep{fu_genome_2014}.
+
+Using D-statistics \citep{green_draft_2010} and by directly inferring introgressed segments, it was found that the amount of Neandertal ancestry is 24\% higher in present-day East-Asians compared to Europeans \citep{meyer_high-coverage_2012,  wall_higher_2013}. A second admixture event private to East-Asians around the same time as the interbreeding event between Neandertals and all non-Africans is suggested to explain the higher amount of ancestry \citep{kim_selection_2015,vernot_complex_2015}.
+
+Compared to the relatively simple patterns of inference in Neandertal ancestry, Denisovan ancestry in modern humans is more complex. Among present-day populations, Papuans and Melanesians have the highest amount of Denisovan ancestry (6\%), much more than East-Asians (0.2\%) \citep{reich_genetic_2010,meyer_high-coverage_2012}.
+However, the Denisovan ancestry segments in East Asians are made up of two distinct groups, one from a population only distantly related to the sequenced Denisovan genome, and another one that is more closely related \citep{browning_analysis_2018}. In contrast, Papuans and Melanesians only have segments from the first of this group, despite them having much more overall ancestry.
+One explanation is that there has been a common admixture event into an ancestor of both populations, and a second event that only contributed to East Asians; however the admixture segment lengths of these two sets of populations are not significantly different from each other, suggesting either a lack of power to distinguish the two events by time, or that they occurred roughly at the same time \citep{browning_analysis_2018}.
+
+
+
+The evidence for more complex patterns of Neandertal gene flow is more spotty, as most Neandertal admxiture segments have a similar divergence to the sequenced Neandertals \citep{browning_analysis_2018}. However, an example of  Neandertal gene flow private to a local population is the identification of admixture segments spanning several Mbp in \textit{Oase 1}, the genome of an early modern human from Romania. He had a recent Neandertal ancestor less than 200 years before he lived (~37–42 kya), later than the age of the \textit{Ust'Ishim} modern human which is already admixed with Neadertals. \textit{Oase 1} did however not contribute substantially to present-day human populations  \citep{fu_genome_2014,fu_early_2015}.
+
+Lately \cite{hajdinjak_early_2021} showed that segments from a recent Neandertal ancestor found in  46 - 43 (cal. BP) old modern humans from Bulgaria have a higher sharing with present-day East-Asians segments, indicating that this local gene flow did contribute to modern human populations \citep{hajdinjak_early_2021}.    
+
+\subsection{Limitations of the pulse model}\label{Why can't we us the pulse model}
+
+The admixture pulse model used in most dating method assumes that gene flow occurs over a short time period; however it is currently unclear how short a time period would be consistent with an admixture pulse model. This is problematic because admixture time estimates under a pulse model may be hard to interpret, as some gene flow could have happened tens of thousands of years before or after the estimated time point.
+
+
+
+\subsection{Previous attempts of a general admixture model and ours}\label{Previous attempts of a general admixture model and ours}
+
+To address this issue, the simple pulse model can be extended to include  multiple admixture pulses. The distribution of admixture segments lengths will then be a mixture of the exponential distributions from each constituent pulses. This is especially useful if the events are very distinct in time, e.g. if one event is only a few generations back, and the other pulse occurred hundreds of generations ago \citep{fu_genome_2014,slon_genome_2018}. In this case, the admixture segments will be either very long if they are recent, or much shorter if they are older. It is also very useful if the two admixing sources are very differentiated from each other, so that distinct sources can be told apart. 
+
+\cite{zhou_modeling_2017} showed that this model, in principle, can be used for continuous mixtures as well, using a polynomial function as a mixture density. However, they found that even for relatively short admixture events, the large number of parameters led to an underestimate of admixture duration \citep{zhou_inference_2017}, and the beginning and end of admixture were not well inferred
+\citep{zhou_modeling_2017,zhou_inference_2017}. 
+
+\cite{ralph_geography_2013} used the distribution of shared identical by descent (IBD)  segments length between pairs of individuals to infer the number and age of genetic common ancestors. By modeling over all ancestor and ages they fit more complex migration patterns. However, a major problem they found is that a large set of migration patterns fit the IBD distribution equally well. To coup with this they introduced a regularization scheme to their likelihood function by adding a penalization term \citep{ralph_geography_2013}.
+
+\subsection{Extended Pulse Model}
+
+One drawback of  these approaches are that they introduce a large number of parameters. Even a discrete mixture of two pulses requires at least three parameters (two times and the relative magnitude of the two events) \citep{pickrell_ancient_2014}, and the more complex models require regularization schemes for fitting.
+
+Here, we present the \emph{extended admixture pulse} model (Figure \ref{fig:fig1} A) to estimate the duration of an admixture event. It only adds one additional parameter, reflecting the duration of gene flow, while retaining much of the mathematical simplicity present in the simple pulse model. 
+The extended pulse model assumes that migration rate over time is Gamma distributed, so that the  distribution of admixture segment lengths has a closed form (Figure \ref{fig:fig1} C \& D) with mean admixture time and duration as the two parameters.
+
+Conceptually, identifying an extended pulse model requires us to establish that the length distribution of introgressed segments deviates from an exponential distribution. However, other biases, such as the demography of the admixed population, the accuracy of the recombination map and the ascertainment scheme may also introduce similar signals. Thus, we have to carefully evaluate potential sources of biases  \citep{sankararaman_date_2012,fu_genome_2014,moorjani_genetic_2016}. 
+
+
+\subsection{What we want to do}\label{what-we-want-to-do}
+
+Here, we first formally define the extended admixture pulse model and derive the resulting segment length distribution. We then introduce inference schemes, either based directly on inferred segment lengths or by using the ALD decay. 
+We then use simulations under the extended pulse model to assess the effect of ongoing admixture on inference done under the simple pulse model, and investigate under which scenarios we can distinguish between the two models. We show that while very recent events can be distinguished, for the parameter regions relevant for the  case of archaic admixture, a simple pulses cannot be distinguished from more continuous admixture events. Using the 1000 Genomes data, ALD inferred admixture times from Europeans are consistent with a multitude of duration times.
+We conclude that while current methods are sufficient to estimate the mean admixture time, these estimates are consistent with gene flow that may have spanned several tens of thousands of years, thus limiting the interpretability of these results. Leaving the question when gene flow happened unsuitable to estimate the duration of admixture and thus answer when the contact between Neandertals and modern humans started or ended.
+
+
+```{r message=FALSE, echo=F,warning=FALSE}
+suppressPackageStartupMessages({
+  library(VGAM)
+  library(tidyverse)
+  library(ggplot2)
+  library(reshape)
+  library(viridis)
+  library(ggpubr)
+  library(dplyr)
+  library(rethinking)
+  library(kableExtra)
+  library(DEoptim)
+  library(png)
+  library("MASS")
+  library(bbmle)
+  #library(DPQ)
+})
+
+Results_Table <- function(Table_Path) {
+  header_for_Result=c("A","m","c","RSS_Expo","error","Scenario","GF_Start","GF_Stop","Ascertained","min_dist","Gene_Flow_Model")
+  Raw_results <-  read.table(Table_Path, header = F,col.names = header_for_Result)
+  Raw_results$mean.t.GF <- rowMeans(Raw_results[c('GF_Start', 'GF_Stop')], na.rm=TRUE)
+  Raw_results$length.t.GF <- Raw_results$GF_Stop - Raw_results$GF_Start
+  Raw_results$GF[Raw_results$length.t.GF== 1]="0_Pulse"
+  Raw_results$GF[Raw_results$length.t.GF > 1]="Continous"
+  Raw_results$Ascertainment[Raw_results$Ascertained== 0]="0_LES"
+  Raw_results$Ascertainment[Raw_results$Ascertained == 1]="HES"
+  Raw_results$min_dist <- as.factor(Raw_results$min_dist)
+  Raw_results$GF[Raw_results$Gene_Flow_Model== "GF_Model_I"]="0_Pulse"
+  return(Raw_results)
+}
+
+
+Get_Data_Table <- function(Data,mean_Gamma=F){
+  xx=as.data.frame(table(round(Data$m,digits = 0), paste(Data$GF,Data$mean.t.GF, sep="_"),Data$mean.t.GF,Data$GF,Data$mean.t.GF,Data$length.t.GF))
+  xx=subset(xx,Freq>0)
+  xx=xx[order(xx$Var3),]
+  return(xx)
+}
+
+Get_gamma_mean <- function(start_GF,stop_GF){
+    EX= (stop_GF - start_GF)/2 + start_GF
+    VarX= ((stop_GF - start_GF)/4)**2
+    b= EX/VarX
+    a=EX*b
+    a=a+1
+    mean_gamma= a/b
+    return(round(mean_gamma))
+}
+
+Get_points <- function(input,lval,hval,log){
+  # Read input file
+  data <- read.table(input, header = F)
+  
+  
+  # set dist and wcorr
+  col=2
+  dist <- data[,1]
+  wcorr <- data[,col]
+  ndist <- length(dist)  ## number of rows in dataset
+  lval=lval
+  hval=hval
+  
+  # check x lower value and y lower value
+  data.sub <- data
+  if ((lval > dist[1]) || (hval < dist[ndist])) {
+    data.sub <- subset(data, ((dist <= hval) & (dist >= lval)))
+  } 
+  dist <- data.sub[,1]		# updated x values
+  wcorr <- data.sub[,col]		# updated y values
+  if(log==T){
+    xx <- cbind(dist,log(wcorr))
+    xx <- xx[complete.cases(xx),]
+    wcorr <- xx[,2]
+    wcorr <-c(wcorr,rep(NA,length(data.sub[,1])-length(wcorr)))
+    dist <- xx[,1]
+    dist <-c(dist,rep(NA,length(data.sub[,1])-length(dist)))
+  }
+  result_table <- data.frame(dist,wcorr)
+  return(result_table)
+}
+
+Figure_1_C_1 <- function(input,log,Colour_P){
+  
+  Pulse <- Get_points(input[1],lval=0.05,hval=0.6,log)
+  Continous <- Get_points(input[2],lval=0.05,hval=0.6,log)
+  P_C_Data <- data.frame(Pulse,Continous)
+  P_C_Data <- P_C_Data[P_C_Data$wcorr > -13,]
+  
+  Px <-  ggplot(data=P_C_Data,aes(y=wcorr,x=dist))+
+    geom_point(aes(x=dist,y=wcorr),color=Colour_P[1],pch=4)+
+    geom_point(aes(x=dist.1,y=wcorr.1),color=Colour_P[6],pch=18)+
+    labs(y = "log weighted LD")+
+    labs(x = "Genetic Distance in cM")
+  #coord_cartesian(ylim = c(-13,-8),xlim=c(0,0.4),expand = 0)
+  
+  return(Px)
+  
+}
+
+Figure_All_Real_Data <- function(input,log,GF_length,Colour_P){
+  
+  Real_Data <- c()
+  for(i in input){
+    xx <-Get_points(i,lval=0.05,hval=0.5,log)
+    Real_Data <- c(Real_Data,xx)
+  }
+  Real_Data <- as.data.frame(Real_Data)
+  Real_Data_names <- c()
+  for(i in GF_length){
+    Real_Data_names <- c(Real_Data_names,c('Genetic_Distance',i))
+  }
+  colnames(Real_Data) <- Real_Data_names
+  Real_Data.melted <- melt(Real_Data, id = c("Genetic_Distance"))
+  
+  Px <-  ggplot(data =Real_Data.melted, aes(x = Genetic_Distance, y = value,color=variable)) +
+    geom_point(pch=18)+
+    coord_cartesian(ylim = c(-8,-14),expand = 0,xlim = c(0,0.5))+
+    #geom_vline(xintercept=Split_time,linetype=3,color='black')+
+    scale_color_manual(values = Colour_P)+
+    labs(x = "Genetic distance")+
+    labs(y = "log weighted LD")+
+    labs(color="Admixture Duration")
+  return(Px)
+  
+}
+
+Figure_1_C_2 <- function(Timespan_GF_Models,time_l,Split_time,Mean_Time,Colour_P,max_y,max_x){
+  
+  n_GF_Models=length(Timespan_GF_Models)
+  time=seq(1,time_l,1)
+  
+  Gamma_fun <- function(GF_Length,time_l,Split_time,Mean_Time){
+    time=seq(1,time_l,1)
+    EX= Mean_Time
+    VarX= (GF_Length/4)**2
+    b= EX/VarX
+    a=EX*b
+    
+    GF_gamma <- dgamma(x=time,shape = a,scale = 1/b)
+    GF_gamma[GF_gamma < 1e-6] = 0
+    GF_gamma <- GF_gamma[1:time_l]
+    m2 <- c()
+    for (i in GF_gamma){
+      x <- i*(0.03/sum(GF_gamma))
+      m2 <- c(m2,x)
+    }
+    #m2 <- c(m2,rep(0,time_l-Split_time))
+    #m2 <- c(m2,rep(0,time_l))
+    #cutoff_in_Percent=(sum(m2[2550:5001])/0.03)*100
+    
+    GF <- c(m2)
+    return(GF)
+  }
+  GF <- c(seq(1,time_l,1))
+  for(i in 1:n_GF_Models){
+    Timespan <- Timespan_GF_Models[i]
+    GF_x <- Gamma_fun(Timespan,time_l,Split_time,Mean_Time)
+    GF <- cbind(GF,GF_x)
+  }
+  GF <- as.data.frame(GF)
+  colnames(GF) <- c('Time',Timespan_GF_Models)
+  GF.melted <- melt(GF, id = "Time")
+  Px <-  ggplot(data =GF.melted, mapping=aes(x = Time, y = value,color=variable,fill=variable)) +
+    # outcomented part colors the area of t_d
+    #geom_area(position = 'identity',mapping = aes(x = ifelse(Time>Mean_Time-(as.numeric(as.character(variable))/2) & Time< Mean_Time+(as.numeric(as.character(variable))/2) , Time, NA),fill=variable),show.legend = F,alpha = 0.33)+
+    geom_area(position = 'identity',mapping = aes(x = ifelse(Time<Mean_Time-(as.numeric(as.character(variable))/2) 
+     , Time, NA),fill=variable),show.legend = F,alpha = 0.33)+
+    geom_area(position = 'identity',mapping = aes(x = ifelse(Time>Mean_Time+(as.numeric(as.character(variable))/2) 
+       , Time, NA),fill=variable),show.legend = F,alpha = 0.33)+
+    geom_line(show.legend = F)+
+    coord_cartesian(ylim = c(0,1e-04),xlim = c(0,3050),expand = 0)+
+    geom_vline(xintercept=Split_time,linetype=3,color='black')+
+    scale_color_manual(values = Colour_P)+
+    scale_fill_manual(values = Colour_P)+
+    labs(x = "Time in Generations")+
+    labs(y = "Migration Rate")+
+    labs(color="Admixture Duration")
+  return(Px)
+}
+
+
+Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time,Mean_Time,Intercept,Colour_P){
+  n_GF_Models=length(Timespan_GF_Models)
+  
+  Lomax_fun <- function(GF_Length,max_Genetic_distance,Split_time,Mean_Time,Intercept,log=T){
+    Genetic_length=seq(0.01,max_Genetic_distance,0.01)
+    EX= Mean_Time
+    VarX= (GF_Length/4)**2
+    b= EX/VarX
+    a=EX*b
+    Theta=b
+    k=a+1
+    Lomax_normal <- function(dist,k,theta,A) A*(1 + ((dist/100) /  theta))^-(k)
+    Lomax_log <- function(dist,k,theta,A) -k* log(1 + ((dist/100) /  theta)) + log(A)
+    if(log==T){
+      ALD <-  Lomax_log(dist=Genetic_length,k = k ,theta = Theta, A=Intercept)
+    }
+    else{
+      ALD <-  Lomax_normal(dist=Genetic_length,k = k ,theta = Theta, A=Intercept)
+    }
+    Lomax_Result <- cbind(Genetic_length,ALD,k,Theta)
+    return(Lomax_Result)
+  }
+  Lomax_Result <- c()
+  for(i in Timespan_GF_Models){
+    xx=Lomax_fun(i,max_Genetic_distance,Split_time,Mean_Time,Intercept,log=T)
+    Lomax_Result <- cbind(Lomax_Result,xx)
+  }
+  Lomax_Result <- as.data.frame(Lomax_Result)
+  colnames_Lomax_Result <- c()
+  for(time in Timespan_GF_Models){
+    colnames_Lomax_Result <- c(colnames_Lomax_Result,c('Genetic_Distance',time,'k','Theta'))
+  }
+  colnames(Lomax_Result) <- colnames_Lomax_Result
+  Lomax_Result.melted <- melt(Lomax_Result, id = c("Genetic_Distance",'k','Theta'))
+  Px <-  ggplot(data =Lomax_Result.melted, aes(x = Genetic_Distance, y = value,color=variable)) +
+    geom_line()+
+    #coord_cartesian(ylim = c(0,max(ALD$'2')),expand = 0)+
+    coord_cartesian(ylim = c(-14,-8),expand = 0,xlim = c(0,0.5))+
+    #geom_vline(xintercept=Split_time,linetype=3,color='black')+
+    scale_color_manual(values = Colour_P)+
+    labs(x = "Genetic distance (cM)")+
+    labs(y = "log weighted LD")+
+    labs(color="Admixture Duration")
+  return(Px)
+}
+
+
+```
+
+
+```{r fig1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:fig1} A) Neandertal introgression into non-Africans with a multitude of potential admixture durations. B) The time and duration of admixture results in different length distributions of introgressed chromosomal segments (grey) containing  Neandertal variants (green circles)  in high LD to each other compared to the background . The ALD approach estimates linkage between the introgressed variants (green circles), wheres the haplotype approach tries to estimate the segment directly (grey area). C) Migration rate per generation modeled using the extended pulse model for different admixture durations (colored lines). The filled area under the curve indicates the boundaries of the discrete realization of the duration of gene flow $t_d$. The dotted line indicates the oldest possible time of gene flow. D) The expected LD decay under the extended pulse model."}
+
+
+t_d=c(1,100,200,400,800,1000,1500,2000,2500)
+cbPalette_viridis <- viridis(length(t_d),option = "D")
+
+P_Gamma <- Figure_1_C_2(c(t_d),3100,2550,1500,Colour_P = cbPalette_viridis,3,3100)
+
+P_Lomax <-Theoratical_Lomax(c(t_d),0.5,2550,1500,0.0004,Colour_P = cbPalette_viridis)
+
+Intro_graphic_1 <- readPNG(source = "../New_intro_fig3.png",native = F)
+
+Intro_graphic_2 <- readPNG(source = "../Introgressed_fragments_fig.png",native = F)
+
+im_A <- ggplot() + 
+    background_image(Intro_graphic_1) +
+    theme_bw()+
+    theme(plot.margin = margin(t=1, l=0, r=0, b=1, unit = "cm"),
+    panel.border = element_blank())
+ggsave(file="GG_New_Intro_fig_1.png", width=6, height=8, dpi=300)
+
+im_B <- ggplot() + 
+    background_image(Intro_graphic_2) +
+    theme_bw()+
+    theme(plot.margin = margin(t=1, l=0, r=0, b=1, unit = "cm"),
+    panel.border = element_blank())
+ggsave(file="GG_New_Intro_fig_2.png", width=6, height=8, dpi=300)
+
+im_AA <- cowplot::ggdraw() +
+  cowplot::draw_image("GG_New_Intro_fig_1.png")
+
+im_BB <- cowplot::ggdraw() +
+  cowplot::draw_image("GG_New_Intro_fig_2.png")
+
+ggarrange(im_AA,im_BB,P_Gamma,P_Lomax,
+          labels = c("A","B","C", "D"),
+          ncol = 2, nrow = 2,common.legend = T,legend = 'bottom',heights = c(1,1))
+
+
+
+```
+
+
+\section{Methods}\label{methods}
+In this section,  we introduce the extended admixture pulse model as a generalization of a more simple single pulse model, and introduce inference algorithms for fitting the extended admixture pulse model to ALD and segment data. 
+
+We then present the details on the simulation settings we use to evaluate these models.
+
+We use these simulations to assess the performance of inference methods assuming the simple pulse model under more complex admixture scenarios, and test the impact of technical variables such as recombination rate variation or demographic scenarios and evaluate when the two models can be distinguished.
+
+Finally, we apply our methods to distinguish several admixture scenarios with different durations to ALD data from the 1000 Genomes Project \citep{the_1000_genomes_project_consortium_global_2015} with 3 high coverage Neandertals \citep{prufer_complete_2013,prufer_high-coverage_2017,mafessoni_high_coverage_2020}.
+
+
+\subsection{Admixture Models and Inference}\label{admixture models}
+
+In this section, we first present an informal overview of our admixture models, before introducing more formal definitions and notations. Conceptually, we can think of admixture as a series of ``foreign'' chromosomes introduced in a population. In particular, admixture from Neandertals into modern humans would result in first-generation offspring that carry one chromosome set of their Neandertal and modern human parents each. If these individuals remain in the human population, these chromsomes will recombine with the modern human background, and the Neandertal-ancestry chromosomes will get divided up into shorter and shorter admixture segments over time. In the case of the simple pulse model, it is assumed that all admixture happens in the same generation, i.e. all chromosomes are introduced to the population at the same time. Here, we extend this model by allowing chromosomes to enter over a longer time period, modelling gene flow that endures over potentially many generations. In this case, we can still think of each segment as being first introduced by a first individual with a Neandertal parent, but these first individuals need not live at the same time.
+
+Formally, we assume we have $n$ admixture segments. We denote the length of the $i$-th segment as $L_i$. Further, the random variable $T_i$ represents the time when segment $L_i$ entered the population. We assume that the $L_i$ and $T_i$ are both realizations from more general distributions $L$ and $T$ that reflect the overall segment length and admixture time distributions, respectively. 
+
+Given $T_i$, we assume that $L_i$ is exponentially distributed with rate parameter given by the admixture time $t$ and the recombination rate $r$.
+\begin{equation}
+\label{eq:generall_length_distribution}
+    P(L_i=l|T_i=t) = t r\exp{(-t r l)} 
+\end{equation}
+
+If we measure the length of each segment $L_i$ in the recombination distance Morgan (M), $r=1$ and is omitted from this section for simplicity.
+
+To model the unconditional distribution of admixture lengths, we need to integrate over all possible $T_i$, which are drawn from the admixture time distribution $T$:
+
+\begin{equation}
+\label{eq:standard_likelihood_definintion}
+    P(L_i=l)=\int_{0}^{\infty} P(T_i=t) P(L_i=l | T_i=t) \ dt \text{,}
+\end{equation}
+
+
+Thus, we can think of $L$ as an exponential mixture distribution with mixture density $T$. 
+
+\subsubsection{The Simple Pulse Model}\label{The Simple Pulse Model}
+
+
+In the simple pulse model, we assume that all fragments enter the population at the same time $t_m$. Therefore all $T_i$ have the same value $t_m$, and $T$ thus is a constant distribution. We can formalize this by using a Dirac delta function:
+
+\begin{equation}
+\label{eq:RV_simple_pulse}
+  P(T_i)=\delta_{t_m}(T_i),
+\end{equation} 
+which integrates to one if $T_i = t_m$.
+
+
+Therefore,
+
+\begin{equation}
+\begin{split}
+\label{eq:Likelihood_function_simple_pulse}
+    P(L_i=l) &= t_me^{-t_m l}
+\end{split}
+\end{equation}
+
+The expected segment length under a simple pulse model is given by,
+
+\begin{equation}
+\label{eq:Expected_l_simple_pulse}
+    \mathbb{E}[L]=\frac{1}{t_m}
+\end{equation}
+
+and variance
+\begin{equation}
+\label{eq:Expected_l_simple_pulse}
+    \text{Var}[L]=\frac{1}{t_m^2}
+\end{equation}
+
+
+Note that this definition of the segment length distribution is independent from the migration rate $m$ at $t_m$, as we are only concerned about the length distribution of admixture segments, but not the total amount of Neandertal ancestry. However, as we do not consider the  probability of admixture segments recombining with each other, we implicitly assume that $m$ is small \citep{gravel_population_2012, liang_lengths_2014}, which is reasonable for Neandertals where $m \approx 0.02$ .
+
+\subsubsection{The Extended Pulse Model}\label{The Extended Pulse Model}
+
+For the extended pulse model, we assume that the $T_i$ follow a Gamma distribution.  It is convenient to parametrize the Gamma distribution by its mean $t_m$ and its shape parameter $k$.  $\Gamma(k,\frac{t_m}{k})$, hence
+
+
+\begin{equation}
+\label{eq:RV_extended_pulse}
+  P(T_i=t)=\frac{1}{\Gamma(k)(\frac{t_m}{k})^k}t^{k-1}e^{-t\frac{k}{t_m}}.
+\end{equation} 
+with, $t \geq 0$ and $k \geq 1$.
+
+\begin{equation}
+\begin{split}
+\label{eq:RV_extended_pulse_properties}
+\mathbb{E}[T]&=t_{m} \\
+Var[T]&=\frac{t_{m}^2}{k} = \bigg(\frac{t_d}{4} \bigg)^2  \\
+\end{split}
+\end{equation}
+
+Here, we define the admixture duration $$t_d=4t_m k^{-\frac{1}{2}}$$, which is a convenient measure for the duration of gene flow. If $k$ is low, then $t_d$ will be large and we have near-continuous gene flow. In contrast, if $k$ is large, then $t_d \approx 0$ and we recover the simple pulse model (Figure \ref{fig:fig1} C \& D). 
+
+
+The distribution of segment length is then given by:
+
+
+\begin{equation}
+\label{eq:Likelihood_function_extended_pulse}
+    P(L=l) = t_{m}^{-k} \ \Bigg( \frac{k}{l+\frac{k}{t_{m}}}\Bigg)^{k+1}
+\end{equation}
+
+The distribution  in equation \ref{eq:Likelihood_function_extended_pulse} is known as a \emph{Lomax} or \emph{Pareto-II} distribution, which is a heavier-tailed relative of the Exponential distribution. 
+
+
+Under the extended pulse model, the expected segment length will be larger than under the simple pulse model (\ref{eq:Expected_l_simple_pulse}):
+
+\begin{equation}
+\label{eq:Expected_l_extended_pulse}
+\mathbb{E}[L] = \frac{k}{(k-1)}\frac{1}{t_{m}}
+\end{equation}
+
+The fraction $\frac{k}{k-1}$ will be larger for low $k$, which fits previous results that the longest (i.e. most recently introgressed) admixture segments have a disproportionate impact on inference, and thus  admixture time estimates from ongoing gene flow are biased towards more recent events \citep{moorjani_history_2011,moorjani_genetic_2016}.
+
+The variance for $k>2$ is 
+
+\begin{equation}
+\label{eq:Var_l_extended_pulse}
+Var[L] = \frac{1}{t_m^2}\frac{k^3}{(k-1)^2 (k-2)}\text{.}
+\end{equation}
+
+
+The second fraction is strictly larger than one, which matches our intuition that ongoing gene flow should result in a larger variance in admixture segments length. As $k$ approaches infinity, this term approaches one and we recover the moments of the exponential distribution, since $k$ is inversely proportional to the admixture duration.
+
+
+\subsubsection{Admixture time estimates}\label{admixture time estimates}
+For inference, the admixture segment lengths are unknown. Here, rather than estimating segments, we follow \cite{moorjani_history_2011} and use the decay of ALD  as a statistic. Instead of the density $P(L_i)$, we need the probability that two markers a given distance $d$ apart are separated by at least one recombination event. This probability is given by the the tail function $P(L_i > d)$.
+
+The tail functions under both the simple and extended pulse models are 
+\begin{equation}
+\label{eq:simple_pulse_tail}
+P(L_i > d) = e^{-t_m \:d}
+\end{equation}
+
+\begin{equation}
+\label{eq:extended_pulse_tail}
+P(L_i > d) = \left( \frac{1}{1 + \frac{t_m}{k} \:d}\right) ^k
+\end{equation}
+
+For fitting the data, following \cite{moorjani_genetic_2016}, we add an intercept $A$ and a constant modelling background LD $c$, to the tail functions. The genetic distance $d$ is measured in centiMogran (cM).
+
+
+\begin{equation}
+\label{eq:simple_pulse_tail_inf}
+ALD \sim\ A\,e^{-t_m \:d}+c
+\end{equation}
+
+\begin{equation}
+\label{eq:extended_pulse_tail_inf}
+ALD \sim\ A\,\left( \frac{1}{1 + \frac{t_m}{k} \:d}\right) ^k+c
+\end{equation}
+
+We fitted the distribution to the data with  a non-linear least-square optimization algorithm
+using the \texttt{nls} function implemented in the R \texttt{stats v.3.6.2} package \citep{R_Core_Team_2019}.
+
+
+\subsection{Simulations}\label{simulations}
+
+We test our approach using coalescence simulations using  \texttt{msprime} 
+\citep{kelleher_efficient_2016}. We focus on scenarios mimicking Neandertal admixture, and chose sample sizes to reflect those available from the 1000 Genomes data \citep{the_1000_genomes_project_consortium_global_2015}. For ALD simulations we simulate 176 diploid
+African individuals and 170 diploid non-Africans, corresponding to the
+number of Yoruba (YRI) and Central Europeans from Utah (CEU). 
+Since three high coverage Neandertal sequences are available \citep{prufer_complete_2013,prufer_high-coverage_2017,mafessoni_high_coverage_2020} we  simulate three diploid Neandertal genomes. For each individual we simulate 20
+chromosomes with a length of 150 Mb each. The mutation rate is set for
+all simulations to \(2*10^{-8}\) per base per generation. The
+recombination rate is set to \(1*10^{-8}\) per base pair per generation
+unless specified otherwise. The demographic parameters are based on
+previous studies dating Neandertal admixture
+\citep{sankararaman_date_2012,fu_genome_2014,moorjani_genetic_2016}. In
+the ``simple'' demographic model (S \ref{fig:figS1} A), the effective
+population size is assumed constant at $N_e=10000$ for all populations, the
+split time between modern humans and Neandertals is 10,000 generations
+ago and the split between Africans and non-Africans is 2550
+generations ago. The migration rate from Neandertals into non-Africans
+was set to zero before the split from Africans, to ensure no Neandertal
+ancestry in Africans. Each simulation was repeated 100 times. 
+
+
+\subsubsection{Simulating admixture}\label{Simulating the expanded pulse}
+We specify simulations under the extended pulse model using the mean admixture time $t_m$ and the duration $t_d$. We recover the simple pulse model by setting $t_d=1$. To obtain the migration rates in each generation, we use a discretized version of the migration density (eq \ref{eq:RV_extended_pulse}), which we then scale to the total amount of Neandertal ancestry in to modern humans (here 0.03). 
+
+\subsubsection{Recombination maps}\label{recombination map}
+Uncertainties in the recombination map were previously shown to influence admixture time estimates \citep{sankararaman_date_2012,sankararaman_combined_2016,fu_genome_2014}. To investigate the effect of more realistic
+recombination rate variation, we perform simulations using empirical recombination maps. We use the  African-American-Map \citep{hinch_landscape_2011} for simulations to evaluate the relative importance of simulation and modeling parameters for admixture time estimates. The HapMap phase 3 map \citep{HapMapConsortium_second_2007} is used for evaluating inference using the extended pulse model. For simplicity, we use the same
+recombination map (150 Mb of chromosome 1, excluding the first 10 Mb)
+for all simulated chromosomes. The mean recombination rate is
+calculated from the 150 Mb map (\(1.017 \, \frac{cM}{Mb}\) AAMap and
+\(0.992 \, \frac{cM}{Mb}\) HapMap).
+
+
+
+\subsubsection{Complex demography}\label{inferred demography}
+Demography such as population size changes are known to influence LD
+patterns, and may thus influence admixture time estimates \citep{gravel_population_2012,liang_lengths_2014}. To test the impact of
+demographic history on admixture time estimates, we contrast our standard model with a more 
+realistic and complex demographic history. This model includes substructure in the ancestral human population, and additional gene flow between Africans and non-Africans after the Neandertal admixture (S. \ref{fig:figS1} B). The effective population
+sizes change over time, and are based on estimates from Neandertal and present-day human genomes. In particular, we use the MSMC estimates for YRI and CEU to model Africans and Europeans, respectively 
+\citep{schiffels_inferring_2014}. The Neandertal population size history is modelled after  PSMC estimates \citep{li_inference_2011} from the high-coverage Vindija 33.19 genome
+\citep{mafessoni_high_coverage_2020}. 
+
+The split times between Neandertals and
+modern humans is kept the
+same as in the simple demographic simulations (10,000 generations ago) (S. \ref{fig:figS1} A). We add substructure within Africa starting from 3200 till 2550 generations ago with a per generation migration rate between the two subpopulations of 0.001. The population size of the common ancestor of Neandertals and humans  is set to 18,296 (based on MSMC results). To mimic the age of the samples, Neandertals are sampled 750 generations before the Africans and non-Africans. Finally, we add recent gene flow between African and non-African populations with a total migration rate of 0.01 starting from 200 till 50 generations ago \citep{petr_limits_2019}.
+
+
+
+\subsubsection{Ascertainment scheme}\label{asceteinment scheme}
+For the ALD method, SNPs need to be ascertained to enrich for
+Neandertal informative sites in the test population to remove noise and
+amplify the ALD signal \citep{sankararaman_date_2012}. 
+We evaluate the impact of the ascertainment scheme by contrasting two distinct schemes \citep{sankararaman_date_2012,fu_genome_2014}. The lower-enrichment ascertainment scheme (LES) only considers  sites that are fixed for the ancestral state in
+Africans and polymorphic or fixed derived in Neandertals. The higher-enrichment
+ascertainment scheme (HES) is more restrictive in that it further excludes all sites that are not polymorphic in non-Africans.
+
+\subsubsection{ALD calculation}\label{ALD calculation}
+
+The pairwise weighted LD between the ascertained SNPs a certain genetic
+distance \(d\) apart is calculated using ALDER
+\citep{loh_inferring_2013}. A minimal genetic distance \(d_0\) between
+SNPs is set either to 0.02 cM and 0.05 cM. This minimal distance cutoff
+removes extremely short-range LD, which might also be due to incomplete lineage sorting (ILS). 
+
+\subsection{Evaluation of the simulations}
+
+In this section, we describe how we evaluate the accuracy of our inference. More specifically, we wish to evaluate how different parameters affect the bias of admixture time estimates compared to the simulations. We start with evaluating inference under the simple pulse model when this assumption is violated, i.e. we compare inference of single admixture times from simulations under the simple and extended pulse. In a second analysis, we are interested in the relative importance of other simulation and modeling parameters, which we analyse using a linear model. Finally, we establish the parameter range under which we can deploy the extended pulse model to infer the gene flow duration.
+
+
+\subsection{The effect of continuous admixture on the admixture time estimates}\label{the effect of continuous admixture on the admixture time estimates}
+We first evaluate a scenario where simulations are performed under an extended pulse model, but inference is done assuming a simple pulse. This scenario mimics real-world applications where contact likely persists over multiple generations. 
+
+For this purpose, we compare inference on simulations under the extended pulse model with simulations under the simple pulse model. 
+The total amount of gene flow $m$ from Neandertals into non-Africans
+in the two models is equal, and we match the two models such that the mean admixture times are equal, with the only difference being the duration of gene flow $t_d$. All comparisons are based on the LES ascertainment scheme and $d_0 =  0.05 cM$. 
+
+
+\subsection{Modeling parameter effect sizes}\label{modeling prameter effect sizes}
+
+Next we evaluate the impact of certain simulation and analysis parameters in comparison to the extended versus simple pulse model impact. Therefore, we define a ``standard model'' having a constant recombination rate, simple demography, simple pulse gene flow, LES ascertainment scheme and $d_0 = 0.05$. As these parameters may interact with each other, we perform simulations using all 32 possible parameter combinations.
+
+
+We consider a set of five parameters:
+\begin{itemize} 
+    \item ascertainment scheme: $A_i$ = LES/HES
+    \item minimal genetic distance: $M_i$ = $0.02 cM/ 0.05 cM$
+    \item demography: $D_i$ = simple/complex
+    \item recombination rate: $R_i$ = constant/variable
+    \item admixture model: $G_i$ = pulse/continuous
+\end{itemize}
+
+The genetic distance is assigned using the average recombination rate of the African-American genetic map (assuming a constant recombination rate) for simulations under a variable recombination rate.
+For each of the 32 possible set of parameters, we simulate 100 replicates each and fit ALD decay curves. We excluded a very small number of simulations for which the curve could not be estimated (10 out of 3200). 
+
+
+
+To estimate the effect size of the different parameters (eq.
+\ref{eq:8}) we use a Bayesian Generalized Linear Model (GLM):
+
+\begin{equation}\label{eq:8}
+\begin{split}
+E_i &\sim \text{Normal}(\mu_i,\sigma) \\
+\mu_i &= \alpha + \beta_aA_i + \beta_mM_i + \beta_dD_i + \beta_rR_i + \beta_gG_i \\
+\alpha &\sim \text{Normal}(0,2) \\
+\beta_a,\beta_m,\beta_d,\beta_r,\beta_g &\sim \text{Normal}(0,2) \\
+\sigma &\sim \text{Exponential}(1)
+\end{split}
+\end{equation}
+
+The response variable $E_i$ for this model are the residuals, i.e. the difference between the estimated admixture time $t_{est}$ and simulated admixture time $t_{sim}$ for each simulation:
+$$E_i = \frac{t_{est} - t_{sim}}{\sigma_{t_{est}}}$$, where $\sigma$ is the standard deviation of $t_{est}$ , and the model variables $A, M, D, R$ and $G$ are binary predictors.
+We assume a Normal likelihood because it is the maximum entropy distribution in our case. We obtained the posterior probability using a Hamiltonian Monte Carlo MCMC algorithm, as implemented in STAN \citep{carpenter_stan_2017} using an R interface \citep{stan_development_team_rstan_2018,mcelreath_statistical_2020}. The Markov chains converged to the target distribution (Rhat = 1) and efficiently sampled from the posterior (S. Table \ref{tab:tableS1}).  
+
+\subsubsection{Recombination rate}
+ 
+Since the inference of admixture time depends on measuring the recombination clock, we rely on accurate recombination rate estimates from the admixed population to assign genetic distances between SNPs. Since there are not always fine-scale population specific recombination maps available, we examine three ways of assigning the genetic distance with various degrees of uncertainty. When simulating data under a recombination map, we either: use the mean recombination rate from the
+respective map to calculate the genetic distance from the physical
+distance for each SNP (assuming recombination to be constant with the average recombination rate of the respective map), use another genetic map to assign distances
+(e.g.~AAMap  for the \texttt{msprime} simulation and HapMap  to assign genetic distances, emulating uncertainties in the recombination map) or use the same map for simulation and assigning
+genetic distances (population specific map). 
+
+\subsubsection{Parameter estimation under the extended pulse model}
+We next aim to evaluate when $t_d$, i.e.~the duration of the admixture, can be inferred.  For this purpose, the most important parameter is the time $t_{a}$ since admixture happened, as we expect the inference problem to be easier the more recent admixture happened. Inference is then performed using the standard set of parameters defined above. In addition, we also  evaluate the effect of  recombination rate variation. For this purpose, we simulate under both a constant recombination rate and using the empirical HapMap genetic map. Inference is performed using either  a constant recombination rate, using the HapMap (i.e. exact same map as in the simulations) or the AAMap recombination maps (to mimic uncertainty and population differences in estimated recombination maps). 
+
+\subsection{Estimating admixture time from real data}\label{Estimating admixture time from real data}
+To evaluate when we can reject any admixture durations (including a one generation pulse), we applied the extended pulse model on real data from the 1000 Genomes project \cite{the_1000_genomes_project_consortium_global_2015}.
+
+We used the 1000 Genomes phase 3 data together with the Altai, Vindija and Chagyrskaya high coverage Neandertals, including the 107 unrelated individuals from the YRI as representatives of unadmixed Africans and all CEU as admixed Europeans. We only considered biallelic sites, and determine the ancestral allele using  the Chimpanzee reference genome (panTro4). We used the CEU specific fine-scale recombination map \citep{spence_inference_2019} to convert the physical distance between sites into genetic distance. 
+
+
+\section{Results}\label{results}
+
+\subsection{Introduction to results}\label{introduction to result}
+
+
+
+Having established the expectations of the segment length for gene flow under a simple and extended pulse, we want to test the effects of these models with coalescent simulations using \texttt{msprime} \citep{kelleher_efficient_2016}. First, we compare the inference of simulations under a simple and extended pulse of gene flow while assuming only one generation of gene flow for both scenarios. We contrast this effect with the effect of other model assumptions and analysis parameters. Taking in consideration the most impactive effects, we establish the conditions under which we can use the extended pulse model for gene flow duration inference. Finally, we apply our model the 1000 Genomes data \citep{the_1000_genomes_project_consortium_global_2015}.
+
+
+
+\subsubsection{Results for model comparisons}
+
+```{r message=FALSE, echo=FALSE,warning=FALSE}
+
+# New Data
+Figure_1_A_Data <- Results_Table("Fig_1_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_1_A_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Figure_1_A_Data <- Figure_1_A_Data[Figure_1_A_Data$error=="no_error",]
+Figure_1_B_Data <- Results_Table("Fig_1_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_1_B_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+
+
+Fig_A_1 <- Get_Data_Table(Figure_1_A_Data)
+Fig_A_1$Var1 <- as.numeric(as.character(Fig_A_1$Var1))
+Fig_A_1$Var3 <- round(as.numeric(as.character(Fig_A_1$Var3)))
+Fig_A_1_Means <- aggregate(Fig_A_1[,c(1,3)],list(Fig_A_1$Var2), mean)
+Fig_A_1_Means_diff <- data.frame(sqrt((Fig_A_1_Means$Var1-Fig_A_1_Means$Var3)^2)/Fig_A_1_Means$Var3)
+Fig_A_1_Means_diff_pulse <- round(range(Fig_A_1_Means_diff[1:5,]*100))
+Fig_A_1_Means_diff_continuous <- round(range(Fig_A_1_Means_diff[6:10,]*100))
+
+Fig_B_1 <- Get_Data_Table(Figure_1_B_Data)
+Fig_B_1$Var7 <- rep('xx',length(Fig_B_1$Var1))
+Fig_B_1_Means <- data.frame(est=rep(as.numeric(as.character(Fig_B_1$Var1)),Fig_B_1$Freq),
+                               duration=rep(as.numeric(as.character(Fig_B_1$Var6)),Fig_B_1$Freq))
+Fig_1_B_Means_per_duration <- Fig_B_1_Means %>%
+    group_by(duration) %>% 
+    summarise_each(funs(mean))
+
+Fig_1_B_Means_per_duration$relative_dif <- abs(1-(1500/Fig_1_B_Means_per_duration$est))
+
+```
+
+We first present the result of inference assuming a simple pulse model on simulations under the extended pulse model (Figure \ref{fig:fig2}).
+In Figure \ref{fig:fig2}A, we plot results for both the simple and extended pulse model, for $t_m$ between 250 and 2000 generations, and $t_d = \frac{t_m}{2}$  (i.e. if $t_d= 500$ generations, then $t_d = 250$ and most gene flow occurs between  375 and 625
+generations ago). Even for these long gene flows, the mean gene flow time is generally well-estimated, with a deviation of `r Fig_A_1_Means_diff_pulse[1]`\% to `r Fig_A_1_Means_diff_pulse[1]`\% for the simple pulse and `r Fig_A_1_Means_diff_continuous[1]`\% to `r Fig_A_1_Means_diff_continuous[1]`\% for
+the extended pulse models, respectively.
+
+To further investigate the effect of the duration of gene flow on mean
+admixture time estimates, we compare scenarios where $t_m$ is fixed at 1500, but where $t_d$ varies between one (simple pulse model) and 1,500 generations (Figure \ref{fig:fig2}B). Here, we find that the simple pulse model leads to a slight overestimate of $t_m$, and that longer pulses result in more recent admixture time estimates. However, even  for very-long gene flow of $t_d=1,500$ the relative deviation is less than `r round(max(Fig_1_B_Means_per_duration$relative_dif),1)*100`\%. Thus, we find that if we are interested in $t_m$, this parameter is generally well-estimated even under scenarios of very long gene flow.
+
+
+```{r fig2,message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:fig2} A) Comparison of mean admixture time estimates between simple and extended pulse gene flow for different admixture times. The duration of continuous gene flow $t_d$ corresponds to 50% of the mean admixture time $t_m$, black line indicates true mean admixture time. B) Comparison of mean admixture time estimates for simulations with a mean time of admixture of 1500 generations ago, at a varying durations of gene flow. Boxplot created from 100 simulation replicates, respectively."}
+
+######################## GG PLotting ###########################
+
+## ggplot Figure 1 A
+Plot_Fig_1_A <- function(Data,Colour_P){
+  Px <-  ggplot(Data,aes(x=Var4,y=as.numeric(as.character(Var1)),colour=factor(Var4)))+
+    geom_point(aes(size = Freq),show.legend = F)+
+    geom_boxplot()+
+    facet_grid(~as.factor(Var3),switch = "x")+
+    geom_hline( aes(yintercept = as.numeric(as.character(Data$Var3)) ))+
+    labs(x = "True Admixture Time")+
+    labs(y = "Estimated Admixture Time")+
+    theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    coord_cartesian(ylim = c(0,2500), expand = 0)+
+    scale_color_manual("Gene Flow Model",
+                       values = c(Colour_P[1],Colour_P[6]),
+                       labels = c("Pulse","Continuous"))
+  return(Px)
+  
+}
+
+
+### Figure 1 ggplot ###
+Plot_Fig_1_B <- function(Data,Colour_P){
+  Px <-  ggplot(Data,aes(x=Var7,y=as.numeric(as.character(Var1)),colour=factor(Var6)))+
+    geom_point(aes(size = Freq),show.legend = F)+
+    geom_boxplot()+
+    facet_grid(~as.factor(Var6),switch = "x")+
+    geom_hline( aes(yintercept = 1500 ))+
+    theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    labs(x = "Admixture Duration")+
+    labs(y = "Estimated Admixture Time")+
+    scale_color_manual("Admixture Duration",
+                       values = Colour_P  
+                       
+    )
+  return(Px)
+  
+}
+
+### Plot in one window
+
+P1_1 <- Plot_Fig_1_A(Fig_A_1,Colour_P = cbPalette_viridis)
+P1_2 <- Plot_Fig_1_B(Fig_B_1,Colour_P = cbPalette_viridis)
+
+ggarrange(P1_1,P1_2,
+          labels = c("A","B"),
+          ncol = 2, nrow = 2,common.legend = F,legend = 'bottom', align = "h")
+```
+
+
+
+\subsection{Comparing effect sizes for technical covariates}\label{comparing effect sizes}
+
+
+```{r message=FALSE, echo=FALSE,warning=FALSE, cache=T}
+
+##### GLM for the bais on the admixture dates #####
+
+
+### Read in data ###
+
+Simple_D_Sim_1 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Simple_D_Sim_1$Gamma_mean <- Get_gamma_mean(Simple_D_Sim_1$GF_Start,Simple_D_Sim_1$GF_Stop)
+Simple_D_Sim_1$Demography <- "0_Simple"
+Simple_D_Sim_1$Recomb.rate <- "0_constant"
+Simple_D_Sim_1$Sim_id <- ifelse(Simple_D_Sim_1$Ascertained==0,"Demo_simple_Recomb_const_LES_min_d_2","Demo_simple_Recomb_const_HES_min_d_2")
+
+Simple_D_Sim_2 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_A-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Simple_D_Sim_2$Gamma_mean <- Get_gamma_mean(Simple_D_Sim_2$GF_Start,Simple_D_Sim_2$GF_Stop)
+Simple_D_Sim_2$Demography <- "0_Simple"
+Simple_D_Sim_2$Recomb.rate <- "0_constant"
+Simple_D_Sim_2$Sim_id <- ifelse(Simple_D_Sim_2$Ascertained==0,"Demo_simple_Recomb_const_LES_min_d_5","Demo_simple_Recomb_const_HES_min_d_5")
+
+Inferred_D_Sim_1 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Inferred_D_Sim_1$Gamma_mean <- Get_gamma_mean(Inferred_D_Sim_1$GF_Start,Inferred_D_Sim_1$GF_Stop)
+Inferred_D_Sim_1$Demography <- "Complex"
+Inferred_D_Sim_1$Recomb.rate <- "0_constant"
+Inferred_D_Sim_1$Sim_id <- ifelse(Inferred_D_Sim_1$Ascertained==0,"Demo_complex_Recomb_const_LES_min_d_2","Demo_complex_Recomb_const_HES_min_d_2")
+
+Inferred_D_Sim_2 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_B_complex-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Inferred_D_Sim_2$Gamma_mean <- Get_gamma_mean(Inferred_D_Sim_2$GF_Start,Inferred_D_Sim_2$GF_Stop)
+Inferred_D_Sim_2$Demography <- "Complex"
+Inferred_D_Sim_2$Recomb.rate <- "0_constant"
+Inferred_D_Sim_2$Sim_id <- ifelse(Inferred_D_Sim_2$Ascertained==0,"Demo_complex_Recomb_const_LES_min_d_5","Demo_complex_Recomb_const_HES_min_d_5")
+
+Recom_Sim_1_1 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Recom_Sim_1_2 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-1.txt")
+Recom_Sim_1 <- rbind(Recom_Sim_1_1,Recom_Sim_1_2)
+rm(Recom_Sim_1_1,Recom_Sim_1_2)
+Recom_Sim_1$Gamma_mean <- round(Recom_Sim_1$mean.t.GF)
+Recom_Sim_1$Demography <- "0_Simple"
+Recom_Sim_1$Recomb.rate <- "variable"
+Recom_Sim_1$m <- Recom_Sim_1$m
+Recom_Sim_1$Sim_id <- ifelse(Recom_Sim_1$Ascertained==0,"Demo_simple_Recomb_varying_LES_min_d_2","Demo_simple_Recomb_varying_HES_min_d_2")
+
+Recom_Sim_2_1 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Recom_Sim_2_2 <- Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_C_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-1.txt")
+Recom_Sim_2 <- rbind(Recom_Sim_2_1,Recom_Sim_2_2)
+rm(Recom_Sim_2_1,Recom_Sim_2_2)
+Recom_Sim_2$Gamma_mean <- round(Recom_Sim_2$mean.t.GF)
+Recom_Sim_2$Demography <- "0_Simple"
+Recom_Sim_2$Recomb.rate <- "variable"
+Recom_Sim_2$m <- Recom_Sim_2$m
+Recom_Sim_2$Sim_id <- ifelse(Recom_Sim_2$Ascertained==0,"Demo_simple_Recomb_varying_LES_min_d_5","Demo_simple_Recomb_varying_HES_min_d_5")
+
+Recom_Sim_and_Inf_1_1 <-  Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-0.txt")
+Recom_Sim_and_Inf_1_2 <-  Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.02-ascertainment-1.txt ")
+Recom_Sim_and_Inf_1 <- rbind(Recom_Sim_and_Inf_1_1,Recom_Sim_and_Inf_1_2)
+rm(Recom_Sim_and_Inf_1_1,Recom_Sim_and_Inf_1_2)
+Recom_Sim_and_Inf_1$Gamma_mean <- round(Recom_Sim_and_Inf_1$mean.t.GF)
+Recom_Sim_and_Inf_1$Demography <- "Inferred"
+Recom_Sim_and_Inf_1$Recomb.rate <- "variable"
+Recom_Sim_and_Inf_1$m <- Recom_Sim_and_Inf_1$m
+Recom_Sim_and_Inf_1$Sim_id <- ifelse(Recom_Sim_and_Inf_1$Ascertained==0,"Demo_complex_Recomb_varying_LES_min_d_2","Demo_complex_Recomb_varying_HES_min_d_2")
+
+Recom_Sim_and_Inf_2_1 <-  Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
+Recom_Sim_and_Inf_2_2 <-  Results_Table("../Simulations/Fig_2_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_2_D_Complex_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertai")
+Recom_Sim_and_Inf_2 <- rbind(Recom_Sim_and_Inf_2_1,Recom_Sim_and_Inf_2_2)
+rm(Recom_Sim_and_Inf_2_1,Recom_Sim_and_Inf_2_2)
+Recom_Sim_and_Inf_2$Gamma_mean <- round(Recom_Sim_and_Inf_2$mean.t.GF)
+Recom_Sim_and_Inf_2$Demography <- "Complex"
+Recom_Sim_and_Inf_2$Recomb.rate <- "variable"
+Recom_Sim_and_Inf_2$m <- Recom_Sim_and_Inf_2$m
+Recom_Sim_and_Inf_2$Sim_id <- ifelse(Recom_Sim_and_Inf_2$Ascertained==0,"Demo_complex_Recomb_varying_LES_min_d_5","Demo_complex_Recomb_varying_HES_min_d_5")
+
+# first build model only with Simple and Inferred demography
+#xdata <- rbind(Simple_D_Sim_1,Simple_D_Sim_2,Inferred_D_Sim_1,Inferred_D_Sim_2)
+
+######## model with response beeing the difference between the estimated Admixture time and the true one #####
+# full model with Ascertainement, min dist, Demographi and recombination rate as predictore but no interactions
+xdata.M.3 <- rbind(Simple_D_Sim_1,Simple_D_Sim_2,Recom_Sim_1,Recom_Sim_2,Inferred_D_Sim_1,Inferred_D_Sim_2,Recom_Sim_and_Inf_1,Recom_Sim_and_Inf_2)
+rm(Simple_D_Sim_1,Simple_D_Sim_2,Recom_Sim_1,Recom_Sim_2,Inferred_D_Sim_1,Inferred_D_Sim_2,Recom_Sim_and_Inf_1,Recom_Sim_and_Inf_2)
+xdata.M.3$TID <- ifelse(xdata.M.3$GF=='0_Pulse',paste(xdata.M.3$Sim_id,'GF_model_Pulse',sep = '_'),paste(xdata.M.3$Sim_id,'GF_model_Continuous',sep = '_')) 
+
+
+#xdata.M.3$Diff <- xdata.M.3$m - xdata.M.3$mean.t.GF
+xdata.M.3$Diff <- xdata.M.3$m - xdata.M.3$Gamma_mean
+# remove all estimates where nls reported an error
+n_error=xdata.M.3[xdata.M.3$error=="nls_error",]
+xdata.M.3_no_error <- xdata.M.3[xdata.M.3$error=="no_error",]
+xdata.M.3_no_error$Sim_id_int <- as.integer(as.factor(xdata.M.3_no_error$TID))
+
+xdata.M.3_no_error$Diff_s <- (xdata.M.3_no_error$m - xdata.M.3_no_error$Gamma_mean)/sd(xdata.M.3_no_error$m)
+
+
+
+Bdata_index_s_2 <- list(
+  E = (xdata.M.3_no_error$Diff_s),
+  Id = xdata.M.3_no_error$Sim_id_int,
+  A = ifelse(xdata.M.3_no_error$Ascertained==0,0,1),
+  MD = ifelse(xdata.M.3_no_error$min_dist=="0.05",0,1),
+  D = ifelse(xdata.M.3_no_error$Demography=="0_Simple",0,1),
+  R = ifelse(xdata.M.3_no_error$Recomb.rate=="0_constant",0,1),
+  GF = ifelse(xdata.M.3_no_error$GF=="0_Pulse",0,1)
+)
+
+
+
+Effect_size_fixed_s_2 <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF ,ggarrange(Im_Simple_Demo,Im_Complex_Demo,
+          labels = c("A","B"),
+          ncol = 2, nrow = 1)
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)
+  ), data=Bdata_index_s_2, chains=4 , cores=4 , log_lik = T)
+
+```
+
+```{r message=FALSE, echo=FALSE,warning=FALSE, cache=T}
+B_model_result <- precis(Effect_size_fixed_s_2,prob = 0.95)
+
+
+post_effect_size_model <- extract.samples(Effect_size_fixed_s_2,n = 1e5)
+Post_effect_size_est=data.frame(mean=c(
+mean(post_effect_size_model$a),
+mean(post_effect_size_model$a + post_effect_size_model$bG),
+mean(post_effect_size_model$a + post_effect_size_model$bR),
+mean(post_effect_size_model$a + post_effect_size_model$bD),
+mean(post_effect_size_model$a + post_effect_size_model$bm),
+mean(post_effect_size_model$a + post_effect_size_model$bA)),
+HPDI_lower=c(
+HPDI(post_effect_size_model$a,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[1],
+HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[1]),
+HPDI_upper=c(
+HPDI(post_effect_size_model$a,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[2],
+HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2])
+#,row.names = c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+)
+```
+
+As the effect of ongoing gene flow is relatively minor, we next evaluate its relative importance for inference compared to other common assumptions made in the inference of admixture times. 
+
+Therefore, we contrast the effect of extended gene flow on admixture time inference with  the effects of a complex demographic history and complex recombination map, as well as the impact of the ascertainment scheme and $d_0$ in the ALD estimation, using a simple and complex setting for each of these parameters. 
+
+In Figure 3, we present the effect sizes of these four predictors on the admixture time inference. These effect sizes are estimated using a GLM on simulations under all possible parameter combinations  (S. \ref{fig:figS2}, Supplement Table \ref{tab:tableS1}).
+
+As a baseline, for comparison, we define a standard model as one using the LES ascertainment, \(d_{0} = 0.05 cM\), simple demography and constant recombination map. 
+
+As shown in the previous section, under the standard model admixture times are well-estimated, with a mean standardized difference of  `r round(Post_effect_size_est$mean[1],2)` (`r round(Post_effect_size_est$HPDI_lower[1],2)` - `r round(Post_effect_size_est$HPDI_upper[1],2)` $C.I._{95\%}$) from the true
+admixture time.
+
+We find that the  inclusion of a variable recombination map lead to a large underestimate of `r round(Post_effect_size_est$mean[3],2)` `r round(Post_effect_size_est$HPDI_lower[3],2)` -- `r round(Post_effect_size_est$HPDI_upper[3],2)` $C.I._{95\%}$. In contrast, all other covariates had relatively moderate effect sizes. The extended pulse   (`r round(Post_effect_size_est$mean[2],2)` `r round(Post_effect_size_est$HPDI_lower[2],2)` -- `r round(Post_effect_size_est$HPDI_upper[2],2)`) is in the range of biases arising from the ascertainment scheme (`r round(Post_effect_size_est$mean[6],2)` `r round(Post_effect_size_est$HPDI_lower[6],2)` -- `r round(Post_effect_size_est$HPDI_upper[6],2)`), a more complex demography ((`r round(Post_effect_size_est$mean[4],2)` `r round(Post_effect_size_est$HPDI_lower[4],2)` -- `r round(Post_effect_size_est$HPDI_upper[4],2)`) and only slightly more then caused by a different $d_0$ (`r round(Post_effect_size_est$mean[5],2)` `r round(Post_effect_size_est$HPDI_lower[5],2)` -- `r round(Post_effect_size_est$HPDI_upper[5],2)`) (S.\ref{fig:figS2}).
+
+Overall the bias introduced by the ascertainment, minimal distance
+cutoff, demography and admixture model are  around +/-0.25 standard deviations or less. The major uncertainties in the admixture time
+estimate arise from assuming a constant recombination rate. The
+admixture time estimates for a simple or extended admixture pulse are similarly effected by the other modeling parameters.
+
+
+```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:fig3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+Post_effect_size_est_table <- Post_effect_size_est
+row.names(Post_effect_size_est_table) <- c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+
+
+ggplot(Post_effect_size_est,aes(x=row.names(Post_effect_size_est),y=as.numeric(as.character(mean))))+
+      geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F,size=2)+
+    geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(row.names(Post_effect_size_est))),col="black",width=0.2)+
+  geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+  labs(x = "")+
+  labs(y = "Standardized dif. est./sim. time")+
+  theme(plot.title = element_text(hjust = 0.5,size = 12))+
+  #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
+  scale_x_discrete(labels= c("Standard Model","Extended GF","Variying recombination","Complex Demography","d0=0.02 cM","HES")
+                  ,guide = guide_axis(angle = 90))+
+  scale_color_manual("Gene Flow Model",
+                     values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
+                     label=c("Pulse","Continuous"))
+
+```
+
+\subsection{Parameter estimation under the extended pulse model}\label{estimating the Lomax-parameters under different conditions}
+In Figure \ref{fig:fig4}, we show the accuracy of $t_d$ and $t_m$ estimates in two sets of simulations. In panels A and B we increase both $t_m$ and $t_d$ at a similar rate, such that gene flow ends 50 generations before sampling ($t_{end}=50$, where $t_{end}= t_m - \frac{t_d}{2}$). In panels C and D $t_d$ is kept fixed at 800, but we increase $t_m$. We further vary recombination rate settings as i) inference and simulation under constant recombination rate, ii) simulation using HapMap, no correction, iii) simulation using HapMap, correction using AAMap, iv) inference and simulation using HapMap. 
+
+Figure \ref{fig:fig4}A and C show the mean
+time estimates received from the simple and extended pulse model fit. Figure \ref{fig:fig4}B and D the corresponding admixture duration estimate. For simulations under a
+constant recombination the mean time can be estimated confidently for different durations and different sampling times after the end of the admixture event in both cases. 
+
+Under constant recombination settings, we find that parameters under the extended pulse are well-estimated in all scenarios, although we observe a small overestimate of both $t_m$ and $t_d$, for very long admixture durations in the very distant past. In contrast, inference under the simple pulse model results in a slight underestimate (Figure \ref{fig:fig2}, \ref{fig:fig4}).
+
+We also find that the simple pulse model is fairly robust to changes in recombination settings, both using the ``correct'' and a empirically similar recombination map. Only when we do not correct for recombination rate variation, we observe a substantial underestimate by almost a factor of two for more distant admixture (Figure \ref{fig:fig4}A \& C, right panels). 
+
+In contrast, estimates under the extended pulse model are substantially more spread out under variable recombination maps, but we do not observer the systematic bias towards more recent admxiture times as in the simple-pulse model. In contrast, the uncorrected scenario results in extremely poor estimates with very high variation, and is clearly unsuitable for this purpose (Figure \ref{fig:fig4}A \& C, left panels)
+
+We also find that estimates of $t_d$ differ substantially between recombination rate settings. Under constant rates, $t_d$ is well-estimated in all scenarios, and if the recombination rate is known, we get reasonably accurate estimates, at least if admixture is not very old. However, under the scenarios where recombination rates differ between simulation and inference, results become more erratic; For the cases of $t_d=200$ and $t_d=400$, many simulations infer an admixture time of near zero; in contrast, very old admixture results in a large overestimate.
+
+
+
+```{r eval=T,message=FALSE, echo=FALSE,warning=FALSE}
+#### New Figure for Paper using recent sampling (50 gen): constant RR, RM no correction, RM diff RM correction, RM correction same RM ####
+
+cbPalette_viridis <- viridis(6,option = "D")
+
+Filter_Result_Table <- function(Result.Table){
+  Result.Table=read.table(Result.Table,header=F,sep = " ")
+  Result.names <- c('A.exp', 's.exp', 'c.exp', 'RSS_Expo','AIC_Expo', 'A.lomax', 's.lomax', 'w.lomax','c.lomax', 'RSS_Lomax','AIC_Lomax', 'F_Test','Scenario.name','GF.Start','GF.End','AS','minDist','GF.Model')
+  colnames(Result.Table) <- Result.names
+  #Result.Table <- Result.Table[(1/Result.Table$s.exp)>0,]
+  #Result.Table <- Result.Table[(1/Result.Table$s.exp)<5000,]
+  #Result.Table <- Result.Table[Result.Table$RSS_Lomax<1e-2,]
+  return(Result.Table)
+}
+
+#### True values
+True_params <- function(Result.Table){
+  True_params_Calc <- function(True_GF_length,True_mean_GF){
+    EX= True_mean_GF
+    GF_Len <-True_GF_length
+    VarX= ((GF_Len)/4)**2
+    b= EX/VarX
+    a=EX*b
+    a=a
+    True_W=1/a
+    True_S=b/(1/True_W)
+    xx=c(True_W,True_S)
+    return(xx)
+  }
+  True.params <- c()
+  for (i in 1:length(Result.Table$F_Test)) {
+    xx=True_params_Calc(Result.Table$True_GF_length[i],Result.Table$True_mean_GF[i])
+    True.params <- rbind(True.params,xx)
+  }
+  True.params <- as.data.frame(True.params)
+  return(True.params)
+}
+
+Result.Table.fn <- function(Result.Table.path,Sampling.time.from.GF.End,name){
+  Result.Table <- Filter_Result_Table(Result.Table.path)
+  Result.Table$Name <- name
+  Result.Table$Sample_Time <- Sampling.time.from.GF.End
+  Result.Table$True_GF_length <- Result.Table$GF.End-Result.Table$GF.Start
+  Result.Table$True_mean_GF <- ((Result.Table$GF.End+Result.Table$GF.Start)/2)-(Result.Table$GF.Start-Result.Table$Sample_Time)
+  Result.Table$mean_GF_exp <- 1/Result.Table$s.exp
+  Result.Table$mean_GF_lomax_s <- 1/Result.Table$s.lomax
+  Result.Table.comparison <- True_params(Result.Table)
+  Result.Table$True_W <- Result.Table.comparison$V1
+  Result.Table$True_S <- Result.Table.comparison$V2
+  #Result.Table.comparison$length_GF <- (sqrt(Result.Table$mean_GF_lomax_s/(((1/Result.Table$w.lomax))*Result.Table$s.lomax)))*4
+  Result.Table.comparison$length_GF <- sqrt((1/Result.Table$s.lomax)^2*Result.Table$w.lomax)*4
+  Result.Table$length_GF <- Result.Table.comparison$length_GF
+  
+  return(Result.Table)
+}
+
+Plot_all_together_samples_50_gen_flipped <- function(ggdata,cbPalette_viridis){
+  ggdata$Model <- factor(ggdata$Model,
+                          levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
+  ggdata$Name <- factor(ggdata$Name,
+                        levels = c("Recent_50_HapMap_HapMap_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_no_correction","Recent_50_constant"),ordered = TRUE)
+  ggplot(data = ggdata, aes(y=factor(Name),x=as.numeric(as.character(value)),colour=factor(Name))) +
+    geom_boxplot(show.legend = F)+ 
+    #facet_grid(as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = True_mean_GF ))+
+    labs(x = "Estimated Admixture Mean Time")+
+    #labs(y = "Simulated Admixture Duration \n Simulated Admixture Mean")+
+    labs(y = "Sampling Time \n Simulated Admixture Duration \n Simulated Admixture Mean")+
+    theme(
+      axis.text.y=element_blank(),
+      axis.ticks.y=element_blank())+
+    coord_cartesian(xlim = c(0,1700), expand = 0)+
+    scale_x_continuous(breaks = seq(0, 1600, by = 500))+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("HapMap HapMap corrected","HapMap AAMap corrected","HapMap not corrected","Constant Recombination"),
+                       guide = guide_legend(reverse=TRUE))
+  
+}
+
+
+Plot_sampling_50_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis){
+  ggdata$Name <- factor(ggdata$Name,
+                        levels = c("Recent_50_HapMap_HapMap_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_no_correction","Recent_50_constant"),ordered = TRUE)
+  ggplot(ggdata,aes(y=variable,x=as.numeric(as.character(value)),colour=factor(Name)))+
+    geom_boxplot(show.legend = F)+
+    #facet_grid(as.factor(True_GF_length)+as.factor(True_mean_GF) ~ Model, switch = "y")+
+    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = True_GF_length ))+
+    #ggtitle(Ptitle) +
+    labs(y = "")+
+    labs(x = "Estimated Admixture Duration")+
+    theme(
+      axis.text.y=element_blank(),
+      axis.ticks.y=element_blank())+
+    coord_cartesian(xlim = c(0,4100), expand = 0)+
+    scale_x_continuous(breaks = seq(0, 4100, by = 500))+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("HapMap HapMap corrected","HapMap AAMap corrected","HapMap not corrected","Constant Recombination"),
+                       guide = guide_legend(reverse=TRUE))
+}
+
+Plot_all_together_sampling_varying_gen_t_GF <- function(ggdata,cbPalette_viridis){
+    ggdata$Model <- factor(ggdata$Model,
+                          levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
+  ggdata$Name <- factor(ggdata$Name,
+                        levels = c("Recent_50_HapMap_HapMap_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_no_correction","Recent_50_constant"),ordered = TRUE)
+  ggplot(data = ggdata, aes(y=factor(Name),x=as.numeric(as.character(value)),colour=factor(Name))) +
+    geom_boxplot(show.legend = T)+ 
+    #facet_grid(as.factor(Sample_Time)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = True_mean_GF ))+
+    #ggtitle(Ptitle) +
+    labs(x = "Estimated Admixture Mean Time")+
+    #labs(y = "Generations Sampled After End of Admixture \n Simulated Admixture Mean")+
+    labs(y = "Sampling Time \n Simulated Admixture Duration \n Simulated Admixture Mean")+
+    theme(
+      axis.text.y=element_blank(),
+      axis.ticks.y=element_blank())+
+    coord_cartesian(xlim = c(0,1700), expand = 0)+
+    scale_x_continuous(breaks = seq(0, 1600, by = 500))+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("HapMap HapMap corrected","HapMap AAMap corrected","HapMap not corrected","Constant Recombination"),
+                       guide = guide_legend(reverse=TRUE))
+  
+}
+
+Plot_sampling_varying_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis){
+  ggdata$Name <- factor(ggdata$Name,
+                        levels = c("Recent_50_HapMap_HapMap_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_no_correction","Recent_50_constant"),ordered = TRUE)
+  ggplot(ggdata,aes(y=variable,x=as.numeric(as.character(value)),colour=factor(Name)))+
+    geom_boxplot(show.legend = F)+
+    #facet_grid(as.factor(True_GF_length)+as.factor(Sample_Time) ~ Model, switch = "y")+
+    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = True_GF_length ))+
+    #ggtitle(Ptitle) +
+    labs(y = "")+
+    labs(x = "Estimated Admixture Duration")+
+    theme(
+      axis.text.y=element_blank(),
+      axis.ticks.y=element_blank())+
+    coord_cartesian(xlim = c(0,4100), expand = 0)+
+    scale_x_continuous(breaks = seq(0, 4100, by = 500))+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("HapMap HapMap corrected","HapMap AAMap corrected","HapMap not corrected","Constant Recombination"),
+                       guide = guide_legend(reverse=TRUE))
+}
+
+Result.Table.path_Recent_50 <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_no_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_AAMap_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+
+Result.Table.path_Recent_Varying <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_no_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+
+
+Plot.data_50<-rbind(
+  Recent_50_constant<- Result.Table.fn(Result.Table.path_Recent_50,50,'Recent_50_constant'),
+  Recent_50_HapMap_no_correction <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_no_correction,50,'Recent_50_HapMap_no_correction'),
+  Recent_50_HapMap_AAMap_correction <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_AAMap_correction,50,'Recent_50_HapMap_AAMap_correction'),
+  Recent_50_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction,50,'Recent_50_HapMap_HapMap_correction')
+)
+
+ggdata_t.GF_50_mean_GF_exp <- melt(Plot.data_50,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_t.GF_50_mean_GF_lomax <- melt(Plot.data_50,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_l.GF_50 <- melt(Plot.data_50,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+
+
+
+Plot.data_varying<-rbind(
+  Recent_varying_constant<- Result.Table.fn(Result.Table.path_Recent_Varying,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_constant'),
+  Recent_varying_HapMap_no_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_no_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_no_correction'),
+  Recent_varying_HapMap_AAMap_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_AAMap_correction'),
+  Recent_varying_HapMap_HapMap_correction <- Result.Table.fn(Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction,c(rep(50,100),rep(100,100),rep(200,100),rep(400,100),rep(800,100),rep(1000,100)),'Recent_50_HapMap_HapMap_correction')
+)
+
+ggdata_t.GF_varying_mean_GF_exp <- melt(Plot.data_varying,measure.vars =  c('mean_GF_exp'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_t.GF_varying_mean_GF_lomax <- melt(Plot.data_varying,measure.vars =  c('mean_GF_lomax_s'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_l.GF_varying <- melt(Plot.data_varying,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+
+
+ggdata_reodering_fn <- function(ggdata){
+  ggdata$Name <- factor(ggdata$Name,
+    levels = c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction"),ordered = TRUE)
+  return(ggdata)
+}
+
+# Plot 50 gen from Admixture
+ggdata_t.GF_50_mean_GF_exp$Model <- "Simple Pulse"
+ggdata_t.GF_50_mean_GF_lomax$Model <- "Extended Pulse"
+ggdata_all_together_samples_50_t_m <- rbind(ggdata_reodering_fn(ggdata_t.GF_50_mean_GF_exp),ggdata_reodering_fn(ggdata_t.GF_50_mean_GF_lomax))
+ggdata_all_together_samples_50_t_m$Sample_Time <- 50
+ggdata_sampling_50_gen_GF_Length <- ggdata_reodering_fn(ggdata_l.GF_50)
+ggdata_sampling_50_gen_GF_Length$Model <- "Extended Pulse"
+ggdata_sampling_50_gen_GF_Length$Sample_Time <- 50
+
+Mean_GF_F_50 <- Plot_all_together_samples_50_gen_flipped(ggdata_all_together_samples_50_t_m,cbPalette_viridis)
+Duration_GF_F_50 <- Plot_sampling_50_gen_GF_Length_flipped(ggdata_sampling_50_gen_GF_Length,cbPalette_viridis)
+Constant_sampling_time <- ggarrange(Mean_GF_F_50,Duration_GF_F_50,labels = c("A","B"),
+          ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
+
+# Plot varying gen from Admixture
+ggdata_t.GF_varying_mean_GF_exp $Model <- "Simple Pulse"
+ggdata_t.GF_varying_mean_GF_lomax$Model <- "Extended Pulse"
+ggdata_all_together_samples_varying_t_m <- rbind(ggdata_reodering_fn(ggdata_t.GF_varying_mean_GF_exp ),ggdata_reodering_fn(ggdata_t.GF_varying_mean_GF_lomax))
+
+ggdata_sampling_varying_gen_GF_Length <- ggdata_reodering_fn(ggdata_l.GF_varying)
+ggdata_sampling_varying_gen_GF_Length$Model <- "Extended Pulse"
+
+Mean_GF_F_varying <- Plot_all_together_sampling_varying_gen_t_GF(ggdata_all_together_samples_varying_t_m,cbPalette_viridis)
+Duration_GF_F_varying <- Plot_sampling_varying_gen_GF_Length_flipped(ggdata_sampling_varying_gen_GF_Length,cbPalette_viridis)
+Varying_sampling_time <- ggarrange(Mean_GF_F_varying,Duration_GF_F_varying,labels = c("C","D"),
+          ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
+
+```
+
+``` {r fig4, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:fig4} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times after the end of 800 generations of gene flow. D) Duration estimate of the same scenario. All scenarious are simulated either under a constant recombination rate or an empirical (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate, using a different map, using the same map."}
+
+Extended_Pulse_Evaluation <- ggarrange(Constant_sampling_time,Varying_sampling_time,nrow = 2,common.legend = T,legend = 'bottom')
+
+Extended_Pulse_Evaluation
+
+```
+
+
+\subsection{Application to Neandertal data}
+
+In the previous section, we have shown using simulations that it might be difficult to distinguish admixture scenarios of various durations particularly if it happened a long time ago. To evaluate that this is also true for real data, we aim to estimate the Neandretal admixture pulse from the 1000 genomes data, by fitting pulses of durations ranging from one generation up to 2,500 generations to the ALD decay curve (Figure \ref{fig:fig5}, S. Table \ref{tab:tableS2}). Plotting these best-fit ALD curves (Figure \ref{fig:fig5}A) on a y-axis in natural scale shows the extremely slight difference predicted under these drastically different gene flow scenarios. The difference between scenarios becomes more apparent if we log-transform the y-axis (Figure \ref{fig:fig5}B), where we see that ongoing gene flow results in a heavier tail in the ALD distributions. However, these LD values are very close to zero, and are thus only very noisily estimated. Therefore, we find that all scenarios are compatible with the observed data, and that there is little power to differentiate different cases.
+
+```{r message=FALSE, echo=FALSE,warning=FALSE}
+input_pol_corrected <- "Real_Data_Analysis/Raw_ALDER_output-ALL_chr_hcNea_YRI_CEU_1k_G_polarized_LES_ascertained_corrected_rr_CEU_specific_map.txt"
+
+lval <- 0.05	# lower value of dist to use
+hval <- 3		# higher value of dist to use 
+log <- F
+affine <- T
+
+
+Fit_Exp_fn <- function(Data,affine){
+  xx=Data
+  
+  dist=xx$dist
+  wcorr=xx$wcorr
+  #Fitting an Exponential
+  
+  if(affine){
+    fm1_exp <- function(x) x[1]*exp(-(dist/100)/x[2])+x[3]
+    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
+    fm3_exp <- DEoptim(fm2_exp, lower=c(1e-6,0,-1), upper=c(1, 1,1), control=list(trace=FALSE))
+    
+    par1_exp <- fm3_exp$optim$bestmem
+    # parameters for y ~ Ae-mt
+    names(par1_exp) <- c("A", "s","c")
+    A_exp_est <- as.numeric((par1_exp[1]))
+    Lambda_est <-as.numeric((par1_exp[2]))  	# rate of decay of exponential
+    C_exp_est <- as.numeric((par1_exp[3]))
+    
+    fit1_exp <- nls(wcorr ~ (A*exp(-(dist/100)/s)+c), start=par1_exp, control=list(maxiter=10000, warnOnly=TRUE)) 
+  }
+  return(fit1_exp)
+}
+
+
+
+Fit_Lomax_fn <- function(Data,fixed_w){
+  xx=Data
+  
+  dist=xx$dist
+  wcorr=xx$wcorr
+
+  fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + (x[1]*(dist/100) /  x[2])))^(1/x[1])
+  fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
+  fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(fixed_w,0,0,0), upper=c(fixed_w,1,1,1), control=list(trace=FALSE))
+  
+  par1_lomax <- fm3_DEoptim$optim$bestmem
+  par1_lomax <- c(par1_lomax[2],par1_lomax[3],par1_lomax[4])
+  names(par1_lomax) <- c("s","A","c")
+    fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((fixed_w*(dist/100)) / s)))^(1/fixed_w), start=par1_lomax, control=list(maxiter=10000, warnOnly=TRUE,minFactor=0.0004))
+
+  return(fit1_lomax)
+}
+
+xdata=Get_points(input_pol_corrected,lval,hval,log)
+Expo_fit_result <- Fit_Exp_fn(Data = xdata,affine = affine)
+t_expo_est=1/coef(Expo_fit_result)[[2]]
+
+
+t_d=c(1,100,200,400,800,1000,1500,2000,2500)
+
+all_t_lomax_est <- list()
+for(t in 1:length(t_d)){
+  fixed_w= 1/(t_expo_est*(t_expo_est/((t_d[t]/4)^2)))
+  
+  Lomax_fit_result <- Fit_Lomax_fn(Data = xdata,fixed_w = fixed_w)
+  coef(Lomax_fit_result)
+  t_lomax_est=1/coef(Lomax_fit_result)[[1]]
+  all_t_lomax_est[[t]] <- Lomax_fit_result
+  
+}
+
+
+EXP_norm_fn <- function(dist,A,s,c) A*exp(-(dist/100)/s)+c
+LOMAX_norm_fn <- function(dist,A,s,w,c) c+A*(1/(1  + ((w*(dist/100)) / s)))^(1/w)
+EXP_Log_fn <- function(dist,A,s) log(A)  -((dist/100)/s)
+LOMAX_Log_fn <- function(dist,A,s,w) log(A) + (1/w) * -log(1+ ((w*(dist/100))/s))
+
+
+AIC_result <- AIC(Expo_fit_result,all_t_lomax_est[[1]],all_t_lomax_est[[2]],all_t_lomax_est[[3]],all_t_lomax_est[[4]],
+    all_t_lomax_est[[5]],all_t_lomax_est[[6]],all_t_lomax_est[[7]],all_t_lomax_est[[8]],all_t_lomax_est[[9]])
+
+xx=t(data.frame(c(c(coef(Expo_fit_result)[1],confint(Expo_fit_result)[1,1],confint(Expo_fit_result)[1,2]),
+                 c(coef(Expo_fit_result)[2],confint(Expo_fit_result)[2,1],confint(Expo_fit_result)[2,2]),
+                 c(coef(Expo_fit_result)[3],confint(Expo_fit_result)[3,1],confint(Expo_fit_result)[3,2]))))
+colnames(xx) <- c("A","A 2.5 %", "A 97.5 %","s","s 2.5 %", "s 97.5 %","c","c 2.5 %", "c 97.5 %")
+
+Model_RSS <- c()
+for(i in list(Expo_fit_result,all_t_lomax_est[[1]],all_t_lomax_est[[2]],all_t_lomax_est[[3]],all_t_lomax_est[[4]],
+           all_t_lomax_est[[5]],all_t_lomax_est[[6]],all_t_lomax_est[[7]],all_t_lomax_est[[8]],all_t_lomax_est[[9]])){
+  RSS <- sum(residuals(i)^2) 
+  Model_RSS <- c(Model_RSS,RSS)
+}
+
+```
+
+```{r message=FALSE, echo=FALSE,warning=FALSE}
+Get_CI_s_approx_fn <- function(fit,i,n_data){
+  org <- coef(fit)[[i]]
+  lwr_approx <- coef(fit)[[i]]*(1-(1.96/sqrt(length(n_data[,1]))))
+  upr_approx <- coef(fit)[[i]]*(1+(1.96/sqrt(length(n_data[,1]))))
+  param_CI <- c(1/org,1/upr_approx,1/lwr_approx)
+  return(param_CI)
+}
+
+Get_CI_other_approx_fn <- function(fit,i,n_data,sigma){
+  org <- coef(fit)[[i]]
+  lwr_approx <- coef(fit)[[i]]-1.96*(sigma/sqrt(length(n_data[,1])))
+  upr_approx <- coef(fit)[[i]]+1.96*(sigma/sqrt(length(n_data[,1])))
+  param_CI <- c(org,lwr_approx,upr_approx)
+  return(param_CI)
+}
+
+A_param=round(Get_CI_other_approx_fn(Expo_fit_result,1,xdata,summary(Expo_fit_result)$sigma),3)
+t_m=round(Get_CI_s_approx_fn(Expo_fit_result,2,xdata),0)
+c_param=round(Get_CI_other_approx_fn(Expo_fit_result,3,xdata,summary(Expo_fit_result)$sigma),6)
+Expo_fit_tabel <- rbind(A_param,t_m,c_param)
+
+Lomax_fit_tabel <- c()
+for(model in all_t_lomax_est){
+  A_parm=round(Get_CI_other_approx_fn(model,2,xdata,summary(model)$sigma),3)
+  t_m=round(Get_CI_s_approx_fn(model,1,xdata),0)
+  c_param=round(Get_CI_other_approx_fn(model,3,xdata,summary(Expo_fit_result)$sigma),6)
+  Lomax_fit_tabel_x <- rbind(A_param,t_m,c_param)
+  Lomax_fit_tabel <- rbind(Lomax_fit_tabel,Lomax_fit_tabel_x)
+}
+
+
+
+```
+
+```{r fig5, message=FALSE, echo=FALSE,warning=FALSE,fig5.pos="H",fig.width=9,fig.height=6,fig.cap="\\label{fig:fig5} Different admixture duration models ranging from a one generation pulse to 2500 generations of gene flow for Neandertal interbreeding using all 1k Genome CEU individuals as the admixed population with all YRI and 3 high coverage Neandertals as reference populations. A) Weighted LD normal scaled B) Weighted LD log scaled."}
+
+cbPalette_viridis <- viridis(length(t_d),option = "D")
+
+
+ggplot_fit_data_transf_fn <- function(Expo_fit_result,all_t_lomax_est,log){
+    if(log==T){
+      fit.ggplot_exp=data.frame(y=EXP_Log_fn(xdata$dist,coef(Expo_fit_result)[[1]],coef(Expo_fit_result)[[2]]),x=xdata$dist)
+      fit.ggplot_exp$lowCI <- EXP_Log_fn(xdata$dist,confint(Expo_fit_result)[[1,1]],confint(Expo_fit_result)[[2,1]])
+      fit.ggplot_exp$highCI <- EXP_Log_fn(xdata$dist,confint(Expo_fit_result)[[1,2]],confint(Expo_fit_result)[[2,2]])
+      fit.ggplot_exp$Duration <- 1e5
+  } else {
+      fit.ggplot_exp=data.frame(y=EXP_norm_fn(xdata$dist,coef(Expo_fit_result)[[1]],coef(Expo_fit_result)[[2]],
+                                            coef(Expo_fit_result)[[3]]),x=xdata$dist)
+      fit.ggplot_exp$lowCI <- EXP_norm_fn(xdata$dist,confint(Expo_fit_result)[[1,1]],confint(Expo_fit_result)[[2,1]],
+                                        confint(Expo_fit_result)[[3,1]])
+      fit.ggplot_exp$highCI <- EXP_norm_fn(xdata$dist,confint(Expo_fit_result)[[1,2]],confint(Expo_fit_result)[[2,2]],
+                                         confint(Expo_fit_result)[[3,2]])
+      fit.ggplot_exp$Duration <- 1e5
+  }
+  Real_Lomax_fit_Result <- c()
+  if(log==T){
+    for(i in 1:length(t_d)){
+      fit.ggplot_lomax_x=data.frame(y=LOMAX_Log_fn(xdata$dist,coef(all_t_lomax_est[[i]])[[2]],coef(all_t_lomax_est[[i]])[[1]],
+                                               1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2)))),x=xdata$dist)
+      fit.ggplot_lomax_x$lowCI <- LOMAX_Log_fn(xdata$dist,confint(all_t_lomax_est[[i]])[[2,1]],confint(all_t_lomax_est[[i]])[[1,1]],
+                                             1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2))))
+      fit.ggplot_lomax_x$highCI <- LOMAX_Log_fn(xdata$dist,confint(all_t_lomax_est[[i]])[[2,2]],confint(all_t_lomax_est[[i]])[[1,2]],
+                                            1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2))))
+      fit.ggplot_lomax_x$Duration <- t_d[i]
+      Real_Lomax_fit_Result <- rbind(Real_Lomax_fit_Result,fit.ggplot_lomax_x)
+      Real_Lomax_fit_Result <- as.data.frame(Real_Lomax_fit_Result)
+    }
+    } 
+  else {
+    for(i in 1:length(t_d)){
+      fit.ggplot_lomax_x=data.frame(y=LOMAX_norm_fn(xdata$dist,coef(all_t_lomax_est[[i]])[[2]],coef(all_t_lomax_est[[i]])[[1]],
+                                            1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2))),coef(all_t_lomax_est[[i]])[[3]]),x=xdata$dist)
+      fit.ggplot_lomax_x$lowCI <- LOMAX_norm_fn(xdata$dist,confint(all_t_lomax_est[[i]])[[2,1]],confint(all_t_lomax_est[[i]])[[1,1]],
+                                          1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2))),confint(all_t_lomax_est[[i]])[[3,1]])
+      fit.ggplot_lomax_x$highCI <- LOMAX_norm_fn(xdata$dist,confint(all_t_lomax_est[[i]])[[2,2]],confint(all_t_lomax_est[[i]])[[1,2]],
+                                         1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2))),confint(all_t_lomax_est[[i]])[[3,2]])
+      fit.ggplot_lomax_x$Duration <- t_d[i]
+      Real_Lomax_fit_Result <- rbind(Real_Lomax_fit_Result,fit.ggplot_lomax_x)
+      Real_Lomax_fit_Result <- as.data.frame(Real_Lomax_fit_Result)
+  }
+    
+}
+
+  Real_fit_Result <- rbind(Real_Lomax_fit_Result,fit.ggplot_exp)
+  Real_fit_Result <- as.data.frame(Real_fit_Result)
+  Real_fit_Result$Duration <- as.factor(Real_fit_Result$Duration)
+  return(Real_fit_Result)
+  
+}
+
+ggplot_fit_data_transf_fn_2 <- function(Expo_fit_result,all_t_lomax_est,log){
+    if(log==T){
+      fit.ggplot_exp=data.frame(y=EXP_Log_fn(xdata$dist,coef(Expo_fit_result)[[1]],coef(Expo_fit_result)[[2]]),x=xdata$dist)
+      fit.ggplot_exp$lowCI <- EXP_Log_fn(xdata$dist,confint(Expo_fit_result)[[1,1]],confint(Expo_fit_result)[[2,1]])
+      fit.ggplot_exp$highCI <- EXP_Log_fn(xdata$dist,confint(Expo_fit_result)[[1,2]],confint(Expo_fit_result)[[2,2]])
+      fit.ggplot_exp$Duration <- 1e5
+  } else {
+      fit.ggplot_exp=data.frame(as.data.frame(investr::predFit(Expo_fit_result,newdata=list(dist=xdata$dist),interval="prediction")),x=xdata$dist)
+      fit.ggplot_exp$Duration <- 1e5
+  }
+  Real_Lomax_fit_Result <- c()
+  if(log==T){
+    for(i in 1:length(t_d)){
+      fit.ggplot_lomax_x=data.frame(y=LOMAX_Log_fn(xdata$dist,coef(all_t_lomax_est[[i]])[[2]],coef(all_t_lomax_est[[i]])[[1]],
+                                               1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2)))),x=xdata$dist)
+      fit.ggplot_lomax_x$lowCI <- LOMAX_Log_fn(xdata$dist,confint(all_t_lomax_est[[i]])[[2,1]],confint(all_t_lomax_est[[i]])[[1,1]],
+                                             1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2))))
+      fit.ggplot_lomax_x$highCI <- LOMAX_Log_fn(xdata$dist,confint(all_t_lomax_est[[i]])[[2,2]],confint(all_t_lomax_est[[i]])[[1,2]],
+                                            1/(t_expo_est*(t_expo_est/((t_d[i]/4)^2))))
+      fit.ggplot_lomax_x$Duration <- t_d[i]
+      Real_Lomax_fit_Result <- rbind(Real_Lomax_fit_Result,fit.ggplot_lomax_x)
+      Real_Lomax_fit_Result <- as.data.frame(Real_Lomax_fit_Result)
+    }
+    } 
+  else {
+    for(i in 1:length(t_d)){
+      fit.ggplot_lomax_x=data.frame(as.data.frame(investr::predFit(all_t_lomax_est[[i]],newdata=list(dist=xdata$dist),interval="prediction")),x=xdata$dist)
+      fit.ggplot_lomax_x$Duration <- t_d[i]
+      Real_Lomax_fit_Result <- rbind(Real_Lomax_fit_Result,fit.ggplot_lomax_x)
+      Real_Lomax_fit_Result <- as.data.frame(Real_Lomax_fit_Result)
+  }
+    
+}
+
+  Real_fit_Result <- rbind(Real_Lomax_fit_Result,fit.ggplot_exp)
+  Real_fit_Result <- as.data.frame(Real_fit_Result)
+  Real_fit_Result$Duration <- as.factor(Real_fit_Result$Duration)
+  return(Real_fit_Result)
+  
+}
+Real_fit_Result_norm <- ggplot_fit_data_transf_fn(Expo_fit_result, all_t_lomax_est, log=F)
+Real_fit_Result_norm_2<- ggplot_fit_data_transf_fn_2(Expo_fit_result, all_t_lomax_est, log=F)
+
+Real_data_Plot_normal_2 <- ggplot(data=Real_fit_Result_norm_2,aes(x = x, y = fit,color=Duration,fill=Duration))+
+  geom_point(data=xdata,aes(x=dist,y=wcorr,color=NULL,fill=NULL),show.legend = F)+
+  xlim(0,0.5)+
+  #ylim(-15,-5)+
+  #geom_ribbon(aes(ymin=lwr,ymax=upr, fill = Duration,color=NULL), alpha = 0.3,show.legend = F)+
+  geom_line(data=Real_fit_Result_norm_2,aes(x = x, y = fit,color=Duration))+
+  scale_color_manual("Admixture Duration",
+                     values = c(c(cbPalette_viridis,cbPalette_viridis[1])),
+                     labels = c(c(t_d,"Pulse")))+
+  scale_fill_manual( values = c(c(cbPalette_viridis,cbPalette_viridis[1])))+
+  labs(x = "Genetic distance (cM)")+
+  labs(y = "weighted LD") 
+
+Real_data_Plot_normal <- ggplot(data=Real_fit_Result_norm,aes(x = x, y = y,color=Duration,fill=Duration))+
+  geom_point(data=xdata,aes(x=dist,y=wcorr,color=NULL,fill=NULL),show.legend = F)+
+  xlim(0,0.5)+
+  #ylim(-15,-5)+
+  #geom_ribbon(aes(ymin=lowCI,ymax=highCI, fill = Duration,color=NULL), alpha = 0.5,show.legend = F)+
+  geom_line(data=Real_fit_Result_norm,aes(x = x, y = y,color=Duration))+
+  scale_color_manual("Admixture Duration",
+                     values = c(c(cbPalette_viridis,"red")),
+                     labels = c(c(t_d,"Pulse")))+
+  scale_fill_manual( values = c(c(cbPalette_viridis,"red")))+
+  labs(x = "Genetic distance (cM)")+
+  labs(y = "weighted LD") 
+
+Real_fit_Result_log <- ggplot_fit_data_transf_fn(Expo_fit_result, all_t_lomax_est, log=T)
+Real_data_Plot_log <- ggplot(data=Real_fit_Result_log,aes(x = x, y = y,color=Duration,fill=Duration))+
+  geom_point(data=xdata,aes(x=dist,y=log(wcorr),color=NULL,fill=NULL),show.legend = F)+
+  xlim(0,0.5)+
+  ylim(-13,-5)+
+  geom_line(data=Real_fit_Result_log,aes(x = x, y = y,color=Duration))+
+  #geom_ribbon(aes(ymin=lowCI,ymax=highCI, fill = Duration,color=NULL), alpha = 0.5,show.legend = F)+
+  scale_color_manual("Admixture Duration",
+                     values = c(c(cbPalette_viridis,cbPalette_viridis[1])),
+                     labels = c(c(t_d,"Pulse")))+
+  scale_fill_manual( values = c(c(cbPalette_viridis,cbPalette_viridis[1])))+
+  labs(x = "Genetic distance (cM)")+
+  labs(y = "log weighted LD")
+
+
+ggarrange(Real_data_Plot_normal_2,Real_data_Plot_log,ncol = 2,nrow = 1,
+          labels = c("A","B")
+          ,common.legend = T,legend = 'bottom')
+
+```
+
+
+
+
+\section{Discussion}\label{discussion}
+While it is now well-established that early modern humans interbred with Neandertals, less consensus exists about when and where these interactions might have happened. Here we focus on genetic dating, one of the major approaches used to refine the plausible dates.
+
+Previous estimates to date Neandertal-human gene flow have focused almost entirely on the mean time of gene flow, for which reasonably tight credible intervals can be estimated \citep{green_draft_2010, sankararaman_date_2012}. Here, we show that these models cannot be used to establish bounds on when gene flow happened, as models involving hundreds of generations of gene flow are virtually indistinguishable from instantaneous gene flow. Thus, it is important to realize that the estimated time of gene flow of between 41 kya -- 54 kya \citep{moorjani_genetic_2016} is a credible range for the mean time of gene flow, and does not bound when gene flow happened. This is of great practical importance as it might be tempting to link the genetic admixture date estimates with biogeographical events \citep{sankararaman_date_2012,lazaridis_genomic_2016,jacobs_multiple_2019,vyas_analyses_2019,douka_age_2019}. Indeed, our results show that substantial gene flow could also have happened tens of thousands of years before or after the mean time of gene flow. These dates are thus entirely consistent with early modern human genomes that have recent Neandertal ancestors \citep{fu_genome_2014, hajdinjak_early_2021}. As we also show that mean time estimates are biased towards more recent dates, substantial gene flow might have happened before 54 kya. 
+
+This might also have some implications for selection on introgressed Neandertal haplotypes. Neandertal alleles have been suggested to be deleterious in modern human populations due to an increased mutation load \citep{harris_genetic_2016, juric_strength_2016}. Some details of these models may be slightly affected if migration occurred over a longer time. For example, \cite{harris_genetic_2016} suggested that an initial pulse of gene flow of up to 10\% Neandertal ancestry might be necessary, with very high variance in the first few generations after gene flow. More gradual introgression might mean that such high admixture proportions were never achieved, but rather a continuous migration-selection balance process persisted for the contact period, where deleterious Neandertal alleles continually entered the modern human populations, but were selected against immediately. 
+However, in terms of the overall frequencies achieved, there is likely little difference. For example, \cite{juric_strength_2016} showed using a two-locus model that the frequencies of Neandertal haplotypes alone cannot be used to distinguish different admixture histories.
+
+In addition, we find that modelling and method assumptions have an impact on admixture time estimates that are of a similar magnitude or much higher than the effect of assuming a one-generation pulse. Especially recombination rate variation may pose a practical limitation to the accuracy of admixture date estimates, and has to be very carefully considered when making inferences about admixture times. This is because both an extended pulse, as well as a non-homogeneous recombination map, lead to an admixture segment distribution that deviates from the expected exponential distribution. Correcting for just one of these factors may thus potentially conflate these issues, and may lead to a substantial underestimate of mean admixture times \citep{sankararaman_date_2012}. Therefore, population-specific fine-scale recombination maps are needed for accurate admixture time estimates, at least in the case for archaic admixture that happened more than a thousand generations ago; more recent admixture does appear to be somewhat more robust, perhaps because coarser-scale recombination maps are better estimated and differ less between populations \citep{hinch_landscape_2011}. 
+
+
+To further refine admixture timing, time series data from more early modern human and Neandertal genomes are likely needed. In particular, measures based on population differentiation (e.g \citep{wall_higher_2013,browning_analysis_2018,villanea_multiple_2019}) are very promising to understand the different events that contributed to archaic ancestry in present-day humans. While Neandertal ancestry in present-day people has been largely homogenized due to the substantial gene flow between populations, samples from both the Neandertal and early modern human populations immediately involved with the gene flow could likely refine when and where this gene flow happened. 
+
+\section{References}\label{References}
+
+<div id="refs"></div>
+
+\pagebreak
+\setcounter{figure}{0}
+\renewcommand{\figurename}{Fig. S}
+\renewcommand{\tablename}{Tab. S}
+
+\section{Supplement}\label{supplement}
+
+\subsection{Extended Pulse Model}
+
+In this section, we describe in detail the derivation of the extended pulse model, where the gene flow over time is modeled as a Gamma distribution with shape parameter $k$ and scale parameter $\frac{k}{t_m}$. Here, $L_i$ is the length of a segment entered at time $T_i$. We assume each segment length at time $T_i$ to be described by an exponential distribution (eq. \ref{eq:generall_length_distribution}).
+
+To get the likelihood function for the segment length distribution $P(L_i)$ under the extended pulse we have to solve the following integral:
+
+\begin{equation}
+\label{eq:Likelihood_function_extended_pulse_1}
+    P(L_i=l) = \int_{0}^{\infty} \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}t^{k-1}e^{-t\frac{k}{t_m}}\ t\ e^{-tl} \ dt 
+\end{equation}
+
+we can factor out all terms not depending on $t$:
+
+\begin{equation}
+\label{eq:Likelihood_function_extended_pulse_2}
+    P(L=l) = \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \int_{0}^{\infty}\ t^{k-1}e^{-t\frac{k}{t_m}}\ t\ e^{-tl} \ dt 
+\end{equation}
+
+ 
+we can re-write the integral into the  form of the known integral $\int_{0}^{\infty}\ x^n e^{-\alpha x} \ dx= \frac{\Gamma{n+1}}{\alpha^{n+1}}$
+
+\begin{equation}
+\begin{split}
+\label{eq:Likelihood_function_extended_pulse_3}
+    P(L=l) &= \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \int_{0}^{\infty}\ t^{k}e^{-(l+\frac{k}{t_m})t} \ dt \\ 
+    P(L=l) &= \frac{1}{\Gamma(k)(\frac{t_m}{k})^k}\ \frac{\Gamma(k+1)}{(l+\frac{k}{t_m})^{k+1}} 
+\end{split}
+\end{equation}
+
+since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
+
+
+
+\begin{equation}
+\begin{split}
+\label{eq:Likelihood_function_extended_pulse_final}
+    P(L=l) &= \frac{k}{(\frac{t_m}{k})^k \ (l+\frac{k}{t_m})^{k+1}} \\
+    &= \frac{k(\frac{k}{t_m})^k} {(l+\frac{k}{t_{m}})^{k+1}}  \\
+    &= \frac{k^{k+1}} { t_{m}^k \ (l+\frac{k}{t_{m}})^{k+1}}  \\
+    &= t_{m} \ \Bigg( \frac{k}{t_{m}(l+\frac{k}{t_{m}})}\Bigg)^{k+1} \\
+    P(L=l) &= t_{m}^{-k} \ \Bigg( \frac{k}{(l+\frac{k}{t_{m}})}\Bigg)^{k+1}
+\end{split}
+\end{equation}
+
+\subsection{Supplement Figures}
+
+
+```{r eval=FALSE, message=FALSE, echo=FALSE,warning=FALSE,}
+
+Demography_graphic <- readPNG(source = "Paper_Graphics_demography_only.png",native = F,info = T)
+im_B <- ggplot() + 
+    background_image(Demography_graphic) +
+    theme_bw()+
+    # This ensures that the image leaves some space at the edges
+    theme(plot.margin = margin(t=1, l=1, r=1, b=1, unit = "cm"))
+im_B
+```
+
+```{r figS1, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS1} Demographic models of Neandertal admixture with non-Africans used for the simulations. A) Simple demographic model used for ALD simulations with constant population sizes. B) Complex demographic model with substructure in Africa, where after an initial earlier split and isolation the structured population exchange migrants till the final split and additional gene flow between Africans and non-Africans after the Neandertal admixture. The  population sizes after the (final) split are taken fome MSMC/PSMC estimates for the respective populations."}
+
+
+
+Simple_Demo <- readPNG(source = "../Simple_Demographic_model.png",native = F)
+Complex_Demo <- readPNG(source = "../Complex_Demographic_model.png",native = F)
+Skov_Demo <- readPNG(source = "../Direct_Inference_Demographic_model.png",native = F)
+
+Simple_Demo <- ggplot() + 
+    background_image(Simple_Demo) +
+    theme_bw()+
+    #theme(plot.margin = margin(t=0, l=0, r=0, b=0, unit = "cm")
+    #,panel.border = element_blank()
+    theme(plot.margin = margin(t=0, l=1, r=1, b=1, unit = "cm"))
+ggsave(file="../Simple_Demo.png", width=10, height=8, dpi=300)
+
+Complex_Demo <- ggplot() + 
+    background_image(Complex_Demo) +
+    theme_bw()+
+    #theme(plot.margin = margin(t=0, l=0, r=0, b=0, unit = "cm")
+    #,panel.border = element_blank()
+    theme(plot.margin = margin(t=0, l=1, r=1, b=1, unit = "cm"))
+ggsave(file="../Complex_Demo.png", width=10, height=8, dpi=300)
+
+Skov_Demo <- ggplot() + 
+    background_image(Skov_Demo) +
+    theme_bw()+
+    #theme(plot.margin = margin(t=0, l=0, r=0, b=0, unit = "cm")
+    #,panel.border = element_blank()
+    theme(plot.margin = margin(t=0, l=1, r=1, b=1, unit = "cm"))
+ggsave(file="../Skov_Demo.png", width=10, height=8, dpi=300)
+
+Im_Simple_Demo <- cowplot::ggdraw() +
+  cowplot::draw_image("../Simple_Demo.png")
+
+Im_Complex_Demo <- cowplot::ggdraw() +
+  cowplot::draw_image("../Complex_Demo.png")
+
+Im_Skov_Demo <- cowplot::ggdraw() +
+  cowplot::draw_image("../Skov_Demo.png")
+
+ggarrange(Im_Simple_Demo,Im_Complex_Demo,
+          labels = c("A","B"),
+          ncol = 2, nrow = 1)
+
+pdf("../Admixture_Time_Inference_Paper_Draft_files/figure-latex/All_3_demo_models.pdf",width = 18)
+ggarrange(Im_Simple_Demo,Im_Complex_Demo,Im_Skov_Demo,
+          labels = c("A","B","C"),
+          ncol = 3,vjust = 5)
+dev.off()
+```
+
+```{r figS2, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
+
+Plot_model <- data.frame(table(Diff_s=round(xdata.M.3_no_error$Diff_s,digits = 2),GF=xdata.M.3_no_error$GF,Asc=xdata.M.3_no_error$Ascertainment,d0=xdata.M.3_no_error$min_dist,True_GF=xdata.M.3_no_error$mean.t.GF,Demo=xdata.M.3_no_error$Demography,Recomb=xdata.M.3_no_error$Recomb.rate,Combination=xdata.M.3_no_error$TID))
+Plot_model <- subset(Plot_model,Freq>0)
+
+Plot_model$Col <- ifelse(Plot_model$GF=='0_Pulse','#56B4E9','#D55E00')
+
+
+
+### Supplement Figures ? Tables
+
+Plot_Fig_2_A <- function(Data,x.axes.lables){
+  Px <-  ggplot(Data,aes(x=as.character(Combination),y=as.numeric(as.character(Diff_s)),colour=Col))+
+    geom_point(aes(size = Freq),show.legend = F)+
+    geom_boxplot(show.legend = F)+
+    geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
+    coord_cartesian(ylim = c(-3,2),expand = 0)+
+    labs(x = "Predictor combination")+
+    labs(y = "Standardized difference between true and estimated time")+
+    theme(axis.text.x = element_text(angle = 0))+
+    scale_x_discrete(labels= x.axes.lables)+
+    scale_color_manual("Gene Flow Model",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[6]),
+                       labels = c("Pulse","Continuous"))
+  return(Px)
+  
+}
+
+#x.axes.lables= as.data.frame(as.character(unique(Plot_model$Combination)))
+
+
+x.axes.lables=c("HES\n0.02\nCom\nCon","HES\n0.02\nCom\nCon","HES\n0.05\nCom\nCon","HES\n0.05\nCom\nCon"
+                ,"LES\n0.02\nCom\nCon","LES\n0.02\nCom\nCon","LES\n0.05\nCom\nCon","LES\n0.05\nCom\nCon"
+                ,"HES\n0.02\nCom\nVar","HES\n0.02\nCom\nVar","HES\n0.05\nCom\nVar","HES\n0.05\nCom\nVar"
+                ,"LES\n0.02\nCom\nVar","LES\n0.02\nCom\nVar","LES\n0.05\nCom\nVar","LES\n0.05\nCom\nVar"
+                ,"HES\n0.02\nSim\nCon","HES\n0.02\nSim\nCon","HES\n0.05\nSim\nCon","HES\n0.05\nSim\nCon"
+                ,"LES\n0.02\nSim\nCon","LES\n0.02\nSim\nCon","LES\n0.05\nSim\nCon","LES\n0.05\nSim\nCon"
+                ,"HES\n0.02\nSim\nVar","HES\n0.02\nSim\nVar","HES\n0.05\nSim\nVar","HES\n0.05\nSim\nVar"
+                ,"LES\n0.02\nSim\nVar","LES\n0.02\nSim\nVar","LES\n0.05\nSim\nVar","LES\n0.05\nSim\nVar")
+
+Plot_Fig_2_A(Plot_model,x.axes.lables)
+
+```
+
+\subsection{Supplement Tables}
+
+```{r tableS1, echo=FALSE,results='asis' }
+
+print_B_model_result <- data.frame(B_model_result)
+kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
+      caption = "\\label{tab:tableS1} Mean, standart deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+
+```{r tableS2, echo=FALSE,results='asis' }
+
+Param_Est_Tabel <- rbind(Expo_fit_tabel,Lomax_fit_tabel)
+Models <- c("Exponential","Exponential","Exponential","Lomax (td=1)","Lomax (td=1)","Lomax (td=1)" 
+           ,"Lomax (td=100)","Lomax (td=100)","Lomax (td=100)","Lomax (td=200)","Lomax (td=200)","Lomax (td=200)"
+            ,"Lomax (td=400)","Lomax (td=400)","Lomax (td=400)","Lomax (td=800)","Lomax (td=800)","Lomax (td=800)"
+            ,"Lomax (td=1000)","Lomax (td=1000)","Lomax (td=1000)","Lomax (td=1500)","Lomax (td=1500)","Lomax (td=1500)"
+            ,"Lomax (td=2000)","Lomax (td=2000)","Lomax (td=2000)","Lomax (td=2500)","Lomax (td=2500)","Lomax (td=2500)")
+Params_name <- rep(c("A","mean time","c"),10)
+Param_Est_Tabel <- cbind(Models,Params_name,Param_Est_Tabel)
+
+
+kable(Param_Est_Tabel , "latex",col.names = c("Model","Parameter","Estimate","2.5 %", "97.5 %"),row.names = FALSE,
+      caption = "\\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit") %>%
+  #collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+dev.off()
 ```
 
 ```{r figS2, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
