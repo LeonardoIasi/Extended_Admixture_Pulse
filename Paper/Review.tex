@@ -79,24 +79,28 @@
 \floatplacement{figure}{H}
 \begin{document}
 
+We thank the editor and all three reviewers for their very constructive feedback. We also received feedback from Harald Ringbauer and Shai Carmi on details of the derivations, which we also incorporated in our revised manuscript. As a result, we feel that our changes address all major points of criticism raised during the review process, and hope you will find the revised manuscript suitable for publication.
+
+\textbf{TODO}: add summary of changes
+
 \section{Reviewer 1}\label{Reviewer 1}
 
 \paragraph{1.}
 A key contribution that I would have hoped to get out of the manuscript is the power to reject the model of ``pulse admixture’’ given data simulated under a non-pulse model. To evaluate the power to detect a difference from $t_d$ = 1 (which is equivalent to the pulse model) in a likelihood-ratio test framework. This would assume a best-case scenario of no noise in the estimation of segment lengths, but would help inform the reader of the parameter regimes that are identifiable in the model. In my view this analysis is essential because it provides statistical evidence for how seriously I should take the claims made in the real data analysis.
 
-\paragraph{Answer to 1.1}
-We included a best case scenario as the first part of the results. Here we simulate perfectly known segments under the extended pulse with multiple durations of gene flow and a mean time of gene flow at 1500 generations ago. We fitted the simple and extended pulse to it and performed a likelihood ratio test. The result is depicted in the result figure x. 
-
 \paragraph{2.}
 A secondary question that is analytically tractable is how the power described above is shaped by the time-since admixture ($t_m$), which is implied by the statements that requiring samples closer to the time of admixture would be helpful for future inference (line 20 in the abstract for example). This would be useful to quantify what kind of data might be necessary to reject the model of pulse admixture (or if it is even possible at all with current human data parameters?). As this is a claim vaguely made in the paper – I believe that a statistical evaluation of the power to reject the pulse model with data from different time-points post-admixture. 
 
-\paragraph{Answer to 1.2}
-Figure x in the results also depicts the likelihood ratio between the simple and extended pulse for segments sampled 50 generation after the end of the respective gene flow. 
+\paragraph{Answer to 1.1 and 1.2}
+We agree with reviewer one that these are important questions that were unsupported in the previous version of the manuscript. We combine these two points in a new analysis assuming fragments are fully observed (new \textbf{Figure 2}) as suggested in point 1, and sample at present-time and 50 generations after gene flow ended.
+
+Our results suggest that from present-day data, even 100,000 admixture segments, are not sufficient to distinguish admixture event spanning 400 generations from a single pulse; whereas an event spanning 20 generations is detectable 50 generations later. This pattern is consistent for less data, and think supports the previously purely intuitive argument that ancient DNA would help us better estimate the duration of gene flow.
+
 
 \paragraph{3.}
 Is there a difference in the power to reject the “pulse model” if one uses ALD at different length scales or realized segments? This would place clearer value on one summary statistic over the other for pursuing further inference in aDNA datasets. 
 
-\paragraph{Answer to 1.3}
+\paragraph{Answer to 1.3} \textbf{TODO}
 We compared the performance for multiple durations of gene flow with a mean time of 1500 generations ago from msprime simulations using the decay of ancestry LD with perfectly known recombination distances.
 
 
@@ -136,6 +140,7 @@ I would suggest a “requirements.md” or “requirements.txt” file in the ma
 My main concern relates to the “Application to Neandertal data.” My understanding of the manuscript title (An extended admixture pulse model reveals the limits to the dating of Human-Neandertal introgression) is that the extended model provides the limits (or bounds) for the dating of introgression. I do not think that this manuscript shows that. Instead, it seems like the application to Neandertal data shows that there is little power to differentiate tested scenarios (with varying gene flow durations). Perhaps the word “limits” in the title refers to the *limitations* of the model? I would like to hear from the authors about their intent and, if my understanding of the title is correct (i.e., limits == bounds), then I would like to see a more detailed discussion about this issue in the manuscript see comments below.
 
 \paragraph{Answer to 2.1}
+We were not aware of this subtlety in the English language, but we agree that ``limitations'' is much more appropriate than ``limits'' here. We changed the title accordingly.
 
 \paragraph{2.}
 Overall, I think this subsection of Results is a bit underwhelming and somewhat disconnected from the part where authors examine their model with simulations. Given how the problem is introduced and the manuscript is presented, I would expect a more thorough examination of both the duration and mean time of Neandertal-human introgression. I think it is worth mentioning in the “Application to Neandertal data” section what are the estimates for the mean time of admixture and how they compare with published data. I understand this has been reported in previous studies, but I believe it would be important to report the estimates using their methods in a paper like this.
@@ -242,7 +247,10 @@ This should result in a simple transformation w.r.t $\alpha$. The point is that 
 Inference: It seems the parameter inference is made by non-linear least-square optimization when alternatively, some maximum likelihood optimizations could be used. Could the authors provide more information about how good the fitting is per simulation? In particular, if the simulated parameters may actually give a higher likelihood.
 
 \paragraph{Answer to 3.4}
-We can not use a Likelihood ratio framework when ancestry LD. We, however, can perform a F-Test and AIC on the fitted models since the simple pulse is nested in the extended pulse model. We did this on simulations with a mean time of 1500 generations and different durations. We found that with a duration of 1500 generations or long we can certainly distinguish the two models, given that we know the genetic distance between the SNPs perfectly (constant recombination). A likelihood ratio framework can be used on the segment length distribution. The inference and subsequent fitting of segments length distribution is highly dependent on knowing the exact recombination distances. Hence, using true and inferred segments (using the HMM of Skov et al 2018) we are able to distinguish simple and extended pulse when the genetic distance is perfectly know, but not with uncertainties in the recombination map.
+We are not aware of any likelihood-based inference framework based on ALD, and note that all state-of-the-art methods for this purpose use least-squares techniques similar to what we are using here (ALDER; Loh et al. 2013, DATES Narasimhan et al 2018, Globetrotter, Hellenthal et al. 2014). If admixture segments were perfectly known, then likelihood-based inference could be performed (as described elsewhere in the MS).
+
+
+ We cannot use a Likelihood ratio framework when ancestry LD. We, however, can perform a F-Test and AIC on the fitted models since the simple pulse is nested in the extended pulse model. We did this on simulations with a mean time of 1500 generations and different durations. We found that with a duration of 1500 generations or long we can certainly distinguish the two models, given that we know the genetic distance between the SNPs perfectly (constant recombination). A likelihood ratio framework can be used on the segment length distribution. The inference and subsequent fitting of segments length distribution is highly dependent on knowing the exact recombination distances. Hence, using true and inferred segments (using the HMM of Skov et al 2018) we are able to distinguish simple and extended pulse when the genetic distance is perfectly know, but not with uncertainties in the recombination map.
 
 \paragraph{5.} 
 Data: As primarily a new method paper, it would be nice to provide guidance about how much data is needed to make these inferences. 
@@ -250,7 +258,7 @@ How does the accuracy of ALD from ALDER affect the variance and bias in the infe
 How does ascertainment of introgressed mutations affect the accuracy? 
 
 \paragraph{Answer to 3.5}
-We included an analysis on accuracy of the ALD estimation in our result section on effect size estimates. Here, we downsampled the available SNPs to 5 \% of the simulated data and re-fitted the model. We did that for all parameters. We estimated the effect size of the downsampling with our GLM. Additionaly, we estimated the interaction of downsampling and ascertainment scheme. 
+We included an analysis on accuracy of the ALD estimation in our result section on effect size estimates. Here, we downsampled the available SNPs to 5 \% of the simulated data and re-fitted the model. We did that for all parameters. We estimated the effect size of the downsampling with our GLM (Figure 4). We find that the effect size of downsampling is negligible, suggesting that relatively little data is sufficient to estimate an unbiased ALD curve. Additionaly, we estimated the interaction of downsampling and ascertainment scheme. 
 
 \paragraph{6.} 
 Discussion: I wonder if the first paragraph of the discussion could be rephrased a little bit. It seems obvious that the previous estimates are the CI rather than the bounds of the duration of gene flow. Is there any paper stating or interpreting them as the bounds of the duration of gene flow? It is also good to acknowledge and discuss that a method based on ALD or length of the segment might not be the ultimate method for addressing the admixture duration. An extended admixture affects coalescence time, site frequency spectrum, etc. Various aspects could be explored in the future.
