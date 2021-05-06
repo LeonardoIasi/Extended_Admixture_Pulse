@@ -332,6 +332,7 @@ LME_fn <- function(seg){
   return(LRT)
 }  
 
+# not used for the simulations !!!
 simulate_pulse=function(n_segments,tm,td){
   k = 1/((td/(4*tm))^2)
   sim_r = VGAM::rlomax(n=n_segments,shape3.q = k,scale = k/tm)
@@ -401,10 +402,13 @@ Sim_2=lapply(n_seg, function(x) Sim_2_fn(x,rep=100))
 ```{r figR2,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figR2} Liklihood ratios between the simple pulse and extended pulse model for different durations of admixture for 100, 1000, 10000 and 100000 segments sampled at time 0 and 50 generations after the end of admixture. Boxplots from 100 replications."}
 load("Paper_Revision_Poweranalysis_2.RData")
 
-Sim_2_ggplot_100 <- data.frame(l_LRT=melt(Sim_2[[1]])[3],t_sample=melt(Sim_2[[1]])[2],n_seg=100,td=as.factor(rep(t_d,each=200)))
-Sim_2_ggplot_1000 <- data.frame(l_LRT=melt(Sim_2[[2]])[3],t_sample=melt(Sim_2[[2]])[2],n_seg=1000,td=as.factor(rep(t_d,each=200)))
-Sim_2_ggplot_10000 <- data.frame(l_LRT=melt(Sim_2[[3]])[3],t_sample=melt(Sim_2[[3]])[2],n_seg=10000,td=as.factor(rep(t_d,each=200)))
-Sim_2_ggplot_100000 <- data.frame(l_LRT=melt(Sim_2[[4]])[3],t_sample=melt(Sim_2[[4]])[2],n_seg=100000,td=as.factor(rep(t_d,each=200)))
+Sim_2_ggplot_100 <- data.frame(l_LRT=melt(Sim_2[[1]])[3],t_sample=melt(Sim_2[[1]])[2],n_seg=as.factor(100),td=as.factor(rep(t_d,each=200)))
+Sim_2_ggplot_1000 <- data.frame(l_LRT=melt(Sim_2[[2]])[3],t_sample=melt(Sim_2[[2]])[2],n_seg=as.factor(1000),td=as.factor(rep(t_d,each=200)))
+Sim_2_ggplot_10000 <- data.frame(l_LRT=melt(Sim_2[[3]])[3],t_sample=melt(Sim_2[[3]])[2],n_seg=as.factor(10000),td=as.factor(rep(t_d,each=200)))
+Sim_2_ggplot_100000 <- data.frame(l_LRT=melt(Sim_2[[4]])[3],t_sample=melt(Sim_2[[4]])[2],n_seg=as.factor(100000),td=as.factor(rep(t_d,each=200)))
+
+Sim_2_ggplot_all <- rbind(Sim_2_ggplot_100,Sim_2_ggplot_1000,Sim_2_ggplot_10000,Sim_2_ggplot_100000)
+Sim_2_ggplot_all_sig_cutoff <- data.frame(n_seg = c(100,1000,10000,100000), Z = c(2.03136,2.44156,2.61434,2.70554))
 
 
 Plot_power_analysis_2 <- function(Data,Colour_P,n_seg){
@@ -426,14 +430,37 @@ Plot_power_analysis_2 <- function(Data,Colour_P,n_seg){
   
 }
 
-PA_2_A <- Plot_power_analysis_2(Sim_2_ggplot_100,cbPalette_viridis,100)
-PA_2_B <- Plot_power_analysis_2(Sim_2_ggplot_1000,cbPalette_viridis,1000)
-PA_2_C <- Plot_power_analysis_2(Sim_2_ggplot_10000,cbPalette_viridis,10000)
-PA_2_D <- Plot_power_analysis_2(Sim_2_ggplot_100000,cbPalette_viridis,100000)
+#PA_2_A <- Plot_power_analysis_2(Sim_2_ggplot_100,cbPalette_viridis,100)
+#PA_2_B <- Plot_power_analysis_2(Sim_2_ggplot_1000,cbPalette_viridis,1000)
+#PA_2_C <- Plot_power_analysis_2(Sim_2_ggplot_10000,cbPalette_viridis,10000)
+#PA_2_D <- Plot_power_analysis_2(Sim_2_ggplot_100000,cbPalette_viridis,100000)
 
-ggarrange(PA_2_A,PA_2_B,PA_2_C,PA_2_D,
-          labels = c("A","B","C", "D"),
-          ncol = 2, nrow = 2,common.legend = T,legend = 'bottom',heights = c(1,1))
+#ggarrange(PA_2_A,PA_2_B,PA_2_C,PA_2_D,
+#          labels = c("A","B","C", "D"),
+#          ncol = 2, nrow = 2,common.legend = T,legend = 'bottom',heights = c(1,1))
+
+Plot_power_analysis <- function(Data,Sim_2_ggplot_all_sig_cutoff,Colour_P){
+  Px <-  ggplot(Data,aes(x=as.factor(X2),y=value,color=as.factor(X2)))+
+    geom_boxplot()+
+    facet_grid(n_seg~td,switch = "x",labeller=labeller(.rows=c("100"="# fragments: 100","1000"="# fragments: 1000", "10000"="# fragments: 10000", "1e+05"="# fragments: 100000")))+
+    geom_hline(data = Sim_2_ggplot_all_sig_cutoff, aes(yintercept = Z))+
+    theme(legend.position="bottom",
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    ylim(c(-0.5,10))+
+    labs(x = "Admixture Duration")+
+    labs(y = "log Likelihood Ratio")+
+    #scale_y_continuous("log Likelihood Ratio", sec.axis = sec_axis(n_seg,name = "n unique segments"))+
+    scale_color_manual("Gene Flow Model",
+                       values = c(Colour_P[1],Colour_P[6]),
+                       labels = c("Sampled at present","Sampled 50 after end of gene flow"))
+  return(Px)
+  
+}
+
+
+
+Plot_power_analysis(Sim_2_ggplot_all,Sim_2_ggplot_all_sig_cutoff,cbPalette_viridis)
 
 ```
 
@@ -646,8 +673,13 @@ Inferred_segments_1000_gen_GF_recomb_constant <- lapply(Path_to_Fragment_Files_I
 ## Variation in recombinations (deCODE MAP) ##
 deCODE_Map="/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Simulations/Recombination_Maps/Scaled_Decode_Map.txt"
 AAMap_Map="/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Simulations/Recombination_Maps/Scaled_Genetic_AAMap.txt"
+HapMap_Map="/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Simulations/Recombination_Maps/Scaled_HapMap.txt"
 deCODE_Map_x=read.table(deCODE_Map,stringsAsFactors = F,header=T,fill = T)
+AAMap_Map=read.table(AAMap_Map,stringsAsFactors = F,header=T,fill = T)
+HapMap_Map=read.table(HapMap_Map,stringsAsFactors = F,header=T,fill = T)
 mean_deCODE_rr=(tail(deCODE_Map_x$Genetic_Map.cM.,n=1)/tail(deCODE_Map_x$position,n=1))/100
+mean_AAMap_rr=(tail(AAMap_Map$Map.cM.,n=1)/tail(AAMap_Map$Position.bp.,n=1))/100
+mean_HapMap_rr=(tail(HapMap_Map$Genetic_Map.cM.,n=1)/tail(HapMap_Map$position,n=1))/100
 
 # True Seg 1 gen GF varying recomb 
 Path_to_Fragment_Files_True_3=list.files("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Simulated_Icelandic_Fragments_Recomb/",pattern = "ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_",full.names = T)
@@ -1013,7 +1045,8 @@ We included downsampling of the data to test the stability of the ALD estimates.
 
 ##### GLM for the bais on the admixture dates #####
 
-
+library(rethinking)
+library(rstan)
 ### Read in data ###
 Read_GLM_indata <- function(path){
   file_l=list.files(path = path,full.names = T)
@@ -1050,11 +1083,14 @@ xdata.M.3 <- rbind(Fig_2_1,Fig_2_2,Fig_2_3,Fig_2_4)
 xdata.M.3$downsampling <- as.factor(xdata.M.3$downsampling)
 xdata.M.3.no_error <- xdata.M.3 %>% filter(status=='no_error')
 
-xdata.M.3.no_error <- xdata.M.3 %>% filter(status=='no_error') %>% 
- filter(downsampling!=10) %>% filter(downsampling!=1)
+#xdata.M.3.no_error <- xdata.M.3 %>% filter(status=='no_error') %>% 
+# filter(downsampling!=10) %>% filter(downsampling!=1)
 
 
 xdata.M.3.no_error <- xdata.M.3 %>% filter(status=='no_error') %>% 
+ filter(downsampling==100 | downsampling==5)
+
+xdata.M.3.all <- xdata.M.3  %>% 
  filter(downsampling==100 | downsampling==5)
 
 xdata.M.3.no_error$True_tm <- (xdata.M.3.no_error$GF.End-xdata.M.3.no_error$GF.Start)/2 + xdata.M.3.no_error$GF.Start
@@ -1280,4 +1316,59 @@ ggarrange(P1_1,P1_2,
           labels = c("A","B"),
           ncol = 2, nrow = 2,common.legend = T,legend = 'top', align = "h")
 
+```
+
+```{r figS2_updated, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2_updated} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
+
+Plot_model <- data.frame(table(Diff_s=round(xdata.M.3.no_error$Diff_s,digits = 2),GF=xdata.M.3.no_error$GF_model,Asc=ifelse(xdata.M.3.no_error$AS=="I","LES", "HES"),d0=xdata.M.3.no_error$minDist,True_GF=xdata.M.3.no_error$True_tm,Demo=ifelse(xdata.M.3.no_error$Demography=="0_Simple","Sim", "Com"),Recomb=ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant","Con", "Var"),Downsampling=xdata.M.3.no_error$downsampling))
+Plot_model <- subset(Plot_model,Freq>0)
+Plot_model$Combination_chr <- as.factor(paste(Plot_model$GF,Plot_model$Recomb,Plot_model$Demo,Plot_model$Asc,Plot_model$d0,Plot_model$Downsampling,sep = "\n"))
+#Plot_model$Combination_chr <- factor(Plot_model$Combination_chr,
+#                        levels = c("Hudson_only_sim","Hybrid_sim"),ordered = TRUE)
+Plot_model$Combination <- as.numeric(Plot_model$Combination_chr)
+
+
+Plot_model$Col <- ifelse(Plot_model$GF=='SP','#56B4E9','#D55E00')
+
+### Supplement Figures ? Tables
+
+Plot_Fig_2_A <- function(Data,x.axes.lables){
+  Px <-  ggplot(Data,aes(x=as.character(Combination_chr),y=as.numeric(as.character(Diff_s)),colour=Col))+
+    geom_point(aes(size = Freq),show.legend = F)+
+    geom_boxplot(show.legend = F)+
+    geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
+    coord_cartesian(ylim = c(-3,2),expand = 0)+
+    labs(x = "Predictor combination")+
+    labs(y = "Standardized difference between true and estimated time")+
+    theme(axis.text.x = element_text(angle = 0),text = element_text(size=5))+
+    scale_x_discrete(labels= x.axes.lables)+
+    scale_color_manual("Gene Flow Model",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[6]),
+                       labels = c("Pulse","Continuous"))
+  return(Px)
+  
+}
+
+
+Plot_Fig_2_A(Plot_model,levels(Plot_model$Combination_chr))
+
+
+```
+
+```{r tableS1_1, echo=FALSE,results='asis' }
+
+print_B_model_result <- data.frame(B_model_result1)
+kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
+      caption = "\\label{tab:tableS1} Mean, standart deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r tableS1_2, echo=FALSE,results='asis' }
+
+print_B_model_result <- data.frame(B_model_result2)
+kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
+      caption = "\\label{tab:tableS1} Mean, standart deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
 ```
