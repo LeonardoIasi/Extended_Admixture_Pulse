@@ -197,29 +197,58 @@ since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
 
 \begin{table}[H]
 
-\caption{\label{tab:tableS1} Mean, standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
+\caption{\label{tab:tableS1_1} Mean, standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
 \centering
-\begin{tabular}{l|r|r|r|r|r|r}
+\begin{tabular}[t]{l|r|r|r|r|r|r}
 \hline
   & mean & sd & 5.5\% & 94.5\% & n\_eff & Rhat\\
 \hline
-a & 0.12 & 0.02 & 0.08 & 0.16 & 1220.94 & 1\\
+a & 0.01 & 0.02 & -0.03 & 0.05 & 2520.71 & 1\\
 \cline{1-7}
-bG & -0.31 & 0.02 & -0.34 & -0.28 & 1559.84 & 1\\
+bS & 0.02 & 0.02 & -0.02 & 0.05 & 5024.58 & 1\\
 \cline{1-7}
-bR & -1.73 & 0.02 & -1.76 & -1.70 & 2112.69 & 1\\
+bG & -0.26 & 0.02 & -0.29 & -0.22 & 4669.35 & 1\\
 \cline{1-7}
-bD & -0.22 & 0.02 & -0.25 & -0.19 & 2036.66 & 1\\
+bR & -1.35 & 0.02 & -1.38 & -1.31 & 4587.56 & 1\\
 \cline{1-7}
-bm & 0.13 & 0.02 & 0.10 & 0.17 & 1657.66 & 1\\
+bD & -0.21 & 0.02 & -0.25 & -0.18 & 5006.62 & 1\\
 \cline{1-7}
-bA & -0.32 & 0.02 & -0.35 & -0.29 & 1721.62 & 1\\
+bm & 0.23 & 0.02 & 0.19 & 0.26 & 4072.82 & 1\\
 \cline{1-7}
-sigma & 0.46 & 0.01 & 0.44 & 0.47 & 2239.47 & 1\\
+bA & -0.27 & 0.02 & -0.31 & -0.24 & 3960.37 & 1\\
+\cline{1-7}
+sigma & 0.70 & 0.01 & 0.69 & 0.71 & 6274.66 & 1\\
 \hline
 \end{tabular}
 \end{table}
 
+\begin{table}[H]
+\caption{\label{tab:tableS1_2} Mean, standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
+\centering
+\begin{tabular}[t]{l|r|r|r|r|r|r}
+\hline
+  & mean & sd & 5.5\% & 94.5\% & n\_eff & Rhat\\
+\hline
+a & 0.02 & 0.02 & -0.03 & 0.07 & 2121.51 & 1\\
+\cline{1-7}
+bSA & 0.04 & 0.03 & -0.03 & 0.10 & 2081.86 & 1\\
+\cline{1-7}
+bS & 0.00 & 0.02 & -0.05 & 0.05 & 2013.50 & 1\\
+\cline{1-7}
+bG & -0.26 & 0.02 & -0.29 & -0.22 & 3271.79 & 1\\
+\cline{1-7}
+bR & -1.35 & 0.02 & -1.38 & -1.31 & 3731.98 & 1\\
+\cline{1-7}
+bD & -0.21 & 0.02 & -0.25 & -0.18 & 4078.52 & 1\\
+\cline{1-7}
+bm & 0.22 & 0.02 & 0.19 & 0.26 & 3724.48 & 1\\
+\cline{1-7}
+bA & -0.29 & 0.02 & -0.34 & -0.25 & 2004.93 & 1\\
+\cline{1-7}
+sigma & 0.70 & 0.01 & 0.69 & 0.71 & 4384.13 & 1\\
+\hline
+\end{tabular}
+\end{table}
 
 \begin{table}[H]
 
@@ -248,6 +277,37 @@ Extended Pulse (td=1500) &  0.018 (0.018 - 0.018) & 1713 (1654 - 1777) & 7e-06 (
 Extended Pulse (td=2000) & 0.018 (0.018 - 0.018) & 1875 (1809 - 1945) & 4e-06 (0 - 8e-06)\\
 \hline
 Extended Pulse (td=2500) & 0.018 (0.018 - 0.018) & 2129 (2055 - 2208) & -1e-06 (-5e-06 - 4e-06)\\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+
+\caption{\label{tab:tableS2_2}\label{tab:tableS2} AIC and RSS for the fit to Neandertal data}
+\centering
+\begin{tabular}[t]{l|r|r}
+\hline
+Model & AIC & RSS\\
+\hline
+Simple Pulse & -44845.31 & 4.33e-05\\
+\hline
+Extended Pulse (td=1) & -44845.31 & 4.33e-05\\
+\hline
+Extended Pulse (td=100) & -44846.42 & 4.33e-05\\
+\hline
+Extended Pulse (td=200) & -44849.73 & 4.32e-05\\
+\hline
+Extended Pulse (td=400) & -44862.90 & 4.30e-05\\
+\hline
+Extended Pulse (td=800) & -44914.33 & 4.23e-05\\
+\hline
+Extended Pulse (td=1000) & -44951.47 & 4.18e-05\\
+\hline
+Extended Pulse (td=1500) & -45069.45 & 4.01e-05\\
+\hline
+Extended Pulse (td=2000) & -45200.02 & 3.84e-05\\
+\hline
+Extended Pulse (td=2500) & -45294.46 & 3.72e-05\\
 \hline
 \end{tabular}
 \end{table}

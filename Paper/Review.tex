@@ -101,14 +101,18 @@ Our results suggest that from present-day data, even 100,000 admixture segments,
 Is there a difference in the power to reject the “pulse model” if one uses ALD at different length scales or realized segments? This would place clearer value on one summary statistic over the other for pursuing further inference in aDNA datasets. 
 
 \paragraph{Answer to 1.3} \textbf{TODO}
-We compared the performance for multiple durations of gene flow with a mean time of 1500 generations ago from msprime simulations using the decay of ancestry LD with perfectly known recombination distances.
+We compared the performance for multiple durations of gene flow with a mean time of 1500 generations ago from msprime simulations using the decay of ancestry LD with perfectly known recombination distances. We compare on sprim simulations with tm 15000 and different durations segment length and ALD, with inferred and actual segments.
 
 
 \paragraph{4.}
 The focus in the paper is to distinguish between models of an extended duration of admixture using the decay of “admixture LD” but little attention is paid to the model using segments, although the authors detail this in the derivations first. The admixture LD is easier to calculate from data to avoid haplotype phasing, but in theory segments are detectable (Skov et al 2018). In the simulations detailed using msprime (Kellher et al 2016), it should be possible to directly use the introgressed segments for this task as well. In my view the authors should either entirely describe the results in terms of ALD, and making this more explicit in the section on Results/Simulations to say that this is the specific summary statistic that is presented throughout the results or to include supplementary results where the summary statistic of admixture segment lengths are used as well. 
 
+
+
 \paragraph{Answer to 1.4}
-We 
+We compare on msprim simulations with tm 15000 and different durations segment length and ALD, with inferred and actual segments. We use Skov et al. 2018 to infer the segments. 
+
+We agree that the previous version had a slight disconnect between the theory section and the inference. Based on various feedback; this is no longer the case and we now derive ALD and segments independently; added an additional analysis based on "ideal data" (Figure 2) and compare parameter inference between the two approaches directly (new Figure XX and answer to Query 3).
 
 \subsection{Minor Comments}\label{Minor Comments}
 
