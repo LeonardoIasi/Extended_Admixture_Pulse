@@ -445,7 +445,7 @@ First, we want to know for which duration and time since admixture we can differ
 \begin{figure}
 \centering
 \includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figR2-1.pdf}
-\caption{\label{fig:fig1_1} Log likelihood ratio of the simple and extended pulse on perfectly known segments for different admixture durations. Segments are either sampled at the present or 50 generations after the end of gene flow. Log likelihood ratios bigger then 10 are not depicted.}
+\caption{\label{fig:fig1_1} Log likelihood ratio of the simple and extended pulse on perfectly known segments for different admixture durations. Segments are either sampled at the present or 50 generations after the end of gene flow. Log likelihood ratios bigger then 10 are rounded to 10.}
 \end{figure}
 
 
@@ -469,7 +469,7 @@ The duration of continuous gene flow $t_d$ corresponds to 50\% of the mean
 admixture time $t_m$, black line indicates true mean admixture time. B)
 Comparison of mean admixture time estimates for simulations with a mean
 time of admixture of 1500 generations ago, at varying durations of gene
-flow. Boxplot created from 100 simulation replicates.}
+flow. Solid black line indicates true mean admixture time for the simple pulse model, dashed red line indicates true nean time under the extended pulse model. Boxplot created from 100 simulation replicates.}
 \end{figure}
 
 
@@ -584,7 +584,7 @@ split time between modern humans and Neandertals is 10,000 generations
 ago and the split between Africans and non-Africans is 2,550
 generations ago. The migration rate from Neandertals into non-Africans
 was set to zero before the split from Africans, to ensure that there is no Neandertal
-ancestry in Africans. Each simulation was repeated 100 times. For segment simulations we followed  \cite{skov_detecting_2018}, but only simulated the Europeans. The split time of  non-Africans are kept the same as in the ALD simulations (2550 generations ago) (S. Figure \ref{fig:figS1}C).  
+ancestry in Africans. Each simulation was repeated 100 times. For the comparison of segment and ALD data we followed the demographic model simulation setup of \cite{skov_detecting_2018}, but only simulated the Europeans. The split time of  non-Africans are kept the same as in the ALD simulations (2550 generations ago) (S. Figure \ref{fig:figS1}C).  
 
 
 \subsubsection{Simulating admixture}\label{Simulating the expanded pulse}
@@ -592,11 +592,11 @@ We specify simulations under the extended pulse model using the mean admixture t
 
 \subsubsection{Recombination maps}\label{recombination map}
 Uncertainties in the recombination map were previously shown to influence admixture time estimates \citep{sankararaman_date_2012,fu_genome_2014,sankararaman_combined_2016}. To investigate the effect of more realistic
-recombination rate variation, we perform simulations using empirical recombination maps. We use the  African-American map \citep{hinch_landscape_2011} for simulations to evaluate the relative importance of simulation and modeling parameters for admixture time estimates. The HapMap phase 3 map \citep{HapMapConsortium_second_2007} is used for evaluating inference using the extended pulse model. For admixture segment simulations we used the deCODE map . For simplicity, we use the same
+recombination rate variation, we perform simulations using empirical recombination maps. We use the  African-American map \citep{hinch_landscape_2011} for simulations to evaluate the relative importance of simulation and modeling parameters for admixture time estimates. The HapMap phase 3 map \citep{HapMapConsortium_second_2007} is used for evaluating inference using the extended pulse model. For simplicity, we use the same
 recombination map (150 Mb of chromosome 1, excluding the first 10 Mb)
 for all simulated chromosomes. When simulating under an empirical map, with the analysis assuming a constant rate (\emph{i.e.} no correction), we use the mean recombination rate from the respective map to calculate the genetic distance from the physical distance for each SNP. The mean recombination rate is
 calculated from the 150 Mb map (\(1.017 \, \frac{cM}{Mb}\) AAMap,
-\(0.992 \, \frac{cM}{Mb}\) HapMap and \(0.914 \, \frac{cM}{Mb}\) deCODE).
+\(0.992 \, \frac{cM}{Mb}\) HapMap.
 
 
 
@@ -649,7 +649,7 @@ We consider a set of five parameters:
 We perform simulations using all possible parameter combinations. For the effect of the amount of SNPs i.e. accuracy of the ALD estimates, we downsampled the data by randomly choosing 5 \% of the overall SNPs for ALD calculation.
 We define a standard model having a constant recombination rate, simple demography and gene flow, LES ascertainment and $d_0 = 0.05$.
 The genetic distance is assigned from the physical  position using the average recombination rate of the African-American genetic map (\emph{i.e.}, assuming the recombination rate is constant over the simulated chromosome given by this value) for simulations under a variable recombination rate.
-For each of the possible sets of parameters, we simulate 100 replicates each and fit ALD decay curves. We excluded a very small number of simulations for which the curve could not be estimated (34 out of 6,400). 
+For each of the possible sets of parameters, we simulate 100 replicates each and fit ALD decay curves. We excluded a very small number of simulations for which the curve could not be estimated (66 out of 6,400). 
 
 
 
@@ -677,12 +677,12 @@ E_i &\sim \text{Normal}(\mu_i,\sigma) \\
 \end{equation}
 
 The response variable $E_i$ for this model are the residuals, \emph{i.e.}, the difference between the estimated admixture time $t_{est}$ and simulated admixture time $t_{sim}$ for each simulation:
-$$E_i = \frac{t_{est} - t_{sim}}{\sigma_{t_{est}}}$$, where $\sigma$ is the standard deviation of $t_{est}$ , and the model variables $A, M, D, R, S$ and $G$ are binary predictors. We also modeled the interaction between numer of used SNPs and the ascertainment scheme using the GLM described in \ref{eq:GLM2} with an additional predictor for the interaction $as$.
+$$E_i = \frac{t_{est} - t_{sim}}{\sigma_{t_{est}}}$$, where $\sigma$ is the standard deviation of $t_{est}$ , and the model variables $A, M, D, R, S$ and $G$ are binary predictors. We also modeled the interaction between number of used SNPs and the ascertainment scheme using the GLM described in \ref{eq:GLM2} with an additional predictor for the interaction $as$.
 We assume a Normal likelihood because it is the maximum entropy distribution in our case. We obtained the posterior probability using a Hamiltonian Monte Carlo MCMC algorithm, as implemented in STAN \citep{carpenter_stan_2017} using an R interface \citep{stan_development_team_rstan_2018,mcelreath_statistical_2020}. The Markov chains converged to the target distribution (Rhat = 1) and efficiently sampled from the posterior (S. Table \ref{tab:tableS1}).  
 
 \subsection{Estimating admixture time from simulated segment data}\label{Estimating admixture time from simulated segment data}
 
-For estimating admixture time and duration from introgressed segments, we used the true segment length obtained from \texttt{msprime} or inferred the segments using the HMM from \cite{skov_detecting_2018}. We only considered inferred segments with a posterior decoding of 0.9 or higher. Furthermore, we use an upper and lower cutoff for inferred segment length of 0.05 cM and 1.2 cM. The genetic length are assigned using the true constant recombination rate for segments simulated under a constant rate. For simulations under an empirical map (deCODE map) we either used the mean recombination rate of the deCODE map, the AAMap or the deCODE map.
+For estimating admixture time and duration from introgressed segments, we used the true segment length obtained from \texttt{msprime} or inferred the segments using the HMM from \cite{skov_detecting_2018}. We only considered inferred segments with a posterior decoding of 0.9 or higher. Furthermore, we use an upper and lower cutoff for inferred segment length of 0.05 cM and 1.2 cM. The genetic length are assigned using the true constant recombination rate for segments simulated under a constant rate. For simulations under an empirical map (HapMap map) we either used the mean recombination rate of the HapMap, the AAMap or the HapMap.
 We fit the simple (\ref{xx}) and extended pulse (\ref{xx}) using the \texttt{optim} function implemented in the R \texttt{stats v.3.6.2} package (method="L-BFGS-B") with lower and upper constrains being $1/5000$ for $t_m$ and $2/1e8$ for $k$. The log likelihoods for the two fits are compared using a log likelihood ratio test.
 
 \subsection{Estimating admixture time from real data}\label{Estimating admixture time from real data}
