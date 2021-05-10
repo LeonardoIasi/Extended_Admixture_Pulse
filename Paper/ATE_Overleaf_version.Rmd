@@ -735,7 +735,7 @@ Having established the expectations of the segment length for gene flow under a 
 
 \subsubsection{Results for model comparisons}
 
-```{r message=FALSE, echo=FALSE,warning=FALSE}
+```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
 
 # New Data
 Figure_1_A_Data <- Results_Table("Fig_1_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Fig_1_A_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0.txt")
@@ -772,7 +772,7 @@ To further investigate the effect of the duration of gene flow on mean
 admixture time estimates, we compare scenarios where $t_m$ is fixed at 1500, but where $t_d$ varies between one (simple pulse model) and 1,500 generations (Figure \ref{fig:fig2}B). Here, we find that the simple pulse model leads to a slight overestimate of $t_m$, and that longer pulses result in more recent admixture time estimates. However, even  for very-long gene flow of $t_d=1,500$ the relative deviation is less than `r round(max(Fig_1_B_Means_per_duration$relative_dif),1)*100`\%. Thus, we find that if we are interested in $t_m$, this parameter is generally well-estimated even under scenarios of very long gene flow.
 
 
-```{r fig2,message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:fig2} A) Comparison of mean admixture time estimates between simple and extended pulse gene flow for different admixture times. The duration of continuous gene flow $t_d$ corresponds to 50% of the mean admixture time $t_m$, black line indicates true mean admixture time. B) Comparison of mean admixture time estimates for simulations with a mean time of admixture of 1500 generations ago, at a varying durations of gene flow. Boxplot created from 100 simulation replicates, respectively."}
+```{r eval=F,fig2,message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:fig2} A) Comparison of mean admixture time estimates between simple and extended pulse gene flow for different admixture times. The duration of continuous gene flow $t_d$ corresponds to 50% of the mean admixture time $t_m$, black line indicates true mean admixture time. B) Comparison of mean admixture time estimates for simulations with a mean time of admixture of 1500 generations ago, at a varying durations of gene flow. Boxplot created from 100 simulation replicates, respectively."}
 
 ######################## GG PLotting ###########################
 
@@ -832,7 +832,7 @@ ggarrange(P1_1,P1_2,
 \subsection{Comparing effect sizes for technical covariates}\label{comparing effect sizes}
 
 
-```{r message=FALSE, echo=FALSE,warning=FALSE, cache=T}
+```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE, cache=T}
 
 ##### GLM for the bais on the admixture dates #####
 
@@ -940,8 +940,6 @@ Effect_size_fixed_s_2 <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
     mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF ,ggarrange(Im_Simple_Demo,Im_Complex_Demo,
-          labels = c("A","B"),
-          ncol = 2, nrow = 1)
     a ~ dnorm( 0 , 2 ),
     c(bA,bm,bD,bR,bG) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)
@@ -949,7 +947,7 @@ Effect_size_fixed_s_2 <- ulam(
 
 ```
 
-```{r message=FALSE, echo=FALSE,warning=FALSE, cache=T}
+```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE, cache=T}
 B_model_result <- precis(Effect_size_fixed_s_2,prob = 0.95)
 
 
@@ -983,22 +981,10 @@ As the effect of ongoing gene flow is relatively minor, we next evaluate its rel
 
 Therefore, we contrast the effect of extended gene flow on admixture time inference with  the effects of a complex demographic history and complex recombination map, as well as the impact of the ascertainment scheme and $d_0$ in the ALD estimation, using a simple and complex setting for each of these parameters. 
 
-In Figure 3, we present the effect sizes of these four predictors on the admixture time inference. These effect sizes are estimated using a GLM on simulations under all possible parameter combinations  (S. \ref{fig:figS2}, Supplement Table \ref{tab:tableS1}).
-
-As a baseline, for comparison, we define a standard model as one using the LES ascertainment, \(d_{0} = 0.05 cM\), simple demography and constant recombination map. 
-
-As shown in the previous section, under the standard model admixture times are well-estimated, with a mean standardized difference of  `r round(Post_effect_size_est$mean[1],2)` (`r round(Post_effect_size_est$HPDI_lower[1],2)` - `r round(Post_effect_size_est$HPDI_upper[1],2)` $C.I._{95\%}$) from the true
-admixture time.
-
-We find that the  inclusion of a variable recombination map lead to a large underestimate of `r round(Post_effect_size_est$mean[3],2)` `r round(Post_effect_size_est$HPDI_lower[3],2)` -- `r round(Post_effect_size_est$HPDI_upper[3],2)` $C.I._{95\%}$. In contrast, all other covariates had relatively moderate effect sizes. The extended pulse   (`r round(Post_effect_size_est$mean[2],2)` `r round(Post_effect_size_est$HPDI_lower[2],2)` -- `r round(Post_effect_size_est$HPDI_upper[2],2)`) is in the range of biases arising from the ascertainment scheme (`r round(Post_effect_size_est$mean[6],2)` `r round(Post_effect_size_est$HPDI_lower[6],2)` -- `r round(Post_effect_size_est$HPDI_upper[6],2)`), a more complex demography ((`r round(Post_effect_size_est$mean[4],2)` `r round(Post_effect_size_est$HPDI_lower[4],2)` -- `r round(Post_effect_size_est$HPDI_upper[4],2)`) and only slightly more then caused by a different $d_0$ (`r round(Post_effect_size_est$mean[5],2)` `r round(Post_effect_size_est$HPDI_lower[5],2)` -- `r round(Post_effect_size_est$HPDI_upper[5],2)`) (S.\ref{fig:figS2}).
-
-Overall the bias introduced by the ascertainment, minimal distance
-cutoff, demography and admixture model are  around +/-0.25 standard deviations or less. The major uncertainties in the admixture time
-estimate arise from assuming a constant recombination rate. The
-admixture time estimates for a simple or extended admixture pulse are similarly effected by the other modeling parameters.
 
 
-```{r fig3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:fig3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+```{r eval=F,fig3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:fig3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 Post_effect_size_est_table <- Post_effect_size_est
 row.names(Post_effect_size_est_table) <- c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
 
@@ -2956,8 +2942,9 @@ Extended_Pulse_Evaluation
 In the previous section, we have shown using simulations that it might be difficult to distinguish admixture scenarios of various durations particularly if it happened a long time ago. To evaluate that this is also true for real data, we aim to estimate the Neandretal admixture pulse from the 1000 genomes data, by fitting pulses of durations ranging from one generation up to 2,500 generations to the ALD decay curve (Figure \ref{fig:fig5}, S. Table \ref{tab:tableS2}). Plotting these best-fit ALD curves (Figure \ref{fig:fig5}A) on a y-axis in natural scale shows the extremely slight difference predicted under these drastically different gene flow scenarios. The difference between scenarios becomes more apparent if we log-transform the y-axis (Figure \ref{fig:fig5}B), where we see that ongoing gene flow results in a heavier tail in the ALD distributions. However, these LD values are very close to zero, and are thus only very noisily estimated. Therefore, we find that all scenarios are compatible with the observed data, and that there is little power to differentiate different cases.
 
 ```{r message=FALSE, echo=FALSE,warning=FALSE}
-input_pol_corrected <- "Real_Data_Analysis/Raw_ALDER_output-ALL_chr_hcNea_YRI_CEU_1k_G_polarized_LES_ascertained_corrected_rr_CEU_specific_map.txt"
+input_pol_corrected <- "~/Desktop/ATE_Paper/Admixture_Time_Inference_Paper/Real_Data_Analysis/Raw_ALDER_output-ALL_chr_hcNea_YRI_CEU_1k_G_polarized_LES_ascertained_corrected_rr_CEU_specific_map.txt"
 
+""
 lval <- 0.05	# lower value of dist to use
 hval <- 3		# higher value of dist to use 
 log <- F
@@ -3033,8 +3020,7 @@ EXP_Log_fn <- function(dist,A,s) log(A)  -((dist/100)/s)
 LOMAX_Log_fn <- function(dist,A,s,w) log(A) + (1/w) * -log(1+ ((w*(dist/100))/s))
 
 
-AIC_result <- AIC(Expo_fit_result,all_t_lomax_est[[1]],all_t_lomax_est[[2]],all_t_lomax_est[[3]],all_t_lomax_est[[4]],
-    all_t_lomax_est[[5]],all_t_lomax_est[[6]],all_t_lomax_est[[7]],all_t_lomax_est[[8]],all_t_lomax_est[[9]])
+AIC_result <- AIC(Expo_fit_result,all_t_lomax_est[[1]],all_t_lomax_est[[2]],all_t_lomax_est[[3]],all_t_lomax_est[[4]],all_t_lomax_est[[5]],all_t_lomax_est[[6]],all_t_lomax_est[[7]],all_t_lomax_est[[8]],all_t_lomax_est[[9]])
 
 xx=t(data.frame(c(c(coef(Expo_fit_result)[1],confint(Expo_fit_result)[1,1],confint(Expo_fit_result)[1,2]),
                  c(coef(Expo_fit_result)[2],confint(Expo_fit_result)[2,1],confint(Expo_fit_result)[2,2]),
@@ -3439,6 +3425,18 @@ Param_Est_Tabel <- cbind(Models,Params_name,Param_Est_Tabel)
 kable(Param_Est_Tabel , "latex",col.names = c("Model","Parameter","Estimate","2.5 %", "97.5 %"),row.names = FALSE,
       caption = "\\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit") %>%
   #collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r tableS2, echo=FALSE,results='asis' }
+
+
+Param_Est_fit_Tabel <- data.frame(Models=c("Simple Pulse","Extended Pulse (td=1)","Extended Pulse (td=100)" ,"Extended Pulse (td=200)","Extended Pulse (td=400)","Extended Pulse (td=800)","Extended Pulse (td=1000)","Extended Pulse (td=1500)","Extended Pulse (td=2000)","Extended Pulse (td=2500)"))
+Param_Est_fit_Tabel$AIC <- AIC_result$AIC
+Param_Est_fit_Tabel$RSS <- Model_RSS
+
+kable(Param_Est_fit_Tabel , "latex",col.names = c("Model","AIC","RSS"),row.names = FALSE,
+      caption = "\\label{tab:tableS2} AIC and RSS for the fit to Neandertal data") %>%
   kable_styling(latex_options = "HOLD_position")
 ```
 
