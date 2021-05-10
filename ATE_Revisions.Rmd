@@ -469,7 +469,7 @@ Plot_power_analysis(Sim_2_ggplot_all,Sim_2_ggplot_all_sig_cutoff,cbPalette_virid
 
 Here, we us msprime simulations to simulate the above scenarios. All samples are sampled at time 0, i.e. using present-day genomes to estimate $t_m$ and $t_d$. The ALDER inferred ALD is used to fit the simple and extended pulse. We compare the fit to data between the simple and extended pulse model using Akaike information criterion and a F-test (comparing significant differences between the residual sum of squares).
 
-```{r eval=T,message=FALSE, echo=FALSE,warning=FALSE}
+```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
 #### New Figure for Paper using recent sampling (50 gen): constant RR, RM no correction, RM diff RM correction, RM correction same RM ####
 
 
@@ -583,7 +583,7 @@ ggdata_l.Nea_tm <- melt(Plot.data_Nea_tm,measure.vars =  c('length_GF'),id.vars 
 
 
 
-``` {r figR3_1, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR3_1} Comparison between the Hudson only and hybrid Wright-Fischer/Hudson simulations for parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario"}
+``` {r eval=F,figR3_1, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR3_1} Comparison between the Hudson only and hybrid Wright-Fischer/Hudson simulations for parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario"}
 
 # Plot 50 gen from Admixture
 ggdata_t.Nea_tm_mean_GF_exp$Model <- "Simple Pulse"
@@ -606,7 +606,7 @@ Constant_sampling_time
 
 
 
-``` {r figR3_3, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR3_3} Neandertal duration simple and extended pulse AIC and F test comparison"}
+``` {r eval=F,figR3_3, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR3_3} Neandertal duration simple and extended pulse AIC and F test comparison"}
 
 
 AIC_comp=data.frame(AIC_SP=Plot.data_Nea_tm$AIC_SP,AIC_EP=Plot.data_Nea_tm$AIC_EP,
@@ -648,6 +648,64 @@ SP_EP_stats_comparison
 ## Using segments directly
 
 Here, we use msprime simulations and use the segments directly. The simulations were modeled after Skov. et al. 2018 with minor changes (only non-Africans were modeled). We used the true segments from 100 haploid non-Africans obtained from msprime and also inferred the segments using the HMM from Skov et al. 2018. We used a posterior cutoff for calling introgressed segments of 0.9. We only considered segments between 0.05 and 1.2 cM. We used the deCODE MAp to simulate a variyng recombination rate. 
+
+```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
+source("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Fit_models.R")
+
+Fit_all_true_segments <- function(file_pattern_constant,file_pattern_varying,mean_HapMap_rr,AAMap_Map,HapMap_Map){
+  Path_to_Fragment_Files_True_Constant=list.files("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/",pattern = file_pattern_constant,full.names = T)
+  True_segments_constant <- lapply(Path_to_Fragment_Files_True_1, Fit_to_segments,header=F,recomb_rate=1e-8,n_Haploid=100,truncation=F)
+  
+  Path_to_Fragment_Files_True_varying=list.files("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/",pattern = file_pattern_varying,full.names = T)
+  #no correction
+  True_segments_varying_no_correction <- lapply(Path_to_Fragment_Files_True_varying, Fit_to_segments,header=F,recomb_rate=mean_HapMap_rr,n_Haploid=100,truncation=F)
+  #AAMap correction
+  True_segments_varying_AAMap_correction <- lapply(Path_to_Fragment_Files_True_varying, Fit_to_segments,header=F,Path_to_Recomb_Map=AAMap_Map,n_Haploid=100,truncation=F)
+  #HapMap correction
+  True_segments_varying_HapMap_correction <- lapply(Path_to_Fragment_Files_True_varying, Fit_to_segments,header=F,Path_to_Recomb_Map=HapMap_Map,n_Haploid=100,truncation=F)
+  return(c(True_segments_constant,True_segments_varying_no_correction,True_segments_varying_AAMap_correction,True_segments_varying_HapMap_correction))
+}
+
+Fit_all_inferred_segments <- function(file_pattern_constant,file_pattern_varying,mean_HapMap_rr,AAMap_Map,HapMap_Map){
+  Path_to_Fragment_Files_Inferred_Constant=list.files("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/",pattern = file_pattern_constant,full.names = T)
+  Inferred_segments_constant <- lapply(Path_to_Fragment_Files_Inferred_Constant, Fit_to_segments,header=T,recomb_rate=1e-8,n_Haploid=100,truncation=T,lower_trunc=0.05,upper_trunc=1.2)
+  
+  Path_to_Fragment_Files_Inferred_varying=list.files("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/",pattern = file_pattern_varying,full.names = T)
+  #no correction
+  Inferred_segments_varying_no_correction <- lapply(Path_to_Fragment_Files_Inferred_varying, Fit_to_segments,header=F,recomb_rate=mean_HapMap_rr,n_Haploid=100,truncation=F)
+  #AAMap correction
+  Inferred_segments_varying_AAMap_correction <- lapply(Path_to_Fragment_Files_Inferred_varying, Fit_to_segments,header=F,Path_to_Recomb_Map=AAMap_Map,n_Haploid=100,truncation=F)
+  #HapMap correction
+  Inferred_segments_varying_HapMap_correction <- lapply(Path_to_Fragment_Files_Inferred_varying, Fit_to_segments,header=F,Path_to_Recomb_Map=HapMap_Map,n_Haploid=100,truncation=F)
+  return(c(Inferred_segments_constant,Inferred_segments_varying_no_correction,Inferred_segments_varying_AAMap_correction,Inferred_segments_varying_HapMap_correction))
+}
+
+## Variation in recombinations (HapMap) ##
+AAMap_Map="/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Simulations/Recombination_Maps/Scaled_Genetic_AAMap.txt"
+HapMap_Map="/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Simulations/Recombination_Maps/Scaled_HapMap.txt"
+AAMap_Map=read.table(AAMap_Map,stringsAsFactors = F,header=T,fill = T)
+HapMap_Map=read.table(HapMap_Map,stringsAsFactors = F,header=T,fill = T)
+mean_AAMap_rr=(tail(AAMap_Map$Map.cM.,n=1)/tail(AAMap_Map$Position.bp.,n=1))/100
+mean_HapMap_rr=(tail(HapMap_Map$Genetic_Map.cM.,n=1)/tail(HapMap_Map$position,n=1))/100
+
+## Fitting True segments
+
+True_seg_td_1 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_1_","ALL_Simulation-merged-_Scenario_1_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+True_seg_td_200 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_2_","ALL_Simulation-merged-_Scenario_2_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+True_seg_td_400 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_3_","ALL_Simulation-merged-_Scenario_3_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+True_seg_td_800 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_4_","ALL_Simulation-merged-_Scenario_4_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+True_seg_td_1000 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_5_","ALL_Simulation-merged-_Scenario_5_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+True_seg_td_1500 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_6_","ALL_Simulation-merged-_Scenario_6_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+True_seg_td_2000 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_7_","ALL_Simulation-merged-_Scenario_7_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+
+Inferred_seg_td_1 <- Fit_all_inferred_segments("ALL_Inferred_Archaic_Tracts-_Scenario_1_","ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+Inferred_seg_td_200 <- Fit_all_inferred_segments("ALL_Inferred_Archaic_Tracts-_Scenario_2_","ALL_Inferred_Archaic_Tracts-_Scenario_2_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+Inferred_seg_td_400 <- Fit_all_inferred_segments("ALL_Inferred_Archaic_Tracts-_Scenario_3_","ALL_Inferred_Archaic_Tracts-_Scenario_3_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+Inferred_seg_td_800 <- Fit_all_inferred_segments("ALL_Inferred_Archaic_Tracts-_Scenario_4_","ALL_Inferred_Archaic_Tracts-_Scenario_4_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+Inferred_seg_td_1000 <- Fit_all_inferred_segments("ALL_Inferred_Archaic_Tracts-_Scenario_5_","ALL_Inferred_Archaic_Tracts-_Scenario_5_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+Inferred_seg_td_1500 <- Fit_all_inferred_segments("ALL_Inferred_Archaic_Tracts-_Scenario_6_","ALL_Inferred_Archaic_Tracts-_Scenario_6_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+Inferred_seg_td_2000 <- Fit_all_inferred_segments("ALL_Inferred_Archaic_Tracts-_Scenario_7_","ALL_Inferred_Archaic_Tracts-_Scenario_7_Recomb_",mean_HapMap_rr,AAMap_Map,HapMap_Map)
+```
 
 ```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
 source("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Fit_models.R")
@@ -727,7 +785,7 @@ save(True_segments_1_gen_GF_recomb_constant,True_segments_1_gen_GF_recomb_varyin
      , mean_deCODE_rr,file = "Segment_fit_2.RData")
 ```
 
-```{r eval=T,message=FALSE, echo=FALSE,warning=FALSE}
+```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
 #load("Segment_fit.RData")
 load("Segment_fit_2.RData")
 get_seg_result_table <- function(res.list,GF_length,descrip){
@@ -859,7 +917,7 @@ Inferred_segments_ggdata_td$True_tm <- 1500
 
 ```
 
-``` {r figR3_4, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR3_4} "}
+``` {r eval=F,figR3_4, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR3_4} "}
 True_tm <- Plot_tm(True_segments_ggdata_tm,cbPalette_viridis,"True segments")
 Inferred_tm <- Plot_tm(Inferred_segments_ggdata_tm,cbPalette_viridis ,"Inferred segments")
 True_td <- Plot_td(True_segments_ggdata_td,cbPalette_viridis ,"True segments")
@@ -871,7 +929,7 @@ Direct_segments_inf <- ggarrange(True_tm,True_td,Inferred_tm,Inferred_td,labels 
 Direct_segments_inf
 ```
 
-``` {r figR3_5, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR3_4} "}
+``` {r eval=F,figR3_5, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR3_4} "}
 
 True_LRT <- Plot_LRT(True_segments,cbPalette_viridis,"True segments")
 Inferred_LRT <- Plot_LRT(Inferred_segments,cbPalette_viridis,"Inferred segments")
@@ -887,7 +945,7 @@ Direct_segments_LRT
 
 As described in Neslon et al. 2020 the algorithm in ms and msprime (the Hudson model), it is known that the coalescent is biased relative to the W-F-model when sample sizes are large or for events in the recent past. The Hudson algorithm results in unrealistic relatedness among samples due to having to many ancestors. This is a consequence of the recombination algorithm being designed to simulate small regions and does not account for multiple simultaneous recombinations during meiosis. This can have the effect of long-range correlations along the simulated genomes in large samples or under migration models. This correlation might then affect the dating of migration events since it influences the recombination clock. In Nelson et al. 2020 the deviation in the variance in ancestry proportion between the expected and msprim simulations under the Hudson model was observed for admixture events younger than 20 generations before sampling with 30% admixture proportion. This effect can be corrected by using a Wright-Fisher-model in the first generations of simulation and switch to the faster Hudson model afterwards. Although our smallest number of generations between end of admixture and sampling with a admixture fraction of 3% is 50  generations, we examined the effect of only using the Hudson model, as we did before, by comparing it to W-F & Hudson hybrid simulations for our scenario with the stalest number of generation between sampling and end of admixture. We run the same simulation used for Figure 4 A and B under a constant recombination rate. The W-F-model is run for 500 generations and switches to the Hudson afterwards. We replicated this 10 times and compared it to the original simulations only using the Hudson algorithm (100 replicates).
 
-```{r eval=T,message=FALSE, echo=FALSE,warning=FALSE}
+```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
 #### New Figure for Paper using recent sampling (50 gen): constant RR, RM no correction, RM diff RM correction, RM correction same RM ####
 
 Filter_Result_Table <- function(Result.Table){
@@ -1015,7 +1073,7 @@ ggdata_reodering_fn <- function(ggdata){
 
 
 
-``` {r figR4, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR4} Comparison between the Hudson only and hybrid Wright-Fischer/Hudson simulations for parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario"}
+``` {r eval=F,figR4, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR4} Comparison between the Hudson only and hybrid Wright-Fischer/Hudson simulations for parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario"}
 
 # Plot 50 gen from Admixture
 ggdata_t.GF_50_mean_GF_exp$Model <- "Simple Pulse"
@@ -1066,12 +1124,12 @@ Fig_2_2$Demography <- "0_Complex"
 Fig_2_2$Recomb.rate <- "0_constant"
 Fig_2_2$GF_model <- ifelse(Fig_2_2$Scenario.name=="_Complex_Demographies_Scenario_3_","EP","SP")
 
-Fig_2_3 <- Read_GLM_indata("/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_C_corrected_revision/Result_classic_Exp/")
+Fig_2_3 <- Read_GLM_indata("/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_C_corrected_revision_new/Result_Exp/")
 Fig_2_3$Demography <- "0_Simple"
 Fig_2_3$Recomb.rate <- "0_varying"
 Fig_2_3$GF_model <- ifelse(Fig_2_3$Scenario.name=="_Recombination_Map_Scenario_3_","EP","SP")
 
-Fig_2_4 <- Read_GLM_indata("/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_D_Complex_corrected_revision/Result_classic_Exp/")
+Fig_2_4 <- Read_GLM_indata(path = "/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_D_Complex_corrected_revision_new/Result_Exp/")
 Fig_2_4$Demography <- "0_Complex"
 Fig_2_4$Recomb.rate <- "0_varying"
 Fig_2_4$GF_model <- ifelse(Fig_2_4$Scenario.name=="_Recombination_Map_and_Complex_Demographies_Scenario_3_","EP","SP")
@@ -1345,7 +1403,7 @@ Plot_Fig_2_A <- function(Data,x.axes.lables){
     geom_point(aes(size = Freq),show.legend = F)+
     geom_boxplot(show.legend = F)+
     geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
-    coord_cartesian(ylim = c(-3,2),expand = 0)+
+    coord_cartesian(ylim = c(-2,1),expand = 0)+
     labs(x = "Predictor combination")+
     labs(y = "Standardized difference between true and estimated time")+
     theme(axis.text.x = element_text(angle = 0),text = element_text(size=5))+
