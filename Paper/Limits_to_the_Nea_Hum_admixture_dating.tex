@@ -486,12 +486,12 @@ As a baseline, for comparison, we define a standard model as one using the lower
 As shown in the previous section, under the standard model admixture times are well-estimated, with a mean standardized difference of  -0.03 (-0.07 - 0.02 $C.I._{95\%}$) from the true
 admixture time.
 
-We find that the  inclusion of a variable recombination map leads to a large underestimate of admixture times -1.47 -1.53 -- -1.42 $C.I._{95\%}$. In contrast, all other covariates had relatively moderate effect sizes. The extended pulse   (-0.24,  -0.29 -- -0.19) is in the range of biases arising from the ascertainment scheme (-0.33, -0.38 --
--0.28), a more complex demography (-0.25, -0.30 -- -0.20) and only slightly more then caused by a different $d_0$ (-0.20, -0.16 --
--0.26) (S. Figure \ref{fig:figS2}). The use of only 5 \% of the available SNPs for ALD estimation did not show an significant effect (x, x -- x). We neither found a significant effect of the interaction between the ascertainment scheme and number of SNPs used for ALD estimation (x, x -- x) (S. Figure \ref{figS2_1}, S Table \ref{xx}). 
+We find that the  inclusion of a variable recombination map leads to a large underestimate of admixture times -0.67 -0.71 -- -0.32 $C.I._{95\%}$. In contrast, all other covariates had relatively moderate effect sizes. The extended pulse   (-0.13,  -0.18 -- -0.08) is in the range of biases arising from the ascertainment scheme (-0.10, -0.16 --
+-0.04), a more complex demography (-0.12, -0.16 -- -0.07) and the upward bias caused by a different $d_0$ (0.14, 0.09 --
+0.18) (S. Figure \ref{fig:figS2}). The use of only 5 \% of the available SNPs for ALD estimation did not show an significant effect (0.03, -0.02 -- 0.07). We neither found a significant effect of the interaction between the ascertainment scheme and number of SNPs used for ALD estimation (0.05, -0.04 -- 0.14) (S. Figure \ref{figS2_1}, S Table \ref{xx}). 
 
 Overall the bias introduced by the ascertainment, minimal distance
-cutoff, demography and admixture model are small: around +/-0.25 standard deviations or less. The major uncertainties in the admixture time
+cutoff, demography and admixture model are small: around +/-0.15 standard deviations or less. The major uncertainties in the admixture time
 estimate arise from assuming a constant recombination rate. The
 admixture time estimates for a simple or extended admixture pulse are similarly affected by the other modeling parameters.
 
@@ -531,7 +531,7 @@ generations of gene flow. D) Duration estimate of the same scenario. All scenari
 
 \subsection{Application to Neandertal data}
 
-In the previous section, we have shown using simulations that it might be difficult to distinguish admixture scenarios of various durations particularly if these happened a long time ago (i.e. more than 500 generations ago). To evaluate whether this is also true for real data, we estimated the Neandertal admixture pulse from the 1000 genomes data, by fitting pulses with durations ranging from one generation up to 2,500 generations to the ALD decay curve (Figure \ref{fig:fig5}, S. Table \ref{tab:tableS2}). Plotting these best-fit ALD curves (Figure \ref{fig:fig5}A) on a y-axis in natural scale shows the extremely slight difference predicted under these drastically different gene flow scenarios. The difference between scenarios becomes more apparent if we log-transform the y-axis (Figure \ref{fig:fig5}B), where we see that ongoing gene flow results in a heavier tail in the ALD distributions. However, these LD values are very close to zero, and are thus only very noisily estimated. Therefore, we find that all scenarios are compatible with the observed data, and that there is little power to differentiate different cases.
+In the previous section, we have shown using simulations that it might be difficult to distinguish admixture scenarios of various durations particularly if these happened a long time ago (i.e. more than 500 generations ago). To evaluate whether this is also true for real data, we estimated the Neandertal admixture pulse from the 1000 genomes data. We use the ALD, since it proved to be more robust compared to the direct segment inference. We fit  pulses with durations ranging from one generation up to 2,500 generations to the ALD decay curve (Figure \ref{fig:fig5}, S. Table \ref{tab:tableS2}). Plotting these best-fit ALD curves (Figure \ref{fig:fig5}A) on a y-axis in natural scale shows the extremely slight difference predicted under these drastically different gene flow scenarios. The difference between scenarios becomes more apparent if we log-transform the y-axis (Figure \ref{fig:fig5}B), where we see that ongoing gene flow results in a heavier tail in the ALD distributions. However, these LD values are very close to zero, and are thus only very noisily estimated. Therefore, we find that all scenarios are compatible with the observed data, and that there is little power to differentiate different cases. From the residual sum-of-squares and model comparison using AIC, the models perform equal, with longer extended pulses of gene flow achieving better fits (S. Table \ref{tab:tableS2_2}).
 
 
 
