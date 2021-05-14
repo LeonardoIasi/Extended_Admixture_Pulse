@@ -668,18 +668,28 @@ SP_EP_stats_comparison
 
 Here, we use msprime simulations and use the segments directly. The simulations were modeled after Skov. et al. 2018 with minor changes (only non-Africans were modeled). We used the true segments from 100 haploid non-Africans obtained from msprime and also inferred the segments using the HMM from Skov et al. 2018. We used a posterior cutoff for calling introgressed segments of 0.9. We only considered segments between 0.05 and 1.2 cM. We used the deCODE MAp to simulate a variyng recombination rate. 
 
-```{r eval=T,message=FALSE, echo=FALSE,warning=FALSE}
+```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
 source("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Fit_models.R")
 
-Fit_all_true_segments <- function(file_pattern_constant,file_pattern_varying,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,td,n_rep){
+Fit_all_true_segments <- function(file_pattern_constant,file_pattern_varying,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,td,n_rep,apply_cutoff=F){
   Path_to_Fragment_Files_True_Constant=list.files("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/",pattern = file_pattern_constant,full.names = T)
   True_segments_constant_l <- lapply(Path_to_Fragment_Files_True_Constant, Fit_to_segments,header=F,recomb_rate=1.2e-8,n_Haploid=100,truncation=F)
   
   Path_to_Fragment_Files_True_varying=list.files("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/",pattern = file_pattern_varying,full.names = T)
-  #no correction
-  True_segments_varying_no_correction_l <- lapply(Path_to_Fragment_Files_True_varying, Fit_to_segments,header=F,recomb_rate=mean_HapMap_rr,n_Haploid=100,truncation=F)
-  #AAMap correction
-  True_segments_varying_AAMap_correction_l <- lapply(Path_to_Fragment_Files_True_varying, Fit_to_segments,header=F,Path_to_Recomb_Map=AAMap_Map_path,n_Haploid=100,truncation=F)
+  if(apply_cutoff==T){
+    print("Cutoff is applied")
+    #no correction
+    True_segments_varying_no_correction_l <- lapply(Path_to_Fragment_Files_True_varying, Fit_to_segments,header=F,recomb_rate=mean_HapMap_rr,n_Haploid=100,truncation=T,lower_trunc=0.05,upper_trunc=1.2)
+    #AAMap correction
+    True_segments_varying_AAMap_correction_l <- lapply(Path_to_Fragment_Files_True_varying, Fit_to_segments,header=F,Path_to_Recomb_Map=AAMap_Map_path,n_Haploid=100,truncation=T,lower_trunc=0.05,upper_trunc=1.2)
+  } else{
+        #no correction
+    True_segments_varying_no_correction_l <- lapply(Path_to_Fragment_Files_True_varying, Fit_to_segments,header=F,recomb_rate=mean_HapMap_rr,n_Haploid=100,truncation=F)
+    #AAMap correction
+    True_segments_varying_AAMap_correction_l <- lapply(Path_to_Fragment_Files_True_varying, Fit_to_segments,header=F,Path_to_Recomb_Map=AAMap_Map_path,n_Haploid=100,truncation=F)
+    
+  }
+
   #HapMap correction
   True_segments_varying_HapMap_correction_l <- lapply(Path_to_Fragment_Files_True_varying, Fit_to_segments,header=F,Path_to_Recomb_Map=HapMap_Map_path,n_Haploid=100,truncation=F)
   
@@ -738,7 +748,7 @@ HapMap_Map=read.table(HapMap_Map_path,stringsAsFactors = F,header=T,fill = T)
 mean_AAMap_rr=(tail(AAMap_Map$Map.cM.,n=1)/tail(AAMap_Map$Position.bp.,n=1))/100
 mean_HapMap_rr=(tail(HapMap_Map$Genetic_Map.cM.,n=1)/tail(HapMap_Map$position,n=1))/100
 
-## Fitting True segments
+## Fitting True segments w/o cutoff for AAMap and constant 
 
 True_seg_td_1 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_1_", "ALL_Simulation-merged-_Scenario_1_Recomb_",mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,1,25)
 True_seg_td_200 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_2_","ALL_Simulation-merged-_Scenario_2_Recomb_"
@@ -756,6 +766,25 @@ True_seg_td_2000 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_7_","
 
 #save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit.RData")
 save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear.RData")
+
+## Fitting True segments with cutoff for AAMap and constant 
+
+True_seg_td_1 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_1_", "ALL_Simulation-merged-_Scenario_1_Recomb_",mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,1,25,apply_cutoff=T)
+True_seg_td_200 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_2_","ALL_Simulation-merged-_Scenario_2_Recomb_"
+                                         ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,200,25,apply_cutoff=T)
+True_seg_td_400 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_3_","ALL_Simulation-merged-_Scenario_3_Recomb_"
+                                         ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,400,25,apply_cutoff = T)
+True_seg_td_800 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_4_","ALL_Simulation-merged-_Scenario_4_Recomb_"
+                                         ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,800,25,apply_cutoff = T)
+True_seg_td_1000 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_5_","ALL_Simulation-merged-_Scenario_5_Recomb_"
+                                          ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,1000,25,apply_cutoff = T)
+True_seg_td_1500 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_6_","ALL_Simulation-merged-_Scenario_6_Recomb_"
+                                          ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,1500,25,apply_cutoff = T)
+True_seg_td_2000 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_7_","ALL_Simulation-merged-_Scenario_7_Recomb_"
+                                          ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,2000,25,apply_cutoff = T)
+
+save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear_with_AAMap_constant_cutoff.RData")
+
 
 Inferred_seg_td_1 <- Fit_all_inferred_segments("ALL_Inferred_Archaic_Tracts-_Scenario_1_","ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_"
                                                 ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,1,25)
@@ -971,8 +1000,8 @@ Plot_LRT<- function(Data,Colour_P,main){
 
 }
 
-load("True_Segment_fit.RData")
-
+#load("True_Segment_fit.RData")
+load("True_Segment_fit_linear.RData")
 True_segments=rbind(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,
                     True_seg_td_1000,True_seg_td_1500,True_seg_td_2000)
 colnames(True_segments) <- c("tm_sp","tm_ep","k","upper","lower","LRT","td","recomb")
@@ -997,15 +1026,14 @@ Direct_segments_true <- ggarrange(True_tm,True_td,labels = c("A","B"),
 #pdf("True_segments_fitted_1_over_k_fit.pdf")
 Direct_segments_true
 #dev.off()
-xx <- True_segments %>% filter(recomb=="constant")
+#xx <- True_segments %>% filter(recomb=="constant")
 #pdf("True_segments_fitted__1_over_k_fit_k.pdf")
-plot(as.factor(xx$td),xx$k)
+#plot(as.factor(xx$td),xx$k)
 #dev.off()
 
 
 
 ```
-
 
 ``` {r eval=T,figR2_1_2, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_1_2} "}
 
@@ -1014,8 +1042,42 @@ True_LRT <- Plot_LRT(True_segments,cbPalette_viridis,"True segments")
 True_LRT
 ```
 
+
+```{r eval=T,figR2_1_cutoff, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_1} "}
+#load("True_Segment_fit.RData")
+load("True_Segment_fit_linear_with_AAMap_constant_cutoff.RData")
+True_segments=rbind(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,
+                    True_seg_td_1000,True_seg_td_1500,True_seg_td_2000)
+colnames(True_segments) <- c("tm_sp","tm_ep","k","upper","lower","LRT","td","recomb")
+True_segments$True_tm <- 1500
+True_segments$td_est <-  4*True_segments$tm_ep*(1/True_segments$k)^(-(1/2))
+True_segments$scale <- 1/True_segments$k/True_segments$tm_ep
+
+True_segments_ggdata_tm <- data.frame(tm_est=c(True_segments$tm_sp,True_segments$tm_ep),gf_l=c(True_segments$td,True_segments$td),rr=c(True_segments$recomb,True_segments$recomb))
+True_segments_ggdata_tm$Model <- rep(c("Simple Pulse","Extended Pulse"),each=700)
+True_segments_ggdata_tm$True_tm <- 1500
+
+True_segments_ggdata_td <- data.frame(td_est=c(True_segments$td_est),gf_l=c(True_segments$td),rr=c(True_segments$recomb))
+True_segments_ggdata_td$Model <- "Extended Pulse"
+True_segments_ggdata_td$True_tm <- 1500
+
+True_tm <- Plot_tm(True_segments_ggdata_tm,cbPalette_viridis,"True segments")
+True_td <- Plot_td(True_segments_ggdata_td,cbPalette_viridis ,"True segments")
+
+Direct_segments_true <- ggarrange(True_tm,True_td,labels = c("A","B"),
+          ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
+```
+
+``` {r eval=T,figR2_1_2_with_cutoff, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_1_2} "}
+
+True_LRT <- Plot_LRT(True_segments,cbPalette_viridis,"True segments")
+
+True_LRT
+```
+
 ```{r eval=T,figR2_2_1, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_2_1} "}
-load("Inferred_Segment_fit.RData")
+#load("Inferred_Segment_fit.RData")
+load("Inferred_Segment_fit_linear.RData")
 
 Inferred_segments=rbind(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,
                         Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000)
