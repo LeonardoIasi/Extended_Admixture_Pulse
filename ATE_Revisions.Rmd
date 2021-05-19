@@ -658,37 +658,52 @@ Get_points <- function(input,lval,hval,log){
   return(result_table)
 }
 
-Simple_Pulse_fn <- function(Data,affine){
+Simple_Pulse_fn <- function(Data,affine,use_log=F){
   xx=Data
   
-  dist=xx$dist
-  wcorr=xx$wcorr
-  #Fitting an Exponential
 
-  fm1_exp <- function(x) x[1]*exp(-(dist/100)*x[2])+x[3]
-  fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
-  fm3_exp <- DEoptim(fm2_exp, lower=c(1e-6,1,-1), upper=c(1, 5000,1), control=list(trace=FALSE))
   
-  par1_exp <- fm3_exp$optim$bestmem
-  # parameters for y ~ Ae-mt
-  names(par1_exp) <- c("A", "tm","c")
-  A_exp_est <- as.numeric((par1_exp[1]))
-  Lambda_est <-as.numeric((par1_exp[2]))  	# rate of decay of exponential
-  C_exp_est <- as.numeric((par1_exp[3]))
+  if(use_log==T) {
+    xx$wcorr <- log(xx$wcorr)
+    xx <- xx[complete.cases(xx),]
+    dist=xx$dist
+    wcorr=xx$wcorr
+    
+    fm1_exp <- function(x) log(x[2])  -((dist/100)*x[1])
+    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
+    fm3_exp = optim(c(2,2), fm2_exp)
+    
+    par1_exp <- fm3_exp$par
+    names(par1_exp) <- c("tm", "A")
+    fit1_exp <- nls(wcorr ~ log(A) -((dist/100)*tm), start=par1_exp, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+  } else {
+    
+    dist=xx$dist
+    wcorr=xx$wcorr
+    #Fitting an Exponential
   
-  fit1_exp <- nls(wcorr ~ (A*exp(-(dist/100)*tm)+c), start=par1_exp, control=list(maxiter=10000, warnOnly=TRUE)) 
+    fm1_exp <- function(x) x[2]*exp(-(dist/100)*x[1])+x[3]
+    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
+    fm3_exp <- DEoptim(fm2_exp, lower=c(1,1e-6,-1), upper=c( 5000,1,1), control=list(trace=FALSE))
+    
+    par1_exp <- fm3_exp$optim$bestmem
+    # parameters for y ~ Ae-mt
+    names(par1_exp) <- c( "tm","A","c")
+    
+    fit1_exp <- nls(wcorr ~ (A*exp(-(dist/100)*tm)+c), start=par1_exp, control=list(maxiter=10000, warnOnly=TRUE)) 
+  }
 
   return(fit1_exp)
 }
 
 
 
-Extended_Pulse_fn <- function(Data,affine){
+Extended_Pulse_fn <- function(Data,affine,use_log=F){
   xx=Data
   
   dist=xx$dist
   wcorr=xx$wcorr
-  use_log=F
+
   if(use_log==F) {
     fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + (  (x[2] / x[1])*(dist/100) )))^(x[1])
     fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
@@ -709,13 +724,12 @@ Extended_Pulse_fn <- function(Data,affine){
     wcorr=xx$wcorr
     fm1_lomax <- function(x) log(x[3]) + (x[2]) * -log(1+ (((1/x[2])*(dist/100))*x[1]))
     fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
-    fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(0.5,4,1e-8), upper=c(5,9,exp(1)), control=list(trace=FALSE))
+    fm3_optim <- optim(c(2,2,2), fm2_lomax_k)
     
-    par1_lomax <- fm3_DEoptim$optim$bestmem
-    print(par1_lomax)
+    par1_lomax <- fm3_optim$par
     par1_lomax <- c(par1_lomax[1],par1_lomax[2],par1_lomax[3])
     names(par1_lomax) <- c("k","tm","A")
-    fit1_lomax <- nls(wcorr ~ log(A) + k* -log(1 + ((k/tm)*(dist/100))), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+    fit1_lomax <- nls(wcorr ~ log(A) + k* -log(1 + (((1/k)*(dist/100))*tm)), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
   }
 
       
@@ -724,7 +738,7 @@ Extended_Pulse_fn <- function(Data,affine){
 
 
 
-plot_ALD_fit <- function(input,lval=0.05,hval=0.8,tm,td,main){
+plot_ALD_fit <- function(input,lval=0.05,hval=0.8,tm,td,use_log=F,main){
   tm=tm
   td=td
   k=1/((td/(4*tm))^2)
@@ -739,9 +753,9 @@ plot_ALD_fit <- function(input,lval=0.05,hval=0.8,tm,td,main){
   
   ALD_x <- Get_points(input,lval,hval,log = F)
 
-  Fit_SP <- Simple_Pulse_fn(ALD_x,affine = T)
+  Fit_SP <- Simple_Pulse_fn(ALD_x,affine = T,use_log = use_log)
   
-  Fit_EP <-  Extended_Pulse_fn(ALD_x,affine=T) 
+  Fit_EP <-  Extended_Pulse_fn(ALD_x,affine=T,use_log = use_log)
   
   #plot(ALD_x$dist/100,log(ALD_x$wcorr))
   #lines(ALD_x$dist/100,log(SP_tail(ALD_x$dist/100,c(coef(Fit_SP)[1],coef(Fit_SP)[2],coef(Fit_SP)[3]))),col="red")
@@ -749,13 +763,14 @@ plot_ALD_fit <- function(input,lval=0.05,hval=0.8,tm,td,main){
   
   data_x <- data.frame(M=ALD_x$dist/100,ALD=log(ALD_x$wcorr))
   data_x <- data_x[complete.cases(data_x),]
-  
-  Fit_Results <- data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(tm,coef(Fit_SP)[1]))),fit="SP_true")
-  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(coef(Fit_SP)[2],coef(Fit_SP)[1]))),fit="SP_fit"))
+
+  Fit_Results <- data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(tm,coef(Fit_SP)[2]))),fit="SP_true")
+  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(coef(Fit_SP)[1],coef(Fit_SP)[2]))),fit="SP_fit"))
   Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(coef(Fit_EP)[2],coef(Fit_EP)[1],coef(Fit_EP)[3]))),fit="EP_fit" ))
   Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(tm,k,coef(Fit_EP)[3]))),fit="EP_true"))
   Fit_Results$fit <- factor(Fit_Results$fit,
-                      levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
+                  levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
+
 
   
   P_fit <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=fit))+
@@ -771,18 +786,18 @@ plot_ALD_fit <- function(input,lval=0.05,hval=0.8,tm,td,main){
   
 }
 
-ALD_const_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_ALD/Raw_ALDER_output-_Scenario_1_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 1,main = "Constant;Constant")
-ALD_var_const_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 1,main = "HapMap;Constant")
-ALD_var_AAMap_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccAAMap_correction.txt",tm = 1500,td = 1,main = "HapMap;AAMap")
-ALD_var_HapMap_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccHapMap_correction.txt",tm = 1500,td = 1,main = "HapMap;HapMap")
+ALD_const_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_ALD/Raw_ALDER_output-_Scenario_1_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 1,use_log=F,main = "Constant;Constant")
+ALD_var_const_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 1,use_log=T,main = "HapMap;Constant")
+ALD_var_AAMap_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccAAMap_correction.txt",tm = 1500,td = 1,use_log=T,main = "HapMap;AAMap")
+ALD_var_HapMap_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccHapMap_correction.txt",tm = 1500,td = 1,use_log=F,main = "HapMap;HapMap")
 
 ALD_td_1 <- ggarrange(ALD_const_td_1,ALD_var_const_td_1,ALD_var_AAMap_td_1,ALD_var_HapMap_td_1,labels = c("A","B","C","D"),
           ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
 
-ALD_const_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_ALD/Raw_ALDER_output-_Scenario_7_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 2000,main = "Constant;Constant")
-ALD_var_const_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 2000,main = "HapMap;Constant")
-ALD_var_AAMap_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccAAMap_correction.txt",tm = 1500,td = 2000,main = "HapMap;AAMap")
-ALD_var_HapMap_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccHapMap_correction.txt",tm = 1500,td = 2000,main = "HapMap;HapMap")
+ALD_const_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_ALD/Raw_ALDER_output-_Scenario_7_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 2000,use_log=F,main = "Constant;Constant")
+ALD_var_const_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 2000,use_log=T,main = "HapMap;Constant")
+ALD_var_AAMap_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccAAMap_correction.txt",tm = 1500,td = 2000,use_log=F,main = "HapMap;AAMap")
+ALD_var_HapMap_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccHapMap_correction.txt",tm = 1500,td = 2000,use_log=F,main = "HapMap;HapMap")
 
 ALD_td_2000 <- ggarrange(ALD_const_td_2000,ALD_var_const_td_2000,ALD_var_AAMap_td_2000,ALD_var_HapMap_td_2000,labels = c("A","B","C","D"),
           ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
