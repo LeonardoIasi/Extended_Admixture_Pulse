@@ -971,7 +971,7 @@ True_seg_td_2000 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_7_","
                                           ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,2000,25)
 
 #save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit.RData")
-save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear.RData")
+#save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear.RData")
 save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear2.RData")
 ## Fitting True segments with cutoff for AAMap and constant 
 lower_trunc=0.05
@@ -993,28 +993,8 @@ True_seg_td_2000 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_7_","
 #save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear_with_AAMap_constant_cutoff.RData")
 save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear_with_all_cuttoff.RData")
 
-## Fitting True segments with cutoff for AAMap and constant 
-# define cutoffs as hard or as quantiles
-#lower_trunc=0.25
-#upper_trunc=0.99
-
-True_seg_td_1 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_1_", "ALL_Simulation-merged-_Scenario_1_Recomb_",mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,1,25,apply_cutoff=T)
-True_seg_td_200 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_2_","ALL_Simulation-merged-_Scenario_2_Recomb_"
-                                         ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,200,25,apply_cutoff=T)
-True_seg_td_400 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_3_","ALL_Simulation-merged-_Scenario_3_Recomb_"
-                                         ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,400,25,apply_cutoff = T)
-True_seg_td_800 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_4_","ALL_Simulation-merged-_Scenario_4_Recomb_"
-                                         ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,800,25,apply_cutoff = T)
-True_seg_td_1000 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_5_","ALL_Simulation-merged-_Scenario_5_Recomb_"
-                                          ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,1000,25,apply_cutoff = T)
-True_seg_td_1500 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_6_","ALL_Simulation-merged-_Scenario_6_Recomb_"
-                                          ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,1500,25,apply_cutoff = T)
-True_seg_td_2000 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_7_","ALL_Simulation-merged-_Scenario_7_Recomb_"
-                                          ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,2000,25,apply_cutoff = T)
-
-#save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear_with_AAMap_constant_cutoff_quantiles.RData")
-#save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear_with_AAMap_constant_cutoff_quantiles_in_bp.RData")
-
+lower_trunc=0.05
+upper_trunc=1.2
 Inferred_seg_td_1 <- Fit_all_inferred_segments("ALL_Inferred_Archaic_Tracts-_Scenario_1_","ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_"
                                                 ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,1,25)
 Inferred_seg_td_200 <- Fit_all_inferred_segments("ALL_Inferred_Archaic_Tracts-_Scenario_2_","ALL_Inferred_Archaic_Tracts-_Scenario_2_Recomb_"
@@ -1032,7 +1012,7 @@ Inferred_seg_td_2000 <- Fit_all_inferred_segments("ALL_Inferred_Archaic_Tracts-_
 
 #save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000,file = "Inferred_Segment_fit.RData")
 
-#save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000,file = "Inferred_Segment_fit_linear.RData")
+save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000,file = "Inferred_Segment_fit_linear.RData")
 #save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000,file = "Inferred_Segment_fit_linear_no_cutoff.RData")
 #save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000,file = "Inferred_Segment_fit_linear_min_max_cutoff.RData")
 ```
@@ -1129,15 +1109,14 @@ Plot_LRT<- function(Data,Colour_P,main){
 
 }
 
-#load("True_Segment_fit.RData")
-#load("True_Segment_fit_linear.RData")
+
 load("True_Segment_fit_linear2.RData")
 True_segments=rbind(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,
                     True_seg_td_1000,True_seg_td_1500,True_seg_td_2000)
 colnames(True_segments) <- c("tm_sp","tm_ep","k","upper","lower","LRT","td","recomb")
 True_segments$True_tm <- 1500
 True_segments$td_est <-  4*True_segments$tm_ep*(1/True_segments$k)^(-(1/2))
-True_segments$scale <- 1/True_segments$k/True_segments$tm_ep
+True_segments$scale <- (1/True_segments$k)/True_segments$tm_ep
 
 True_segments_ggdata_tm <- data.frame(tm_est=c(True_segments$tm_sp,True_segments$tm_ep),gf_l=c(True_segments$td,True_segments$td),rr=c(True_segments$recomb,True_segments$recomb))
 True_segments_ggdata_tm$Model <- rep(c("Simple Pulse","Extended Pulse"),each=700)
@@ -1153,13 +1132,9 @@ True_td <- Plot_td(True_segments_ggdata_td,cbPalette_viridis ,"True segments")
 Direct_segments_true <- ggarrange(True_tm,True_td,labels = c("A","B"),
           ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
 
-#pdf("True_segments_fitted_1_over_k_fit.pdf")
+
 Direct_segments_true
-#dev.off()
-#xx <- True_segments %>% filter(recomb=="constant")
-#pdf("True_segments_fitted__1_over_k_fit_k.pdf")
-#plot(as.factor(xx$td),xx$k)
-#dev.off()
+
 
 
 
@@ -1206,7 +1181,7 @@ plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Re
     data_x <- data_x[!data_x$dens==-Inf,]
     Fit_Results <- data.frame(x=data_x$M,y=dtexp_norm(data_x$M,tm),fit="SP_true")
     Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtexp_norm(data_x$M,SP_fit[[1]]$par),fit="SP_fit"))
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax_norm(data_x$M,scale=((EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=(EP_fit[[1]]$par[2])),fit="EP_fit"))
+    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax_norm(data_x$M,scale=((1/EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=(1/EP_fit[[1]]$par[2])),fit="EP_fit"))
     Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax_norm(data_x$M,scale=((k)/tm), shape=(k)),fit="EP_true"))
     Fit_Results$fit <- factor(Fit_Results$fit,
                         levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
@@ -1225,7 +1200,7 @@ plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Re
     data_x <- data_x[!data_x$dens==-Inf,]
     Fit_Results <- data.frame(x=data_x$M,y=dtexp(data_x$M,tm ,lower_trunc,upper_trunc),fit="SP_true")
     Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtexp(data_x$M,SP_fit[[1]]$par ,lower_trunc,upper_trunc),fit="SP_fit"))
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax(data_x$M,scale=((EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=(EP_fit[[1]]$par[2]),lower_trunc,upper_trunc),fit="EP_fit"))
+    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax(data_x$M,scale=((1/EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=(1/EP_fit[[1]]$par[2]),lower_trunc,upper_trunc),fit="EP_fit"))
     Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax(data_x$M,scale=((k)/tm), shape=(k),lower_trunc,upper_trunc),fit="EP_true"))
     Fit_Results$fit <- factor(Fit_Results$fit,
                         levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
@@ -1291,7 +1266,7 @@ True_segments=rbind(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_80
 colnames(True_segments) <- c("tm_sp","tm_ep","k","upper","lower","LRT","td","recomb")
 True_segments$True_tm <- 1500
 True_segments$td_est <-  4*True_segments$tm_ep*(1/True_segments$k)^(-(1/2))
-True_segments$scale <- 1/True_segments$k/True_segments$tm_ep
+True_segments$scale <- (1/True_segments$k)/True_segments$tm_ep
 
 True_segments_ggdata_tm <- data.frame(tm_est=c(True_segments$tm_sp,True_segments$tm_ep),gf_l=c(True_segments$td,True_segments$td),rr=c(True_segments$recomb,True_segments$recomb))
 True_segments_ggdata_tm$Model <- rep(c("Simple Pulse","Extended Pulse"),each=700)
@@ -1352,7 +1327,7 @@ colnames(Inferred_segments) <- c("tm_sp","tm_ep","k","upper","lower","LRT","td",
 Inferred_segments$True_tm <- 1500
 
 Inferred_segments$td_est <-  4*Inferred_segments$tm_ep*(1/Inferred_segments$k)^(-(1/2))
-Inferred_segments$scale <- 1/Inferred_segments$k/Inferred_segments$tm_ep
+Inferred_segments$scale <- Inferred_segments$k/Inferred_segments$tm_ep
 
 Inferred_segments_ggdata_tm <- data.frame(tm_est=c(Inferred_segments$tm_sp,Inferred_segments$tm_ep),gf_l=c(Inferred_segments$td,Inferred_segments$td),rr=c(Inferred_segments$recomb,Inferred_segments$recomb))
 Inferred_segments_ggdata_tm$Model <- rep(c("Simple Pulse","Extended Pulse"),each=700)
@@ -1422,7 +1397,7 @@ colnames(Inferred_segments) <- c("tm_sp","tm_ep","k","upper","lower","LRT","td",
 Inferred_segments$True_tm <- 1500
 
 Inferred_segments$td_est <-  4*Inferred_segments$tm_ep*(1/Inferred_segments$k)^(-(1/2))
-Inferred_segments$scale <- 1/Inferred_segments$k/Inferred_segments$tm_ep
+Inferred_segments$scale <- (1/Inferred_segments$k)/Inferred_segments$tm_ep
 
 Inferred_segments_ggdata_tm <- data.frame(tm_est=c(Inferred_segments$tm_sp,Inferred_segments$tm_ep),gf_l=c(Inferred_segments$td,Inferred_segments$td),rr=c(Inferred_segments$recomb,Inferred_segments$recomb))
 Inferred_segments_ggdata_tm$Model <- rep(c("Simple Pulse","Extended Pulse"),each=700)
@@ -1446,7 +1421,35 @@ Direct_segments_inf
 
 ```
 
+```{r eval=T,fig_fit_to_Icelandig_seg, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:fig_fit_to_Icelandig_seg} "}
 
+## this takes several durations and fits them to the data (i.e. tm is the free parameter k is given by td and the "suggested" tm)
+source("~/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Icelandic_fit_new.R")
+
+Fragments <- read.table("~/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Archaicfragments_Iceland.txt",header = T)
+
+Recomb_Map <- read.table("~/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/RecombmapIceland.txt", header = T)
+
+
+Fragments_Filtered <- Fragments[Fragments$archaic=="Vindija" | Fragments$archaic=="Altai",]
+
+Fragments_cM=Assign_Genetic_distance_linear_fn(Recomb_Map, Fragments_Filtered)
+
+t_d=c(1,100,200,400,800,1000,1500,2000,2500)
+cbPalette_viridis <- viridis(length(t_d),option = "D")
+Extended_pulse_est <- c()
+for(t in t_d){
+  Res_Segments_optim_lomax <- fit_extended_pulse_k_fixed(Fragments_cM,truncation = T,t,lower_trunc = 0.005,upper_trunc = 1.2)
+  Extended_pulse_est_x <-   data.frame(tm=Res_Segments_optim_lomax[[1]]$par)
+  Extended_pulse_est_x$ll <- Res_Segments_optim_lomax[[1]]$value
+  Extended_pulse_est_x$k <- (1/((t/(4*Res_Segments_optim_lomax[[1]]$par))^2))
+  Extended_pulse_est <- rbind(Extended_pulse_est,Extended_pulse_est_x)
+}
+Extended_pulse_est$duration <- t_d
+
+Plot_Icelandic_segment_fit(Fragments = Fragments_cM,Fit = Extended_pulse_est,t_d = t_d)
+
+```
 
 # Wright-Fisher Model for msprime simulations
 
