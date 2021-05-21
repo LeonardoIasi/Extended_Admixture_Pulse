@@ -82,6 +82,8 @@ suppressPackageStartupMessages({
   library(bbmle)
   library(flextable)
   library(officer)
+  library(gridExtra)
+  library(grid)
 })
 
 Results_Table <- function(Table_Path) {
@@ -465,399 +467,7 @@ Plot_power_analysis(Sim_2_ggplot_all,Sim_2_ggplot_all_sig_cutoff,cbPalette_virid
 
 ```
 
-## On msprime simulated ALD data
-
-Here, we us msprime simulations to simulate the above scenarios. All samples are sampled at time 0, i.e. using present-day genomes to estimate $t_m$ and $t_d$. The ALDER inferred ALD is used to fit the simple and extended pulse. We compare the fit to data between the simple and extended pulse model using Akaike information criterion and a F-test (comparing significant differences between the residual sum of squares).
-
-```{r eval=T,message=FALSE, echo=FALSE,warning=FALSE}
-#### New Figure for Paper using recent sampling (50 gen): constant RR, RM no correction, RM diff RM correction, RM correction same RM ####
-
-
-Filter_Result_Table <- function(Result.Table){
-  Result.Table=read.table(Result.Table,header=F,sep = " ")
-  Result.names <- c('A.sp', 'tm_sp', 'c.sp', 'RSS_SP','AIC_SP', 'A.ep', 'tm.ep', 'k.ep','c.ep', 'RSS_EP','AIC_EP', 'F_Test','Scenario.name','GF.Start','GF.End','AS','minDist','GF.Model')
-  colnames(Result.Table) <- Result.names
-  #Result.Table <- Result.Table[(1/Result.Table$s.exp)>0,]
-  #Result.Table <- Result.Table[(1/Result.Table$s.exp)<5000,]
-  #Result.Table <- Result.Table[Result.Table$RSS_Lomax<1e-2,]
-  return(Result.Table)
-}
-
-#### True values
-True_params_paper_parametrization <- function(Result.Table){
-  True_params_Calc <- function(True_GF_length,True_mean_GF){
-    EX= True_mean_GF
-    GF_Len <-True_GF_length
-    VarX= ((GF_Len)/4)**2
-    b= EX/VarX
-    a=EX*b
-    a=a
-    True_k=a
-    True_tm=EX
-    xx=c(True_k,True_tm)
-    return(xx)
-  }
-  True.params <- c()
-  for (i in 1:length(Result.Table$F_Test)) {
-    xx=True_params_Calc(Result.Table$True_GF_length[i],Result.Table$True_mean_GF[i])
-    True.params <- rbind(True.params,xx)
-  }
-  True.params <- as.data.frame(True.params)
-  return(True.params)
-}
-
-Result.Table.paper.parametrization.fn <- function(Result.Table.path,Sampling.time.from.GF.End,name){
-  Result.Table <- Filter_Result_Table(Result.Table.path)
-  Result.Table$Name <- name
-  Result.Table$Sample_Time <- Sampling.time.from.GF.End
-  Result.Table$True_GF_length <- Result.Table$GF.End-Result.Table$GF.Start
-  #Result.Table$True_mean_GF <- ((Result.Table$GF.End+Result.Table$GF.Start)/2)-(Result.Table$GF.Start-Result.Table$Sample_Time)
-  Result.Table$True_mean_GF <- ((Result.Table$GF.End+Result.Table$GF.Start)/2)
-  Result.Table$mean_GF_SP <- Result.Table$tm.sp
-  Result.Table$mean_GF_EP_tm <- Result.Table$tm.ep
-  Result.Table.comparison <- True_params_paper_parametrization(Result.Table)
-  Result.Table$True_k <- Result.Table.comparison$V1
-  Result.Table$True_tm <- Result.Table.comparison$V2
-  #Result.Table.comparison$length_GF <- (sqrt(Result.Table$mean_GF_lomax_s/(((1/Result.Table$w.lomax))*Result.Table$s.lomax)))*4
-  Result.Table.comparison$length_GF <- 4*Result.Table$tm.ep*Result.Table$k.ep^(-(1/2))
-  Result.Table$length_GF <- Result.Table.comparison$length_GF
-  
-  return(Result.Table)
-}
-
-Plot_all_together_samples_50_gen_flipped <- function(ggdata,cbPalette_viridis){
-  ggdata$Model <- factor(ggdata$Model,
-                          levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
-  ggdata$Name <- factor(ggdata$Name,
-                        levels = c("HapMap_HapMap_correction","HapMap_AAMap_correction","HapMap_no_correction",
-                                   "Constant"),ordered = TRUE)
-  ggplot(data = ggdata, aes(y=factor(Name),x=as.numeric(as.character(value)),colour=factor(Name))) +
-    geom_boxplot(show.legend = T)+ 
-    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
-    geom_vline( aes(xintercept = True_mean_GF ))+
-    labs(x = "Estimated Admixture Mean Time")+
-    labs(y = "Sampling Time \n Simulated Admixture Duration \n Simulated Admixture Mean")+
-    theme(
-      axis.text.y=element_blank(),
-      axis.ticks.y=element_blank())+
-    coord_cartesian(xlim = c(500,2000), expand = 0)+
-    scale_x_continuous(breaks = seq(0, 1000, by = 500))+
-    scale_color_manual("Simulations",
-                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
-                       labels = c("HapMap HapMap corrected","HapMap AAMap corrected","HapMap not corrected","Constant Recombination"),
-                       guide = guide_legend(reverse=TRUE))
-  
-}
-
-
-Plot_sampling_50_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis){
-  ggdata$Name <- factor(ggdata$Name,
-                        levels = c("HapMap_HapMap_correction","HapMap_AAMap_correction","HapMap_no_correction",
-                                   "Constant"),ordered = TRUE)
-  ggplot(ggdata,aes(y=variable,x=as.numeric(as.character(value)),colour=factor(Name)))+
-    geom_boxplot(show.legend = F)+
-    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
-    geom_vline( aes(xintercept = True_GF_length ))+
-    labs(y = "")+
-    labs(x = "Estimated Admixture Duration")+
-    theme(
-      axis.text.y=element_blank(),
-      axis.ticks.y=element_blank())+
-    coord_cartesian(xlim = c(0,2500), expand = 0)+
-    scale_x_continuous(breaks = seq(0, 2500, by = 500))+
-    scale_color_manual("Simulations",
-                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
-                       labels = c("HapMap HapMap corrected","HapMap AAMap corrected","HapMap not corrected","Constant Recombination"),
-                       guide = guide_legend(reverse=TRUE))
-}
-
-
-
-Result.Table.path_ALD_constant <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_ALD/Result_Simple_Extended_Pulse/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccNo_correction.txt'
-
-# constant interpolation
-Result.Table.path_ALD_no_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse//Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccNo_correction.txt'
-Result.Table.path_ALD_AAMap_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccAAMap_correction.txt'
-Result.Table.path_ALD_HapMap_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccHapMap_correction.txt'
-
-# linear interpolation
-#Result.Table.path_ALD_no_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse_linear_interpolation/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccNo_correction.txt'
-#Result.Table.path_ALD_AAMap_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse_linear_interpolation/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccAAMap_correction.txt'
-#Result.Table.path_ALD_HapMap_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse_linear_interpolation/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccHapMap_correction.txt'
-
-Plot.data_ALD_constant <- Result.Table.paper.parametrization.fn(Result.Table.path = Result.Table.path_ALD_constant,Sampling.time.from.GF.End = 0,name = 'Constant')
-Plot.data_ALD_no_correction <- Result.Table.paper.parametrization.fn(Result.Table.path = Result.Table.path_ALD_no_correction,Sampling.time.from.GF.End = 0,name = 'HapMap_no_correction')
-Plot.data_ALD_AAMap_correction<- Result.Table.paper.parametrization.fn(Result.Table.path = Result.Table.path_ALD_AAMap_correction,Sampling.time.from.GF.End = 0,name = 'HapMap_AAMap_correction')
-Plot.data_ALD_HapMap_correction <- Result.Table.paper.parametrization.fn(Result.Table.path = Result.Table.path_ALD_HapMap_correction,Sampling.time.from.GF.End = 0,name = 'HapMap_HapMap_correction')
-Plot.data_ALD <- rbind(Plot.data_ALD_constant,Plot.data_ALD_no_correction,Plot.data_ALD_AAMap_correction,Plot.data_ALD_HapMap_correction)
-
-Plot.data_ALD$True_mean_GF <- 1500
-ggdata_t.ALD_tm_mean_GF_exp <- melt(Plot.data_ALD,measure.vars =  c('tm_sp'),id.vars = c('True_mean_GF','True_GF_length','Name'))
-ggdata_t.ALD_tm_mean_GF_lomax <- melt(Plot.data_ALD,measure.vars =  c('mean_GF_EP_tm'),id.vars = c('True_mean_GF','True_GF_length','Name'))
-ggdata_l.ALD_tm <- melt(Plot.data_ALD,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
-
-```
-
-
-
-``` {r eval=T,figR2_3_1, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_3_1} Comparison between the Hudson only and hybrid Wright-Fischer/Hudson simulations for parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario"}
-
-# Plot 50 gen from Admixture
-ggdata_t.ALD_tm_mean_GF_exp$Model <- "Simple Pulse"
-ggdata_t.ALD_tm_mean_GF_lomax$Model <- "Extended Pulse"
-
-ggdata_all_together_samples_ALD_tm <- rbind(ggdata_t.ALD_tm_mean_GF_exp,ggdata_t.ALD_tm_mean_GF_lomax)
-ggdata_all_together_samples_ALD_tm$Sample_Time <- 0
-
-ggdata_sampling_ALD_tm_gen_GF_Length <- ggdata_l.ALD_tm
-ggdata_sampling_ALD_tm_gen_GF_Length$Model <- "Extended Pulse"
-ggdata_sampling_ALD_tm_gen_GF_Length$Sample_Time <- 0
-
-Mean_GF_ALD_tm <- Plot_all_together_samples_50_gen_flipped(ggdata = ggdata_all_together_samples_ALD_tm,cbPalette_viridis)
-Duration_GF_ALD_tm <- Plot_sampling_50_gen_GF_Length_flipped(ggdata = ggdata_sampling_ALD_tm_gen_GF_Length,cbPalette_viridis)
-Constant_sampling_time <- ggarrange(Mean_GF_ALD_tm,Duration_GF_ALD_tm,labels = c("A","B"),
-          ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
-
-Constant_sampling_time
-```
-
-``` {r eval=T,fig_ALD_fit_visual, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:fig_ALD_fit_visual} "}
-
-
-# plot of ALD fits
-Get_points <- function(input,lval,hval,log){
-  # Read input file
-  data <- read.table(input, header = F)
-  
-  
-  # set dist and wcorr
-  col=2
-  dist <- data[,1]
-  wcorr <- data[,col]
-  ndist <- length(dist)  ## number of rows in dataset
-  lval=lval
-  hval=hval
-  
-  # check x lower value and y lower value
-  data.sub <- data
-  if ((lval > dist[1]) || (hval < dist[ndist])) {
-    data.sub <- subset(data, ((dist <= hval) & (dist >= lval)))
-  } 
-  dist <- data.sub[,1]		# updated x values
-  wcorr <- data.sub[,col]		# updated y values
-  if(log==T){
-    xx <- cbind(dist,log(wcorr))
-    xx <- xx[complete.cases(xx),]
-    wcorr <- xx[,2]
-    wcorr <-c(wcorr,rep(NA,length(data.sub[,1])-length(wcorr)))
-    dist <- xx[,1]
-    dist <-c(dist,rep(NA,length(data.sub[,1])-length(dist)))
-  }
-  result_table <- data.frame(dist,wcorr)
-  result_table <- result_table[complete.cases(result_table),]
-  return(result_table)
-}
-
-Simple_Pulse_fn <- function(Data,affine,use_log=F){
-  xx=Data
-  
-
-  
-  if(use_log==T) {
-    xx$wcorr <- log(xx$wcorr)
-    xx <- xx[complete.cases(xx),]
-    dist=xx$dist
-    wcorr=xx$wcorr
-    
-    fm1_exp <- function(x) log(x[2])  -((dist/100)*x[1])
-    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
-    fm3_exp = optim(c(2,2), fm2_exp)
-    
-    par1_exp <- fm3_exp$par
-    names(par1_exp) <- c("tm", "A")
-    fit1_exp <- nls(wcorr ~ log(A) -((dist/100)*tm), start=par1_exp, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
-  } else {
-    
-    dist=xx$dist
-    wcorr=xx$wcorr
-    #Fitting an Exponential
-  
-    fm1_exp <- function(x) x[2]*exp(-(dist/100)*x[1])+x[3]
-    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
-    fm3_exp <- DEoptim(fm2_exp, lower=c(1,1e-6,-1), upper=c( 5000,1,1), control=list(trace=FALSE))
-    
-    par1_exp <- fm3_exp$optim$bestmem
-    # parameters for y ~ Ae-mt
-    names(par1_exp) <- c( "tm","A","c")
-    
-    fit1_exp <- nls(wcorr ~ (A*exp(-(dist/100)*tm)+c), start=par1_exp, control=list(maxiter=10000, warnOnly=TRUE)) 
-  }
-
-  return(fit1_exp)
-}
-
-
-
-Extended_Pulse_fn <- function(Data,affine,use_log=F){
-  xx=Data
-  
-  dist=xx$dist
-  wcorr=xx$wcorr
-
-  if(use_log==F) {
-    fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + (  (x[2] / x[1])*(dist/100) )))^(x[1])
-    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
-    fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1,100,0,-1), upper=c(100,10000,2,1), control=list(trace=FALSE))
-    
-    par1_lomax <- fm3_DEoptim$optim$bestmem
-    par1_lomax <- c(par1_lomax[1],par1_lomax[2],par1_lomax[3],par1_lomax[4])
-    names(par1_lomax) <- c("k","tm","A","c")
-    fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ k) *(dist/100)) ))^(k), start=par1_lomax, algorithm="port", 
-                      lower=c(1,100,0,-1), upper=c(100,10000,2,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
-  }
-
-  
-  if(use_log==T) {
-    xx$wcorr <- log(xx$wcorr)
-    xx <- xx[complete.cases(xx),]
-    dist=xx$dist
-    wcorr=xx$wcorr
-    fm1_lomax <- function(x) log(x[3]) + (x[2]) * -log(1+ (((1/x[2])*(dist/100))*x[1]))
-    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
-    fm3_optim <- optim(c(2,2,2), fm2_lomax_k)
-    
-    par1_lomax <- fm3_optim$par
-    par1_lomax <- c(par1_lomax[1],par1_lomax[2],par1_lomax[3])
-    names(par1_lomax) <- c("k","tm","A")
-    fit1_lomax <- nls(wcorr ~ log(A) + k* -log(1 + (((1/k)*(dist/100))*tm)), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
-  }
-
-      
-  return(fit1_lomax)
-}
-
-
-
-plot_ALD_fit <- function(input,lval=0.05,hval=0.8,tm,td,use_log=F,main){
-  tm=tm
-  td=td
-  k=1/((td/(4*tm))^2)
-  # Fitting functions
-  
-  SP_tail <- function(dist,x) x[1]*exp(-(dist)*x[2])+x[3]
-  
-  EP_tail <- function(dist,x) x[4] + x[3]* (1/(1 + (  (x[2] / x[1])*(dist) )))^(x[1])
-  
-  SP_tail_log <- function(dist,x) log(x[2])  -(dist*x[1])
-  EP_tail_log <- function(dist,x) log(x[3]) + (x[2]) * -log(1+ (((1/x[2])*(dist))*x[1]))
-  
-  ALD_x <- Get_points(input,lval,hval,log = F)
-
-  Fit_SP <- Simple_Pulse_fn(ALD_x,affine = T,use_log = use_log)
-  
-  Fit_EP <-  Extended_Pulse_fn(ALD_x,affine=T,use_log = use_log)
-  
-  #plot(ALD_x$dist/100,log(ALD_x$wcorr))
-  #lines(ALD_x$dist/100,log(SP_tail(ALD_x$dist/100,c(coef(Fit_SP)[1],coef(Fit_SP)[2],coef(Fit_SP)[3]))),col="red")
-  #lines(ALD_x$dist/100,(SP_tail_log(ALD_x$dist/100,c(coef(Fit_SP)[2],coef(Fit_SP)[1]))),col="red")
-  
-  data_x <- data.frame(M=ALD_x$dist/100,ALD=log(ALD_x$wcorr))
-  data_x <- data_x[complete.cases(data_x),]
-
-  Fit_Results <- data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(tm,coef(Fit_SP)[2]))),fit="SP_true")
-  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(coef(Fit_SP)[1],coef(Fit_SP)[2]))),fit="SP_fit"))
-  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(coef(Fit_EP)[2],coef(Fit_EP)[1],coef(Fit_EP)[3]))),fit="EP_fit" ))
-  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(tm,k,coef(Fit_EP)[3]))),fit="EP_true"))
-  Fit_Results$fit <- factor(Fit_Results$fit,
-                  levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
-
-
-  
-  P_fit <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=fit))+
-    geom_point(data=data_x,aes(x=M,y=ALD,fill=NULL),color="grey",show.legend = F)+
-    geom_line(data=Fit_Results,aes(x = x, y = y,color=fit),size=1.2)+
-    scale_color_manual("Fit",
-                       values = c(c(cbPalette_viridis[1],cbPalette_viridis[4],cbPalette_viridis[8],cbPalette_viridis[12])),
-                      labels = c(c("true SP","fitted SP","true EP","fitted EP")))+
-    labs(x = "Genetic distance (M)")+
-    labs(y = "log density")+
-    ggtitle(main)
-  return(P_fit)
-  
-}
-
-ALD_const_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_ALD/Raw_ALDER_output-_Scenario_1_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 1,use_log=F,main = "Constant;Constant")
-ALD_var_const_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 1,use_log=T,main = "HapMap;Constant")
-ALD_var_AAMap_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccAAMap_correction.txt",tm = 1500,td = 1,use_log=T,main = "HapMap;AAMap")
-ALD_var_HapMap_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccHapMap_correction.txt",tm = 1500,td = 1,use_log=F,main = "HapMap;HapMap")
-
-ALD_td_1 <- ggarrange(ALD_const_td_1,ALD_var_const_td_1,ALD_var_AAMap_td_1,ALD_var_HapMap_td_1,labels = c("A","B","C","D"),
-          ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
-
-ALD_const_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_ALD/Raw_ALDER_output-_Scenario_7_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 2000,use_log=F,main = "Constant;Constant")
-ALD_var_const_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 2000,use_log=T,main = "HapMap;Constant")
-ALD_var_AAMap_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccAAMap_correction.txt",tm = 1500,td = 2000,use_log=F,main = "HapMap;AAMap")
-ALD_var_HapMap_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccHapMap_correction.txt",tm = 1500,td = 2000,use_log=F,main = "HapMap;HapMap")
-
-ALD_td_2000 <- ggarrange(ALD_const_td_2000,ALD_var_const_td_2000,ALD_var_AAMap_td_2000,ALD_var_HapMap_td_2000,labels = c("A","B","C","D"),
-          ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
-
-ALD_td_1
-
-ALD_td_2000
-```
-
-``` {r eval=T,figR2_3_2, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_3_2} Neandertal duration simple and extended pulse AIC and F test comparison"}
-
-
-AIC_comp=data.frame(AIC_SP=Plot.data_ALD$AIC_SP,AIC_EP=Plot.data_ALD$AIC_EP,
-                      GF_duration=Plot.data_ALD$True_GF_length,Name=Plot.data_ALD$Name)
-AIC_comp$Name <- factor(AIC_comp$Name,
-                    levels = c("Constant","HapMap_no_correction","HapMap_AAMap_correction","HapMap_HapMap_correction"),ordered = TRUE)
-P_AIC <- ggplot(AIC_comp, aes(x=as.factor(GF_duration), y=AIC_SP,color=as.factor(GF_duration))) + 
-                geom_boxplot()+
-                facet_grid(~Name,switch = "x")+
-                labs(y = "AIC")+
-                labs(x = "")+
-                theme(
-                  axis.ticks.y=element_blank(),
-                  axis.ticks.x=element_blank(),
-                  axis.text.x=element_blank())+
-                coord_cartesian(expand = 0)+
-                scale_color_manual("Admixture duration",
-                                   values = cbPalette_viridis[1:7],
-                                   labels = c(1,200,400,800,1000,1500,2000))
-
-
-
-F_Test_comp=data.frame(F_Test_p=Plot.data_ALD$F_Test,
-                      GF_duration=Plot.data_ALD$True_GF_length,Name=Plot.data_ALD$Name)
-F_Test_comp$Name <- factor(F_Test_comp$Name,
-                    levels = c("Constant","HapMap_no_correction","HapMap_AAMap_correction","HapMap_HapMap_correction"),ordered = TRUE)
-P_F_Test <- ggplot(F_Test_comp, aes(x=as.factor(GF_duration), y=log(F_Test_p),color=as.factor(GF_duration))) + 
-                geom_boxplot()+
-                facet_grid(~Name,switch = "x")+
-                labs(y = "log p-value")+
-                labs(x = "")+
-                theme(
-                  axis.ticks.y=element_blank(),
-                  axis.ticks.x=element_blank(),
-                  axis.text.x=element_blank())+
-                coord_cartesian(expand = 0)+
-                scale_color_manual("Admixture duration",
-                                   values = cbPalette_viridis[1:7],
-                                   labels = c(1,200,400,800,1000,1500,2000))
-
-
-
-SP_EP_stats_comparison <- ggarrange(P_AIC,P_F_Test,labels = c("A","B"),
-          ncol = 2, nrow = 2,common.legend = T,legend = 'top')
-
-SP_EP_stats_comparison
-```
-## Using segments directly
-
-Here, we use msprime simulations and use the segments directly. The simulations were modeled after Skov. et al. 2018 with minor changes (only non-Africans were modeled). We used the true segments from 100 haploid non-Africans obtained from msprime and also inferred the segments using the HMM from Skov et al. 2018. We used a posterior cutoff for calling introgressed segments of 0.9. We only considered segments between 0.05 and 1.2 cM. We used the deCODE MAp to simulate a variyng recombination rate. 
+## Figure 3.1 and corresponding supplements
 
 ```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
 source("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Fit_models.R")
@@ -1017,100 +627,135 @@ save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_8
 #save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000,file = "Inferred_Segment_fit_linear_min_max_cutoff.RData")
 ```
 
-```{r eval=T,figR2_1, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_1} "}
-Plot_tm <- function(ggdata,cbPalette_viridis,main){
+
+```{r eval=T,message=FALSE, echo=FALSE,warning=FALSE}
+#### New Figure for Paper using recent sampling (50 gen): constant RR, RM no correction, RM diff RM correction, RM correction same RM ####
+
+
+Filter_Result_Table <- function(Result.Table){
+  Result.Table=read.table(Result.Table,header=F,sep = " ")
+  Result.names <- c('A.sp', 'tm_sp', 'c.sp', 'RSS_SP','AIC_SP', 'A.ep', 'tm.ep', 'k.ep','c.ep', 'RSS_EP','AIC_EP', 'F_Test','Scenario.name','GF.Start','GF.End','AS','minDist','GF.Model')
+  colnames(Result.Table) <- Result.names
+  #Result.Table <- Result.Table[(1/Result.Table$s.exp)>0,]
+  #Result.Table <- Result.Table[(1/Result.Table$s.exp)<5000,]
+  #Result.Table <- Result.Table[Result.Table$RSS_Lomax<1e-2,]
+  return(Result.Table)
+}
+
+#### True values
+True_params_paper_parametrization <- function(Result.Table){
+  True_params_Calc <- function(True_GF_length,True_mean_GF){
+    EX= True_mean_GF
+    GF_Len <-True_GF_length
+    VarX= ((GF_Len)/4)**2
+    b= EX/VarX
+    a=EX*b
+    a=a
+    True_k=a
+    True_tm=EX
+    xx=c(True_k,True_tm)
+    return(xx)
+  }
+  True.params <- c()
+  for (i in 1:length(Result.Table$F_Test)) {
+    xx=True_params_Calc(Result.Table$True_GF_length[i],Result.Table$True_mean_GF[i])
+    True.params <- rbind(True.params,xx)
+  }
+  True.params <- as.data.frame(True.params)
+  return(True.params)
+}
+
+Result.Table.paper.parametrization.fn <- function(Result.Table.path,Sampling.time.from.GF.End,name){
+  Result.Table <- Filter_Result_Table(Result.Table.path)
+  Result.Table$Name <- name
+  Result.Table$Sample_Time <- Sampling.time.from.GF.End
+  Result.Table$True_GF_length <- Result.Table$GF.End-Result.Table$GF.Start
+  #Result.Table$True_mean_GF <- ((Result.Table$GF.End+Result.Table$GF.Start)/2)-(Result.Table$GF.Start-Result.Table$Sample_Time)
+  Result.Table$True_mean_GF <- ((Result.Table$GF.End+Result.Table$GF.Start)/2)
+  Result.Table$mean_GF_SP <- Result.Table$tm.sp
+  Result.Table$mean_GF_EP_tm <- Result.Table$tm.ep
+  Result.Table.comparison <- True_params_paper_parametrization(Result.Table)
+  Result.Table$True_k <- Result.Table.comparison$V1
+  Result.Table$True_tm <- Result.Table.comparison$V2
+  #Result.Table.comparison$length_GF <- (sqrt(Result.Table$mean_GF_lomax_s/(((1/Result.Table$w.lomax))*Result.Table$s.lomax)))*4
+  Result.Table.comparison$length_GF <- 4*Result.Table$tm.ep*Result.Table$k.ep^(-(1/2))
+  Result.Table$length_GF <- Result.Table.comparison$length_GF
+  
+  return(Result.Table)
+}
+
+Plot_all_together_samples_50_gen_flipped <- function(ggdata,cbPalette_viridis){
   ggdata$Model <- factor(ggdata$Model,
                           levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
-  ggdata$rr <- factor(ggdata$rr,
-                          levels = c("varying HapMap correction","varying AAMap correction","varying no correction","constant"),ordered = TRUE)
-  ggplot(data = ggdata, aes(y=(rr),x=as.numeric(as.character(tm_est)),colour=(rr))) +
+  ggdata$Name <- factor(ggdata$Name,
+                        levels = c("HapMap_HapMap_correction","HapMap_AAMap_correction","HapMap_no_correction",
+                                   "Constant"),ordered = TRUE)
+  ggplot(data = ggdata, aes(y=factor(Name),x=as.numeric(as.character(value)),colour=factor(Name))) +
     geom_boxplot(show.legend = T)+ 
-    facet_grid(as.factor(gf_l)+as.factor(True_tm) ~Model, switch = "y")+
-    geom_vline( aes(xintercept = True_tm ))+
-    geom_vline( aes(xintercept = True_tm*(1-0.03)) ,linetype="dashed", 
-                color = "red")+
-    ggtitle(main)+
+    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = True_mean_GF ))+
     labs(x = "Estimated Admixture Mean Time")+
-    labs(y = "Simulated Admixture Duration \n Simulated Admixture Mean")+
+    labs(y = "Sampling Time \n Simulated Admixture Duration \n Simulated Admixture Mean")+
     theme(
       axis.text.y=element_blank(),
       axis.ticks.y=element_blank())+
-    coord_cartesian(xlim = c(500,2500), expand = 0)+
+    coord_cartesian(xlim = c(500,2000), expand = 0)+
     scale_x_continuous(breaks = seq(0, 1000, by = 500))+
     scale_color_manual("Simulations",
-                       values = c(cbPalette_viridis[7],cbPalette_viridis[5],cbPalette_viridis[3],cbPalette_viridis[1]),
-                       labels = c("varying deCODE correction","varying AAMap correction","varying no correction","constant"),
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("HapMap HapMap corrected","HapMap AAMap corrected","HapMap not corrected","Constant Recombination"),
                        guide = guide_legend(reverse=TRUE))
   
 }
 
 
-Plot_td <- function(ggdata,cbPalette_viridis,main){
-    ggdata$rr <- factor(ggdata$rr,
-                          levels = c("varying HapMap correction","varying AAMap correction","varying no correction","constant"),ordered = TRUE)
-    ggplot(data = ggdata, aes(y=(rr),x=as.numeric(as.character(td_est)),colour=(rr))) +
-    geom_boxplot(show.legend = T)+
-    facet_grid(as.factor(gf_l)+as.factor(True_tm) ~Model, switch = "y")+
-    geom_vline( aes(xintercept = gf_l ))+
+Plot_sampling_50_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis){
+  ggdata$Name <- factor(ggdata$Name,
+                        levels = c("HapMap_HapMap_correction","HapMap_AAMap_correction","HapMap_no_correction",
+                                   "Constant"),ordered = TRUE)
+  ggplot(ggdata,aes(y=variable,x=as.numeric(as.character(value)),colour=factor(Name)))+
+    geom_boxplot(show.legend = F)+
+    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = True_GF_length ))+
     labs(y = "")+
     labs(x = "Estimated Admixture Duration")+
-    ggtitle(main)+
     theme(
       axis.text.y=element_blank(),
       axis.ticks.y=element_blank())+
     coord_cartesian(xlim = c(0,2500), expand = 0)+
     scale_x_continuous(breaks = seq(0, 2500, by = 500))+
     scale_color_manual("Simulations",
-                       values = c(cbPalette_viridis[7],cbPalette_viridis[5],cbPalette_viridis[3],cbPalette_viridis[1]),
-                       labels = c("varying deCODE correction","varying AAMap correction","varying no correction","constant"),
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[2],cbPalette_viridis[3],cbPalette_viridis[4]),
+                       labels = c("HapMap HapMap corrected","HapMap AAMap corrected","HapMap not corrected","Constant Recombination"),
                        guide = guide_legend(reverse=TRUE))
 }
 
-#Plot_LRT<- function(Data,Colour_P,main){
-#  Data$LRT <- ifelse(Data$LRT>=10,10,Data$LRT)
-#  Data$recomb <- factor(Data$recomb,
-#                      levels = c("constant","varying no correction","varying AAMap correction","varying HapMap correction"),ordered = TRUE)
-#  ggplot(Data,aes(x=(recomb),y=LRT,color=(recomb)))+
-#    geom_boxplot()+
-#    facet_grid(~td,switch = "x")+
-#    geom_hline( aes(yintercept = 2 ))+
-#    ggtitle(main)+
-#    theme(
-#      axis.text.x=element_blank(),
-#      axis.ticks.x=element_blank())+
-#    ylim(c(-0.5,10))+
-#    labs(x = "Admixture Duration")+
-#    labs(y = "log Likelihood Ratio")+
-#    scale_color_manual("Simulations",
-#                       values = c(cbPalette_viridis[1],cbPalette_viridis[3],cbPalette_viridis[5],cbPalette_viridis[7]),
-#                       labels = c("constant","varying no correction","varying AAMap correction","varying deCODE correction"),
-#                       drop=FALSE)
-
-#}
-
-Plot_LRT<- function(Data,Colour_P,main){
-  Data$LRT <- ifelse(Data$LRT>=10,10,Data$LRT)
-  Data$recomb <- factor(Data$recomb,
-                      levels = c("constant","varying no correction","varying AAMap correction","varying HapMap correction"),ordered = TRUE)
-  ggplot(Data,aes(x=as.factor(td),y=LRT,color=as.factor(td)))+
-    geom_boxplot()+
-    facet_grid(~as.factor(recomb),switch = "x")+
-    geom_hline( aes(yintercept = 2 ))+
-    ggtitle(main)+
-    theme(
-      axis.text.x=element_blank(),
-      axis.ticks.x=element_blank())+
-    ylim(c(-0.5,10))+
-    labs(x = "Admixture Duration")+
-    labs(y = "log Likelihood Ratio")+
-    scale_color_manual("Admixture duration",
-                       values = cbPalette_viridis[1:7],
-                       labels = c(1,200,400,800,1000,1500,2000))
-
-}
 
 
-load("True_Segment_fit_linear2.RData")
+Result.Table.path_ALD_constant <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_ALD/Result_Simple_Extended_Pulse/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccNo_correction.txt'
+
+# constant interpolation
+Result.Table.path_ALD_no_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse//Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccNo_correction.txt'
+Result.Table.path_ALD_AAMap_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccAAMap_correction.txt'
+Result.Table.path_ALD_HapMap_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccHapMap_correction.txt'
+
+
+Plot.data_ALD_constant <- Result.Table.paper.parametrization.fn(Result.Table.path = Result.Table.path_ALD_constant,Sampling.time.from.GF.End = 0,name = 'Constant')
+Plot.data_ALD_no_correction <- Result.Table.paper.parametrization.fn(Result.Table.path = Result.Table.path_ALD_no_correction,Sampling.time.from.GF.End = 0,name = 'HapMap_no_correction')
+Plot.data_ALD_AAMap_correction<- Result.Table.paper.parametrization.fn(Result.Table.path = Result.Table.path_ALD_AAMap_correction,Sampling.time.from.GF.End = 0,name = 'HapMap_AAMap_correction')
+Plot.data_ALD_HapMap_correction <- Result.Table.paper.parametrization.fn(Result.Table.path = Result.Table.path_ALD_HapMap_correction,Sampling.time.from.GF.End = 0,name = 'HapMap_HapMap_correction')
+Plot.data_ALD <- rbind(Plot.data_ALD_constant,Plot.data_ALD_no_correction,Plot.data_ALD_AAMap_correction,Plot.data_ALD_HapMap_correction)
+
+Plot.data_ALD$True_mean_GF <- 1500
+ggdata_t.ALD_tm_mean_GF_exp <- melt(Plot.data_ALD,measure.vars =  c('tm_sp'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_t.ALD_tm_mean_GF_lomax <- melt(Plot.data_ALD,measure.vars =  c('mean_GF_EP_tm'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+ggdata_l.ALD_tm <- melt(Plot.data_ALD,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name'))
+
+```
+
+```{r figResult3_1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figResult3_1} Segments, ALD constant;constant, HapMap;HapMap"}
+# Segments True
+load("True_Segment_fit_linear_with_all_cuttoff.RData")
 True_segments=rbind(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,
                     True_seg_td_1000,True_seg_td_1500,True_seg_td_2000)
 colnames(True_segments) <- c("tm_sp","tm_ep","k","upper","lower","LRT","td","recomb")
@@ -1121,26 +766,155 @@ True_segments$scale <- (1/True_segments$k)/True_segments$tm_ep
 True_segments_ggdata_tm <- data.frame(tm_est=c(True_segments$tm_sp,True_segments$tm_ep),gf_l=c(True_segments$td,True_segments$td),rr=c(True_segments$recomb,True_segments$recomb))
 True_segments_ggdata_tm$Model <- rep(c("Simple Pulse","Extended Pulse"),each=700)
 True_segments_ggdata_tm$True_tm <- 1500
+True_segments_ggdata_tm$Data <- "True_Segments"
 
 True_segments_ggdata_td <- data.frame(td_est=c(True_segments$td_est),gf_l=c(True_segments$td),rr=c(True_segments$recomb))
 True_segments_ggdata_td$Model <- "Extended Pulse"
 True_segments_ggdata_td$True_tm <- 1500
 
-True_tm <- Plot_tm(True_segments_ggdata_tm,cbPalette_viridis,"True segments")
-True_td <- Plot_td(True_segments_ggdata_td,cbPalette_viridis ,"True segments")
+True_segments_ggdata_td$Data <- "True_Segments"
 
-Direct_segments_true <- ggarrange(True_tm,True_td,labels = c("A","B"),
-          ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
+# Segments Inferred
+load("Inferred_Segment_fit_linear.RData")
+Inferred_segments=rbind(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,
+                        Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000)
+
+colnames(Inferred_segments) <- c("tm_sp","tm_ep","k","upper","lower","LRT","td","recomb")
+Inferred_segments$True_tm <- 1500
+
+Inferred_segments$td_est <-  4*Inferred_segments$tm_ep*(1/Inferred_segments$k)^(-(1/2))
+Inferred_segments$scale <- Inferred_segments$k/Inferred_segments$tm_ep
+
+Inferred_segments_ggdata_tm <- data.frame(tm_est=c(Inferred_segments$tm_sp,Inferred_segments$tm_ep),gf_l=c(Inferred_segments$td,Inferred_segments$td),rr=c(Inferred_segments$recomb,Inferred_segments$recomb))
+Inferred_segments_ggdata_tm$Model <- rep(c("Simple Pulse","Extended Pulse"),each=700)
+Inferred_segments_ggdata_tm$True_tm <- 1500
+Inferred_segments_ggdata_tm$Data <- "Inferred_Segments"
+
+Inferred_segments_ggdata_td <- data.frame(td_est=c(Inferred_segments$td_est),gf_l=c(Inferred_segments$td),rr=c(Inferred_segments$recomb))
+Inferred_segments_ggdata_td$Model <- "Extended Pulse"
+Inferred_segments_ggdata_td$True_tm <- 1500
+
+Inferred_segments_ggdata_td$Data <- "Inferred_Segments"
+# ALD Data
+ggdata_t.ALD_tm_mean_GF_exp$Model <- "Simple Pulse"
+ggdata_t.ALD_tm_mean_GF_lomax$Model <- "Extended Pulse"
+
+ggdata_all_together_samples_ALD_tm <- rbind(ggdata_t.ALD_tm_mean_GF_exp,ggdata_t.ALD_tm_mean_GF_lomax)
+ggdata_all_together_samples_ALD_tm$Sample_Time <- 0
+
+ggdata_sampling_ALD_tm_gen_GF_Length <- ggdata_l.ALD_tm
+ggdata_sampling_ALD_tm_gen_GF_Length$Model <- "Extended Pulse"
+ggdata_sampling_ALD_tm_gen_GF_Length$Sample_Time <- 0
 
 
-Direct_segments_true
+ggdata_all_together_samples_ALD_tm$Data <- "ALD"
+ggdata_sampling_ALD_tm_gen_GF_Length$Data <- "ALD"
 
 
+###
+
+ggdata_tm <- data.frame(True_tm=c(True_segments_ggdata_tm$True_tm,Inferred_segments_ggdata_tm$True_tm,ggdata_all_together_samples_ALD_tm$True_mean_GF),
+                        True_td=c(True_segments_ggdata_tm$gf_l,Inferred_segments_ggdata_tm$gf_l,ggdata_all_together_samples_ALD_tm$True_GF_length),
+                        rr=c(True_segments_ggdata_tm$rr,Inferred_segments_ggdata_tm$rr,ggdata_all_together_samples_ALD_tm$Name),
+                        Model=c(True_segments_ggdata_tm$Model,Inferred_segments_ggdata_tm$Model,ggdata_all_together_samples_ALD_tm$Model),
+                        tm_est=c(True_segments_ggdata_tm$tm_est,Inferred_segments_ggdata_tm$tm_est,ggdata_all_together_samples_ALD_tm$value),
+                        Data=c(True_segments_ggdata_tm$Data,Inferred_segments_ggdata_tm$Data,ggdata_all_together_samples_ALD_tm$Data))
+ggdata_tm$rr <- ifelse(ggdata_tm$rr=="Constant","constant",ggdata_tm$rr)
+ggdata_tm$rr <- ifelse(ggdata_tm$rr=="HapMap_HapMap_correction","varying HapMap correction",ggdata_tm$rr)
+ggdata_tm$rr <- ifelse(ggdata_tm$rr=="HapMap_no_correction","varying no correction",ggdata_tm$rr)
+ggdata_tm$rr <- ifelse(ggdata_tm$rr=="HapMap_AAMap_correction","varying AAMap correction",ggdata_tm$rr)
+ggdata_tm$EP_expected_seg_len <- ((1/((ggdata_tm$True_td/(4*ggdata_tm$True_tm))^2))/((1/((ggdata_tm$True_td/(4*ggdata_tm$True_tm))^2))-1)*(1/ggdata_tm$True_tm))
+ggdata_tm$Data <- as.factor(ggdata_tm$Data)
+
+ggdata_td <- data.frame(True_tm=c(True_segments_ggdata_td$True_tm,Inferred_segments_ggdata_td$True_tm,ggdata_sampling_ALD_tm_gen_GF_Length$True_mean_GF),
+                        True_td=c(True_segments_ggdata_td$gf_l,Inferred_segments_ggdata_td$gf_l,ggdata_sampling_ALD_tm_gen_GF_Length$True_GF_length),
+                        rr=c(True_segments_ggdata_td$rr,Inferred_segments_ggdata_td$rr,ggdata_sampling_ALD_tm_gen_GF_Length$Name),
+                        Model=c(True_segments_ggdata_td$Model,Inferred_segments_ggdata_td$Model,ggdata_sampling_ALD_tm_gen_GF_Length$Model),
+                        td_est=c(True_segments_ggdata_td$td_est,Inferred_segments_ggdata_td$td_est,ggdata_sampling_ALD_tm_gen_GF_Length$value),
+                        Data=c(True_segments_ggdata_td$Data,Inferred_segments_ggdata_td$Data,ggdata_sampling_ALD_tm_gen_GF_Length$Data))
+ggdata_td$rr <- ifelse(ggdata_td$rr=="Constant","constant",ggdata_td$rr)
+ggdata_td$rr <- ifelse(ggdata_td$rr=="HapMap_HapMap_correction","varying HapMap correction",ggdata_td$rr)
+ggdata_td$rr <- ifelse(ggdata_td$rr=="HapMap_no_correction","varying no correction",ggdata_td$rr)
+ggdata_td$rr <- ifelse(ggdata_td$rr=="HapMap_AAMap_correction","varying AAMap correction",ggdata_td$rr)
+
+Plot_tm <- function(ggdata,cbPalette_viridis,main,rr_1,rr_2){
+  ggdata$Model <- factor(ggdata$Model,
+                         levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
+  ggdata$rr <- factor(ggdata$rr,
+                      levels = c(rr_2,rr_1),ordered = TRUE)
+  ggdata$Data <- factor(ggdata$Data,
+                      levels = c("ALD", "Inferred_Segments","True_Segments"),labels = c("ALD", "Inferred Segments","True Segments"),ordered = TRUE)
+  ggplot(data = ggdata, aes(y=(Data),x=as.numeric(as.character(tm_est)),colour=(rr))) +
+    geom_boxplot(show.legend = T)+ 
+    facet_grid(as.factor(True_td)+as.factor(True_tm) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = True_tm ))+
+    geom_vline( aes(xintercept = True_tm*(1-0.03)) ,linetype="dashed", 
+                color = "red")+
+    geom_vline( aes(xintercept = (1/EP_expected_seg_len)) ,linetype="dashed", 
+                color = "black")+
+    ggtitle(main)+
+    labs(x = "Estimated Admixture Mean Time")+
+    labs(y = "Simulated Admixture Duration \n Simulated Admixture Mean")+
+    coord_cartesian(xlim = c(500,2500), expand = 0)+
+    scale_x_continuous(breaks = seq(0, 1000, by = 500))+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[7],cbPalette_viridis[1]),
+                       labels = c(rr_2,rr_1),
+                       guide = guide_legend(reverse=TRUE))
+  
+}
+
+Plot_td <- function(ggdata,cbPalette_viridis,main,rr_1,rr_2){
+  ggdata$Model <- factor(ggdata$Model,
+                         levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
+  ggdata$rr <- factor(ggdata$rr,
+                      levels = c(rr_2,rr_1),ordered = TRUE)
+  ggdata$Data <- factor(ggdata$Data,
+                        levels = c("ALD", "Inferred_Segments","True_Segments"),labels = c("ALD", "Inferred Segments","True Segments"),ordered = TRUE)
+  ggplot(data = ggdata, aes(y=(Data),x=as.numeric(as.character(td_est)),colour=(rr))) +
+    geom_boxplot(show.legend = T)+ 
+    facet_grid(as.factor(True_td)+as.factor(True_tm) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = True_td ))+
+    labs(y = "")+
+    labs(x = "Estimated Admixture Duration")+
+    ggtitle(main)+
+    theme(
+      axis.text.y=element_blank(),
+      axis.ticks.y=element_blank())+
+    coord_cartesian(xlim = c(0,2500), expand = 0)+
+    scale_x_continuous(breaks = seq(0, 2500, by = 500))+
+    scale_color_manual("Simulations",
+                       values = c(cbPalette_viridis[7],cbPalette_viridis[1]),
+                       labels = c(rr_2,rr_1),
+                       guide = guide_legend(reverse=TRUE))
+}
+ggdata_tm_results <-  ggdata_tm %>% filter(rr!="varying no correction") %>% filter(rr!="varying AAMap correction")
+ggdata_td_results<-  ggdata_td %>% filter(rr!="varying no correction") %>% filter(rr!="varying AAMap correction")
+Seg_ald_tm_results <- Plot_tm(ggdata_tm_results,cbPalette_viridis,"","constant","varying HapMap correction")
+Seg_ald_td_results <- Plot_td(ggdata_td_results,cbPalette_viridis,"","constant","varying HapMap correction")
 
 
+Segments_ALD_Results <- ggarrange(Seg_ald_tm_results,Seg_ald_td_results,labels = c("A","B"),
+                                    ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
+
+Segments_ALD_Results
 ```
 
-``` {r eval=T,fig_true_Seg_fit_visual_no_cutoff, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:fig_true_Seg_fit_visual_no_cutoff} "}
+```{r figResult3_1_Supplement,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figResult3_1_Supplement} Segments, ALD HapMap;constant, HapMap;AAMap"}
+ggdata_tm_supp <-  ggdata_tm %>% filter(rr!="constant") %>% filter(rr!="varying HapMap correction")
+ggdata_td_supp <-  ggdata_td %>% filter(rr!="constant") %>% filter(rr!="varying HapMap correction")
+Seg_ald_tm_supp <- Plot_tm(ggdata_tm_supp,cbPalette_viridis,"","varying AAMap correction","varying no correction")
+Seg_ald_td_supp <- Plot_td(ggdata_td_supp,cbPalette_viridis,"","varying AAMap correction","varying no correction")
+
+
+Segments_ALD_supp <- ggarrange(Seg_ald_tm_supp,Seg_ald_td_supp,labels = c("A","B"),
+                                  ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
+Segments_ALD_supp
+```
+
+## Figure 3.2 and corresponding supplements
+
+```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE}
 source("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Fit_models.R")
 ## Variation in recombinations (HapMap) ##
 AAMap_Map_path="/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Simulations/Recombination_Maps/Scaled_Genetic_AAMap.txt"
@@ -1150,24 +924,20 @@ HapMap_Map=read.table(HapMap_Map_path,stringsAsFactors = F,header=T,fill = T)
 mean_AAMap_rr=(tail(AAMap_Map$Map.cM.,n=1)/tail(AAMap_Map$Position.bp.,n=1))/100
 mean_HapMap_rr=(tail(HapMap_Map$Genetic_Map.cM.,n=1)/tail(HapMap_Map$position,n=1))/100
 # plot of true and inf segment fits
-plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Recomb_Map,tm,td,main,cutoff=T){
+plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Recomb_Map,tm,td,main,cutoff=T,Data,legend=F){
   tm=tm
   td=td
   k=1/((td/(4*tm))^2)
-  # Fitting functions
-  
+  # Fitting functions  
   dtexp <- function(x, rate=1, lower_trunc, upper_trunc){
-    dexp(x, rate, log=T) - logspace.sub(pexp(lower_trunc, rate, lower=F, log=T),pexp(upper_trunc, rate, lower=F, log=T))}
+    dexp(x, rate, log=T) - logspace.sub(pexp(lower_trunc, rate, lower=F, log=T),pexp(upper_trunc, rate, lower=F, log=T))} 
   
-  dtexp_norm <- function(x, rate=1){dexp(x, rate, log=T)} 
-  
+  dtexp_norm <- function(x, rate=1){dexp(x, rate, log=T)}  
   dtlomax <- function(x, scale, shape, lower_trunc, upper_trunc){
     VGAM::dlomax(x, shape3.q = shape,scale = scale, log=T) -
-      logspace.sub(VGAM::plomax(lower_trunc, scale = scale, shape3.q = shape, lower=F, log=T),VGAM::plomax(upper_trunc, scale = scale, shape3.q = shape, lower=F, log=T))}
-  
+      logspace.sub(VGAM::plomax(lower_trunc, scale = scale, shape3.q = shape, lower=F, log=T),VGAM::plomax(upper_trunc, scale = scale, shape3.q = shape, lower=F, log=T))}  
   dtlomax_norm <- function(x, scale, shape)
   VGAM::dlomax(x, shape3.q = shape,scale = scale, log=T) 
-    
   if(cutoff==F){
     truncation=F
     lower_trunc=NA
@@ -1184,9 +954,7 @@ plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Re
     Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax_norm(data_x$M,scale=((1/EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=(1/EP_fit[[1]]$par[2])),fit="EP_fit"))
     Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax_norm(data_x$M,scale=((k)/tm), shape=(k)),fit="EP_true"))
     Fit_Results$fit <- factor(Fit_Results$fit,
-                        levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
-    
-  } else {
+                        levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)  } else {
     truncation=T
     lower_trunc=0.05/100
     upper_trunc=1.2/100
@@ -1204,14 +972,15 @@ plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Re
     Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax(data_x$M,scale=((k)/tm), shape=(k),lower_trunc,upper_trunc),fit="EP_true"))
     Fit_Results$fit <- factor(Fit_Results$fit,
                         levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
-  }
 
-
-
-  
-  P_fit <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=fit))+
+                        }
+    data_x$Data <- Data
+    data_x$td <- td
+    Fit_Results$Data <- Data
+    Fit_Results$td <- td
+  P_fit <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=NULL))+
     geom_point(data=data_x,aes(x=M,y=dens,fill=NULL),color="grey",show.legend = F)+
-    geom_line(data=Fit_Results,aes(x = x, y = y,color=fit),size=1.2)+
+    geom_line(data=Fit_Results,aes(x = x, y = y,color=fit),size=1.2,show.legend = legend)+
     ylim(min(data_x$dens),max(data_x$dens))+
     scale_color_manual("Fit",
                        values = c(c(cbPalette_viridis[1],cbPalette_viridis[4],cbPalette_viridis[8],cbPalette_viridis[12])),
@@ -1220,206 +989,563 @@ plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Re
     labs(y = "log density")+
     ggtitle(main)
   return(P_fit)
+  #return(list(data_x,Fit_Results))
+}
+
+True_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Simulation-merged-_Scenario_1__Archaic_Segments_run_0.bed",header = F,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 1,main = "True Segments",Data="True_Segments")
+True_var_HapMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 1,main = "",Data="True_Segments",legend=F)
+True_var_AAMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 1,main = "",Data="True_Segments",legend=F)
+True_var_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 1,main = "True Segments",Data="True_Segments")
+
+
+
+True_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Simulation-merged-_Scenario_7__Archaic_Segments_run_0.bed",header = F,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000,main = "True Segments",Data="True_Segments")
+True_var_HapMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_7_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 2000,main = "",Data="True_Segments",legend=T)
+True_var_AAMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_7_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 2000,main = "",Data="True_Segments",legend=T)
+True_var_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_7_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000,main = "True Segments",Data="True_Segments")
+
+
+```
+
+```{r eval=T,message=FALSE, echo=FALSE,warning=FALSE}
+
+Inf_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Inferred_Archaic_Tracts-_Scenario_1_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 1, main = "Inferred Segments",Data="Inferred_Segments")
+Inf_var_HapMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 1, main = "",Data="Inferred_Segments",legend=F)
+Inf_var_AAMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 1, main = "",Data="Inferred_Segments",legend=F)
+Inf_var_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 1, main = "Inferred Segments",Data="Inferred_Segments")
+
+
+Inf_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Inferred_Archaic_Tracts-_Scenario_7_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000, main = "Inferred Segments",Data="Inferred_Segments")
+Inf_var_HapMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_7_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 2000, main = "",Data="Inferred_Segments",legend=T)
+Inf_var_AAMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_7_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 2000, main = "",Data="Inferred_Segments",legend=T)
+Inf_var_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_7_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000, main = "Inferred Segmentst",Data="Inferred_Segments")
+
+
+
+
+
+```
+
+```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE}
+
+
+# plot of ALD fits
+Get_points <- function(input,lval,hval,log){
+  # Read input file
+  data <- read.table(input, header = F)
+  
+  
+  # set dist and wcorr
+  col=2
+  dist <- data[,1]
+  wcorr <- data[,col]
+  ndist <- length(dist)  ## number of rows in dataset
+  lval=lval
+  hval=hval
+  
+  # check x lower value and y lower value
+  data.sub <- data
+  if ((lval > dist[1]) || (hval < dist[ndist])) {
+    data.sub <- subset(data, ((dist <= hval) & (dist >= lval)))
+  } 
+  dist <- data.sub[,1]		# updated x values
+  wcorr <- data.sub[,col]		# updated y values
+  if(log==T){
+    xx <- cbind(dist,log(wcorr))
+    xx <- xx[complete.cases(xx),]
+    wcorr <- xx[,2]
+    wcorr <-c(wcorr,rep(NA,length(data.sub[,1])-length(wcorr)))
+    dist <- xx[,1]
+    dist <-c(dist,rep(NA,length(data.sub[,1])-length(dist)))
+  }
+  result_table <- data.frame(dist,wcorr)
+  result_table <- result_table[complete.cases(result_table),]
+  return(result_table)
+}
+
+Simple_Pulse_fn <- function(Data,affine,use_log=F){
+  xx=Data
+  
+
+  
+  if(use_log==T) {
+    xx$wcorr <- log(xx$wcorr)
+    xx <- xx[complete.cases(xx),]
+    dist=xx$dist
+    wcorr=xx$wcorr
+    
+    fm1_exp <- function(x) log(x[2])  -((dist/100)*x[1])
+    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
+    fm3_exp = optim(c(2,2), fm2_exp)
+    
+    par1_exp <- fm3_exp$par
+    names(par1_exp) <- c("tm", "A")
+    fit1_exp <- nls(wcorr ~ log(A) -((dist/100)*tm), start=par1_exp, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+  } else {
+    
+    dist=xx$dist
+    wcorr=xx$wcorr
+    #Fitting an Exponential
+  
+    fm1_exp <- function(x) x[2]*exp(-(dist/100)*x[1])+x[3]
+    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
+    fm3_exp <- DEoptim(fm2_exp, lower=c(1,1e-6,-1), upper=c( 5000,1,1), control=list(trace=FALSE))
+    
+    par1_exp <- fm3_exp$optim$bestmem
+    # parameters for y ~ Ae-mt
+    names(par1_exp) <- c( "tm","A","c")
+    
+    fit1_exp <- nls(wcorr ~ (A*exp(-(dist/100)*tm)+c), start=par1_exp, control=list(maxiter=10000, warnOnly=TRUE)) 
+  }
+
+  return(fit1_exp)
+}
+
+Simple_Pulse_fixed_fn <- function(Data,affine,tm,use_log=F){
+  xx=Data
+  
+
+  
+  if(use_log==T) {
+    xx$wcorr <- log(xx$wcorr)
+    xx <- xx[complete.cases(xx),]
+    dist=xx$dist
+    wcorr=xx$wcorr
+    
+    fm1_exp <- function(x) log(x[1])  -((dist/100)*tm)
+    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
+    fm3_exp = optim(c(2), fm2_exp)
+    
+    par1_exp <- fm3_exp$par
+    names(par1_exp) <- c("A")
+    fit1_exp <- nls(wcorr ~ log(A) -((dist/100)*tm), start=par1_exp, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+  } else {
+    
+    dist=xx$dist
+    wcorr=xx$wcorr
+    #Fitting an Exponential
+  
+    fm1_exp <- function(x) x[1]*exp(-(dist/100)*tm)+x[2]
+    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
+    fm3_exp <- DEoptim(fm2_exp, lower=c(1e-6,-1), upper=c( 1,1), control=list(trace=FALSE))
+    
+    par1_exp <- fm3_exp$optim$bestmem
+    # parameters for y ~ Ae-mt
+    names(par1_exp) <- c( "A","c")
+    
+    fit1_exp <- nls(wcorr ~ (A*exp(-(dist/100)*tm)+c), start=par1_exp, control=list(maxiter=10000, warnOnly=TRUE)) 
+  }
+
+  return(fit1_exp)
+}
+
+Extended_Pulse_fn <- function(Data,affine,use_log=F){
+  xx=Data
+  
+  dist=xx$dist
+  wcorr=xx$wcorr
+
+  if(use_log==F) {
+    fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + (  (x[2] / x[1])*(dist/100) )))^(x[1])
+    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
+    fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1,100,0,-1), upper=c(100,10000,2,1), control=list(trace=FALSE))
+    
+    par1_lomax <- fm3_DEoptim$optim$bestmem
+    par1_lomax <- c(par1_lomax[1],par1_lomax[2],par1_lomax[3],par1_lomax[4])
+    names(par1_lomax) <- c("k","tm","A","c")
+    fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ k) *(dist/100)) ))^(k), start=par1_lomax, algorithm="port", 
+                      lower=c(1,100,0,-1), upper=c(100,10000,2,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+  }
+
+  
+  if(use_log==T) {
+    xx$wcorr <- log(xx$wcorr)
+    xx <- xx[complete.cases(xx),]
+    dist=xx$dist
+    wcorr=xx$wcorr
+    fm1_lomax <- function(x) log(x[3]) + (x[2]) * -log(1+ (((1/x[2])*(dist/100))*x[1]))
+    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
+    fm3_optim <- optim(c(2,2,2), fm2_lomax_k)
+    
+    par1_lomax <- fm3_optim$par
+    par1_lomax <- c(par1_lomax[1],par1_lomax[2],par1_lomax[3])
+    names(par1_lomax) <- c("k","tm","A")
+    fit1_lomax <- nls(wcorr ~ log(A) + k* -log(1 + (((1/k)*(dist/100))*tm)), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+  }
+
+      
+  return(fit1_lomax)
+}
+
+Extended_Pulse_fixed_fn <- function(Data,affine,tm,k,use_log=F){
+  xx=Data
+  
+  dist=xx$dist
+  wcorr=xx$wcorr
+
+  if(use_log==F) {
+    fm1_lomax <- function(x) x[2] + x[1]* (1/(1 + (  tm / k)*(dist/100) ))^(k)
+    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
+    fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(0,-1), upper=c(2,1), control=list(trace=FALSE))
+    
+    par1_lomax <- fm3_DEoptim$optim$bestmem
+    par1_lomax <- c(par1_lomax[1],par1_lomax[2])
+    names(par1_lomax) <- c("A","c")
+    fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ k) *(dist/100)) ))^(k), start=par1_lomax, algorithm="port", 
+                      lower=c(1,100,0,-1), upper=c(2,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+  }
+
+  
+  if(use_log==T) {
+    xx$wcorr <- log(xx$wcorr)
+    xx <- xx[complete.cases(xx),]
+    dist=xx$dist
+    wcorr=xx$wcorr
+    fm1_lomax <- function(x) log(x[1]) + (k) * -log(1+ (((1/k)*(dist/100))*tm))
+    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
+    fm3_optim <- optim(c(2), fm2_lomax_k)
+    
+    par1_lomax <- fm3_optim$par
+    par1_lomax <- c(par1_lomax[1])
+    names(par1_lomax) <- c("A")
+    fit1_lomax <- nls(wcorr ~ log(A) + k* -log(1 + (((1/k)*(dist/100))*tm)), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+  }
+
+      
+  return(fit1_lomax)
+}
+
+plot_ALD_fit <- function(input,lval=0.05,hval=0.8,tm,td,use_log=F,main,legend=F){
+  tm=tm
+  td=td
+  k=1/((td/(4*tm))^2)
+  # Fitting functions
+  
+  SP_tail <- function(dist,x) x[1]*exp(-(dist)*x[2])+x[3]
+  
+  EP_tail <- function(dist,x) x[4] + x[3]* (1/(1 + (  (x[2] / x[1])*(dist) )))^(x[1])
+  
+  SP_tail_log <- function(dist,x) log(x[2])  -(dist*x[1])
+  EP_tail_log <- function(dist,x) log(x[3]) + (x[2]) * -log(1+ (((1/x[2])*(dist))*x[1]))
+  
+  ALD_x <- Get_points(input,lval,hval,log = F)
+
+  Fit_SP <- Simple_Pulse_fn(ALD_x,affine = T,use_log = use_log)
+  
+  Fit_EP <-  Extended_Pulse_fn(ALD_x,affine=T,use_log = use_log)
+  
+  Fit_SP_fixed <- Simple_Pulse_fixed_fn(ALD_x,affine = T,tm,use_log = use_log)
+  
+  Fit_EP_fixed <-  Extended_Pulse_fixed_fn(ALD_x,affine=T,tm,k,use_log = use_log)
+  
+  #plot(ALD_x$dist/100,log(ALD_x$wcorr))
+  #lines(ALD_x$dist/100,log(SP_tail(ALD_x$dist/100,c(coef(Fit_SP)[1],coef(Fit_SP)[2],coef(Fit_SP)[3]))),col="red")
+  #lines(ALD_x$dist/100,(SP_tail_log(ALD_x$dist/100,c(coef(Fit_SP)[2],coef(Fit_SP)[1]))),col="red")
+  
+  data_x <- data.frame(M=ALD_x$dist/100,ALD=log(ALD_x$wcorr))
+  data_x <- data_x[complete.cases(data_x),]
+  data_x$Data <- "ALD"
+  data_x$td <- td
+
+  Fit_Results <- data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(tm,coef(Fit_SP_fixed)[1]))),fit="SP_true")
+  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(coef(Fit_SP)[1],coef(Fit_SP)[2]))),fit="SP_fit"))
+  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(coef(Fit_EP)[2],coef(Fit_EP)[1],coef(Fit_EP)[3]))),fit="EP_fit" ))
+  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(tm,k,coef(Fit_EP_fixed)[1]))),fit="EP_true"))
+  Fit_Results$fit <- factor(Fit_Results$fit,
+                  levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
+  Fit_Results$Data <- "ALD"
+  Fit_Results$td <- td
+
+  
+  P_fit <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=NULL))+
+    geom_point(data=data_x,aes(x=M,y=ALD,fill=NULL),color="grey",show.legend = F)+
+    geom_line(data=Fit_Results,aes(x = x, y = y,color=fit),size=1.2,show.legend = legend)+
+    scale_color_manual("Fit",
+                       values = c(c(cbPalette_viridis[1],cbPalette_viridis[4],cbPalette_viridis[8],cbPalette_viridis[12])),
+                      labels = c(c("true SP","fitted SP","true EP","fitted EP")))+
+    labs(x = "Genetic distance (M)")+
+    labs(y = "log weighted LD")+
+    ggtitle(main)
+  return(P_fit)
+  #return(list(data_x,Fit_Results))
   
 }
 
-True_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Simulation-merged-_Scenario_1__Archaic_Segments_run_0.bed",header = F,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 1,main = "Constant;Constant",cutoff = F)
-True_var_HapMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 1,main = "HapMap;HapMap",cutoff = F)
-True_var_AAMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 1,main = "HapMap;AAMap",cutoff = F)
-True_var_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 1,main = "HapMap;Constant",cutoff = F)
-
-True_td_1 <- ggarrange(True_const_td_1,True_var_const_td_1,True_var_AAMap_td_1,True_var_HapMap_td_1,
-                       labels = c("A","B","C","D") ,
-          ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
-
-True_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Simulation-merged-_Scenario_7__Archaic_Segments_run_0.bed",header = F,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000,main = "Constant;Constant",cutoff = F)
-True_var_HapMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_7_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 2000,main = "HapMap;HapMap",cutoff = F)
-True_var_AAMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_7_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 2000,main = "HapMap;AAMap",cutoff = F)
-True_var_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_7_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000,main = "HapMap;Constant",cutoff = F)
-
-True_td_2000 <- ggarrange(True_const_td_2000,True_var_const_td_2000,True_var_AAMap_td_2000,True_var_HapMap_td_2000,labels = c("A","B","C","D"),
-          ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
-
-True_td_1
-True_td_2000
-
-```
-
-``` {r eval=T,figR2_1_LRT, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_1_LRT} "}
-
-True_LRT <- Plot_LRT(True_segments,cbPalette_viridis,"True segments")
-
-True_LRT
-```
-
-
-```{r eval=T,figR2_1_cutoff, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_1_cutoff} "}
-#load("True_Segment_fit.RData")
-#load("True_Segment_fit_linear_with_AAMap_constant_cutoff.RData")
-#load("True_Segment_fit_linear_with_AAMap_constant_cutoff_quantiles.RData")
-#load("True_Segment_fit_linear_with_AAMap_constant_cutoff_quantiles_in_bp.RData")
-
-load("True_Segment_fit_linear_with_all_cuttoff.RData")
-
-True_segments=rbind(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,
-                    True_seg_td_1000,True_seg_td_1500,True_seg_td_2000)
-colnames(True_segments) <- c("tm_sp","tm_ep","k","upper","lower","LRT","td","recomb")
-True_segments$True_tm <- 1500
-True_segments$td_est <-  4*True_segments$tm_ep*(1/True_segments$k)^(-(1/2))
-True_segments$scale <- (1/True_segments$k)/True_segments$tm_ep
-
-True_segments_ggdata_tm <- data.frame(tm_est=c(True_segments$tm_sp,True_segments$tm_ep),gf_l=c(True_segments$td,True_segments$td),rr=c(True_segments$recomb,True_segments$recomb))
-True_segments_ggdata_tm$Model <- rep(c("Simple Pulse","Extended Pulse"),each=700)
-True_segments_ggdata_tm$True_tm <- 1500
-
-True_segments_ggdata_td <- data.frame(td_est=c(True_segments$td_est),gf_l=c(True_segments$td),rr=c(True_segments$recomb))
-True_segments_ggdata_td$Model <- "Extended Pulse"
-True_segments_ggdata_td$True_tm <- 1500
-
-True_tm <- Plot_tm(True_segments_ggdata_tm,cbPalette_viridis,"True segments")
-True_td <- Plot_td(True_segments_ggdata_td,cbPalette_viridis ,"True segments")
-
-Direct_segments_true <- ggarrange(True_tm,True_td,labels = c("A","B"),
-          ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
-Direct_segments_true
-```
-
-``` {r eval=T,fig_true_Seg_fit_visual_cutoff, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:fig_true_Seg_fit_visual_cutoff} "}
-True_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Simulation-merged-_Scenario_1__Archaic_Segments_run_0.bed",header = F,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 1,main = "Constant;Constant")
-True_var_HapMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 1,main = "HapMap;HapMap")
-True_var_AAMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 1,main = "HapMap;AAMap")
-True_var_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 1,main = "HapMap;Constant")
-
-True_td_1 <- ggarrange(True_const_td_1,True_var_const_td_1,True_var_AAMap_td_1,True_var_HapMap_td_1,labels = c("A","B","C","D"),
-          ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
-
-True_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Simulation-merged-_Scenario_7__Archaic_Segments_run_0.bed",header = F,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000,main = "Constant;Constant")
-True_var_HapMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_7_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 2000,main = "HapMap;HapMap")
-True_var_AAMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_7_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 2000,main = "HapMap;AAMap")
-True_var_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_7_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000,main = "HapMap;Constant")
-
-True_td_2000 <- ggarrange(True_const_td_2000,True_var_const_td_2000,True_var_AAMap_td_2000,True_var_HapMap_td_2000,labels = c("A","B","C","D"),
-          ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
-
-True_td_1
-True_td_2000
-```
-
-
-``` {r eval=T,figR2_1_LRT_with_cutoff, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_1_LRT_with_cutoff} "}
-
-
-True_LRT <- Plot_LRT(True_segments,cbPalette_viridis,"True segments")
-True_LRT
-```
-
-```{r eval=T,figR2_2_1, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_2_1} "}
-#load("Inferred_Segment_fit.RData")
-load("Inferred_Segment_fit_linear.RData")
-#load("Inferred_Segment_fit_linear_no_cutoff.RData")
-# -> doesnt work so great
-#load("Inferred_Segment_fit_linear_min_max_cutoff.RData")
-# -> doesnt work so great
-Inferred_segments=rbind(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,
-                        Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000)
-
-colnames(Inferred_segments) <- c("tm_sp","tm_ep","k","upper","lower","LRT","td","recomb")
-Inferred_segments$True_tm <- 1500
-
-Inferred_segments$td_est <-  4*Inferred_segments$tm_ep*(1/Inferred_segments$k)^(-(1/2))
-Inferred_segments$scale <- Inferred_segments$k/Inferred_segments$tm_ep
-
-Inferred_segments_ggdata_tm <- data.frame(tm_est=c(Inferred_segments$tm_sp,Inferred_segments$tm_ep),gf_l=c(Inferred_segments$td,Inferred_segments$td),rr=c(Inferred_segments$recomb,Inferred_segments$recomb))
-Inferred_segments_ggdata_tm$Model <- rep(c("Simple Pulse","Extended Pulse"),each=700)
-Inferred_segments_ggdata_tm$True_tm <- 1500
-
-Inferred_segments_ggdata_td <- data.frame(td_est=c(Inferred_segments$td_est),gf_l=c(Inferred_segments$td),rr=c(Inferred_segments$recomb))
-Inferred_segments_ggdata_td$Model <- "Extended Pulse"
-Inferred_segments_ggdata_td$True_tm <- 1500
+ALD_const_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_ALD/Raw_ALDER_output-_Scenario_1_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 1,use_log=F,main = "ALD")
+ALD_var_const_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 1,use_log=T,main = "ALD")
+ALD_var_AAMap_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccAAMap_correction.txt",tm = 1500,td = 1,use_log=T,main = "",legend=F)
+ALD_var_HapMap_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccHapMap_correction.txt",tm = 1500,td = 1,use_log=F,main = "",legend=F)
 
 
 
-Inferred_tm <- Plot_tm(Inferred_segments_ggdata_tm,cbPalette_viridis ,"Inferred segments")
-Inferred_td <- Plot_td(Inferred_segments_ggdata_td,cbPalette_viridis ,"Inferred segments")
-
-Direct_segments_inf <- ggarrange(Inferred_tm,Inferred_td,labels = c("A","B"),
-          ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
-
-Direct_segments_inf
-
+ALD_const_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_ALD/Raw_ALDER_output-_Scenario_7_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 2000,use_log=F,main = "ALD")
+ALD_var_const_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 2000,use_log=T,main = "ALD")
+ALD_var_AAMap_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccAAMap_correction.txt",tm = 1500,td = 2000,use_log=F,main = "ALD:\nHapMap;AAMap",legend=T)
+ALD_var_HapMap_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccHapMap_correction.txt",tm = 1500,td = 2000,use_log=F,main = "",legend=T)
 
 
 ```
 
-
-``` {r eval=T,fig_inf_Seg_fit_visual_cutoff, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:fig_inf_Seg_fit_visual_cutoff} "}
-
-Inf_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Inferred_Archaic_Tracts-_Scenario_1_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 1, main = "Constant;Constant")
-Inf_var_HapMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 1, main = "HapMap;HapMap")
-Inf_var_AAMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 1, main = "HapMap;AAMap")
-Inf_var_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 1, main = "HapMap;Constant")
-
-Inf_td_1 <- ggarrange(Inf_const_td_1,Inf_var_const_td_1,Inf_var_AAMap_td_1,Inf_var_HapMap_td_1,labels = c("A","B","C","D"),
-          ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
-
-Inf_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Inferred_Archaic_Tracts-_Scenario_7_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000, main = "Constant;Constant")
-Inf_var_HapMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_7_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 2000, main = "HapMap;HapMap")
-Inf_var_AAMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_7_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 2000, main = "HapMap;AAMap")
-Inf_var_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_7_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000, main = "HapMap;Constant")
-
-Inf_td_2000 <- ggarrange(Inf_const_td_2000,Inf_var_const_td_2000,Inf_var_AAMap_td_2000,Inf_var_HapMap_td_2000,labels = c("A","B","C","D"),
-          ncol = 2, nrow = 2,common.legend = T,legend = 'bottom')
-
-
-Inf_td_1
-
-Inf_td_2000
-```
-
-``` {r eval=T,figR2_2_LRT, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_2_LRT} "}
-
-Inferred_LRT <- Plot_LRT(Inferred_segments,cbPalette_viridis,"Inferred segments")
-
-Inferred_LRT
-```
-
-```{r eval=F,figR2_2_1_NO_CUTTOFF, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR2_2_1_NO_CUTTOFF} "}
-#load("Inferred_Segment_fit.RData")
-#load("Inferred_Segment_fit_linear.RData")
-load("Inferred_Segment_fit_linear_no_cutoff.RData")
-# -> doesnt work so great
-#load("Inferred_Segment_fit_linear_min_max_cutoff.RData")
-# -> doesnt work so great
-Inferred_segments=rbind(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,
-                        Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000)
-
-colnames(Inferred_segments) <- c("tm_sp","tm_ep","k","upper","lower","LRT","td","recomb")
-Inferred_segments$True_tm <- 1500
-
-Inferred_segments$td_est <-  4*Inferred_segments$tm_ep*(1/Inferred_segments$k)^(-(1/2))
-Inferred_segments$scale <- (1/Inferred_segments$k)/Inferred_segments$tm_ep
-
-Inferred_segments_ggdata_tm <- data.frame(tm_est=c(Inferred_segments$tm_sp,Inferred_segments$tm_ep),gf_l=c(Inferred_segments$td,Inferred_segments$td),rr=c(Inferred_segments$recomb,Inferred_segments$recomb))
-Inferred_segments_ggdata_tm$Model <- rep(c("Simple Pulse","Extended Pulse"),each=700)
-Inferred_segments_ggdata_tm$True_tm <- 1500
-
-Inferred_segments_ggdata_td <- data.frame(td_est=c(Inferred_segments$td_est),gf_l=c(Inferred_segments$td),rr=c(Inferred_segments$recomb))
-Inferred_segments_ggdata_td$Model <- "Extended Pulse"
-Inferred_segments_ggdata_td$True_tm <- 1500
+```{r eval=T,figResult3_2, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figResult3_2} Fit to data Segments, ALD constant;constant, HapMap;HapMap"}
 
 
 
-Inferred_tm <- Plot_tm(Inferred_segments_ggdata_tm,cbPalette_viridis ,"Inferred segments")
-Inferred_td <- Plot_td(Inferred_segments_ggdata_td,cbPalette_viridis ,"Inferred segments")
+Td_1_constant_result <- ggarrange(True_const_td_1,Inf_const_td_1,ALD_const_td_1,labels = c("A","B","C"),
+          ncol = 3, nrow = 1,common.legend = F,legend = 'bottom')
 
-Direct_segments_inf <- ggarrange(Inferred_tm,Inferred_td,labels = c("A","B"),
-          ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
+Td_1_constant_result_an <- annotate_figure(Td_1_constant_result,
+               left = text_grob("Constant/Constant", face = "bold", rot = 90)
 
-Direct_segments_inf
+)
 
+Td_1_HaMap_result <- ggarrange(True_var_HapMap_td_1,Inf_var_HapMap_td_1,ALD_var_HapMap_td_1,labels = c("D","E","F"),
+          ncol = 3, nrow = 1,common.legend = T,legend = 'bottom')
+
+Td_1_HaMap_result_an <- annotate_figure(Td_1_HaMap_result,
+               left = text_grob("HapMap/HapMap", face = "bold", rot = 90)
+
+)
+
+Td_2000_constant_result <- ggarrange(True_const_td_2000,Inf_const_td_2000,ALD_const_td_2000,labels = c("A","B","C"),
+          ncol = 3, nrow = 1,common.legend = F,legend = 'bottom')
+
+Td_2000_constant_result_an <- annotate_figure(Td_2000_constant_result,
+               left = text_grob("Constant/Constant", face = "bold", rot = 90)
+
+)
+
+
+Td_2000_HaMap_result <- ggarrange(True_var_HapMap_td_2000,Inf_var_HapMap_td_2000,ALD_var_HapMap_td_2000,labels = c("D","E","F"),
+          ncol = 3, nrow = 1,common.legend = T,legend = 'bottom')
+
+Td_2000_HaMap_result_an <- annotate_figure(Td_2000_HaMap_result,
+               left = text_grob("HapMap/HapMap", face = "bold", rot = 90)
+
+)
+
+Td_1_result <- ggarrange(Td_1_constant_result_an,Td_1_HaMap_result_an,ncol = 1, nrow = 2)
+Td_2000_result <- ggarrange(Td_2000_constant_result_an,Td_2000_HaMap_result_an,ncol = 1, nrow = 2)
+
+P_1 <- annotate_figure(Td_1_result,
+               top = text_grob("Duration 1 generation",face = "bold", size = 14)
+
+)
+
+P_2 <- annotate_figure(Td_2000_result,
+               top = text_grob("Duration 2000 generation",face = "bold", size = 14)
+
+)
+
+ggarrange(P_1,P_2,ncol=1,nrow = 2)
+
+x = c(0, 0.5, 1)
+y = c(0.5, 0.5, 0.5)
+id = c(1,1,1)
+grid.polygon(x,y,id)
 
 
 ```
+
+```{r eval=T,figResult3_2_Supplements, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figResult3_2_Supplements} Fit to data Segments, ALD HapMap;constant, HapMap;AAMap"}
+
+
+Td_1_constant_sup <- ggarrange(True_var_const_td_1,Inf_var_const_td_1,ALD_var_const_td_1,labels = c("A","B","C"),
+          ncol = 3, nrow = 1,common.legend = F,legend = 'bottom')
+
+Td_1_constant_sup_an <- annotate_figure(Td_1_constant_result,
+               left = text_grob("HapMap/Constant", face = "bold", rot = 90)
+
+)
+
+Td_1_AAMap_result <- ggarrange(True_var_AAMap_td_1,Inf_var_AAMap_td_1,ALD_var_AAMap_td_1,labels = c("D","E","F"),
+          ncol = 3, nrow = 1,common.legend = T,legend = 'bottom')
+
+Td_1_AAMap_result_an <- annotate_figure(Td_1_HaMap_result,
+               left = text_grob("HapMap/AAMap", face = "bold", rot = 90)
+
+)
+
+Td_2000_constant_sup <- ggarrange(True_var_const_td_2000,Inf_var_const_td_2000,ALD_var_const_td_2000,labels = c("A","B","C"),
+          ncol = 3, nrow = 1,common.legend = F,legend = 'bottom')
+
+Td_2000_constant_sup_an <- annotate_figure(Td_2000_constant_result,
+               left = text_grob("HapMap/Constant", face = "bold", rot = 90)
+
+)
+
+
+Td_2000_AAMap_sup <- ggarrange(True_var_AAMap_td_2000,Inf_var_AAMap_td_2000,ALD_var_AAMap_td_2000,labels = c("D","E","F"),
+          ncol = 3, nrow = 1,common.legend = T,legend = 'bottom')
+
+Td_2000_AAMap_sup_an <- annotate_figure(Td_2000_HaMap_result,
+               left = text_grob("HapMap/AAMap", face = "bold", rot = 90)
+
+)
+
+Td_1_sup <- ggarrange(Td_1_constant_sup_an,Td_2000_AAMap_sup_an,ncol = 1, nrow = 2)
+Td_2000_sup <- ggarrange(Td_2000_constant_sup_an,Td_2000_AAMap_sup_an,ncol = 1, nrow = 2)
+
+P_1_sup <- annotate_figure(Td_1_sup,
+               top = text_grob("Duration 1 generation",face = "bold", size = 14)
+
+)
+
+P_2_sup <- annotate_figure(Td_2000_sup,
+               top = text_grob("Duration 2000 generation",face = "bold", size = 14)
+
+)
+
+ggarrange(P_1_sup,P_2_sup,ncol=1,nrow = 2)
+
+x = c(0, 0.5, 1)
+y = c(0.5, 0.5, 0.5)
+id = c(1,1,1)
+grid.polygon(x,y,id)
+
+```
+
+
+
+
+## Figure 3.3 and corresponding supplements
+
+```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE}
+
+
+AIC_comp=data.frame(AIC_SP=Plot.data_ALD$AIC_SP,AIC_EP=Plot.data_ALD$AIC_EP,
+                      GF_duration=Plot.data_ALD$True_GF_length,Name=Plot.data_ALD$Name)
+AIC_comp$AIC_SP_rounded <- ifelse(AIC_comp$AIC_SP>=20,20,AIC_comp$AIC_SP)
+AIC_comp$Name <- factor(AIC_comp$Name,
+                    levels = c("Constant","HapMap_no_correction","HapMap_AAMap_correction","HapMap_HapMap_correction"),ordered = TRUE)
+AIC_comp_results <- AIC_comp %>% filter(Name!="HapMap_no_correction") %>% filter(Name!="HapMap_AAMap_correction")
+P_AIC_results <- ggplot(AIC_comp_results, aes(x=as.factor(Name), y=AIC_SP_rounded,color=as.factor(Name))) + 
+                geom_boxplot()+
+                facet_grid(~GF_duration,switch = "x")+
+                labs(y = "AIC")+
+                labs(x = "")+
+                theme(
+                  axis.ticks.y=element_blank(),
+                  axis.ticks.x=element_blank(),
+                  axis.text.x=element_blank())+
+                coord_cartesian(expand = 0)+
+                scale_color_manual("Admixture duration",
+                                   values = cbPalette_viridis[1:2],
+                                   labels = c("Constant;Constant","HapMap;HapMap"))
+
+AIC_comp_supplements <- AIC_comp %>% filter(Name!="Constant") %>% filter(Name!="HapMap_HapMap_correction")
+P_AIC_supplements <- ggplot(AIC_comp_supplements, aes(x=as.factor(Name), y=AIC_SP_rounded,color=as.factor(Name))) + 
+                geom_boxplot()+
+                facet_grid(~GF_duration,switch = "x")+
+                labs(y = "AIC")+
+                labs(x = "")+
+                theme(
+                  axis.ticks.y=element_blank(),
+                  axis.ticks.x=element_blank(),
+                  axis.text.x=element_blank())+
+                coord_cartesian(expand = 0)+
+                scale_color_manual("Admixture duration",
+                                   values = cbPalette_viridis[1:2],
+                                   labels = c("HapMap;Constant","HapMap;AAMap"))
+
+
+
+F_Test_comp=data.frame(F_Test_p=Plot.data_ALD$F_Test,
+                      GF_duration=Plot.data_ALD$True_GF_length,Name=Plot.data_ALD$Name)
+F_Test_comp$F_Test_p_rounded <- ifelse(F_Test_comp$F_Test_p>=0.1,0.1,F_Test_comp$F_Test_p)
+F_Test_comp$Name <- factor(F_Test_comp$Name,
+                    levels = c("Constant","HapMap_no_correction","HapMap_AAMap_correction","HapMap_HapMap_correction"),ordered = TRUE)
+F_Test_comp_results <- F_Test_comp %>% filter(Name!="HapMap_no_correction") %>% filter(Name!="HapMap_AAMap_correction")
+P_F_Test_results <- ggplot(F_Test_comp_results, aes(x=as.factor(Name), y=(F_Test_p_rounded),color=as.factor(Name))) + 
+                geom_boxplot()+
+                facet_grid(~GF_duration,switch = "x")+
+                geom_hline( aes(yintercept = 0.05 ))+
+                labs(y = "p-value")+
+                labs(x = "Admixture Duration")+
+                theme(
+                  axis.ticks.y=element_blank(),
+                  axis.ticks.x=element_blank(),
+                  axis.text.x=element_blank())+
+                coord_cartesian(expand = 0)+
+                scale_color_manual("Recombination",
+                                   values = cbPalette_viridis[1:2],
+                                   labels = c("Constant;Constant","HapMap;HapMap"))
+
+
+F_Test_comp_supplements <- F_Test_comp %>% filter(Name!="Constant") %>% filter(Name!="HapMap_HapMap_correction")
+P_F_Test_supplements <- ggplot(F_Test_comp_supplements, aes(x=as.factor(Name), y=(F_Test_p_rounded),color=as.factor(Name))) + 
+                geom_boxplot()+
+                facet_grid(~GF_duration,switch = "x")+
+                geom_hline( aes(yintercept = 0.05 ))+
+                labs(y = "p-value")+
+                labs(x = "Admixture Duration")+
+                theme(
+                  axis.ticks.y=element_blank(),
+                  axis.ticks.x=element_blank(),
+                  axis.text.x=element_blank())+
+                coord_cartesian(expand = 0)+
+                scale_color_manual("Admixture duration",
+                                   values = cbPalette_viridis[1:2],
+                                   labels = c("HapMap;Constant","HapMap;AAMap"))
+
+
+
+
+```
+
+
+
+
+```{r eval=T,figR3_3, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR3_3} "}
+
+
+Plot_LRT<- function(Data,Colour_P,main,recomb_levels,recomb_lables){
+  Data$LRT <- ifelse(Data$LRT>=10,10,Data$LRT)
+  Data$recomb <- factor(Data$recomb,
+                      levels = recomb_levels,ordered = TRUE)
+  ggplot(Data,aes(x=as.factor(recomb),y=LRT,color=as.factor(recomb)))+
+    geom_boxplot()+
+    facet_grid(~as.factor(td),switch = "x")+
+    geom_hline( aes(yintercept = 2.61434 ))+
+    ggtitle(main)+
+    theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    ylim(c(-0.5,10))+
+    labs(x = "")+
+    labs(y = "log Likelihood Ratio")+
+    scale_color_manual("Recombination",
+                       values = cbPalette_viridis[1:2],
+                       labels = recomb_lables)
+
+}
+
+
+True_segments_results <- True_segments %>% filter(recomb!="varying no correction") %>% filter(recomb!="varying AAMap correction")
+Inferred_segments_results <- Inferred_segments %>% filter(recomb!="varying no correction") %>% filter(recomb!="varying AAMap correction")
+
+Plot_LRT_true_results <- Plot_LRT(True_segments_results,cbPalette_viridis,"",c("constant","varying HapMap correction"),c("Constant;Constant","HapMap;HapMap"))
+Plot_LRT_inf_results <- Plot_LRT(Inferred_segments_results,cbPalette_viridis,"",c("constant","varying HapMap correction"),c("Constant;Constant","HapMap;HapMap"))
+
+Segment_ALD_Model_comparison_results <- ggarrange(Plot_LRT_true_results,Plot_LRT_inf_results,P_F_Test_results,labels = c("A","B","C"),
+                                                  nrow=3,ncol=1,common.legend = T,legend = 'bottom')
+
+```
+
+```{r eval=T,figR3_3_supplements, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR3_3_supplements} "}
+
+
+True_segments_supplements <- True_segments %>% filter(recomb!="constant") %>% filter(recomb!="varying HapMap correction")
+Inferred_segments_supplements <- Inferred_segments %>% filter(recomb!="constant") %>% filter(recomb!="varying HapMap correction")
+
+Plot_LRT_true_supplements <- Plot_LRT(True_segments_supplements,cbPalette_viridis,"",c("varying no correction","varying AAMap correction"),c("HapMap;Constant","HapMap;AAMap"))
+Plot_LRT_inf_supplements <- Plot_LRT(Inferred_segments_supplements,cbPalette_viridis,"",c("varying no correction","varying AAMap correction"),c("HapMap;Constant","HapMap;AAMap"))
+
+Segment_ALD_Model_comparison_results <- ggarrange(Plot_LRT_true_supplements,Plot_LRT_inf_supplements,P_F_Test_supplements,labels = c("A","B","C"),
+                                                  nrow=3,ncol=1,common.legend = T,legend = 'bottom')
+```
+
+
+# Icelandic segments
 
 ```{r eval=T,fig_fit_to_Icelandig_seg, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:fig_fit_to_Icelandig_seg} "}
 
