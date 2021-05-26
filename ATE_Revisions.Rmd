@@ -1398,7 +1398,7 @@ P_fit_SEG <- function(Fit_res,Data_res,legend=F){
 
 
 
-P_fit_ALD <- function(Fit_res,Data_res,legend=F){
+P_fit_ALD <- function(Fit_res,Data_res,legend=T){
     Fit_res$Data2 <- factor(Fit_res$Data2 ,
                        levels = c("ALD \ntd = 1","ALD \ntd = 2000"),ordered = TRUE)
     Data_res$Data2 <- factor(Data_res$Data2 ,
@@ -1467,7 +1467,7 @@ ALD_Fit_Result$Data2 <- paste(ALD_Fit_Result$Data,"\ntd =",ALD_Fit_Result$td,sep
 P_seg_results <- P_fit_SEG(Seg_Fit_Result,Seg_Data_Result)
 P_ALD_results <- P_fit_ALD(ALD_Fit_Result,ALD_Data_Result)
 
-ggarrange(P_seg_results,P_ALD_results,ncol = 2, nrow = 1,widths = c(0.63,0.37),common.legend = T,legend = 'bottom')
+P_2_fit_Result <- ggarrange(P_seg_results,P_ALD_results,ncol = 2, nrow = 1,widths = c(0.63,0.37),common.legend = T,legend = 'bottom')
 
 ```
 
@@ -1549,7 +1549,7 @@ ALD_Fit_Sup$Data2 <- paste(ALD_Fit_Sup$Data,"\ntd =",ALD_Fit_Sup$td,sep = " ")
 P_seg_sup <- P_fit_SEG(Seg_Fit_Sup,Seg_Data_Sup)
 P_ALD_sup <- P_fit_ALD(ALD_Fit_Sup,ALD_Data_Sup)
 
-ggarrange(P_seg_sup,P_ALD_sup,ncol = 2, nrow = 1,widths = c(0.63,0.37),common.legend = T,legend = 'bottom')
+P_2_fit_Supplements <- ggarrange(P_seg_sup,P_ALD_sup,ncol = 2, nrow = 1,widths = c(0.63,0.37),common.legend = T,legend = 'bottom')
 ```
 
 ```{r eval=F,figResult2_2_alt2, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=9,fig.cap="\\label{fig:figResult2_2_alt2} Fit to data Segments, ALD constant;constant, HapMap;HapMap"}
@@ -1727,6 +1727,7 @@ F_Test_comp$Name <- factor(F_Test_comp$Name,
                     levels = c("Constant","HapMap_no_correction","HapMap_AAMap_correction","HapMap_HapMap_correction"),ordered = TRUE)
 F_Test_comp$Data <- "ALD"
 F_Test_comp_results <- F_Test_comp %>% filter(Name!="HapMap_no_correction") %>% filter(Name!="HapMap_AAMap_correction")
+
 P_F_Test_results <- ggplot(F_Test_comp_results, aes(x=as.factor(Name), y=(F_Test_p_rounded),color=as.factor(Name))) + 
                 geom_boxplot()+
                 facet_grid(Data~GF_duration,switch = "x")+
@@ -1745,6 +1746,30 @@ P_F_Test_results <- ggplot(F_Test_comp_results, aes(x=as.factor(Name), y=(F_Test
                                    labels = c("Constant;Constant","HapMap;HapMap"))
 
 
+P_F_Test_results_together <- ggplot(F_Test_comp_results, aes(x=as.factor(Name), y=(F_Test_p_rounded),color=as.factor(Name))) + 
+                geom_boxplot()+
+                facet_grid(Data~GF_duration,switch = "x")+
+                geom_hline( aes(yintercept = 0.05 ))+
+                labs(y = "p-value")+
+                labs(x = "Admixture Duration")+
+                theme(
+                  axis.ticks.y=element_blank(),
+                  axis.ticks.x=element_blank(),
+                  axis.text.x=element_blank(),
+                  legend.position="none",
+                  plot.margin=unit(c(0.25,0,0,0.5), "cm"))+
+                coord_cartesian(expand = 0)+
+                scale_color_manual("Recombination",
+                                   values = c(cbPalette_viridis[1],cbPalette_viridis[8]),
+                                   labels = c("Constant;Constant","HapMap;HapMap"),
+                                   guide = guide_legend(direction = "vertical", title.position = "left",
+                                                        title.theme = element_text(angle = 90,size=8), title.hjust = 0.5, title.vjust = 0.5,
+                                         label.position="bottom", label.hjust = 0.5, label.vjust = 0.5,
+                                         label.theme = element_text(angle = 90,size=8),
+                                         keywidth = 1,keyheight = 1))
+
+
+
 F_Test_comp_supplements <- F_Test_comp %>% filter(Name!="Constant") %>% filter(Name!="HapMap_HapMap_correction")
 P_F_Test_supplements <- ggplot(F_Test_comp_supplements, aes(x=as.factor(Name), y=(F_Test_p_rounded),color=as.factor(Name))) + 
                 geom_boxplot()+
@@ -1759,12 +1784,32 @@ P_F_Test_supplements <- ggplot(F_Test_comp_supplements, aes(x=as.factor(Name), y
                   legend.position="none",
                   plot.margin=unit(c(0.25,0.5,0,0.5), "cm"))+
                 coord_cartesian(expand = 0)+
-                scale_color_manual("Admixture duration",
+                scale_color_manual("Recombination",
                                    values = c(cbPalette_viridis[1],cbPalette_viridis[8]),
                                    labels = c("HapMap;Constant","HapMap;AAMap"))
 
 
-
+P_F_Test_supplements_together <- ggplot(F_Test_comp_supplements, aes(x=as.factor(Name), y=(F_Test_p_rounded),color=as.factor(Name))) + 
+                geom_boxplot()+
+                facet_grid(Data~GF_duration,switch = "x")+
+                geom_hline( aes(yintercept = 0.05 ))+
+                labs(y = "p-value")+
+                labs(x = "Admixture Duration")+
+                theme(
+                  axis.ticks.y=element_blank(),
+                  axis.ticks.x=element_blank(),
+                  axis.text.x=element_blank(),
+                  legend.position="none",
+                  plot.margin=unit(c(0.25,0,0,0.5), "cm"))+
+                coord_cartesian(expand = 0)+
+                scale_color_manual("Recombination",
+                                   values = c(cbPalette_viridis[1],cbPalette_viridis[8]),
+                                   labels = c("HapMap;Constant","HapMap;AAMap"),
+                                   guide = guide_legend(direction = "vertical", title.position = "left",
+                                                        title.theme = element_text(angle = 90,size=8), title.hjust = 0.5, title.vjust = 0.5,
+                                         label.position="bottom", label.hjust = 0.5, label.vjust = 0.5,
+                                         label.theme = element_text(angle = 90,size=8),
+                                         keywidth = 1,keyheight = 1))
 
 ```
 
@@ -1813,6 +1858,50 @@ Segment_ALD_Model_comparison_results <- ggarrange(Plot_LRT_seg_results,P_F_Test_
                                                   nrow=2,ncol=1,heights = c(0.63,0.37),common.legend = T,legend = 'bottom')
 
 Segment_ALD_Model_comparison_results
+
+
+
+```
+
+```{r eval=T,figResult2_2and3, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=7.5,fig.height=4,fig.cap="\\label{fig:figResult2_2and3} "}
+
+Plot_LRT_together<- function(Data,Colour_P,main,recomb_levels,recomb_lables){
+  Data$LRT <- ifelse(Data$LRT>=10,10,Data$LRT)
+  Data$recomb <- factor(Data$recomb,
+                      levels = recomb_levels,ordered = TRUE)
+  Data$Data <- factor(Data$Data,
+                      levels = c("True Segments","Inferred Segments"),ordered = TRUE)
+  ggplot(Data,aes(x=as.factor(recomb),y=LRT,color=as.factor(recomb)))+
+    geom_boxplot(legend=t)+
+    facet_grid(Data~as.factor(td),switch = "x")+
+    geom_hline( aes(yintercept = 2.61434 ))+
+    ggtitle(main)+
+    theme(strip.text.x = element_blank(),
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank(),
+      #plot.margin=unit(c(-0.5,0.5,-0.5,0.5), "cm"))+
+      plot.margin=unit(c(-0.5,0,-0.5,0.5), "cm"))+
+    ylim(c(-0.5,10))+
+    labs(x = "")+
+    labs(y = "log Likelihood Ratio")+
+    scale_color_manual("Recombination",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[8]),
+                       labels = recomb_lables,
+                       guide = guide_legend(direction = "vertical", title.position = "left",
+                                            title.theme = element_text(angle = 90,size=8), title.hjust = 0.5, title.vjust = 0.5,
+                             label.position="bottom", label.hjust = 0.5, label.vjust = 0.5,
+                             label.theme = element_text(angle = 90,size=8),
+                             keywidth = 1,keyheight = 1))
+
+}
+
+Plot_LRT_seg_results_together <- Plot_LRT_together(Segments_LRT_result,cbPalette_viridis,"",c("constant","varying HapMap correction"),c("Constant;Constant","HapMap;HapMap"))
+
+Segment_ALD_Model_comparison_results_together <- ggarrange(Plot_LRT_seg_results_together,P_F_Test_results_together,
+                                                  nrow=2,ncol=1,heights = c(0.63,0.37),common.legend = T,legend = 'right')
+ggarrange(P_2_fit_Result,Segment_ALD_Model_comparison_results_together,labels = c("A","B"),
+                                                  nrow=1,ncol=2,widths = c(0.63,0.37))
+
 ```
 
 ```{r eval=T,figResult2_3_supplements, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult2_3_supplements} "}
@@ -1833,7 +1922,24 @@ Segment_ALD_Model_comparison_supplements <- ggarrange(Plot_LRT_seg_sup,P_F_Test_
 Segment_ALD_Model_comparison_supplements
 ```
 
+```{r eval=T,figResult2_2and3_supplement, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=7.5,fig.height=4,fig.cap="\\label{fig:figResult2_2and3_supplement} "}
 
+
+True_segments_supplements <- True_segments %>% filter(recomb!="constant") %>% filter(recomb!="varying HapMap correction")
+True_segments_supplements$Data <- "True Segments"
+Inferred_segments_supplements <- Inferred_segments %>% filter(recomb!="constant") %>% filter(recomb!="varying HapMap correction")
+Inferred_segments_supplements$Data <- "Inferred Segments"
+
+Segments_LRT_supplements <- rbind(True_segments_supplements,Inferred_segments_supplements)
+
+Plot_LRT_seg_sup_together <- Plot_LRT_together(Segments_LRT_supplements,cbPalette_viridis,"",c("varying no correction","varying AAMap correction"),c("HapMap;Constant","HapMap;AAMap"))
+
+Segment_ALD_Model_comparison_supplements_together <- ggarrange(Plot_LRT_seg_sup_together,P_F_Test_supplements_together,nrow=2,ncol=1,heights = c(0.63,0.37),common.legend = T,legend = 'right')
+
+
+ggarrange(P_2_fit_Supplements,Segment_ALD_Model_comparison_supplements_together,labels = c("A","B"),
+                                                  nrow=1,ncol=2,widths = c(0.63,0.37))
+```
 # Icelandic segments
 
 ```{r eval=F,fig_fit_to_Icelandig_seg, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:fig_fit_to_Icelandig_seg} "}
