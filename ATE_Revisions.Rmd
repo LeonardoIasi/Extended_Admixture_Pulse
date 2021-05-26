@@ -506,7 +506,7 @@ Plot_power_analysis_error <- function(Data,Colour_P){
                        values = c(Colour_P[1],Colour_P[3],Colour_P[6],Colour_P[9],Colour_P[12],Colour_P[15]),
                        labels = c("SP tm; ts = present","SP tm; ts = 50 gen after tend",
                                   "EP tm; ts = present","EP tm; ts = 50 gen after tend",
-                                  "EP td; ts = present","EP td; ts = 50 gen after tend"))
+                                  "EP k; ts = present","EP k; ts = 50 gen after tend"))
   return(Px)
   
 }
