@@ -159,6 +159,39 @@ since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
 
 \begin{figure}
 \centering
+\includegraphics{ATE_Revisions_files/figure-latex/figResult3_1_Supplement-1.pdf}
+\caption{\label{fig:figResult3_1_Supplement} Simple and extended pulse fitted to ALD data for different gene flow durations with mean admixture time at 1500 gnerations ago. A) Mean time estimates. B) Duration estimate.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{ATE_Revisions_files/figure-latex/figResult3_1_Supplement-1.pdf}
+\caption{\label{fig:figResult3_1_Supplement} Simple and extended pulse fitted to ALD data for different gene flow durations with mean admixture time at 1500 gnerations ago. A) Mean time estimates. B) Duration estimate.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{ATE_Revisions_files/figure-latex/figResult3_2_Supplements-1.pdf}
+\caption{\label{fig:figResult3_2_Supplements} Fit to the data}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{ATE_Revisions_files/figure-latex/figResult3_3_supplements-1.pdf}
+\caption{\label{fig:figResult3_3_supplements} Log likelihood ratio between the simple and extended pulse fitted to ALD data for different gene flow durations with mean admixture time at 1500 gnerations ago.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig4-1.pdf}
+\caption{\label{fig:figResult3_4_supplements} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene
+flow durations $t_d$ all sampled 50 generations after the gene flow ended. B)
+Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times following 800
+generations of gene flow. D) Duration estimate of the same scenario. All scenarios are simulated either under a constant recombination rate or an empirical recombination map (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate (HapMap not corrected), using a different map (HapMap AAMap corrected) and using the same map (HapMap HapMap corrected). All times are given in generations.}
+\end{figure}
+
+\begin{figure}
+\centering
 \includegraphics[width=8cm,height=16cm,keepaspectratio]{ATE_Revisions_files/figure-latex/fig3_2-1.pdf}
 \caption{\label{fig:figS2_1} GLM effect size estimates and 95\% C.I. for the parameters: gene flow model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM), SNPs used for ALD calculation (100 \% / 5 \%), ascertainment scheme (LES/HES) and additionally the interaction between ascertainment scheme and SNPs used for ALD calculation, on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates.}
 \end{figure}
@@ -169,29 +202,7 @@ since $\frac{\Gamma(k+1)}{\Gamma(k)} =k$ we can re-write the likelihood to:
 \caption{\label{fig:figS2_2} Comparison of the standardized difference between true and estimated admixture time for simulations of all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable, SNP used 100 \% / 5 \% and the gene flow model = simple/extended. Simulations under the simple pulse are indicated in purple, extended pulse in turquoise. Each simulation was repeated 100 times. Dotted horizontal line indicates no difference between true and estimated time.}
 \end{figure}
 
-\begin{figure}
-\centering
-\includegraphics{ATE_Revisions_files/figure-latex/figR3_1-1.pdf}
-\caption{\label{fig:figS3} Simple and extended pulse fitted to ALD data for different gene flow durations with mean admixture time at 1500 gnerations ago. A) Mean time estimates. B) Duration estimate.}
-\end{figure}
 
-\begin{figure}
-\centering
-\includegraphics{ATE_Revisions_files/figure-latex/figR3_3-1.pdf}
-\caption{\label{fig:figS4} Log likelihood ratio between the simple and extended pulse fitted to ALD data for different gene flow durations with mean admixture time at 1500 gnerations ago.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics{ATE_Revisions_files/figure-latex/figR3_4-1.pdf}
-\caption{\label{fig:figS5} Simple and extended pulse fitted to true and inferred segment data for different gene flow durations with mean admixture time at 1500 generations ago. The simulations used either a constant recombination rate or the deCODE map. The genetic distance is assigned using a constant rate, the AAMap or thye deCODE map. A) Mean time estimates. B) Duration estimate.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics{ATE_Revisions_files/figure-latex/figR3_5-1.pdf}
-\caption{\label{fig:figS6} Log likelihood ratio between the simple and extended pulse fitted to true and inferred segment data for different gene flow durations with mean admixture time at 1500 gnerations ago.}
-\end{figure}
 
 \section{Supplement Tables}
 
@@ -223,60 +234,57 @@ sigma & 0.94 & 0.01 & 0.92 & 0.95 & 6455.01 & 1\\
 \end{table}
 
 \begin{table}[H]
-\caption{\label{tab:tableS1_2} Mean, standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
+
+\caption{\label{tab:tableS1_1}\label{tab:tableS1} Mean, standart deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
 \centering
 \begin{tabular}[t]{l|r|r|r|r|r|r}
 \hline
   & mean & sd & 5.5\% & 94.5\% & n\_eff & Rhat\\
 \hline
-a & -0.04 & 0.03 & -0.10 & 0.03 & 2062.84 & 1\\
+a & -0.01 & 0.03 & -0.07 & 0.05 & 2168.04 & 1\\
 \cline{1-7}
-bSA & 0.05 & 0.05 & -0.04 & 0.14 & 2076.50 & 1\\
+bd & 0.02 & 0.02 & -0.02 & 0.07 & 4011.95 & 1\\
 \cline{1-7}
-bS & 0.00 & 0.03 & -0.06 & 0.07 & 2431.79 & 1\\
+bG & -0.13 & 0.02 & -0.18 & -0.09 & 3345.76 & 1\\
 \cline{1-7}
-bG & -0.13 & 0.02 & -0.18 & -0.08 & 3673.80 & 1\\
+bR & -0.75 & 0.02 & -0.79 & -0.70 & 4131.16 & 1\\
 \cline{1-7}
-bR & -0.67 & 0.02 & -0.71 & -0.62 & 3852.12 & 1\\
+bD & -0.22 & 0.02 & -0.27 & -0.18 & 3651.09 & 1\\
 \cline{1-7}
-bD & -0.12 & 0.02 & -0.16 & -0.07 & 3470.63 & 1\\
+bm & 0.13 & 0.02 & 0.09 & 0.18 & 3809.54 & 1\\
 \cline{1-7}
-bm & 0.14 & 0.02 & 0.09 & 0.18 & 4159.59 & 1\\
+bA & -0.12 & 0.02 & -0.17 & -0.07 & 3556.78 & 1\\
 \cline{1-7}
-bA & -0.10 & 0.03 & -0.16 & -0.04 & 2281.92 & 1\\
-\cline{1-7}
-sigma & 0.94 & 0.01 & 0.92 & 0.95 & 4393.12 & 1\\
+sigma & 0.91 & 0.01 & 0.90 & 0.93 & 5418.41 & 1\\
 \hline
 \end{tabular}
 \end{table}
 
 \begin{table}[H]
 
-\caption{\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit}
+\caption{\label{tab:tableS1_2}\label{tab:tableS1} Mean, standart deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
 \centering
-\begin{tabular}[t]{l|l|l|l}
+\begin{tabular}[t]{l|r|r|r|r|r|r}
 \hline
-Model & A & $t_m$ & c\\
+  & mean & sd & 5.5\% & 94.5\% & n\_eff & Rhat\\
 \hline
-Simple Pulse & 0.018 (0.018 - 0.018) & 1541 (1487 - 1598) & 1e-05 (6e-06 - 1.5e-05)\\
-\hline
-Extended Pulse (td=1) & 0.018 (0.018 - 0.018) & 1541 (1487 - 1598) & 1e-05 (6e-06 - 1.5e-05)\\
-\hline
-Extended Pulse (td=100) & 0.018 (0.018 - 0.018) & 1541 (1488 - 1599) & 1e-05 (6e-06 - 1.5e-05)\\
-\hline
-Extended Pulse (td=200) & 0.018 (0.018 - 0.018) & 1543 (1490 - 1601) & 1e-05 (6e-06 - 1.5e-05)\\
-\hline
-Extended Pulse (td=400) & 0.018 (0.018 - 0.018) & 1552 (1498 - 1610) & 1e-05 (6e-06 - 1.5e-05)\\
-\hline
-Extended Pulse (td=800) & 0.018 (0.018 - 0.018) & 1586 (1531 - 1646) & 1e-05 (5e-06 1.4e-05)\\
-\hline
-Extended Pulse (td=1000) & 0.018 (0.018 - 0.018) & 1613 (1557 - 1673) & 9e-06 (5e-06 - 1.3e-05)\\
-\hline
-Extended Pulse (td=1500) &  0.018 (0.018 - 0.018) & 1713 (1654 - 1777) & 7e-06 (3e-06 - 1.1e-05)\\
-\hline
-Extended Pulse (td=2000) & 0.018 (0.018 - 0.018) & 1875 (1809 - 1945) & 4e-06 (0 - 8e-06)\\
-\hline
-Extended Pulse (td=2500) & 0.018 (0.018 - 0.018) & 2129 (2055 - 2208) & -1e-06 (-5e-06 - 4e-06)\\
+a & 0.00 & 0.03 & -0.06 & 0.06 & 1823.65 & 1\\
+\cline{1-7}
+bdA & 0.05 & 0.04 & -0.04 & 0.14 & 2049.11 & 1\\
+\cline{1-7}
+bd & 0.00 & 0.03 & -0.06 & 0.06 & 2156.79 & 1\\
+\cline{1-7}
+bG & -0.13 & 0.02 & -0.18 & -0.09 & 2865.05 & 1\\
+\cline{1-7}
+bR & -0.75 & 0.02 & -0.79 & -0.71 & 3405.94 & 1\\
+\cline{1-7}
+bD & -0.22 & 0.02 & -0.27 & -0.18 & 3128.70 & 1\\
+\cline{1-7}
+bm & 0.13 & 0.02 & 0.09 & 0.18 & 3850.41 & 1\\
+\cline{1-7}
+bA & -0.15 & 0.03 & -0.21 & -0.08 & 2335.16 & 1\\
+\cline{1-7}
+sigma & 0.91 & 0.01 & 0.90 & 0.93 & 3894.49 & 1\\
 \hline
 \end{tabular}
 \end{table}
