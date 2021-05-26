@@ -544,7 +544,7 @@ Plot_power_analysis_error_corrected <- function(Data,Colour_P){
 Plot_power_analysis_error_corrected(Error_plot_red,viridis(15,option = "D"))
 ```
 
-## Figure 3.1 and corresponding supplements
+## Figure Result 2.1 and corresponding supplements
 
 ```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
 source("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Fit_models.R")
@@ -830,7 +830,7 @@ ggdata_l.ALD_tm <- melt(Plot.data_ALD,measure.vars =  c('length_GF'),id.vars = c
 
 ```
 
-```{r figResult3_1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figResult3_1} Segments, ALD constant;constant, HapMap;HapMap"}
+```{r figResult2_1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figResult2_1} Segments, ALD constant;constant, HapMap;HapMap"}
 # Segments True
 load("True_Segment_fit_linear_with_all_cuttoff.RData")
 True_segments=rbind(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,
@@ -977,7 +977,7 @@ Segments_ALD_Results <- ggarrange(Seg_ald_tm_results,Seg_ald_td_results,labels =
 Segments_ALD_Results
 ```
 
-```{r figResult3_1_Supplement,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figResult3_1_Supplement} Segments, ALD HapMap;constant, HapMap;AAMap"}
+```{r figResult2_1_Supplement,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figResult2_1_Supplement} Segments, ALD HapMap;constant, HapMap;AAMap"}
 ggdata_tm_supp <-  ggdata_tm %>% filter(rr!="constant") %>% filter(rr!="varying HapMap correction")
 ggdata_td_supp <-  ggdata_td %>% filter(rr!="constant") %>% filter(rr!="varying HapMap correction")
 Seg_ald_tm_supp <- Plot_tm(ggdata_tm_supp,cbPalette_viridis,"","varying AAMap correction","varying no correction")
@@ -989,7 +989,7 @@ Segments_ALD_supp <- ggarrange(Seg_ald_tm_supp,Seg_ald_td_supp,labels = c("A","B
 Segments_ALD_supp
 ```
 
-## Figure 3.2 and corresponding supplements
+## Figure 2.2 and corresponding supplements
 
 ```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE}
 source("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Fit_models.R")
@@ -1368,7 +1368,7 @@ ALD_var_HapMap_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Nean
 
 ```
 
-```{r eval=T,figResult3_2, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figResult3_2} Fit to data Segments, ALD constant;constant, HapMap;HapMap"}
+```{r eval=T,figResult2_2, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figResult2_2} Fit to data Segments, ALD constant;constant, HapMap;HapMap"}
 
 
 
@@ -1471,7 +1471,7 @@ ggarrange(P_seg_results,P_ALD_results,ncol = 2, nrow = 1,widths = c(0.63,0.37),c
 
 ```
 
-```{r eval=F,figResult3_2_alt1, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=9,fig.cap="\\label{fig:figResult3_2_alt1} Fit to data Segments, ALD constant;constant, HapMap;HapMap"}
+```{r eval=F,figResult2_2_alt1, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=9,fig.cap="\\label{fig:figResult2_2_alt1} Fit to data Segments, ALD constant;constant, HapMap;HapMap"}
 # Alternative
 P_seg_td_1_results <- P_fit_SEG(Segment_Fit_res_td_1,Segment_Data_res_td_1)
 P_seg_td_2000_results <- P_fit_SEG(Segment_Fit_res_td_2000,Segment_Data_res_td_2000,legend = T)
@@ -1498,7 +1498,7 @@ grid.polygon(x,y,id)
 ```
 
 
-```{r eval=T,figResult3_2_Supplements, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figResult3_2_Supplements} Fit to data Segments, ALD HapMap;constant, HapMap;AAMap"}
+```{r eval=T,figResult2_2_Supplements, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figResult2_2_Supplements} Fit to data Segments, ALD HapMap;constant, HapMap;AAMap"}
 
 
 Segment_Data_sup_td_1 <- rbind(True_var_const_td_1[[1]],Inf_var_const_td_1[[1]],True_var_AAMap_td_1[[1]],Inf_var_AAMap_td_1[[1]])
@@ -1552,7 +1552,7 @@ P_ALD_sup <- P_fit_ALD(ALD_Fit_Sup,ALD_Data_Sup)
 ggarrange(P_seg_sup,P_ALD_sup,ncol = 2, nrow = 1,widths = c(0.63,0.37),common.legend = T,legend = 'bottom')
 ```
 
-```{r eval=F,figResult3_2_alt2, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=9,fig.cap="\\label{fig:figResult3_2_alt2} Fit to data Segments, ALD constant;constant, HapMap;HapMap"}
+```{r eval=F,figResult2_2_alt2, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=9,fig.cap="\\label{fig:figResult2_2_alt2} Fit to data Segments, ALD constant;constant, HapMap;HapMap"}
 
 Td_1_constant_result <- ggarrange(True_const_td_1,Inf_const_td_1,ALD_const_td_1,labels = c("A","B","C"),
           ncol = 3, nrow = 1,common.legend = F,legend = 'bottom')
@@ -1610,7 +1610,7 @@ grid.polygon(x,y,id)
 
 ```
 
-```{r eval=F,figResult3_2_Supplements_alt, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=9,fig.cap="\\label{fig:figResult3_2_Supplements_alt} Fit to data Segments, ALD HapMap;constant, HapMap;AAMap"}
+```{r eval=F,figResult2_2_Supplements_alt, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=9,fig.cap="\\label{fig:figResult2_2_Supplements_alt} Fit to data Segments, ALD HapMap;constant, HapMap;AAMap"}
 
 
 Td_1_constant_sup <- ggarrange(True_var_const_td_1,Inf_var_const_td_1,ALD_var_const_td_1,labels = c("A","B","C"),
@@ -1671,7 +1671,7 @@ grid.polygon(x,y,id)
 
 
 
-## Figure 3.3 and corresponding supplements
+## Figure 2.3 and corresponding supplements
 
 ```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE}
 
@@ -1771,7 +1771,7 @@ P_F_Test_supplements <- ggplot(F_Test_comp_supplements, aes(x=as.factor(Name), y
 
 
 
-```{r eval=T,figResult3_3, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult3_3} "}
+```{r eval=T,figResult2_3, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult2_3} "}
 
 
 Plot_LRT<- function(Data,Colour_P,main,recomb_levels,recomb_lables){
@@ -1815,7 +1815,7 @@ Segment_ALD_Model_comparison_results <- ggarrange(Plot_LRT_seg_results,P_F_Test_
 Segment_ALD_Model_comparison_results
 ```
 
-```{r eval=T,figResult3_3_supplements, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult3_3_supplements} "}
+```{r eval=T,figResult2_3_supplements, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult2_3_supplements} "}
 
 
 True_segments_supplements <- True_segments %>% filter(recomb!="constant") %>% filter(recomb!="varying HapMap correction")
@@ -1998,7 +1998,7 @@ ggdata_reodering_fn <- function(ggdata){
 
 
 
-``` {r eval=F,figR3, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figR3} Comparison between the Hudson only and hybrid Wright-Fischer/Hudson simulations for parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario"}
+``` {r eval=F,figResult_WF_H_comp, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figResult_WF_H_comp} Comparison between the Hudson only and hybrid Wright-Fischer/Hudson simulations for parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario"}
 
 # Plot 50 gen from Admixture
 ggdata_t.GF_50_mean_GF_exp$Model <- "Simple Pulse"
@@ -2116,7 +2116,7 @@ Effect_size_fixed_stan_2 <- ulam(
 ```
 
 
-```{r fig4_1,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:fig4_1} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r figResult_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 B_model_result1 <- precis(Effect_size_fixed_stan_1,prob = 0.95)
 
 post_effect_size_model <- extract.samples(Effect_size_fixed_stan_1,n = 1e5)
@@ -2166,7 +2166,7 @@ ggplot(Post_effect_size_est,aes(x=row.names(Post_effect_size_est),y=as.numeric(a
 
 ```
 
-```{r fig4_2,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:fig4_2} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r figResult_3_supplements,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_supplements} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 B_model_result2 <- precis(Effect_size_fixed_stan_2,prob = 0.95)
 
 post_effect_size_model <- extract.samples(Effect_size_fixed_stan_2,n = 1e5)
@@ -2254,7 +2254,7 @@ Fig_1_B_Means_per_duration$relative_dif <- abs(1-(1500/Fig_1_B_Means_per_duratio
 
 ```
 
-```{r eval=F,fig2,message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:fig2} A) Comparison of mean admixture time estimates between simple and extended pulse gene flow for different admixture times. The duration of continuous gene flow $t_d$ corresponds to 50% of the mean admixture time $t_m$, black line indicates true mean admixture time. B) Comparison of mean admixture time estimates for simulations with a mean time of admixture of 1500 generations ago, at a varying durations of gene flow. Boxplot created from 100 simulation replicates, respectively."}
+```{r eval=F,figR1_old,message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figR1_old} A) Comparison of mean admixture time estimates between simple and extended pulse gene flow for different admixture times. The duration of continuous gene flow $t_d$ corresponds to 50% of the mean admixture time $t_m$, black line indicates true mean admixture time. B) Comparison of mean admixture time estimates for simulations with a mean time of admixture of 1500 generations ago, at a varying durations of gene flow. Boxplot created from 100 simulation replicates, respectively."}
 
 ######################## GG PLotting ###########################
 ## ggplot Figure 1 A
