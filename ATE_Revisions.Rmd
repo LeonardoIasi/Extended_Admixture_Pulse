@@ -300,31 +300,6 @@ Here we want to know for which duration and time since admixture we can differen
 We fix the mean time of admixture to 1500 generation with different durations and calculate the likelihood of the data given the two models. We perform a likelihood ratio test with a significance cutoff of + 2. We perform each simulation 100 times with different amount of data. Our maximum amount is 100000 unique segments which is half the number observed in Skov et al. 2020. Here around 200000 unique segments were identified in Icelandic genomes using a posterior probability cutoff of 0.8 to identify the segment using an HMM (Skov et al. 2018).
 
 ```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
-# check the LRT
-n_segments=1000
-tm=2000
-td=1000
-k = 1/((td/(4*tm))^2)
-seg = VGAM::rlomax(n=n_segments,shape3.q = k,scale = k/tm)
-
-f_SP=  function(par) -sum(dexp(seg,par,log = T))
-LME_SP = optim(par = c(100), lower = c(1),fn = f_SP, method="L-BFGS-B")
-f_EP= function(par) -sum(dlomax(x=seg,shape3.q = par[2],scale = par[2]/par[1],log=T))
-LME_ep = optim(par = c(100,10),lower = c(1,1) ,fn = f_EP, method="L-BFGS-B")
-LRT = -2*(LME_ep$value - LME_SP$value)
-
-print(LME_SP$par)
-print(LME_SP$value)
-
-print(LME_ep$par)
-print(LME_ep$value)
-
-mean(seg)
-
-(k/(k-1))*(1/tm)
-```
-
-```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
 LME_fn <- function(seg){
   f_SP=  function(par) -sum(dexp(seg,par,log = T))
   LME_SP = optim(par = c(100), lower = c(1),fn = f_SP, method="L-BFGS-B")
@@ -442,8 +417,11 @@ Sim_2_ggplot_all$LRT <- ifelse(Sim_2_ggplot_all$LRT>=10,10,Sim_2_ggplot_all$LRT)
 Sim_2_ggplot_all$k_true <- 1/((Sim_2_ggplot_all$td_true/(4*Sim_2_ggplot_all$tm_true))^2)
 Sim_2_ggplot_all$k_true_corrected <- ifelse(Sim_2_ggplot_all$k_true>100 ,100,Sim_2_ggplot_all$k_true)
 Sim_2_ggplot_all$tm_SP_est_error <- sqrt((Sim_2_ggplot_all$tm_true-Sim_2_ggplot_all$tm_SP_est)^2)
+Sim_2_ggplot_all$tm_SP_est_error_norm <- (Sim_2_ggplot_all$tm_true-Sim_2_ggplot_all$tm_SP_est)/sd(Sim_2_ggplot_all$tm_SP_est)
 Sim_2_ggplot_all$tm_EP_est_error <- sqrt((Sim_2_ggplot_all$tm_true-Sim_2_ggplot_all$tm_EP_est)^2)
+Sim_2_ggplot_all$tm_EP_est_error_norm <- (Sim_2_ggplot_all$tm_true-Sim_2_ggplot_all$tm_EP_est)/sd(Sim_2_ggplot_all$tm_EP_est)
 Sim_2_ggplot_all$k_EP_est_error <- sqrt((Sim_2_ggplot_all$k_true -Sim_2_ggplot_all$k_EP_est)^2)
+Sim_2_ggplot_all$k_EP_est_error_norm <- (Sim_2_ggplot_all$k_true-Sim_2_ggplot_all$k_EP_est)/sd(Sim_2_ggplot_all$k_EP_est)
 Sim_2_ggplot_all$k_EP_est_error_corrected <- ifelse(Sim_2_ggplot_all$k_true>=100 & Sim_2_ggplot_all$k_EP_est>=100,0,sqrt((Sim_2_ggplot_all$k_true_corrected -Sim_2_ggplot_all$k_EP_est)^2))
 
 Sim_2_ggplot_all_red <- Sim_2_ggplot_all %>% filter(td_true!=200) %>% filter(td_true!=800)
@@ -484,6 +462,7 @@ Plot_power_analysis(Sim_2_ggplot_all_red,Sim_2_ggplot_all_sig_cutoff,cbPalette_v
 
 Error_plot <- data.frame(Est_error=c(Sim_2_ggplot_all$tm_SP_est_error,Sim_2_ggplot_all$tm_EP_est_error,Sim_2_ggplot_all$k_EP_est_error ),
                          Est_error_corrected=c(Sim_2_ggplot_all$tm_SP_est_error,Sim_2_ggplot_all$tm_EP_est_error,Sim_2_ggplot_all$k_EP_est_error_corrected ),
+                         Est_error_norm=c(Sim_2_ggplot_all$tm_SP_est_error_norm,Sim_2_ggplot_all$tm_EP_est_error_norm,Sim_2_ggplot_all$k_EP_est_error_norm ),
                          Est_name=c(paste(Sim_2_ggplot_all$Sampling,"SP_tm",sep = "_"),paste(Sim_2_ggplot_all$Sampling,"EP_tm",sep = "_"),paste(Sim_2_ggplot_all$Sampling,"EP_td",sep = "_")),n_seg=rep(Sim_2_ggplot_all$n_seg,3),td_true=rep(Sim_2_ggplot_all$td_true,3))
 
 Error_plot_red <- Error_plot %>% filter(td_true!=200) %>% filter(td_true!=800)
@@ -504,15 +483,43 @@ Plot_power_analysis_error <- function(Data,Colour_P){
     labs(y = "RMSE")+
     scale_color_manual("",
                        values = c(Colour_P[1],Colour_P[3],Colour_P[6],Colour_P[9],Colour_P[12],Colour_P[15]),
-                       labels = c("SP tm; ts = present","SP tm; ts = 50 gen after tend",
-                                  "EP tm; ts = present","EP tm; ts = 50 gen after tend",
-                                  "EP k; ts = present","EP k; ts = 50 gen after tend"))
+                      labels = c("SP tm; ts = present","EP tm; ts = present","EP td; ts = present","SP tm; ts = 50 gen after tend",
+                                  "EP tm; ts = 50 gen after tend" ,"EP td; ts = 50 gen after tend"))
   return(Px)
   
 }
 
 Plot_power_analysis_error(Error_plot_red,viridis(15,option = "D"))
 
+```
+
+```{r eval=T,figR1_error_ests_norm,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figR1_error_ests_norm} Liklihood ratios between the simple pulse and extended pulse model for different durations of admixture for 100, 1000, 10000 and 100000 segments sampled at time 0 and 50 generations after the end of admixture. Boxplots from 100 replications."}
+
+
+
+
+Plot_power_analysis_error_normalized <- function(Data,Colour_P){
+    Data$Est_error_norm <- ifelse(Data$Est_error_norm>2,2,Data$Est_error_norm)
+    Data$Est_name <- factor(Data$Est_name,
+                        levels = c("sampling_at_0_SP_tm","sampling_at_0_EP_tm","sampling_at_0_EP_td","sampling_50_gen_after_gf_SP_tm"
+                                   ,"sampling_50_gen_after_gf_EP_tm","sampling_50_gen_after_gf_EP_td"),ordered = TRUE)
+  Px <-  ggplot(Data,aes(x=as.factor(Est_name),y=Est_error_norm,color=as.factor(Est_name)))+
+    geom_boxplot()+
+    facet_grid(n_seg~td_true,switch = "x",labeller=labeller(.rows=c("100"="# seg:\n100","1000"="# seg:\n1000", "10000"="# seg:\n10000", "1e+05"="# seg:\n100000")))+
+        ylim(c(0,2))+
+    theme(legend.position="bottom",
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank())+
+    labs(x = "Admixture Duration")+
+    labs(y = "Normalized Error")+
+    scale_color_manual("",
+                       values = c(Colour_P[1],Colour_P[3],Colour_P[6],Colour_P[9],Colour_P[12],Colour_P[15]),
+                      labels = c("SP tm; ts = present","EP tm; ts = present","EP td; ts = present","SP tm; ts = 50 gen after tend",
+                                  "EP tm; ts = 50 gen after tend" ,"EP td; ts = 50 gen after tend"))
+  return(Px)
+  
+}
+Plot_power_analysis_error_normalized(Error_plot_red,viridis(15,option = "D"))
 ```
 
 ```{r eval=T,figR1_error_ests_corrected,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figR1_error_ests_corrected} Liklihood ratios between the simple pulse and extended pulse model for different durations of admixture for 100, 1000, 10000 and 100000 segments sampled at time 0 and 50 generations after the end of admixture. Boxplots from 100 replications."}
@@ -535,9 +542,8 @@ Plot_power_analysis_error_corrected <- function(Data,Colour_P){
     labs(y = "RMSE")+
     scale_color_manual("",
                        values = c(Colour_P[1],Colour_P[3],Colour_P[6],Colour_P[9],Colour_P[12],Colour_P[15]),
-                       labels = c("SP tm; ts = present","SP tm; ts = 50 gen after tend",
-                                  "EP tm; ts = present","EP tm; ts = 50 gen after tend",
-                                  "EP td; ts = present","EP td; ts = 50 gen after tend"))
+                      labels = c("SP tm; ts = present","EP tm; ts = present","EP td; ts = present","SP tm; ts = 50 gen after tend",
+                                  "EP tm; ts = 50 gen after tend" ,"EP td; ts = 50 gen after tend"))
   return(Px)
   
 }
@@ -3056,7 +3062,7 @@ P_F_Test_varying <- ggplot(F_Test_comp_ts_varying, aes(x=as.factor(Name), y=(F_T
 
 ```
 
-``` {r figCloser_Sampling_F_Test_Supplement, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figCloser_Sampling_F_Test_Supplement} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times after the end of 800 generations of gene flow. D) Duration estimate of the same scenario. All scenarious are simulated either under a constant recombination rate or an empirical (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate, using a different map, using the same map."}
+``` {r figCloser_Sampling_F_Test_Supplement, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figCloser_Sampling_F_Test_Supplement} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times after the end of 800 generations of gene flow. D) Duration estimate of the same scenario. All scenarious are simulated either under a constant recombination rate or an empirical (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate, using a different map, using the same map."}
 
 Closer_Sampling_ALD_F_Test <- ggarrange(P_F_Test_50,P_F_Test_varying,nrow = 2,common.legend = T,legend = 'bottom')
 
