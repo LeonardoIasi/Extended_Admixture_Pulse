@@ -1266,6 +1266,12 @@ ggarrange(Im_Simple_Demo,Im_Complex_Demo,Im_Skov_Demo,
           labels = c("A","B","C"),
           ncol = 3,vjust = 5)
 dev.off()
+
+pdf("../Admixture_Time_Inference_Paper_Draft_files/figure-latex/Simple_and_Skov.pdf",width = 18)
+ggarrange(Im_Simple_Demo,Im_Skov_Demo,
+          labels = c("A","B"),
+          ncol = 2,vjust = 5)
+dev.off()
 ```
 
 ```{r eval=F,figS2, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
