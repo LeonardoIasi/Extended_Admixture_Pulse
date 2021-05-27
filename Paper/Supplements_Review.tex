@@ -115,7 +115,7 @@
 
 \begin{figure}
 \centering
-\includegraphics{ATE_Revisions_files/figure-latex/figR1_error_ests-1.pdf}
+\includegraphics{ATE_Revisions_files/figure-latex/figR1_error_ests_norm-1.pdf}
 \caption{\label{fig:figR1_error_ests} Power analysis parameter estimates}
 \end{figure}
 
@@ -126,13 +126,6 @@
 \caption{\label{fig:figResult2_1_Supplements} Simple and extended pulse fitted to ALD data for different gene flow durations with mean admixture time at 1500 gnerations ago. A) Mean time estimates. B) Duration estimate.}
 \end{figure}
 
-\begin{figure}
-\centering
-\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figResult2_2and3_supplement-1.pdf}
-\caption{\label{fig:fig3_2} Comparison of the fit to data between the simple and extended pulse using true and estimated parameters. }
-\end{figure}
-
-OR
 
 \begin{figure}
 \centering
@@ -148,11 +141,18 @@ OR
 
 \begin{figure}
 \centering
-\includegraphics[width=16cm,height=18cm,keepaspectratio]{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig4-1.pdf}
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figCloser_Sampling_Supplement-1.pdf}
 \caption{\label{fig:figResult3_4_supplements} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene
 flow durations $t_d$ all sampled 50 generations after the gene flow ended. B)
 Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times following 800
 generations of gene flow. D) Duration estimate of the same scenario. All scenarios are simulated either under a constant recombination rate or an empirical recombination map (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate (HapMap not corrected), using a different map (HapMap AAMap corrected) and using the same map (HapMap HapMap corrected). All times are given in generations.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figCloser_Sampling_F_Test_Supplement-1.pdf}
+\caption{\label{fig:figResult3_4_supplements} Model comparison between the simple and extended pulse  A) All sampled 50 generations after the gene flow ended with different gene flow durations. B)
+Different sampling times after 800 generations of gene flow.}
 \end{figure}
 
 \begin{figure}
@@ -171,32 +171,6 @@ generations of gene flow. D) Duration estimate of the same scenario. All scenari
 
 \section{Supplement Tables}
 
-\begin{table}[H]
-
-\caption{\label{tab:tableS1_1} Mean, standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
-\centering
-\begin{tabular}[t]{l|r|r|r|r|r|r}
-\hline
-  & mean & sd & 5.5\% & 94.5\% & n\_eff & Rhat\\
-\hline
-a & -0.05 & 0.03 & -0.11 & 0.01 & 2713.72 & 1\\
-\cline{1-7}
-bS & 0.03 & 0.02 & -0.02 & 0.07 & 4223.44 & 1\\
-\cline{1-7}
-bG & -0.13 & 0.02 & -0.17 & -0.08 & 3710.31 & 1\\
-\cline{1-7}
-bR & -0.67 & 0.02 & -0.71 & -0.62 & 4595.55 & 1\\
-\cline{1-7}
-bD & -0.12 & 0.02 & -0.16 & -0.07 & 4494.20 & 1\\
-\cline{1-7}
-bm & 0.14 & 0.02 & 0.09 & 0.18 & 4935.97 & 1\\
-\cline{1-7}
-bA & -0.07 & 0.02 & -0.12 & -0.03 & 4977.04 & 1\\
-\cline{1-7}
-sigma & 0.94 & 0.01 & 0.92 & 0.95 & 6455.01 & 1\\
-\hline
-\end{tabular}
-\end{table}
 
 \begin{table}[H]
 
@@ -255,8 +229,38 @@ sigma & 0.91 & 0.01 & 0.90 & 0.93 & 3894.49 & 1\\
 \end{table}
 
 \begin{table}[H]
+\caption{\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit to ALD from the 1k Genome data.}
+\centering
+\begin{tabular}[t]{l|l|l|l|l}
+\hline
+Model & A & $t_m$ & c\\
+\hline
+Simple Pulse & 0.018 (0.018 - 0.018) & 1541 (1487 - 1598) & 1e-05 (6e-06 - 1.5e-05)\\
+\hline
+Extended Pulse (td=1) & 0.018 (0.018 - 0.018) & 1541 (1487 - 1598) & 1e-05 (6e-06 - 1.5e-05)\\
+\hline
+Extended Pulse (td=100) & 0.018 (0.018 - 0.018) & 1541 (1488 - 1599) & 1e-05 (6e-06 - 1.5e-05)\\
+\hline
+Extended Pulse (td=200) & 0.018 (0.018 - 0.018) & 1543 (1490 - 1601) & 1e-05 (6e-06 - 1.5e-05)\\
+\hline
+Extended Pulse (td=400) & 0.018 (0.018 - 0.018) & 1552 (1498 - 1610) & 1e-05 (6e-06 - 1.5e-05)\\
+\hline
+Extended Pulse (td=800) & 0.018 (0.018 - 0.018) & 1586 (1531 - 1646) & 1e-05 (5e-06 1.4e-05)\\
+\hline
+Extended Pulse (td=1000) & 0.018 (0.018 - 0.018) & 1613 (1557 - 1673) & 9e-06 (5e-06 - 1.3e-05)\\
+\hline
+Extended Pulse (td=1500) &  0.018 (0.018 - 0.018) & 1713 (1654 - 1777) & 7e-06 (3e-06 - 1.1e-05)\\
+\hline
+Extended Pulse (td=2000) & 0.018 (0.018 - 0.018) & 1875 (1809 - 1945) & 4e-06 (0 - 8e-06)\\
+\hline
+Extended Pulse (td=2500) & 0.018 (0.018 - 0.018) & 2129 (2055 - 2208) & -1e-06 (-5e-06 - 4e-06)\\
+\hline
+\end{tabular}
+\end{table}
 
-\caption{\label{tab:tableS2_2}\label{tab:tableS2} AIC and RSS for the fit to Neandertal data}
+\begin{table}[H]
+
+\caption{\label{tab:tableS2_2}\label{tab:tableS2} AIC and RSS for the fit  to ALD from the 1k Genome data.}
 \centering
 \begin{tabular}[t]{l|r|r}
 \hline
