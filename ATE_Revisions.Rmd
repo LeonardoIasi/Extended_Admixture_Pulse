@@ -440,7 +440,7 @@ Plot_power_analysis <- function(Data,Sim_2_ggplot_all_sig_cutoff,Colour_P){
     theme(legend.position="bottom",
       axis.text.x=element_blank(),
       axis.ticks.x=element_blank())+
-    ylim(c(-0.5,10))+
+    coord_cartesian(ylim = c(-0.5,10))+
     labs(x = "Admixture Duration")+
     labs(y = "log Likelihood Ratio")+
     #scale_y_continuous("log Likelihood Ratio", sec.axis = sec_axis(n_seg),name = "n unique segments"))+
@@ -474,7 +474,7 @@ Plot_power_analysis_error <- function(Data,Colour_P){
   Px <-  ggplot(Data,aes(x=as.factor(Est_name),y=Est_error_norm,color=as.factor(Est_name)))+
     geom_boxplot()+
     facet_grid(n_seg~td_true,switch = "x",labeller=labeller(.rows=c("100"="# seg:\n100","1000"="# seg:\n1000", "10000"="# seg:\n10000", "1e+05"="# seg:\n100000")))+
-        ylim(c(-2,2))+
+    coord_cartesian(ylim = c(-2,2))+
     theme(legend.position="bottom",
       axis.text.x=element_blank(),
       axis.ticks.x=element_blank())+
@@ -926,10 +926,13 @@ Plot_tm_flipped <- function(ggdata,main,rr_1,rr_2,col1,col2){
     geom_boxplot(show.legend = F)+
     facet_grid( Model~as.factor(True_tm_named)+as.factor(True_td_named),switch = "x")+
     geom_hline( aes(yintercept = as.numeric(as.character(True_tm)) ))+
+    geom_hline( aes(yintercept = as.numeric(as.character(True_tm))*(1-0.03)) ,linetype="dashed", 
+            color = "red")+
     labs(y = "Estimated Mean\n Admixture Time")+
     labs(x = "")+
     #labs(x = "Simulated Admixture Duration \n Simulated Admixture Mean")+
-    coord_cartesian(ylim = c(0,2500), expand = 0)+
+    #coord_cartesian(ylim = c(0,2500), expand = 0)+
+    coord_cartesian(ylim = c(800,2500), expand = 0)+
     scale_y_continuous(breaks = seq(0, 2500, by = 500))+
     theme(axis.text.x = element_text(angle = 90),
           strip.text.x = element_text(size = 9),
@@ -1564,8 +1567,11 @@ Plot.data_ALD_red <- Plot.data_ALD %>% filter(True_GF_length!= 100 & True_GF_len
 
 Plot.data_ALD_red$Name <- factor(Plot.data_ALD_red$Name,
                     levels = c("Constant/Constant","HapMap/Constant","HapMap/AAMap","HapMap/HapMap"),ordered = TRUE)
-RSS_diff_norm <- Plot.data_ALD_red %>% group_by(Name) %>% group_map(~ (0-(log(.x$RSS_SP)-log(.x$RSS_EP))/sd((log(.x$RSS_SP)-log(.x$RSS_EP))) ) )
-RSS_comp=data.frame(RSS_diff=log(Plot.data_ALD_red$RSS_SP)-log(Plot.data_ALD_red$RSS_EP),
+#RSS_diff_norm <- Plot.data_ALD_red %>% group_by(Name) %>% group_map(~ (0-(log(.x$RSS_SP)-log(.x$RSS_EP))/sd((log(.x$RSS_SP)-log(.x$RSS_EP))) ) )
+RSS_diff_norm <- Plot.data_ALD_red %>% group_by(Name) %>% group_map(~ (0-((.x$RSS_SP)-(.x$RSS_EP))/sd(((.x$RSS_SP)-(.x$RSS_EP))) ) )
+RSS_comp=data.frame(
+                  #RSS_diff=log(Plot.data_ALD_red$RSS_SP)-log(Plot.data_ALD_red$RSS_EP),
+                  RSS_diff=(Plot.data_ALD_red$RSS_SP)-(Plot.data_ALD_red$RSS_EP),
                     RSS_diff_norm=unlist(RSS_diff_norm),
                       GF_duration=Plot.data_ALD_red$True_GF_length,Name=Plot.data_ALD_red$Name)
 RSS_comp$Name <- factor(RSS_comp$Name,
@@ -1582,10 +1588,9 @@ P_RSS_comp_results <- ggplot(RSS_comp_results, aes(x=as.factor(Name), y=(RSS_dif
                 geom_boxplot()+
                 facet_grid(Data~True_td_named,switch = "x")+
                 geom_hline( aes(yintercept = 0 ))+
-                labs(y = "Standardized\nlog RSS Difference ")+
+                labs(y = "Standardized\n RSS Difference ")+
                 #labs(x = "Admixture Duration")+
                 labs(x = "")+
-                ylim(-1,1)+
                 theme(
                   axis.ticks.y=element_blank(),
                   axis.ticks.x=element_blank(),
@@ -1593,7 +1598,7 @@ P_RSS_comp_results <- ggplot(RSS_comp_results, aes(x=as.factor(Name), y=(RSS_dif
                   strip.text.x = element_text(size = 9),
                   legend.position="none",
                   plot.margin=unit(c(0.25,0.5,0,0.5), "cm"))+
-                coord_cartesian(expand = 0)+
+                coord_cartesian(ylim = c(-3.5,0.2),expand = 0)+
                 scale_color_manual("Recombination",
                                    values = c(cbPalette_viridis[1],cbPalette_viridis[12]),
                                    labels = c("Constant/Constant","HapMap/HapMap"))
@@ -1607,7 +1612,7 @@ P_RSS_comp_supplements <- ggplot(RSS_comp_supplements, aes(x=as.factor(Name), y=
                 geom_boxplot()+
                 facet_grid(Data~True_td_named,switch = "x")+
                 geom_hline( aes(yintercept = 0 ))+
-                labs(y = "Standardized\nlog RSS Difference ")+
+                labs(y = "Standardized\n RSS Difference ")+
                 #labs(x = "Admixture Duration")+
                 labs(x = "")+
                 #ylim(-1,1)+
@@ -1647,7 +1652,7 @@ Plot_LRT<- function(Data,main,recomb_levels,recomb_lables,col1,col2){
       #legend.position="none",
       legend.position = "top",
       plot.margin=unit(c(-0.5,0.5,-0.5,0.5), "cm"))+
-    ylim(c(-0.5,10))+
+    coord_cartesian(ylim=c(-0.5,10),expand = 0)+
     labs(x = "")+
     labs(y = "log Likelihood\n Ratio")+
     scale_color_manual("Recombination",
@@ -1681,7 +1686,7 @@ True_segments_supplements <- True_segments %>% filter(recomb!="constant") %>% fi
 True_segments_supplements <- True_segments_supplements %>% filter(td!= 100 & td!= 200 & td!= 400 & td!= 800)
 True_segments_supplements$Data <- "True Segments"
 Inferred_segments_supplements <- Inferred_segments %>% filter(recomb!="constant") %>% filter(recomb!="varying HapMap correction")
-Inferred_segments <- Inferred_segments %>% filter(td!= 100 & td!= 200 & td!= 400 & td!= 800)
+Inferred_segments_supplements <- Inferred_segments_supplements %>% filter(td!= 100 & td!= 200 & td!= 400 & td!= 800)
 Inferred_segments_supplements$Data <- "Inferred Segments"
 
 Segments_LRT_supplements <- rbind(True_segments_supplements,Inferred_segments_supplements)
@@ -2201,13 +2206,13 @@ Plot_GLM_model_0 <- function(Model){
   HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[2])
-  #,row.names = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+  #,row.names = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
   )
   
   Post_effect_size_est_table <- Post_effect_size_est
-  row.names(Post_effect_size_est_table) <- c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled")
+  row.names(Post_effect_size_est_table) <- c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled")
   Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
-                levels = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled"),ordered = TRUE)
+                levels = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled"),ordered = TRUE)
   
   ggplot(Post_effect_size_est,aes(x=Post_effect_size_est_table$Variable,y=as.numeric(as.character(mean))))+
         geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F,size=2)+
@@ -2221,7 +2226,7 @@ Plot_GLM_model_0 <- function(Model){
                     ,guide = guide_axis(angle = 90))+
     scale_color_manual("Gene Flow Model",
                        values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
-                       label=c("Pulse","Continuous"))
+                       label=c("Pulse","Extended"))
 }
 
 Plot_GLM_model_1 <- function(Model){
@@ -2257,14 +2262,14 @@ Plot_GLM_model_1 <- function(Model){
   HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[2])
-  #,row.names = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+  #,row.names = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
   )
   
   Post_effect_size_est_table <- Post_effect_size_est
-  row.names(Post_effect_size_est_table) <- c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+  row.names(Post_effect_size_est_table) <- c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
                                              "Interaction downsampled/HES","Interaction Complex D./Varying R.")
   Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
-                  levels = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+                  levels = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
                                            "Interaction downsampled/HES","Interaction Complex D./Varying R."),ordered = TRUE)
   
   ggplot(Post_effect_size_est,aes(x=Post_effect_size_est_table$Variable,y=as.numeric(as.character(mean))))+
@@ -2280,7 +2285,7 @@ Plot_GLM_model_1 <- function(Model){
                     ,guide = guide_axis(angle = 90))+
     scale_color_manual("Gene Flow Model",
                        values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
-                       label=c("Pulse","Continuous"))
+                       label=c("Pulse","Extended"))
 }
 
 Plot_GLM_model_2 <- function(Model){
@@ -2318,14 +2323,14 @@ Plot_GLM_model_2 <- function(Model){
   HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bmA,0.95)[2])
-  #,row.names = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+  #,row.names = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
   )
   
   Post_effect_size_est_table <- Post_effect_size_est
-  row.names(Post_effect_size_est_table) <- c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+  row.names(Post_effect_size_est_table) <- c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
                                              "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES")
   Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
-                    levels = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+                    levels = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
                                              "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES"),ordered = TRUE)
   
   ggplot(Post_effect_size_est_table,aes(x=Post_effect_size_est_table$Variable,y=as.numeric(as.character(mean))))+
@@ -2341,7 +2346,7 @@ Plot_GLM_model_2 <- function(Model){
                     ,guide = guide_axis(angle = 90))+
     scale_color_manual("Gene Flow Model",
                        values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
-                       label=c("Pulse","Continuous"))
+                       label=c("Pulse","Extended"))
 }
 
 Plot_GLM_model_3 <- function(Model,plot_GLM=T){
@@ -2382,14 +2387,14 @@ Plot_GLM_model_3 <- function(Model,plot_GLM=T){
   HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bmA,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bmr,0.95)[2])
-  #,row.names = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+  #,row.names = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
   )
   
   Post_effect_size_est_table <- Post_effect_size_est
-  row.names(Post_effect_size_est_table) <- c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+  row.names(Post_effect_size_est_table) <- c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
                                              "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.")
   Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
-                    levels = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+                    levels = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
                                              "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R."),ordered = TRUE)
   
   P_1 <- ggplot(Post_effect_size_est_table,aes(x=Post_effect_size_est_table$Variable,y=as.numeric(as.character(mean))))+
@@ -2405,7 +2410,7 @@ Plot_GLM_model_3 <- function(Model,plot_GLM=T){
                     ,guide = guide_axis(angle = 90))+
     scale_color_manual("Gene Flow Model",
                        values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
-                       label=c("Pulse","Continuous"))
+                       label=c("Pulse","Extended"))
   if(plot_GLM==T){
       return(P_1)
   } else {
@@ -2768,10 +2773,13 @@ Sampling_Closer_Supplements
 Plot.data_50_complete <- Plot.data_50[complete.cases(Plot.data_50),]
 Plot.data_50_complete$Name <- factor(Plot.data_50_complete$Name,
                     levels = c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction"),ordered = TRUE)
-RSS_diff_norm <- Plot.data_50_complete %>% group_by(Name) %>% group_map(~ (0-(log(.x$RSS_SP)-log(.x$RSS_EP))/sd((log(.x$RSS_SP)-log(.x$RSS_EP))) ) )
+#RSS_diff_norm <- Plot.data_50_complete %>% group_by(Name) %>% group_map(~ (0-(log(.x$RSS_SP)-log(.x$RSS_EP))/sd((log(.x$RSS_SP)-log(.x$RSS_EP))) ) )
+RSS_diff_norm <- Plot.data_50_complete %>% group_by(Name) %>% group_map(~ (0-((.x$RSS_SP)-(.x$RSS_EP))/sd(((.x$RSS_SP)-(.x$RSS_EP))) ) )
 
-RSS_comp_50=data.frame(RSS_diff=log(Plot.data_50_complete$RSS_SP)-log(Plot.data_50_complete$RSS_EP),
-                       RSS_diff_norm=unlist(RSS_diff_norm),
+RSS_comp_50=data.frame(
+                    #RSS_diff=log(Plot.data_50_complete$RSS_SP)-log(Plot.data_50_complete$RSS_EP),
+                    RSS_diff=(Plot.data_50_complete$RSS_SP)-(Plot.data_50_complete$RSS_EP),
+                    RSS_diff_norm=unlist(RSS_diff_norm),
                     Sample_Time=Plot.data_50_complete$Sample_Time,
                     GF_duration=Plot.data_50_complete$True_GF_length,Name=Plot.data_50_complete$Name,
                     True_mean_GF=Plot.data_50_complete$True_tm)
@@ -2791,9 +2799,9 @@ P_RSS_comp_50 <- ggplot(RSS_comp_50, aes(x=as.factor(Name), y=(RSS_diff_norm),co
                 geom_boxplot()+
                 facet_grid( Data~as.factor(ts_named)+as.factor(True_td_named)+as.factor(True_tm_named),switch = "x")+
                 geom_hline( aes(yintercept = 0 ))+
-                labs(y = "Standardized\nlog RSS Difference ")+
+                labs(y = "Standardized\n RSS Difference ")+
                 labs(x = "Admixture Duration")+
-                ylim(-2,2)+
+                coord_cartesian(ylim=c(-2, 2),expand = 0)+
                 theme(
                   axis.ticks.y=element_blank(),
                   axis.ticks.x=element_blank(),
@@ -2801,7 +2809,6 @@ P_RSS_comp_50 <- ggplot(RSS_comp_50, aes(x=as.factor(Name), y=(RSS_diff_norm),co
                   strip.text.x = element_text(size = 9),
                   legend.position="none",
                   plot.margin=unit(c(0.25,0.5,0,0.5), "cm"))+
-                coord_cartesian(expand = 0)+
                 scale_color_manual("Recombination",
                                    values = c(cbPalette_viridis[1],cbPalette_viridis[3],cbPalette_viridis[9],cbPalette_viridis[12]),
                                    labels = c("Constant/Constant","HapMap/Constant","HapMap/AAMap","HapMap/HapMap"))
@@ -2809,9 +2816,12 @@ P_RSS_comp_50 <- ggplot(RSS_comp_50, aes(x=as.factor(Name), y=(RSS_diff_norm),co
 Plot.data_varying_complete <- Plot.data_varying[complete.cases(Plot.data_varying),]
 Plot.data_varying_complete$Name <- factor(Plot.data_varying_complete$Name,
                     levels = c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction"),ordered = TRUE)
-RSS_diff_norm <- Plot.data_varying_complete %>% group_by(Name) %>% group_map(~ (0-(log(.x$RSS_SP)-log(.x$RSS_EP))/sd((log(.x$RSS_SP)-log(.x$RSS_EP))) ) )
-RSS_comp_varying=data.frame(RSS_diff=log(Plot.data_varying_complete$RSS_SP)-log(Plot.data_varying_complete$RSS_EP),
-                           RSS_diff_norm= unlist(RSS_diff_norm),
+#RSS_diff_norm <- Plot.data_varying_complete %>% group_by(Name) %>% group_map(~ (0-(log(.x$RSS_SP)-log(.x$RSS_EP))/sd((log(.x$RSS_SP)-log(.x$RSS_EP))) ) )
+RSS_diff_norm <- Plot.data_varying_complete %>% group_by(Name) %>% group_map(~ (0-((.x$RSS_SP)-(.x$RSS_EP))/sd(((.x$RSS_SP)-(.x$RSS_EP))) ) )
+RSS_comp_varying=data.frame(
+                    #RSS_diff=log(Plot.data_varying_complete$RSS_SP)-log(Plot.data_varying_complete$RSS_EP),
+                    RSS_diff=(Plot.data_varying_complete$RSS_SP)-(Plot.data_varying_complete$RSS_EP),
+                    RSS_diff_norm= unlist(RSS_diff_norm),
                     Sample_Time=Plot.data_varying_complete$Sample_Time,
                     GF_duration=Plot.data_varying_complete$True_GF_length,Name=Plot.data_varying_complete$Name,
                     True_mean_GF=Plot.data_varying_complete$True_tm)
@@ -2831,9 +2841,9 @@ P_RSS_varying <- ggplot(RSS_comp_varying, aes(x=as.factor(Name), y=(RSS_diff_nor
                 geom_boxplot()+
                 facet_grid( Data~as.factor(ts_named)+as.factor(True_td_named)+as.factor(True_tm_named),switch = "x")+
                 geom_hline( aes(yintercept = 0 ))+
-                labs(y = "Standardized\nlog RSS Difference ")+
+                labs(y = "Standardized\n RSS Difference ")+
                 labs(x = "Admixture Duration")+
-                ylim(-2,2)+
+                coord_cartesian(ylim=c(-2, 2),expand = 0)+
                 theme(
                   axis.ticks.y=element_blank(),
                   axis.ticks.x=element_blank(),
@@ -2841,7 +2851,6 @@ P_RSS_varying <- ggplot(RSS_comp_varying, aes(x=as.factor(Name), y=(RSS_diff_nor
                   strip.text.x = element_text(size = 9),
                   legend.position="none",
                   plot.margin=unit(c(0.25,0.5,0,0.5), "cm"))+
-                coord_cartesian(expand = 0)+
                 scale_color_manual("Recombination",
                                    values = c(cbPalette_viridis[1],cbPalette_viridis[3],cbPalette_viridis[9],cbPalette_viridis[12]),
                                    labels = c("Constant/Constant","HapMap/Constant","HapMap/AAMap","HapMap/HapMap"))
@@ -2886,7 +2895,7 @@ Plot_Fig_2_A <- function(Data,x.axes.lables){
     scale_x_discrete(labels= x.axes.lables)+
     scale_color_manual("Gene Flow Model",
                        values = c(cbPalette_viridis[1],cbPalette_viridis[6]),
-                       labels = c("Pulse","Continuous"))
+                       labels = c("Pulse","Extended"))
   return(Px)
   
 }
