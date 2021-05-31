@@ -303,7 +303,8 @@ We fix the mean time of admixture to 1500 generation with different durations an
 LME_fn <- function(seg){
   f_SP=  function(par) -sum(dexp(seg,par,log = T))
   LME_SP = optim(par = c(100), lower = c(1),fn = f_SP, method="L-BFGS-B")
-  f_EP= function(par) -sum(dlomax(x=seg,shape3.q = par[2],scale = par[2]/par[1],log=T))
+  # new shape = k + 1
+  f_EP= function(par) -sum(dlomax(x=seg,shape3.q = par[2]+1,scale = par[2]/par[1],log=T))
   LME_ep = optim(par = c(100,10),lower = c(1,1) ,fn = f_EP, method="L-BFGS-B")
   LRT = -2*(LME_ep$value - LME_SP$value)
   fit_res <- c(LRT,LME_SP$par,LME_ep$par)
@@ -313,7 +314,7 @@ LME_fn <- function(seg){
 # not used for the simulations !!!
 simulate_pulse=function(n_segments,tm,td){
   k = 1/((td/(4*tm))^2)
-  sim_r = VGAM::rlomax(n=n_segments,shape3.q = k,scale = k/tm)
+  sim_r = VGAM::rlomax(n=n_segments,shape3.q = k+1,scale = k/tm)
   LRT = LME_fn(sim_r)
   return(LRT)
 }
@@ -328,7 +329,8 @@ frag_through_time_fn <- function(t,t_closer){
 simulate_closer=function(n_ti,tm,td,t_since_admixture){
   t_closer=tm - td/2 - t_since_admixture
   k=1/((td/(4*tm))^2)
-  sim_r=rgamma(n_ti,shape = k,scale = tm/k)
+  #new k+1
+  sim_r=rgamma(n_ti,shape = k+1,scale = tm/k)
   if(length(which(sim_r<=t_closer))==0){
       sim_r=sim_r
   }else{
@@ -371,16 +373,16 @@ Sim_2_fn <- function(n_seg,rep=rep){
 
 Sim_2=lapply(n_seg, function(x) Sim_2_fn(x,rep=100))
 #save(Sim_2,n_seg,file = "Paper_Revision_Poweranalysis_2.RData")
-
 #save(Sim_2,n_seg,file = "Paper_Revision_Poweranalysis_all_estimates.RData")
+save(Sim_2,n_seg,file = "Paper_Revision_Poweranalysis_all_estimates_k_corrected.RData")
 ```
 
 
 
 ```{r eval=T,figR1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figR1} Liklihood ratios between the simple pulse and extended pulse model for different durations of admixture for 100, 1000, 10000 and 100000 segments sampled at time 0 and 50 generations after the end of admixture. Boxplots from 100 replications."}
 #load("Paper_Revision_Poweranalysis_2.RData")
-load("Paper_Revision_Poweranalysis_all_estimates.RData")
-
+#load("Paper_Revision_Poweranalysis_all_estimates.RData")
+load("Paper_Revision_Poweranalysis_all_estimates_k_corrected.RData")
 Sim_2_ggplot_100 <- c()
 Sim_2_ggplot_1000 <- c()
 Sim_2_ggplot_10000 <- c()
@@ -415,14 +417,11 @@ Sim_2_ggplot_all <- rbind(Sim_2_ggplot_all_t_0,Sim_2_ggplot_all_t_closer)
 
 Sim_2_ggplot_all$LRT <- ifelse(Sim_2_ggplot_all$LRT>=10,10,Sim_2_ggplot_all$LRT)
 Sim_2_ggplot_all$k_true <- 1/((Sim_2_ggplot_all$td_true/(4*Sim_2_ggplot_all$tm_true))^2)
-Sim_2_ggplot_all$k_true_corrected <- ifelse(Sim_2_ggplot_all$k_true>100 ,100,Sim_2_ggplot_all$k_true)
-Sim_2_ggplot_all$tm_SP_est_error <- sqrt((Sim_2_ggplot_all$tm_true-Sim_2_ggplot_all$tm_SP_est)^2)
-Sim_2_ggplot_all$tm_SP_est_error_norm <- (Sim_2_ggplot_all$tm_true-Sim_2_ggplot_all$tm_SP_est)/sd(Sim_2_ggplot_all$tm_SP_est)
-Sim_2_ggplot_all$tm_EP_est_error <- sqrt((Sim_2_ggplot_all$tm_true-Sim_2_ggplot_all$tm_EP_est)^2)
-Sim_2_ggplot_all$tm_EP_est_error_norm <- (Sim_2_ggplot_all$tm_true-Sim_2_ggplot_all$tm_EP_est)/sd(Sim_2_ggplot_all$tm_EP_est)
-Sim_2_ggplot_all$k_EP_est_error <- sqrt((Sim_2_ggplot_all$k_true -Sim_2_ggplot_all$k_EP_est)^2)
-Sim_2_ggplot_all$k_EP_est_error_norm <- (Sim_2_ggplot_all$k_true-Sim_2_ggplot_all$k_EP_est)/sd(Sim_2_ggplot_all$k_EP_est)
-Sim_2_ggplot_all$k_EP_est_error_corrected <- ifelse(Sim_2_ggplot_all$k_true>=100 & Sim_2_ggplot_all$k_EP_est>=100,0,sqrt((Sim_2_ggplot_all$k_true_corrected -Sim_2_ggplot_all$k_EP_est)^2))
+Sim_2_ggplot_all$td_est <- 4*Sim_2_ggplot_all$tm_EP_est*Sim_2_ggplot_all$k_EP_est^-(1/2)
+Sim_2_ggplot_all$tm_SP_est_error_norm <- (Sim_2_ggplot_all$tm_SP_est-Sim_2_ggplot_all$tm_true)/sd(Sim_2_ggplot_all$tm_SP_est)
+Sim_2_ggplot_all$tm_EP_est_error_norm <- (Sim_2_ggplot_all$tm_EP_est-Sim_2_ggplot_all$tm_true)/sd(Sim_2_ggplot_all$tm_EP_est)
+Sim_2_ggplot_all$k_EP_est_error_norm <- (Sim_2_ggplot_all$k_EP_est-Sim_2_ggplot_all$k_true)/sd(Sim_2_ggplot_all$k_EP_est)
+Sim_2_ggplot_all$td_EP_est_error_norm <- (Sim_2_ggplot_all$td_est-Sim_2_ggplot_all$td_true)/sd(Sim_2_ggplot_all$td_est)
 
 Sim_2_ggplot_all_red <- Sim_2_ggplot_all %>% filter(td_true!=200) %>% filter(td_true!=800)
 
@@ -460,9 +459,9 @@ Plot_power_analysis(Sim_2_ggplot_all_red,Sim_2_ggplot_all_sig_cutoff,cbPalette_v
 
 ```{r eval=T,figR1_error_ests,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figR1_error_ests} Liklihood ratios between the simple pulse and extended pulse model for different durations of admixture for 100, 1000, 10000 and 100000 segments sampled at time 0 and 50 generations after the end of admixture. Boxplots from 100 replications."}
 
-Error_plot <- data.frame(Est_error=c(Sim_2_ggplot_all$tm_SP_est_error,Sim_2_ggplot_all$tm_EP_est_error,Sim_2_ggplot_all$k_EP_est_error ),
-                         Est_error_corrected=c(Sim_2_ggplot_all$tm_SP_est_error,Sim_2_ggplot_all$tm_EP_est_error,Sim_2_ggplot_all$k_EP_est_error_corrected ),
-                         Est_error_norm=c(Sim_2_ggplot_all$tm_SP_est_error_norm,Sim_2_ggplot_all$tm_EP_est_error_norm,Sim_2_ggplot_all$k_EP_est_error_norm ),
+Error_plot <- data.frame(
+                         Est_error_norm=c(Sim_2_ggplot_all$tm_SP_est_error_norm,Sim_2_ggplot_all$tm_EP_est_error_norm,
+                          Sim_2_ggplot_all$td_EP_est_error_norm ),
                          Est_name=c(paste(Sim_2_ggplot_all$Sampling,"SP_tm",sep = "_"),paste(Sim_2_ggplot_all$Sampling,"EP_tm",sep = "_"),paste(Sim_2_ggplot_all$Sampling,"EP_td",sep = "_")),n_seg=rep(Sim_2_ggplot_all$n_seg,3),td_true=rep(Sim_2_ggplot_all$td_true,3))
 
 Error_plot_red <- Error_plot %>% filter(td_true!=200) %>% filter(td_true!=800)
@@ -472,15 +471,15 @@ Plot_power_analysis_error <- function(Data,Colour_P){
     Data$Est_name <- factor(Data$Est_name,
                         levels = c("sampling_at_0_SP_tm","sampling_at_0_EP_tm","sampling_at_0_EP_td","sampling_50_gen_after_gf_SP_tm"
                                    ,"sampling_50_gen_after_gf_EP_tm","sampling_50_gen_after_gf_EP_td"),ordered = TRUE)
-  Px <-  ggplot(Data,aes(x=as.factor(Est_name),y=Est_error,color=as.factor(Est_name)))+
+  Px <-  ggplot(Data,aes(x=as.factor(Est_name),y=Est_error_norm,color=as.factor(Est_name)))+
     geom_boxplot()+
     facet_grid(n_seg~td_true,switch = "x",labeller=labeller(.rows=c("100"="# seg:\n100","1000"="# seg:\n1000", "10000"="# seg:\n10000", "1e+05"="# seg:\n100000")))+
-        ylim(c(0,1000))+
+        ylim(c(-2,2))+
     theme(legend.position="bottom",
       axis.text.x=element_blank(),
       axis.ticks.x=element_blank())+
     labs(x = "Admixture Duration")+
-    labs(y = "RMSE")+
+    labs(y = "Standardized Error")+
     scale_color_manual("",
                        values = c(Colour_P[1],Colour_P[3],Colour_P[6],Colour_P[9],Colour_P[12],Colour_P[15]),
                       labels = c("SP tm; ts = present","EP tm; ts = present","EP td; ts = present","SP tm; ts = 50 gen after tend",
@@ -493,62 +492,6 @@ Plot_power_analysis_error(Error_plot_red,viridis(15,option = "D"))
 
 ```
 
-```{r eval=T,figR1_error_ests_norm,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figR1_error_ests_norm} Liklihood ratios between the simple pulse and extended pulse model for different durations of admixture for 100, 1000, 10000 and 100000 segments sampled at time 0 and 50 generations after the end of admixture. Boxplots from 100 replications."}
-
-
-
-
-Plot_power_analysis_error_normalized <- function(Data,Colour_P){
-    Data$Est_error_norm <- ifelse(Data$Est_error_norm>2,2,Data$Est_error_norm)
-    Data$Est_name <- factor(Data$Est_name,
-                        levels = c("sampling_at_0_SP_tm","sampling_at_0_EP_tm","sampling_at_0_EP_td","sampling_50_gen_after_gf_SP_tm"
-                                   ,"sampling_50_gen_after_gf_EP_tm","sampling_50_gen_after_gf_EP_td"),ordered = TRUE)
-  Px <-  ggplot(Data,aes(x=as.factor(Est_name),y=Est_error_norm,color=as.factor(Est_name)))+
-    geom_boxplot()+
-    facet_grid(n_seg~td_true,switch = "x",labeller=labeller(.rows=c("100"="# seg:\n100","1000"="# seg:\n1000", "10000"="# seg:\n10000", "1e+05"="# seg:\n100000")))+
-        ylim(c(0,2))+
-    theme(legend.position="bottom",
-      axis.text.x=element_blank(),
-      axis.ticks.x=element_blank())+
-    labs(x = "Admixture Duration")+
-    labs(y = "Normalized Error")+
-    scale_color_manual("",
-                       values = c(Colour_P[1],Colour_P[3],Colour_P[6],Colour_P[9],Colour_P[12],Colour_P[15]),
-                      labels = c("SP tm; ts = present","EP tm; ts = present","EP td; ts = present","SP tm; ts = 50 gen after tend",
-                                  "EP tm; ts = 50 gen after tend" ,"EP td; ts = 50 gen after tend"))
-  return(Px)
-  
-}
-Plot_power_analysis_error_normalized(Error_plot_red,viridis(15,option = "D"))
-```
-
-```{r eval=T,figR1_error_ests_corrected,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figR1_error_ests_corrected} Liklihood ratios between the simple pulse and extended pulse model for different durations of admixture for 100, 1000, 10000 and 100000 segments sampled at time 0 and 50 generations after the end of admixture. Boxplots from 100 replications."}
-
-
-
-
-Plot_power_analysis_error_corrected <- function(Data,Colour_P){
-    Data$Est_name <- factor(Data$Est_name,
-                        levels = c("sampling_at_0_SP_tm","sampling_at_0_EP_tm","sampling_at_0_EP_td","sampling_50_gen_after_gf_SP_tm"
-                                   ,"sampling_50_gen_after_gf_EP_tm","sampling_50_gen_after_gf_EP_td"),ordered = TRUE)
-  Px <-  ggplot(Data,aes(x=as.factor(Est_name),y=Est_error_corrected,color=as.factor(Est_name)))+
-    geom_boxplot()+
-    facet_grid(n_seg~td_true,switch = "x",labeller=labeller(.rows=c("100"="# seg:\n100","1000"="# seg:\n1000", "10000"="# seg:\n10000", "1e+05"="# seg:\n100000")))+
-        ylim(c(0,1000))+
-    theme(legend.position="bottom",
-      axis.text.x=element_blank(),
-      axis.ticks.x=element_blank())+
-    labs(x = "Admixture Duration")+
-    labs(y = "RMSE")+
-    scale_color_manual("",
-                       values = c(Colour_P[1],Colour_P[3],Colour_P[6],Colour_P[9],Colour_P[12],Colour_P[15]),
-                      labels = c("SP tm; ts = present","EP tm; ts = present","EP td; ts = present","SP tm; ts = 50 gen after tend",
-                                  "EP tm; ts = 50 gen after tend" ,"EP td; ts = 50 gen after tend"))
-  return(Px)
-  
-}
-Plot_power_analysis_error_corrected(Error_plot_red,viridis(15,option = "D"))
-```
 
 ## Figure Result 2.1 and corresponding supplements
 
@@ -647,7 +590,7 @@ HapMap_Map=read.table(HapMap_Map_path,stringsAsFactors = F,header=T,fill = T)
 mean_AAMap_rr=(tail(AAMap_Map$Map.cM.,n=1)/tail(AAMap_Map$Position.bp.,n=1))/100
 mean_HapMap_rr=(tail(HapMap_Map$Genetic_Map.cM.,n=1)/tail(HapMap_Map$position,n=1))/100
 
-## Fitting True segments w/o cutoff for AAMap and constant 
+## Fitting True segments w/o cutoff 
 
 True_seg_td_1 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_1_", "ALL_Simulation-merged-_Scenario_1_Recomb_",mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,1,25)
 True_seg_td_200 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_2_","ALL_Simulation-merged-_Scenario_2_Recomb_"
@@ -665,8 +608,8 @@ True_seg_td_2000 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_7_","
 
 #save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit.RData")
 #save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear.RData")
-save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear2.RData")
-## Fitting True segments with cutoff for AAMap and constant 
+save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear_with_no_cuttoff_k_corrected.RData")
+## Fitting True segments all cutoff 
 lower_trunc=0.05
 upper_trunc=1.2
 True_seg_td_1 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_1_", "ALL_Simulation-merged-_Scenario_1_Recomb_",mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,1,25,apply_cutoff=T)
@@ -684,7 +627,8 @@ True_seg_td_2000 <- Fit_all_true_segments("ALL_Simulation-merged-_Scenario_7_","
                                           ,mean_HapMap_rr,AAMap_Map_path,HapMap_Map_path,2000,25,apply_cutoff = T)
 
 #save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear_with_AAMap_constant_cutoff.RData")
-save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear_with_all_cuttoff.RData")
+#save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear_with_all_cuttoff.RData")
+save(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,True_seg_td_1000,True_seg_td_1500,True_seg_td_2000,file = "True_Segment_fit_linear_with_all_cuttoff_k_corrected.RData")
 
 lower_trunc=0.05
 upper_trunc=1.2
@@ -705,7 +649,8 @@ Inferred_seg_td_2000 <- Fit_all_inferred_segments("ALL_Inferred_Archaic_Tracts-_
 
 #save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000,file = "Inferred_Segment_fit.RData")
 
-save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000,file = "Inferred_Segment_fit_linear.RData")
+#save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000,file = "Inferred_Segment_fit_linear.RData")
+save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000,file = "Inferred_Segment_fit_linear_k_corrected.RData")
 #save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000,file = "Inferred_Segment_fit_linear_no_cutoff.RData")
 #save(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000,file = "Inferred_Segment_fit_linear_min_max_cutoff.RData")
 ```
@@ -767,51 +712,6 @@ Result.Table.paper.parametrization.fn <- function(Result.Table.path,Sampling.tim
   return(Result.Table)
 }
 
-Plot_all_together_samples_50_gen_flipped <- function(ggdata,cbPalette_viridis){
-  ggdata$Model <- factor(ggdata$Model,
-                          levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
-  ggdata$Name <- factor(ggdata$Name,
-                        levels = c("HapMap/HapMap","HapMap/AAMap","HapMap/Constant",
-                                   "Constant/Constant"),ordered = TRUE)
-  ggplot(data = ggdata, aes(y=factor(Name),x=as.numeric(as.character(value)),colour=factor(Name))) +
-    geom_boxplot(show.legend = T)+ 
-    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
-    geom_vline( aes(xintercept = True_mean_GF ))+
-    labs(x = "Estimated Admixture Mean Time")+
-    labs(y = "Sampling Time \n Simulated Admixture Duration \n Simulated Admixture Mean")+
-    theme(
-      axis.text.y=element_blank(),
-      axis.ticks.y=element_blank())+
-    coord_cartesian(xlim = c(500,2000), expand = 0)+
-    scale_x_continuous(breaks = seq(0, 1000, by = 500))+
-    scale_color_manual("Simulations",
-                       values = c(cbPalette_viridis[12],cbPalette_viridis[9],cbPalette_viridis[3],cbPalette_viridis[1]),
-                       labels = c("HapMap/HapMap","HapMap/AAMap","HapMap/Constant","Constant/Constant"),
-                       guide = guide_legend(reverse=TRUE))
-  
-}
-
-
-Plot_sampling_50_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis){
-  ggdata$Name <- factor(ggdata$Name,
-                        levels = c("HapMap/HapMap","HapMap/AAMap","HapMap/Constant",
-                                   "Constant/Constant"),ordered = TRUE)
-  ggplot(ggdata,aes(y=variable,x=as.numeric(as.character(value)),colour=factor(Name)))+
-    geom_boxplot(show.legend = F)+
-    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
-    geom_vline( aes(xintercept = True_GF_length ))+
-    labs(y = "")+
-    labs(x = "Estimated Admixture Duration")+
-    theme(
-      axis.text.y=element_blank(),
-      axis.ticks.y=element_blank())+
-    coord_cartesian(xlim = c(0,2500), expand = 0)+
-    scale_x_continuous(breaks = seq(0, 2500, by = 500))+
-    scale_color_manual("Simulations",
-                       values = c(cbPalette_viridis[12],cbPalette_viridis[9],cbPalette_viridis[3],cbPalette_viridis[1]),
-                       labels = c("HapMap/HapMap","HapMap/AAMap","HapMap/Constant","Constant/Constant"),
-                       guide = guide_legend(reverse=TRUE))
-}
 
 
 
@@ -838,7 +738,8 @@ ggdata_l.ALD_tm <- melt(Plot.data_ALD,measure.vars =  c('length_GF'),id.vars = c
 
 ```{r figResult2_1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figResult2_1} Segments, ALD constant;constant, HapMap;HapMap"}
 # Segments True
-load("True_Segment_fit_linear_with_all_cuttoff.RData")
+#load("True_Segment_fit_linear_with_all_cuttoff.RData")
+load("True_Segment_fit_linear_with_all_cuttoff_k_corrected.RData")
 True_segments=rbind(True_seg_td_1,True_seg_td_200,True_seg_td_400,True_seg_td_800,
                     True_seg_td_1000,True_seg_td_1500,True_seg_td_2000)
 colnames(True_segments) <- c("tm_sp","tm_ep","k","upper","lower","LRT","td","recomb")
@@ -858,7 +759,8 @@ True_segments_ggdata_td$True_tm <- 1500
 True_segments_ggdata_td$Data <- "True_Segments"
 
 # Segments Inferred
-load("Inferred_Segment_fit_linear.RData")
+#load("Inferred_Segment_fit_linear.RData")
+load("Inferred_Segment_fit_linear_k_corrected.RData")
 Inferred_segments=rbind(Inferred_seg_td_1,Inferred_seg_td_200,Inferred_seg_td_400,
                         Inferred_seg_td_800,Inferred_seg_td_1000,Inferred_seg_td_1500,Inferred_seg_td_2000)
 
@@ -920,27 +822,36 @@ ggdata_td$rr <- ifelse(ggdata_td$rr=="varying HapMap correction","HapMap/HapMap"
 ggdata_td$rr <- ifelse(ggdata_td$rr=="varying no correction","HapMap/Constant",ggdata_td$rr)
 ggdata_td$rr <- ifelse(ggdata_td$rr=="varying AAMap correction","HapMap/AAMap",ggdata_td$rr)
 
+# Remove td = 200,400,800 
+ggdata_tm <- ggdata_tm %>% filter(True_td!=200 & True_td!=400 & True_td!=800 )
+ggdata_td <- ggdata_td %>% filter(True_td!=200 & True_td!=400 & True_td!=800 )
 Plot_tm <- function(ggdata,main,rr_1,rr_2,col1,col2){
   ggdata$Model <- factor(ggdata$Model,
                          levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
+  ggdata$True_td_named <- factor(ggdata$True_td,
+                         levels = c("1"  ,  "1000" ,"1500" ,"2000"),labels = c("td = 1"  ,  "td = 1000" ,"td = 1500" ,"td = 2000"),ordered = TRUE)
+  ggdata$True_tm_named <- factor(ggdata$True_tm,
+                         levels = c("1500"),labels = c("tm = 1500"),ordered = TRUE)
   ggdata$rr <- factor(ggdata$rr,
                       levels = c(rr_2,rr_1),ordered = TRUE)
   ggdata$Data <- factor(ggdata$Data,
                       levels = c("ALD", "Inferred_Segments","True_Segments"),labels = c("ALD", "Inferred Segments","True Segments"),ordered = TRUE)
   ggplot(data = ggdata, aes(y=(Data),x=as.numeric(as.character(tm_est)),colour=(rr))) +
-    geom_boxplot(show.legend = T)+ 
-    facet_grid(as.factor(True_td)+as.factor(True_tm) ~Model, switch = "y")+
-    geom_vline( aes(xintercept = True_tm ))+
-    geom_vline( aes(xintercept = True_tm*(1-0.03)) ,linetype="dashed", 
+    geom_boxplot(show.legend = F)+ 
+    facet_grid(as.factor(True_td_named)+as.factor(True_tm_named) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = as.numeric(as.character(True_tm)) ))+
+    geom_vline( aes(xintercept = as.numeric(as.character(True_tm))*(1-0.03)) ,linetype="dashed", 
                 color = "red")+
     geom_vline( aes(xintercept = (1/EP_expected_seg_len)) ,linetype="dashed", 
                 color = "black")+
     ggtitle(main)+
-    labs(x = "Estimated Admixture Mean Time")+
+    theme(
+      strip.text.y = element_text(size = 9))+
+    labs(x = "Estimated Admixture\n Mean Time")+
     labs(y = "Simulated Admixture Duration \n Simulated Admixture Mean")+
-    coord_cartesian(xlim = c(500,2500), expand = 0)+
-    scale_x_continuous(breaks = seq(0, 1000, by = 500))+
-    scale_color_manual("Simulations",
+    coord_cartesian(xlim = c(0,2500), expand = 0)+
+    scale_x_continuous(breaks = seq(0, 5000, by = 500))+
+    scale_color_manual("Recombination",
                        values = c(col1,col2),
                        labels = c(rr_2,rr_1),
                        guide = guide_legend(reverse=TRUE))
@@ -952,35 +863,39 @@ Plot_td <- function(ggdata,main,rr_1,rr_2,col1,col2){
                          levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
   ggdata$rr <- factor(ggdata$rr,
                       levels = c(rr_2,rr_1),ordered = TRUE)
+  ggdata$True_td_named <- factor(ggdata$True_td,
+                         levels = c("1"  ,  "1000" ,"1500" ,"2000"),labels = c("td = 1"  ,  "td = 1000" ,"td = 1500" ,"td = 2000"),ordered = TRUE)
+  ggdata$True_tm_named <- factor(ggdata$True_tm,
+                         levels = c("1500"),labels = c("tm = 1500"),ordered = TRUE)
   ggdata$Data <- factor(ggdata$Data,
                         levels = c("ALD", "Inferred_Segments","True_Segments"),labels = c("ALD", "Inferred Segments","True Segments"),ordered = TRUE)
   ggplot(data = ggdata, aes(y=(Data),x=as.numeric(as.character(td_est)),colour=(rr))) +
-    geom_boxplot(show.legend = T)+ 
-    facet_grid(as.factor(True_td)+as.factor(True_tm) ~Model, switch = "y")+
-    geom_vline( aes(xintercept = True_td ))+
+    geom_boxplot(show.legend = F)+ 
+    facet_grid(as.factor(True_td_named)+as.factor(True_tm_named) ~Model, switch = "y")+
+    geom_vline( aes(xintercept = as.numeric(as.character(True_td)) ))+
     labs(y = "")+
     labs(x = "Estimated Admixture Duration")+
-    ggtitle(main)+
-    theme(
-      axis.text.y=element_blank(),
-      axis.ticks.y=element_blank())+
+    ggtitle("")+
     coord_cartesian(xlim = c(0,2500), expand = 0)+
     scale_x_continuous(breaks = seq(0, 2500, by = 500))+
-    scale_color_manual("Simulations",
+    theme(
+      axis.text.y=element_blank(),
+      axis.ticks.y=element_blank(),
+      strip.text.y = element_text(size = 9))+
+    scale_color_manual("Recombination",
                        values = c(col1,col2),
                        labels = c(rr_2,rr_1),
                        guide = guide_legend(reverse=TRUE))
 }
 ggdata_tm_results <-  ggdata_tm %>% filter(rr!="HapMap/Constant") %>% filter(rr!="HapMap/AAMap")
 ggdata_td_results<-  ggdata_td %>% filter(rr!="HapMap/Constant") %>% filter(rr!="HapMap/AAMap")
-Seg_ald_tm_results <- Plot_tm(ggdata_tm_results,"","Constant/Constant","HapMap/HapMap",cbPalette_viridis[1],cbPalette_viridis[12])
-Seg_ald_td_results <- Plot_td(ggdata_td_results,"","Constant/Constant","HapMap/HapMap",cbPalette_viridis[1],cbPalette_viridis[12])
+Seg_ald_tm_results <- Plot_tm(ggdata = ggdata_tm_results,"",rr_1 = "Constant/Constant",rr_2 = "HapMap/HapMap",cbPalette_viridis[1],cbPalette_viridis[12])
+Seg_ald_td_results <- Plot_td(ggdata = ggdata_td_results,"",rr_1 = "Constant/Constant",rr_2 = "HapMap/HapMap",cbPalette_viridis[1],cbPalette_viridis[12])
 
 
-Segments_ALD_Results <- ggarrange(Seg_ald_tm_results,Seg_ald_td_results,labels = c("A","B"),
+Segments_ALD_Results <- ggarrange(Seg_ald_tm_results,Seg_ald_td_results,
                                     ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
 
-Segments_ALD_Results
 ```
 
 ```{r figResult2_1_Supplement,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figResult2_1_Supplement} Segments, ALD HapMap;constant, HapMap;AAMap"}
@@ -990,9 +905,91 @@ Seg_ald_tm_supp <- Plot_tm(ggdata_tm_supp,"","HapMap/AAMap","HapMap/Constant",cb
 Seg_ald_td_supp <- Plot_td(ggdata_td_supp,"","HapMap/AAMap","HapMap/Constant",cbPalette_viridis[9],cbPalette_viridis[3])
 
 
-Segments_ALD_supp <- ggarrange(Seg_ald_tm_supp,Seg_ald_td_supp,labels = c("A","B"),
+Segments_ALD_supp <- ggarrange(Seg_ald_tm_supp,Seg_ald_td_supp,
                                   ncol = 2, nrow = 1,widths = c(0.6,0.4),common.legend = T,legend = 'bottom')
-Segments_ALD_supp
+```
+
+```{r figResult2_1_flipped,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figResult2_1} Segments, ALD constant;constant, HapMap;HapMap"}
+Plot_tm_flipped <- function(ggdata,main,rr_1,rr_2,col1,col2){
+  ggdata$Model <- factor(ggdata$Model,
+                         levels = c("Extended Pulse","Simple Pulse"),ordered = TRUE)
+  ggdata$rr <- factor(ggdata$rr,
+                      levels = c(rr_1,rr_2),ordered = TRUE)
+  ggdata$True_td_named <- factor(ggdata$True_td,
+                         levels = c("1"  ,  "1000" ,"1500" ,"2000"),labels = c("td = 1"  ,  "td = 1000" ,"td = 1500" ,"td = 2000"),ordered = TRUE)
+  ggdata$True_tm_named <- factor(ggdata$True_tm,
+                         levels = c("1500"),labels = c("tm = 1500"),ordered = TRUE)
+  ggdata$Data <- factor(ggdata$Data,
+                      levels = c("True_Segments","Inferred_Segments","ALD"),labels = c("True Segments","Inferred Segments","ALD"),ordered = TRUE)
+  ggplot(data = ggdata, aes(x=(Data),y=as.numeric(as.character(tm_est)),colour=(rr))) +
+    geom_boxplot(show.legend = F)+
+    facet_grid( Model~as.factor(True_tm_named)+as.factor(True_td_named),switch = "x")+
+    geom_hline( aes(yintercept = as.numeric(as.character(True_tm)) ))+
+    labs(y = "Estimated Mean\n Admixture Time")+
+    labs(x = "Simulated Admixture Duration \n Simulated Admixture Mean")+
+    coord_cartesian(ylim = c(0,2500), expand = 0)+
+    scale_y_continuous(breaks = seq(0, 2500, by = 500))+
+    theme(axis.text.x = element_text(angle = 90),
+          strip.text.x = element_text(size = 9),
+      legend.position="none",
+      plot.margin=unit(c(0.2,0.2,0,0.2), "cm")
+      )+
+    scale_color_manual("Recombination",
+                       values = c(col1,col2),
+                       labels = c(rr_1,rr_2))
+  
+}
+
+Plot_td_flipped <- function(ggdata,main,rr_1,rr_2,col1,col2){
+  ggdata$Model <- factor(ggdata$Model,
+                         levels = c("Extended Pulse","Simple Pulse"),ordered = TRUE)
+  ggdata$rr <- factor(ggdata$rr,
+                      levels = c(rr_1,rr_2),ordered = TRUE)
+  ggdata$True_td_named <- factor(ggdata$True_td,
+                         levels = c("1"  ,  "1000" ,"1500" ,"2000"),labels = c("td = 1"  ,  "td = 1000" ,"td = 1500" ,"td = 2000"),ordered = TRUE)
+  ggdata$True_tm_named <- factor(ggdata$True_tm,
+                         levels = c("1500"),labels = c("tm = 1500"),ordered = TRUE)
+  ggdata$Data <- factor(ggdata$Data,
+                      levels = c("True_Segments","Inferred_Segments","ALD"),labels = c("True Segments","Inferred Segments","ALD"),ordered = TRUE)
+  ggplot(data = ggdata, aes(x=(Data),y=as.numeric(as.character(td_est)),colour=(rr))) +
+    geom_boxplot(show.legend = F)+
+    facet_grid( Model~as.factor(True_td_named)+as.factor(True_tm_named),switch = "x")+
+    geom_hline( aes(yintercept = as.numeric(as.character(True_td)) ))+
+    labs(y = "Estimated Admixture\n Duration")+
+    labs(x = "")+
+    coord_cartesian(ylim = c(0,2500), expand = 0)+
+    scale_y_continuous(breaks = seq(0, 2500, by = 500))+
+      theme(
+      axis.text.x=element_blank(),
+      axis.ticks.x=element_blank(),
+      strip.background.x = element_blank(),
+      strip.text.x = element_text(size = 0),
+      legend.position="none",
+      plot.margin=unit(c(0.2,0.2,-0.5,0.2), "cm")
+      )+
+    scale_color_manual("Recombination",
+                       values = c(col1,col2),
+                       labels = c(rr_1,rr_2))
+  
+}
+ggdata_tm_results <-  ggdata_tm %>% filter(rr!="HapMap/Constant") %>% filter(rr!="HapMap/AAMap")
+ggdata_td_results<-  ggdata_td %>% filter(rr!="HapMap/Constant") %>% filter(rr!="HapMap/AAMap")
+Seg_ald_tm_results <- Plot_tm_flipped(ggdata = ggdata_tm_results,"",rr_1 = "Constant/Constant",rr_2 = "HapMap/HapMap",cbPalette_viridis[1],cbPalette_viridis[12])
+Seg_ald_td_results <- Plot_td_flipped(ggdata = ggdata_td_results,"","Constant/Constant","HapMap/HapMap",cbPalette_viridis[1],cbPalette_viridis[12])
+
+Segments_ALD_Results_flipped <- ggarrange(Seg_ald_td_results,Seg_ald_tm_results,
+                                   ncol = 1, nrow = 2,heights  = c(0.4,0.6),common.legend = T,legend = 'bottom')
+```
+
+```{r figResult2_1_Supplement_flipped,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figResult2_1_Supplement_flipped} Segments, ALD HapMap;constant, HapMap;AAMap"}
+ggdata_tm_supp <-  ggdata_tm %>% filter(rr!="Constant/Constant") %>% filter(rr!="HapMap/HapMap")
+ggdata_td_supp <-  ggdata_td %>% filter(rr!="Constant/Constant") %>% filter(rr!="HapMap/HapMap")
+Seg_ald_tm_supp <- Plot_tm_flipped(ggdata_tm_supp,"","HapMap/AAMap","HapMap/Constant",cbPalette_viridis[9],cbPalette_viridis[3])
+Seg_ald_td_supp <- Plot_td_flipped(ggdata_td_supp,"","HapMap/AAMap","HapMap/Constant",cbPalette_viridis[9],cbPalette_viridis[3])
+
+
+Segments_ALD_supp_flipped <- ggarrange(Seg_ald_td_supp,Seg_ald_tm_supp,
+                                  ncol = 1, nrow = 2,heights  = c(0.4,0.6),common.legend = T,legend = 'bottom')
 ```
 
 ## Figure 2.2 and corresponding supplements
@@ -1032,12 +1029,15 @@ plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Re
     xx <- hist((l),breaks = 500,plot = F)
     data_x <- data.frame(M=xx$mids,dens=log(xx$density))
     data_x <- data_x[!data_x$dens==-Inf,]
-    Fit_Results <- data.frame(x=data_x$M,y=dtexp_norm(data_x$M,tm),fit="SP_true")
+    Fit_Results <- data.frame(x=data_x$M,y=dtlomax_norm(data_x$M,scale=((k)/tm), shape=(k+1)),fit="True")
+    #Fit_Results <- data.frame(x=data_x$M,y=dtexp_norm(data_x$M,tm),fit="SP_true")
     Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtexp_norm(data_x$M,SP_fit[[1]]$par),fit="SP_fit"))
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax_norm(data_x$M,scale=((1/EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=(1/EP_fit[[1]]$par[2])),fit="EP_fit"))
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax_norm(data_x$M,scale=((k)/tm), shape=(k)),fit="EP_true"))
+    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax_norm(data_x$M,scale=((1/EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=(1/EP_fit[[1]]$par[2])+1),fit="EP_fit"))
+    #Fit_Results$fit <- factor(Fit_Results$fit,
+    #                    levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)  } 
     Fit_Results$fit <- factor(Fit_Results$fit,
-                        levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)  } else {
+                        levels = c("SP_fit","True","EP_fit"),ordered = TRUE)  } 
+  else {
     truncation=T
     lower_trunc=0.05/100
     upper_trunc=1.2/100
@@ -1049,14 +1049,17 @@ plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Re
     xx <- hist((l),breaks = 500,plot = F)
     data_x <- data.frame(M=xx$mids,dens=log(xx$density))
     data_x <- data_x[!data_x$dens==-Inf,]
-    Fit_Results <- data.frame(x=data_x$M,y=dtexp(data_x$M,tm ,lower_trunc,upper_trunc),fit="SP_true")
+    Fit_Results <- data.frame(x=data_x$M,y=dtlomax(data_x$M,scale=((k)/tm), shape=(k+1),lower_trunc,upper_trunc),fit="True")
+    #Fit_Results <- data.frame(x=data_x$M,y=dtexp(data_x$M,tm ,lower_trunc,upper_trunc),fit="SP_true")
     Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtexp(data_x$M,SP_fit[[1]]$par ,lower_trunc,upper_trunc),fit="SP_fit"))
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax(data_x$M,scale=((1/EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=(1/EP_fit[[1]]$par[2]),lower_trunc,upper_trunc),fit="EP_fit"))
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax(data_x$M,scale=((k)/tm), shape=(k),lower_trunc,upper_trunc),fit="EP_true"))
+    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax(data_x$M,scale=((1/EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=((1/EP_fit[[1]]$par[2])+1),lower_trunc,upper_trunc),fit="EP_fit"))
+    
+    #Fit_Results$fit <- factor(Fit_Results$fit,
+    #                    levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)  } 
     Fit_Results$fit <- factor(Fit_Results$fit,
-                        levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
+                        levels = c("SP_fit","True","EP_fit"),ordered = TRUE)  } 
 
-                        }
+                        
     data_x$Data <- Data
     data_x$td <- td
     Fit_Results$Data <- Data
@@ -1067,8 +1070,8 @@ plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Re
     geom_line(data=Fit_Results,aes(x = x, y = y,color=fit),size=1.2,show.legend = legend)+
     ylim(min(data_x$dens),max(data_x$dens))+
     scale_color_manual("Fit",
-                       values = c(c(cbPalette_viridis[1],cbPalette_viridis[4],cbPalette_viridis[8],cbPalette_viridis[12])),
-                      labels = c(c("true SP","fitted SP","true EP","fitted EP")))+
+                       values = c(c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[12])),
+                      labels = c(c("fitted SP","True","fitted EP")))+
     theme(legend.position="none",
           plot.margin=unit(margins, "cm"))+
     labs(x = "Genetic distance (M)")+
@@ -1301,7 +1304,7 @@ Extended_Pulse_fixed_fn <- function(Data,affine,tm,k,use_log=F){
   return(fit1_lomax)
 }
 
-plot_ALD_fit <- function(input,lval=0.05,hval=0.8,tm,td,use_log=F,main,legend=F,margins=c(0.25,0.5,0,0.5)){
+plot_ALD_fit <- function(input,lval=0.05,hval=0.5,tm,td,use_log=F,main,legend=F,margins=c(0.25,0.5,0,0.5)){
   tm=tm
   td=td
   k=1/((td/(4*tm))^2)
@@ -1332,13 +1335,14 @@ plot_ALD_fit <- function(input,lval=0.05,hval=0.8,tm,td,use_log=F,main,legend=F,
   data_x <- data_x[complete.cases(data_x),]
   data_x$Data <- "ALD"
   data_x$td <- td
-
-  Fit_Results <- data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(tm,coef(Fit_SP_fixed)[1]))),fit="SP_true")
+  Fit_Results <- data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(tm,k,coef(Fit_EP_fixed)[1]))),fit="True")
+  #Fit_Results <- data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(tm,coef(Fit_SP_fixed)[1]))),fit="SP_true")
   Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(coef(Fit_SP)[1],coef(Fit_SP)[2]))),fit="SP_fit"))
   Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(coef(Fit_EP)[2],coef(Fit_EP)[1],coef(Fit_EP)[3]))),fit="EP_fit" ))
-  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(tm,k,coef(Fit_EP_fixed)[1]))),fit="EP_true"))
+  #Fit_Results$fit <- factor(Fit_Results$fit,
+  #                levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
   Fit_Results$fit <- factor(Fit_Results$fit,
-                  levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
+                  levels = c("SP_fit","True","EP_fit"),ordered = TRUE)
   Fit_Results$Data <- "ALD"
   Fit_Results$td <- td
 
@@ -1347,8 +1351,8 @@ plot_ALD_fit <- function(input,lval=0.05,hval=0.8,tm,td,use_log=F,main,legend=F,
     geom_point(data=data_x,aes(x=M,y=ALD,fill=NULL),color="grey",show.legend = F)+
     geom_line(data=Fit_Results,aes(x = x, y = y,color=fit),size=1.2,show.legend = legend)+
     scale_color_manual("Fit",
-                       values = c(c(cbPalette_viridis[1],cbPalette_viridis[3],cbPalette_viridis[9],cbPalette_viridis[12])),
-                      labels = c(c("true SP","fitted SP","true EP","fitted EP")))+
+                       values = c(c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[12])),
+                      labels = c(c("fitted SP","True","fitted EP")))+
     theme(legend.position="none",
           plot.margin=unit(margins, "cm"))+
     labs(x = "Genetic distance (M)")+
@@ -1385,18 +1389,26 @@ P_fit_SEG <- function(Fit_res,Data_res,legend=F){
     Data_res$Data2 <- factor(Data_res$Data2 ,
                         levels = c("True Segments \ntd = 1","True Segments \ntd = 2000","Inferred Segments \ntd = 1",
                                    "Inferred Segments \ntd = 2000"),ordered = TRUE)
+  Fit_res$fit <- factor(Fit_res$fit ,
+                        levels = c("SP_fit","EP_fit","True"),ordered = TRUE)
   P_fit <- ggplot(data=Fit_res,aes(x = x, y = y,color=as.factor(fit),fill=NULL))+
   geom_point(data=Data_res,aes(x=M,y=dens,fill=NULL),color="grey",show.legend = F)+
-  geom_line(data=Fit_res,aes(x = x, y = y,color=fit),size=1.2,show.legend = legend)+
+  geom_line(data=Fit_res,aes(x = x, y = y,color=fit,linetype=fit),size=1.2,show.legend = legend)+
   facet_grid(vars(as.factor(RR)),vars(as.factor(Data2)))+
   theme(strip.text.y = element_blank(),
         axis.text.x = element_text( size=10, angle=90),
         strip.text.x = element_text(size = 7))+
     ylim(min(Data_res$dens),max(Data_res$dens))+
+    scale_linetype_manual("Fit",
+                        values=c( "solid", "solid","dashed"),
+                        labels = c(c("fitted SP","fitted EP","True")))+
+    scale_size_manual("Fit",
+                    values=c(1, 1.2,1.2),
+                    labels = c(c("fitted SP","fitted EP","True")))+
   scale_color_manual("Fit",
-                     values = c(c(cbPalette_viridis[1],cbPalette_viridis[3],cbPalette_viridis[9],cbPalette_viridis[12])),
-                     labels = c(c("true SP","fitted SP","true EP","fitted EP")))+
-  theme(legend.position="none")+
+                     values = c(c(cbPalette_viridis[6],cbPalette_viridis[12],cbPalette_viridis[1])),
+                     labels = c(c("fitted SP","fitted EP","True")))+
+  #theme(legend.position="none")+
   labs(x = "Genetic distance (M)")+
   labs(y = "log density")
   return(P_fit)
@@ -1409,16 +1421,24 @@ P_fit_ALD <- function(Fit_res,Data_res,legend=T){
                        levels = c("ALD \ntd = 1","ALD \ntd = 2000"),ordered = TRUE)
     Data_res$Data2 <- factor(Data_res$Data2 ,
                         levels = c("ALD \ntd = 1","ALD \ntd = 2000"),ordered = TRUE)
+  Fit_res$fit <- factor(Fit_res$fit ,
+                        levels = c("SP_fit","EP_fit","True"),ordered = TRUE)
   P_fit <- ggplot(data=Fit_res,aes(x = x, y = y,color=fit,fill=NULL))+
   geom_point(data=Data_res,aes(x=M,y=ALD,fill=NULL),color="grey",show.legend = F)+
-  geom_line(data=Fit_res,aes(x = x, y = y,color=fit),size=1.2,show.legend = legend)+
+  geom_line(data=Fit_res,aes(x = x, y = y,color=fit,linetype=fit,size=fit),show.legend = legend)+
   facet_grid(vars(as.factor(RR)),vars(as.factor(Data2)))+
   theme(axis.text.x = element_text(size=10, angle=90),
         strip.text.x = element_text(size = 7))+
+  scale_linetype_manual("Fit",
+                        values=c( "solid", "solid","dashed"),
+                        labels = c(c("fitted SP","fitted EP","True")))+
+  scale_size_manual("Fit",
+                    values=c(1, 1.2,1.2),
+                    labels = c(c("fitted SP","fitted EP","True")))+
   scale_color_manual("Fit",
-                     values = c(c(cbPalette_viridis[1],cbPalette_viridis[3],cbPalette_viridis[9],cbPalette_viridis[12])),
-                     labels = c(c("true SP","fitted SP","true EP","fitted EP")))+
-  theme(legend.position="none")+
+                     values = c(c(cbPalette_viridis[6],cbPalette_viridis[12],cbPalette_viridis[1])),
+                     labels = c(c("fitted SP","fitted EP","True")))+
+  #theme(legend.position="none")+
   labs(x = "Genetic distance (M)")+
   labs(y = "log weighted LD")
   return(P_fit)
@@ -1470,11 +1490,11 @@ ALD_Data_Result$Data2 <- paste(ALD_Data_Result$Data,"\ntd =",ALD_Data_Result$td,
 ALD_Fit_Result <- rbind(ALD_Fit_td_1_res,ALD_Fit_td_2000_res)
 ALD_Fit_Result$Data2 <- paste(ALD_Fit_Result$Data,"\ntd =",ALD_Fit_Result$td,sep = " ") 
 
-P_seg_results <- P_fit_SEG(Seg_Fit_Result,Seg_Data_Result)
-P_ALD_results <- P_fit_ALD(ALD_Fit_Result,ALD_Data_Result)
+P_seg_results <- P_fit_SEG(Seg_Fit_Result,Seg_Data_Result,legend = T)
+P_ALD_results <- P_fit_ALD(ALD_Fit_Result,ALD_Data_Result,legend = T)
 
 P_2_fit_Result <- ggarrange(P_seg_results,P_ALD_results,ncol = 2, nrow = 1,widths = c(0.63,0.37),common.legend = T,legend = 'bottom')
-P_2_fit_Result
+
 ```
 
 
@@ -1530,598 +1550,44 @@ P_seg_sup <- P_fit_SEG(Seg_Fit_Sup,Seg_Data_Sup)
 P_ALD_sup <- P_fit_ALD(ALD_Fit_Sup,ALD_Data_Sup)
 
 P_2_fit_Supplements <- ggarrange(P_seg_sup,P_ALD_sup,ncol = 2, nrow = 1,widths = c(0.63,0.37),common.legend = T,legend = 'bottom')
-P_2_fit_Supplements
-```
-
-```{r eval=F, message=FALSE, echo=FALSE,warning=FALSE}
-source("/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Fit_models.R")
-## Variation in recombinations (HapMap) ##
-AAMap_Map_path="/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Simulations/Recombination_Maps/Scaled_Genetic_AAMap.txt"
-HapMap_Map_path="/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Paper_Scripts/Simulations/Recombination_Maps/Scaled_HapMap.txt"
-AAMap_Map=read.table(AAMap_Map_path,stringsAsFactors = F,header=T,fill = T)
-HapMap_Map=read.table(HapMap_Map_path,stringsAsFactors = F,header=T,fill = T)
-mean_AAMap_rr=(tail(AAMap_Map$Map.cM.,n=1)/tail(AAMap_Map$Position.bp.,n=1))/100
-mean_HapMap_rr=(tail(HapMap_Map$Genetic_Map.cM.,n=1)/tail(HapMap_Map$position,n=1))/100
-# plot of true and inf segment fits
-plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Recomb_Map,tm,td,main,cutoff=T,Data,legend=F,margins=c(0.25,0.5,0,0.5)){
-  tm=tm
-  td=td
-  k=1/((td/(4*tm))^2)
-  # Fitting functions  
-  dtexp <- function(x, rate=1, lower_trunc, upper_trunc){
-    dexp(x, rate, log=T) - logspace.sub(pexp(lower_trunc, rate, lower=F, log=T),pexp(upper_trunc, rate, lower=F, log=T))} 
-  
-  dtexp_norm <- function(x, rate=1){dexp(x, rate, log=T)}  
-  dtlomax <- function(x, scale, shape, lower_trunc, upper_trunc){
-    VGAM::dlomax(x, shape3.q = shape,scale = scale, log=T) -
-      logspace.sub(VGAM::plomax(lower_trunc, scale = scale, shape3.q = shape, lower=F, log=T),VGAM::plomax(upper_trunc, scale = scale, shape3.q = shape, lower=F, log=T))}  
-  dtlomax_norm <- function(x, scale, shape)
-  VGAM::dlomax(x, shape3.q = shape,scale = scale, log=T) 
-  if(cutoff==F){
-    truncation=F
-    lower_trunc=NA
-    upper_trunc=NA
-    Fit_data <- Fit_to_segments(Path_to_Fragment_File,header,recomb_rate,Path_to_Recomb_Map,n_Haploid=100,truncation,lower_trunc,upper_trunc,plot_data = T)
-    l=Fit_data[[3]]$length_cM/100
-    SP_fit=Fit_data[[1]]
-    EP_fit=Fit_data[[2]]
-    xx <- hist((l),breaks = 500,plot = F)
-    data_x <- data.frame(M=xx$mids,dens=log(xx$density))
-    data_x <- data_x[!data_x$dens==-Inf,]
-    Fit_Results <- data.frame(x=data_x$M,y=dtexp_norm(data_x$M,tm),fit="SP_true")
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtexp_norm(data_x$M,SP_fit[[1]]$par),fit="SP_fit"))
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax_norm(data_x$M,scale=((1/EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=(1/EP_fit[[1]]$par[2])),fit="EP_fit"))
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax_norm(data_x$M,scale=((k)/tm), shape=(k)),fit="EP_true"))
-    Fit_Results$fit <- factor(Fit_Results$fit,
-                        levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)  } else {
-    truncation=T
-    lower_trunc=0.05/100
-    upper_trunc=1.2/100
-    Fit_data <- Fit_to_segments(Path_to_Fragment_File,header,recomb_rate,Path_to_Recomb_Map,n_Haploid=100,truncation,lower_trunc*100,upper_trunc*100,plot_data = T)
-    l=Fit_data[[3]]$length_cM/100
-    l=l[l>=lower_trunc & l<= upper_trunc]
-    SP_fit=Fit_data[[1]]
-    EP_fit=Fit_data[[2]]
-    xx <- hist((l),breaks = 500,plot = F)
-    data_x <- data.frame(M=xx$mids,dens=log(xx$density))
-    data_x <- data_x[!data_x$dens==-Inf,]
-    Fit_Results <- data.frame(x=data_x$M,y=dtexp(data_x$M,tm ,lower_trunc,upper_trunc),fit="SP_true")
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtexp(data_x$M,SP_fit[[1]]$par ,lower_trunc,upper_trunc),fit="SP_fit"))
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax(data_x$M,scale=((1/EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=(1/EP_fit[[1]]$par[2]),lower_trunc,upper_trunc),fit="EP_fit"))
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax(data_x$M,scale=((k)/tm), shape=(k),lower_trunc,upper_trunc),fit="EP_true"))
-    Fit_Results$fit <- factor(Fit_Results$fit,
-                        levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
-
-                        }
-    data_x$Data <- Data
-    data_x$td <- td
-    Fit_Results$Data <- Data
-    Fit_Results$td <- td
-    
-  P_fit <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=NULL))+
-    geom_point(data=data_x,aes(x=M,y=dens,fill=NULL),color="grey",show.legend = F)+
-    geom_line(data=Fit_Results,aes(x = x, y = y,color=fit),size=1.2,show.legend = legend)+
-    ylim(min(data_x$dens),max(data_x$dens))+
-    scale_color_manual("Fit",
-                       values = c(c(cbPalette_viridis[1],cbPalette_viridis[3],cbPalette_viridis[9],cbPalette_viridis[12])),
-                      labels = c(c("true SP","fitted SP","true EP","fitted EP")))+
-    theme(legend.position="none",
-          plot.margin=unit(margins, "cm"))+
-    labs(x = "Genetic distance (M)")+
-    labs(y = "log density")+
-    ggtitle(main)
-  return(P_fit)
-  #return(list(data_x,Fit_Results))
-}
-
-True_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Simulation-merged-_Scenario_1__Archaic_Segments_run_0.bed",header = F,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 1,main = "True Segments",Data="True_Segments",margins = c(-0.5,0.5,-0.5,0.5))
-True_var_HapMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 1,main = "",Data="True_Segments",legend=F,margins = c(-0.5,0.5,-0.5,0.5))
-True_var_AAMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 1,main = "",Data="True_Segments",legend=F,margins = c(-0.5,0.5,-0.5,0.5))
-True_var_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_1_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 1,main = "True Segments",Data="True_Segments",margins = c(-0.5,0.5,-0.5,0.5))
-
-
-
-True_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Simulation-merged-_Scenario_7__Archaic_Segments_run_0.bed",header = F,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000,main = "True Segments",Data="True_Segments",margins = c(-0.5,0.5,-0.5,0.5))
-True_var_HapMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_7_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 2000,main = "",Data="True_Segments",legend=T,margins = c(-0.5,0.5,-0.5,0.5))
-True_var_AAMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_7_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 2000,main = "",Data="True_Segments",legend=T,margins = c(-0.5,0.5,-0.5,0.5))
-True_var_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Simulation-merged-_Scenario_7_Recomb__Archaic_Segments_run_0.bed",header = F,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000,main = "True Segments",Data="True_Segments",margins = c(-0.5,0.5,-0.5,0.5))
-
 
 ```
-
-```{r eval=F,message=FALSE, echo=FALSE,warning=FALSE}
-
-Inf_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Inferred_Archaic_Tracts-_Scenario_1_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 1, main = "Inferred Segments",Data="Inferred_Segments",margins = c(-0.5,0.5,-0.5,0.5))
-Inf_var_HapMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 1, main = "",Data="Inferred_Segments",legend=F,margins = c(-0.5,0.5,-0.5,0.5))
-Inf_var_AAMap_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 1, main = "",Data="Inferred_Segments",legend=F,margins = c(-0.5,0.5,-0.5,0.5))
-Inf_var_const_td_1 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_1_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 1, main = "Inferred Segments",Data="Inferred_Segments",margins = c(-0.5,0.5,-0.5,0.5))
-
-
-Inf_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison/ALL_Inferred_Archaic_Tracts-_Scenario_7_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = 1.2e-8,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000, main = "Inferred Segments",Data="Inferred_Segments",margins = c(-0.5,0.5,-0.5,0.5))
-Inf_var_HapMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_7_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = NULL,Path_to_Recomb_Map = HapMap_Map_path,tm = 1500,td = 2000, main = "",Data="Inferred_Segments",legend=T,margins = c(-0.5,0.5,-0.5,0.5))
-Inf_var_AAMap_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_7_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = NULL,Path_to_Recomb_Map = AAMap_Map_path,tm = 1500,td = 2000, main = "",Data="Inferred_Segments",legend=T,margins = c(-0.5,0.5,-0.5,0.5))
-Inf_var_const_td_2000 <- plot_segment_fit(Path_to_Fragment_File = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map/ALL_Inferred_Archaic_Tracts-_Scenario_7_Recomb_-run0_decoded_cutoff_0.9.txt",header = T,recomb_rate = mean_HapMap_rr,Path_to_Recomb_Map = NULL,tm = 1500,td = 2000, main = "Inferred Segmentst",Data="Inferred_Segments",margins = c(-0.5,0.5,-0.5,0.5))
-
-
-
-
-
-```
-
-```{r eval=F, message=FALSE, echo=FALSE,warning=FALSE}
-
-
-# plot of ALD fits
-Get_points <- function(input,lval,hval,log){
-  # Read input file
-  data <- read.table(input, header = F)
-  
-  
-  # set dist and wcorr
-  col=2
-  dist <- data[,1]
-  wcorr <- data[,col]
-  ndist <- length(dist)  ## number of rows in dataset
-  lval=lval
-  hval=hval
-  
-  # check x lower value and y lower value
-  data.sub <- data
-  if ((lval > dist[1]) || (hval < dist[ndist])) {
-    data.sub <- subset(data, ((dist <= hval) & (dist >= lval)))
-  } 
-  dist <- data.sub[,1]		# updated x values
-  wcorr <- data.sub[,col]		# updated y values
-  if(log==T){
-    xx <- cbind(dist,log(wcorr))
-    xx <- xx[complete.cases(xx),]
-    wcorr <- xx[,2]
-    wcorr <-c(wcorr,rep(NA,length(data.sub[,1])-length(wcorr)))
-    dist <- xx[,1]
-    dist <-c(dist,rep(NA,length(data.sub[,1])-length(dist)))
-  }
-  result_table <- data.frame(dist,wcorr)
-  result_table <- result_table[complete.cases(result_table),]
-  return(result_table)
-}
-
-Simple_Pulse_fn <- function(Data,affine,use_log=F){
-  xx=Data
-  
-
-  
-  if(use_log==T) {
-    xx$wcorr <- log(xx$wcorr)
-    xx <- xx[complete.cases(xx),]
-    dist=xx$dist
-    wcorr=xx$wcorr
-    
-    fm1_exp <- function(x) log(x[2])  -((dist/100)*x[1])
-    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
-    fm3_exp = optim(c(2,2), fm2_exp)
-    
-    par1_exp <- fm3_exp$par
-    names(par1_exp) <- c("tm", "A")
-    fit1_exp <- nls(wcorr ~ log(A) -((dist/100)*tm), start=par1_exp, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
-  } else {
-    
-    dist=xx$dist
-    wcorr=xx$wcorr
-    #Fitting an Exponential
-  
-    fm1_exp <- function(x) x[2]*exp(-(dist/100)*x[1])+x[3]
-    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
-    fm3_exp <- DEoptim(fm2_exp, lower=c(1,1e-6,-1), upper=c( 5000,1,1), control=list(trace=FALSE))
-    
-    par1_exp <- fm3_exp$optim$bestmem
-    # parameters for y ~ Ae-mt
-    names(par1_exp) <- c( "tm","A","c")
-    
-    fit1_exp <- nls(wcorr ~ (A*exp(-(dist/100)*tm)+c), start=par1_exp, control=list(maxiter=10000, warnOnly=TRUE)) 
-  }
-
-  return(fit1_exp)
-}
-
-Simple_Pulse_fixed_fn <- function(Data,affine,tm,use_log=F){
-  xx=Data
-  
-
-  
-  if(use_log==T) {
-    xx$wcorr <- log(xx$wcorr)
-    xx <- xx[complete.cases(xx),]
-    dist=xx$dist
-    wcorr=xx$wcorr
-    
-    fm1_exp <- function(x) log(x[1])  -((dist/100)*tm)
-    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
-    fm3_exp = optim(c(2), fm2_exp)
-    
-    par1_exp <- fm3_exp$par
-    names(par1_exp) <- c("A")
-    fit1_exp <- nls(wcorr ~ log(A) -((dist/100)*tm), start=par1_exp, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
-  } else {
-    
-    dist=xx$dist
-    wcorr=xx$wcorr
-    #Fitting an Exponential
-  
-    fm1_exp <- function(x) x[1]*exp(-(dist/100)*tm)+x[2]
-    fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
-    fm3_exp <- DEoptim(fm2_exp, lower=c(1e-6,-1), upper=c( 1,1), control=list(trace=FALSE))
-    
-    par1_exp <- fm3_exp$optim$bestmem
-    # parameters for y ~ Ae-mt
-    names(par1_exp) <- c( "A","c")
-    
-    fit1_exp <- nls(wcorr ~ (A*exp(-(dist/100)*tm)+c), start=par1_exp, control=list(maxiter=10000, warnOnly=TRUE)) 
-  }
-
-  return(fit1_exp)
-}
-
-Extended_Pulse_fn <- function(Data,affine,use_log=F){
-  xx=Data
-  
-  dist=xx$dist
-  wcorr=xx$wcorr
-
-  if(use_log==F) {
-    fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + (  (x[2] / x[1])*(dist/100) )))^(x[1])
-    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
-    fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1,100,0,-1), upper=c(100,10000,2,1), control=list(trace=FALSE))
-    
-    par1_lomax <- fm3_DEoptim$optim$bestmem
-    par1_lomax <- c(par1_lomax[1],par1_lomax[2],par1_lomax[3],par1_lomax[4])
-    names(par1_lomax) <- c("k","tm","A","c")
-    fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ k) *(dist/100)) ))^(k), start=par1_lomax, algorithm="port", 
-                      lower=c(1,100,0,-1), upper=c(100,10000,2,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
-  }
-
-  
-  if(use_log==T) {
-    xx$wcorr <- log(xx$wcorr)
-    xx <- xx[complete.cases(xx),]
-    dist=xx$dist
-    wcorr=xx$wcorr
-    fm1_lomax <- function(x) log(x[3]) + (x[2]) * -log(1+ (((1/x[2])*(dist/100))*x[1]))
-    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
-    fm3_optim <- optim(c(2,2,2), fm2_lomax_k)
-    
-    par1_lomax <- fm3_optim$par
-    par1_lomax <- c(par1_lomax[1],par1_lomax[2],par1_lomax[3])
-    names(par1_lomax) <- c("k","tm","A")
-    fit1_lomax <- nls(wcorr ~ log(A) + k* -log(1 + (((1/k)*(dist/100))*tm)), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
-  }
-
-      
-  return(fit1_lomax)
-}
-
-Extended_Pulse_fixed_fn <- function(Data,affine,tm,k,use_log=F){
-  xx=Data
-  
-  dist=xx$dist
-  wcorr=xx$wcorr
-
-  if(use_log==F) {
-    fm1_lomax <- function(x) x[2] + x[1]* (1/(1 + (  tm / k)*(dist/100) ))^(k)
-    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
-    fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(0,-1), upper=c(2,1), control=list(trace=FALSE))
-    
-    par1_lomax <- fm3_DEoptim$optim$bestmem
-    par1_lomax <- c(par1_lomax[1],par1_lomax[2])
-    names(par1_lomax) <- c("A","c")
-    fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ k) *(dist/100)) ))^(k), start=par1_lomax, algorithm="port", 
-                      lower=c(1,100,0,-1), upper=c(2,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
-  }
-
-  
-  if(use_log==T) {
-    xx$wcorr <- log(xx$wcorr)
-    xx <- xx[complete.cases(xx),]
-    dist=xx$dist
-    wcorr=xx$wcorr
-    fm1_lomax <- function(x) log(x[1]) + (k) * -log(1+ (((1/k)*(dist/100))*tm))
-    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
-    fm3_optim <- optim(c(2), fm2_lomax_k)
-    
-    par1_lomax <- fm3_optim$par
-    par1_lomax <- c(par1_lomax[1])
-    names(par1_lomax) <- c("A")
-    fit1_lomax <- nls(wcorr ~ log(A) + k* -log(1 + (((1/k)*(dist/100))*tm)), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
-  }
-
-      
-  return(fit1_lomax)
-}
-
-plot_ALD_fit <- function(input,lval=0.05,hval=0.8,tm,td,use_log=F,main,legend=F,margins=c(0.25,0.5,0,0.5)){
-  tm=tm
-  td=td
-  k=1/((td/(4*tm))^2)
-  # Fitting functions
-  
-  SP_tail <- function(dist,x) x[1]*exp(-(dist)*x[2])+x[3]
-  
-  EP_tail <- function(dist,x) x[4] + x[3]* (1/(1 + (  (x[2] / x[1])*(dist) )))^(x[1])
-  
-  SP_tail_log <- function(dist,x) log(x[2])  -(dist*x[1])
-  EP_tail_log <- function(dist,x) log(x[3]) + (x[2]) * -log(1+ (((1/x[2])*(dist))*x[1]))
-  
-  ALD_x <- Get_points(input,lval,hval,log = F)
-
-  Fit_SP <- Simple_Pulse_fn(ALD_x,affine = T,use_log = use_log)
-  
-  Fit_EP <-  Extended_Pulse_fn(ALD_x,affine=T,use_log = use_log)
-  
-  Fit_SP_fixed <- Simple_Pulse_fixed_fn(ALD_x,affine = T,tm,use_log = use_log)
-  
-  Fit_EP_fixed <-  Extended_Pulse_fixed_fn(ALD_x,affine=T,tm,k,use_log = use_log)
-  
-  #plot(ALD_x$dist/100,log(ALD_x$wcorr))
-  #lines(ALD_x$dist/100,log(SP_tail(ALD_x$dist/100,c(coef(Fit_SP)[1],coef(Fit_SP)[2],coef(Fit_SP)[3]))),col="red")
-  #lines(ALD_x$dist/100,(SP_tail_log(ALD_x$dist/100,c(coef(Fit_SP)[2],coef(Fit_SP)[1]))),col="red")
-  
-  data_x <- data.frame(M=ALD_x$dist/100,ALD=log(ALD_x$wcorr))
-  data_x <- data_x[complete.cases(data_x),]
-  data_x$Data <- "ALD"
-  data_x$td <- td
-
-  Fit_Results <- data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(tm,coef(Fit_SP_fixed)[1]))),fit="SP_true")
-  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(coef(Fit_SP)[1],coef(Fit_SP)[2]))),fit="SP_fit"))
-  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(coef(Fit_EP)[2],coef(Fit_EP)[1],coef(Fit_EP)[3]))),fit="EP_fit" ))
-  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(tm,k,coef(Fit_EP_fixed)[1]))),fit="EP_true"))
-  Fit_Results$fit <- factor(Fit_Results$fit,
-                  levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
-  Fit_Results$Data <- "ALD"
-  Fit_Results$td <- td
-
-  
-  P_fit <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=NULL))+
-    geom_point(data=data_x,aes(x=M,y=ALD,fill=NULL),color="grey",show.legend = F)+
-    geom_line(data=Fit_Results,aes(x = x, y = y,color=fit),size=1.2,show.legend = legend)+
-    scale_color_manual("Fit",
-                       values = c(c(cbPalette_viridis[1],cbPalette_viridis[3],cbPalette_viridis[9],cbPalette_viridis[12])),
-                      labels = c(c("true SP","fitted SP","true EP","fitted EP")))+
-    theme(legend.position="none",
-          plot.margin=unit(margins, "cm"))+
-    labs(x = "Genetic distance (M)")+
-    labs(y = "log weighted LD")+
-    ggtitle(main)
-  return(P_fit)
-  #return(list(data_x,Fit_Results))
-  
-}
-
-ALD_const_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_ALD/Raw_ALDER_output-_Scenario_1_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 1,use_log=F,main = "ALD",margins = c(-0.5,0.5,-0.5,0.5))
-ALD_var_const_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 1,use_log=T,main = "ALD",margins = c(-0.5,0.5,-0.5,0.5))
-ALD_var_AAMap_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccAAMap_correction.txt",tm = 1500,td = 1,use_log=T,main = "",legend=F,margins = c(-0.5,0.5,-0.5,0.5))
-ALD_var_HapMap_td_1 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_1_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccHapMap_correction.txt",tm = 1500,td = 1,use_log=F,main = "",legend=F,margins = c(-0.5,0.5,-0.5,0.5))
-
-
-
-ALD_const_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_ALD/Raw_ALDER_output-_Scenario_7_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 2000,use_log=F,main = "ALD",margins = c(-0.5,0.5,-0.5,0.5))
-ALD_var_const_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccNo_correction.txt",tm = 1500,td = 2000,use_log=T,main = "ALD",margins = c(-0.5,0.5,-0.5,0.5))
-ALD_var_AAMap_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccAAMap_correction.txt",tm = 1500,td = 2000,use_log=F,main = "ALD:\nHapMap;AAMap",legend=T,margins = c(-0.5,0.5,-0.5,0.5))
-ALD_var_HapMap_td_2000 <- plot_ALD_fit(input = "/home/leonardo_iasi/Desktop/Neandertal_Human_Introgression_Project/Paper/Segment_ALD_comparison_recombination_map_ALD/Raw_ALDER_output-_Scenario_7_Recomb_-run0-GF_Model_IV-ascertainmentI-downsampled100-ReccHapMap_correction.txt",tm = 1500,td = 2000,use_log=F,main = "",legend=T,margins = c(-0.5,0.5,-0.5,0.5))
-
-
-```
-
-
-```{r eval=F,figResult2_2_alt1, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=9,fig.cap="\\label{fig:figResult2_2_alt1} Fit to data Segments, ALD constant;constant, HapMap;HapMap"}
-# Alternative
-P_seg_td_1_results <- P_fit_SEG(Segment_Fit_res_td_1,Segment_Data_res_td_1)
-P_seg_td_2000_results <- P_fit_SEG(Segment_Fit_res_td_2000,Segment_Data_res_td_2000,legend = T)
-P_ALD_td_1_results <- P_fit_ALD(ALD_Fit_td_1_res,ALD_Data_td_1_res)
-P_ALD_td_2000_results <- P_fit_ALD(ALD_Fit_td_2000_res,ALD_Data_td_2000_res,legend = T)
-P_Result_2_td_1 <- ggarrange(P_seg_td_1_results,P_ALD_td_1_results,ncol = 2, nrow = 1,widths = c(0.63,0.37),common.legend = T,legend = 'bottom')
-P_Result_2_td_2000 <- ggarrange(P_seg_td_2000_results,P_ALD_td_2000_results,ncol = 2, nrow = 1,widths = c(0.63,0.37),common.legend = T,legend = 'bottom')
-
-P_1 <- annotate_figure(P_Result_2_td_1,
-               top = text_grob("Duration 1 generation",face = "bold", size = 14)
-
-)
-
-P_2 <- annotate_figure(P_Result_2_td_2000,
-               top = text_grob("Duration 2000 generation",face = "bold", size = 14)
-
-)
-
-ggarrange(P_1,P_2,ncol=2,nrow = 1)
-x = c(0, 0.5, 1)
-y = c(0.5, 0.5, 0.5)
-id = c(1,1,1)
-grid.polygon(x,y,id)
-```
-
-```{r eval=F,figResult2_2_alt2, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=9,fig.cap="\\label{fig:figResult2_2_alt2} Fit to data Segments, ALD constant;constant, HapMap;HapMap"}
-
-Td_1_constant_result <- ggarrange(True_const_td_1,Inf_const_td_1,ALD_const_td_1,labels = c("A","B","C"),
-          ncol = 3, nrow = 1,common.legend = F,legend = 'bottom')
-
-Td_1_constant_result_an <- annotate_figure(Td_1_constant_result,
-               left = text_grob("Constant/Constant", face = "bold", rot = 90)
-
-)
-
-Td_1_HaMap_result <- ggarrange(True_var_HapMap_td_1,Inf_var_HapMap_td_1,ALD_var_HapMap_td_1,labels = c("D","E","F"),
-          ncol = 3, nrow = 1,common.legend = T,legend = 'bottom')
-
-Td_1_HaMap_result_an <- annotate_figure(Td_1_HaMap_result,
-               left = text_grob("HapMap/HapMap", face = "bold", rot = 90)
-
-)
-
-Td_2000_constant_result <- ggarrange(True_const_td_2000,Inf_const_td_2000,ALD_const_td_2000,labels = c("A","B","C"),
-          ncol = 3, nrow = 1,common.legend = F,legend = 'bottom')
-
-Td_2000_constant_result_an <- annotate_figure(Td_2000_constant_result,
-               left = text_grob("Constant/Constant", face = "bold", rot = 90)
-
-)
-
-
-Td_2000_HaMap_result <- ggarrange(True_var_HapMap_td_2000,Inf_var_HapMap_td_2000,ALD_var_HapMap_td_2000,labels = c("D","E","F"),
-          ncol = 3, nrow = 1,common.legend = T,legend = 'bottom')
-
-Td_2000_HaMap_result_an <- annotate_figure(Td_2000_HaMap_result,
-               left = text_grob("HapMap/HapMap", face = "bold", rot = 90)
-
-)
-
-Td_1_result <- ggarrange(Td_1_constant_result_an,Td_1_HaMap_result_an,ncol = 1, nrow = 2)
-Td_2000_result <- ggarrange(Td_2000_constant_result_an,Td_2000_HaMap_result_an,ncol = 1, nrow = 2)
-
-P_1 <- annotate_figure(Td_1_result,
-               top = text_grob("Duration 1 generation",face = "bold", size = 14)
-
-)
-
-P_2 <- annotate_figure(Td_2000_result,
-               top = text_grob("Duration 2000 generation",face = "bold", size = 14)
-
-)
-
-ggarrange(P_1,P_2,ncol=1,nrow = 2)
-
-x = c(0, 0.5, 1)
-y = c(0.5, 0.5, 0.5)
-id = c(1,1,1)
-grid.polygon(x,y,id)
-
-
-```
-
-```{r eval=F,figResult2_2_Supplements_alt, message=FALSE, echo=FALSE,warning=FALSE,figR3_3.pos="H",fig.width=7,fig.height=9,fig.cap="\\label{fig:figResult2_2_Supplements_alt} Fit to data Segments, ALD HapMap;constant, HapMap;AAMap"}
-
-
-Td_1_constant_sup <- ggarrange(True_var_const_td_1,Inf_var_const_td_1,ALD_var_const_td_1,labels = c("A","B","C"),
-          ncol = 3, nrow = 1,common.legend = F,legend = 'bottom')
-
-Td_1_constant_sup_an <- annotate_figure(Td_1_constant_result,
-               left = text_grob("HapMap/Constant", face = "bold", rot = 90)
-
-)
-
-Td_1_AAMap_result <- ggarrange(True_var_AAMap_td_1,Inf_var_AAMap_td_1,ALD_var_AAMap_td_1,labels = c("D","E","F"),
-          ncol = 3, nrow = 1,common.legend = T,legend = 'bottom')
-
-Td_1_AAMap_result_an <- annotate_figure(Td_1_HaMap_result,
-               left = text_grob("HapMap/AAMap", face = "bold", rot = 90)
-
-)
-
-Td_2000_constant_sup <- ggarrange(True_var_const_td_2000,Inf_var_const_td_2000,ALD_var_const_td_2000,labels = c("A","B","C"),
-          ncol = 3, nrow = 1,common.legend = F,legend = 'bottom')
-
-Td_2000_constant_sup_an <- annotate_figure(Td_2000_constant_result,
-               left = text_grob("HapMap/Constant", face = "bold", rot = 90)
-
-)
-
-
-Td_2000_AAMap_sup <- ggarrange(True_var_AAMap_td_2000,Inf_var_AAMap_td_2000,ALD_var_AAMap_td_2000,labels = c("D","E","F"),
-          ncol = 3, nrow = 1,common.legend = T,legend = 'bottom')
-
-Td_2000_AAMap_sup_an <- annotate_figure(Td_2000_HaMap_result,
-               left = text_grob("HapMap/AAMap", face = "bold", rot = 90)
-
-)
-
-Td_1_sup <- ggarrange(Td_1_constant_sup_an,Td_2000_AAMap_sup_an,ncol = 1, nrow = 2)
-Td_2000_sup <- ggarrange(Td_2000_constant_sup_an,Td_2000_AAMap_sup_an,ncol = 1, nrow = 2)
-
-P_1_sup <- annotate_figure(Td_1_sup,
-               top = text_grob("Duration 1 generation",face = "bold", size = 14)
-
-)
-
-P_2_sup <- annotate_figure(Td_2000_sup,
-               top = text_grob("Duration 2000 generation",face = "bold", size = 14)
-
-)
-
-ggarrange(P_1_sup,P_2_sup,ncol=1,nrow = 2)
-
-x = c(0, 0.5, 1)
-y = c(0.5, 0.5, 0.5)
-id = c(1,1,1)
-grid.polygon(x,y,id)
-
-```
-
-
 
 
 ## Figure 2.3 and corresponding supplements
+
 ```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE}
 
+Plot.data_ALD_red <- Plot.data_ALD %>% filter(True_GF_length!= 100 & True_GF_length!= 200 & True_GF_length!= 400 & True_GF_length!= 800)
 
-AIC_comp=data.frame(AIC_SP=Plot.data_ALD$AIC_SP,AIC_EP=Plot.data_ALD$AIC_EP,
-                      GF_duration=Plot.data_ALD$True_GF_length,Name=Plot.data_ALD$Name)
-AIC_comp$AIC_SP_rounded <- ifelse(AIC_comp$AIC_SP>=20,20,AIC_comp$AIC_SP)
-AIC_comp$Name <- factor(AIC_comp$Name,
+Plot.data_ALD_red$Name <- factor(Plot.data_ALD_red$Name,
                     levels = c("Constant/Constant","HapMap/Constant","HapMap/AAMap","HapMap/HapMap"),ordered = TRUE)
-AIC_comp$Data <- "ALD"
-AIC_comp_results <- AIC_comp %>% filter(Name!="HapMap/Constant") %>% filter(Name!="HapMap/AAMap")
-
-P_AIC_results <- ggplot(AIC_comp_results, aes(x=as.factor(Name), y=AIC_SP_rounded,color=as.factor(Name))) + 
-                geom_boxplot()+
-                facet_grid(Data~GF_duration,switch = "x")+
-                labs(y = "AIC")+
-                labs(x = "")+
-                theme(
-                  axis.ticks.y=element_blank(),
-                  axis.ticks.x=element_blank(),
-                  axis.text.x=element_blank(),
-                  legend.position="none",
-                  plot.margin=unit(c(0.25,0.5,0,0.5), "cm"))+
-                coord_cartesian(expand = 0)+
-                scale_color_manual("Admixture duration",
-                                   values = c(cbPalette_viridis[1],cbPalette_viridis[12]),
-                                   labels = c("Constant/Constant","HapMap/HapMap"))
-
-AIC_comp_supplements <- AIC_comp %>% filter(Name!="Constant") %>% filter(Name!="HapMap_HapMap_correction")
-P_AIC_supplements <- ggplot(AIC_comp_supplements, aes(x=as.factor(Name), y=AIC_SP_rounded,color=as.factor(Name))) + 
-                geom_boxplot()+
-                facet_grid(Data~GF_duration,switch = "x")+
-                labs(y = "AIC")+
-                labs(x = "")+
-                theme(
-                  axis.ticks.y=element_blank(),
-                  axis.ticks.x=element_blank(),
-                  axis.text.x=element_blank(),
-                  legend.position="none",
-                  plot.margin=unit(c(0.25,0.5,0,0.5), "cm"))+
-                coord_cartesian(expand = 0)+
-                scale_color_manual("Admixture duration",
-                                   values = c(cbPalette_viridis[3],cbPalette_viridis[9]),
-                                   labels = c("HapMap/Constant","HapMap/AAMap"))
-
-
-
-F_Test_comp=data.frame(F_Test_p=Plot.data_ALD$F_Test,
-                      GF_duration=Plot.data_ALD$True_GF_length,Name=Plot.data_ALD$Name)
-#F_Test_comp$F_Test_p_rounded <- ifelse(F_Test_comp$F_Test_p>=0.1,0.1,F_Test_comp$F_Test_p)
-F_Test_comp$F_Test_p_rounded <- F_Test_comp$F_Test_p
-F_Test_comp$Name <- factor(F_Test_comp$Name,
+RSS_diff_norm <- Plot.data_ALD_red %>% group_by(Name) %>% group_map(~ (0-(log(.x$RSS_SP)-log(.x$RSS_EP))/sd((log(.x$RSS_SP)-log(.x$RSS_EP))) ) )
+RSS_comp=data.frame(RSS_diff=log(Plot.data_ALD_red$RSS_SP)-log(Plot.data_ALD_red$RSS_EP),
+                    RSS_diff_norm=unlist(RSS_diff_norm),
+                      GF_duration=Plot.data_ALD_red$True_GF_length,Name=Plot.data_ALD_red$Name)
+RSS_comp$Name <- factor(RSS_comp$Name,
                     levels = c("Constant/Constant","HapMap/Constant","HapMap/AAMap","HapMap/HapMap"),ordered = TRUE)
-F_Test_comp$Data <- "ALD"
-F_Test_comp_results <- F_Test_comp %>% filter(Name!="HapMap/Constant") %>% filter(Name!="HapMap/AAMap")
+RSS_comp$Data <- "ALD"
+RSS_comp$True_td_named <- factor(RSS_comp$GF_duration,
+                       levels = c("1"  ,  "1000" ,"1500" ,"2000"),labels = c("td = 1"  ,  "td = 1000" ,"td = 1500" ,"td = 2000"),ordered = TRUE)
+RSS_comp_results <- RSS_comp %>% filter(Name!="HapMap/Constant") %>% filter(Name!="HapMap/AAMap")
 
-P_F_Test_results <- ggplot(F_Test_comp_results, aes(x=as.factor(Name), y=(F_Test_p_rounded),color=as.factor(Name))) + 
+RSS_comp_results$True_td_named <- factor(RSS_comp_results$GF_duration,
+                       levels = c("1"  ,  "1000" ,"1500" ,"2000"),labels = c("td = 1"  ,  "td = 1000" ,"td = 1500" ,"td = 2000"),ordered = TRUE)
+
+P_RSS_comp_results <- ggplot(RSS_comp_results, aes(x=as.factor(Name), y=(RSS_diff_norm),color=as.factor(Name))) + 
                 geom_boxplot()+
-                facet_grid(Data~GF_duration,switch = "x")+
-                geom_hline( aes(yintercept = 0.05 ))+
-                labs(y = "p-value")+
+                facet_grid(Data~True_td_named,switch = "x")+
+                geom_hline( aes(yintercept = 0 ))+
+                labs(y = "Standardized\nlog RSS Difference ")+
                 labs(x = "Admixture Duration")+
+                ylim(-1,1)+
                 theme(
                   axis.ticks.y=element_blank(),
                   axis.ticks.x=element_blank(),
                   axis.text.x=element_blank(),
+                  strip.text.x = element_text(size = 9),
                   legend.position="none",
                   plot.margin=unit(c(0.25,0.5,0,0.5), "cm"))+
                 coord_cartesian(expand = 0)+
@@ -2130,75 +1596,30 @@ P_F_Test_results <- ggplot(F_Test_comp_results, aes(x=as.factor(Name), y=(F_Test
                                    labels = c("Constant/Constant","HapMap/HapMap"))
 
 
-P_F_Test_results_together <- ggplot(F_Test_comp_results, aes(x=as.factor(Name), y=(F_Test_p_rounded),color=as.factor(Name))) + 
+
+
+
+RSS_comp_supplements <- RSS_comp %>% filter(Name!="Constant/Constant") %>% filter(Name!="HapMap/HapMap")
+P_RSS_comp_supplements <- ggplot(RSS_comp_supplements, aes(x=as.factor(Name), y=(RSS_diff_norm),color=as.factor(Name))) + 
                 geom_boxplot()+
-                facet_grid(Data~GF_duration,switch = "x")+
-                geom_hline( aes(yintercept = 0.05 ))+
-                labs(y = "p-value")+
+                facet_grid(Data~True_td_named,switch = "x")+
+                geom_hline( aes(yintercept = 0 ))+
+                labs(y = "Standardized\nlog RSS Difference ")+
                 labs(x = "Admixture Duration")+
+                #ylim(-1,1)+
                 theme(
                   axis.ticks.y=element_blank(),
                   axis.ticks.x=element_blank(),
                   axis.text.x=element_blank(),
-                  legend.position="none",
-                  plot.margin=unit(c(0.25,0,0,0.5), "cm"))+
-                coord_cartesian(expand = 0)+
-                scale_color_manual("Recombination",
-                                   values = c(cbPalette_viridis[3],cbPalette_viridis[9]),
-                                   labels = c("Constant/Constant","HapMap/HapMap"),
-                                   guide = guide_legend(direction = "vertical", title.position = "left",
-                                                        title.theme = element_text(angle = 90,size=8), title.hjust = 0.5, title.vjust = 0.5,
-                                         label.position="bottom", label.hjust = 0.5, label.vjust = 0.5,
-                                         label.theme = element_text(angle = 90,size=8),
-                                         keywidth = 1,keyheight = 1))
-
-
-
-F_Test_comp_supplements <- F_Test_comp %>% filter(Name!="Constant/Constant") %>% filter(Name!="HapMap/HapMap")
-P_F_Test_supplements <- ggplot(F_Test_comp_supplements, aes(x=as.factor(Name), y=(F_Test_p_rounded),color=as.factor(Name))) + 
-                geom_boxplot()+
-                facet_grid(Data~GF_duration,switch = "x")+
-                geom_hline( aes(yintercept = 0.05 ))+
-                labs(y = "p-value")+
-                labs(x = "Admixture Duration")+
-                theme(
-                  axis.ticks.y=element_blank(),
-                  axis.ticks.x=element_blank(),
-                  axis.text.x=element_blank(),
+                  strip.text.x = element_text(size = 9),
                   legend.position="none",
                   plot.margin=unit(c(0.25,0.5,0,0.5), "cm"))+
                 coord_cartesian(expand = 0)+
                 scale_color_manual("Recombination",
                                    values = c(cbPalette_viridis[3],cbPalette_viridis[9]),
                                    labels = c("HapMap/Constant","HapMap/AAMap"))
-
-
-P_F_Test_supplements_together <- ggplot(F_Test_comp_supplements, aes(x=as.factor(Name), y=(F_Test_p_rounded),color=as.factor(Name))) + 
-                geom_boxplot()+
-                facet_grid(Data~GF_duration,switch = "x")+
-                geom_hline( aes(yintercept = 0.05 ))+
-                labs(y = "p-value")+
-                labs(x = "Admixture Duration")+
-                theme(
-                  axis.ticks.y=element_blank(),
-                  axis.ticks.x=element_blank(),
-                  axis.text.x=element_blank(),
-                  legend.position="none",
-                  plot.margin=unit(c(0.25,0,0,0.5), "cm"))+
-                coord_cartesian(expand = 0)+
-                scale_color_manual("Recombination",
-                                   values = c(cbPalette_viridis[3],cbPalette_viridis[9]),
-                                   labels = c("HapMap/Constant","HapMap/AAMap"),
-                                   guide = guide_legend(direction = "vertical", title.position = "left",
-                                                        title.theme = element_text(angle = 90,size=8), title.hjust = 0.5, title.vjust = 0.5,
-                                         label.position="bottom", label.hjust = 0.5, label.vjust = 0.5,
-                                         label.theme = element_text(angle = 90,size=8),
-                                         keywidth = 1,keyheight = 1))
 
 ```
-
-
-
 
 ```{r eval=T,figResult2_3, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult2_3} "}
 
@@ -2209,19 +1630,22 @@ Plot_LRT<- function(Data,main,recomb_levels,recomb_lables,col1,col2){
                       levels = recomb_levels,ordered = TRUE)
   Data$Data <- factor(Data$Data,
                       levels = c("True Segments","Inferred Segments"),ordered = TRUE)
+  Data$True_td_named <- factor(Data$td,
+                       levels = c("1"  ,  "1000" ,"1500" ,"2000"),labels = c("td = 1"  ,  "td = 1000" ,"td = 1500" ,"td = 2000"),ordered = TRUE)
   ggplot(Data,aes(x=as.factor(recomb),y=LRT,color=as.factor(recomb)))+
-    geom_boxplot()+
-    facet_grid(Data~as.factor(td),switch = "x")+
+    geom_boxplot(show.legend = T)+
+    facet_grid(Data~as.factor(True_td_named),switch = "x")+
     geom_hline( aes(yintercept = 2.61434 ))+
     ggtitle(main)+
     theme(strip.text.x = element_blank(),
       axis.text.x=element_blank(),
       axis.ticks.x=element_blank(),
-      legend.position="none",
+      #legend.position="none",
+      legend.position = "top",
       plot.margin=unit(c(-0.5,0.5,-0.5,0.5), "cm"))+
     ylim(c(-0.5,10))+
     labs(x = "")+
-    labs(y = "log Likelihood Ratio")+
+    labs(y = "log Likelihood\n Ratio")+
     scale_color_manual("Recombination",
                        values = c(col1,col2),
                        labels = recomb_lables)
@@ -2230,61 +1654,19 @@ Plot_LRT<- function(Data,main,recomb_levels,recomb_lables,col1,col2){
 
 
 True_segments_results <- True_segments %>%  filter(recomb!="varying no correction") %>% filter(recomb!="varying AAMap correction")
+True_segments_results <- True_segments_results %>% filter(td!= 100 & td!= 200 & td!= 400 & td!= 800)
 True_segments_results$Data <- "True Segments"
 Inferred_segments_results <- Inferred_segments %>%  filter(recomb!="varying no correction") %>% filter(recomb!="varying AAMap correction")
+Inferred_segments_results <- Inferred_segments_results %>% filter(td!= 100 & td!= 200 & td!= 400 & td!= 800)
 Inferred_segments_results$Data <- "Inferred Segments"
 
 Segments_LRT_result <- rbind(True_segments_results,Inferred_segments_results)
 
 Plot_LRT_seg_results <- Plot_LRT(Segments_LRT_result,"",c("constant","varying HapMap correction"),c("Constant/Constant","HapMap/HapMap"),cbPalette_viridis[1],cbPalette_viridis[12])
 
-Segment_ALD_Model_comparison_results <- ggarrange(Plot_LRT_seg_results,P_F_Test_results,labels = c("A","B"),
-                                                  nrow=2,ncol=1,heights = c(0.63,0.37),common.legend = T,legend = 'bottom')
-
-Segment_ALD_Model_comparison_results
 
 
 
-```
-
-```{r eval=T,figResult2_2and3, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=7.5,fig.height=4,fig.cap="\\label{fig:figResult2_2and3} "}
-
-Plot_LRT_together<- function(Data,main,recomb_levels,recomb_lables,col1,col2){
-  Data$LRT <- ifelse(Data$LRT>=10,10,Data$LRT)
-  Data$recomb <- factor(Data$recomb,
-                      levels = recomb_levels,ordered = TRUE)
-  Data$Data <- factor(Data$Data,
-                      levels = c("True Segments","Inferred Segments"),ordered = TRUE)
-  ggplot(Data,aes(x=as.factor(recomb),y=LRT,color=as.factor(recomb)))+
-    geom_boxplot(legend=t)+
-    facet_grid(Data~as.factor(td),switch = "x")+
-    geom_hline( aes(yintercept = 2.61434 ))+
-    ggtitle(main)+
-    theme(strip.text.x = element_blank(),
-      axis.text.x=element_blank(),
-      axis.ticks.x=element_blank(),
-      #plot.margin=unit(c(-0.5,0.5,-0.5,0.5), "cm"))+
-      plot.margin=unit(c(-0.5,0,-0.5,0.5), "cm"))+
-    ylim(c(-0.5,10))+
-    labs(x = "")+
-    labs(y = "log Likelihood Ratio")+
-    scale_color_manual("Recombination",
-                       values = c(col1,col2),
-                       labels = recomb_lables,
-                       guide = guide_legend(direction = "vertical", title.position = "left",
-                                            title.theme = element_text(angle = 90,size=8), title.hjust = 0.5, title.vjust = 0.5,
-                             label.position="bottom", label.hjust = 0.5, label.vjust = 0.5,
-                             label.theme = element_text(angle = 90,size=8),
-                             keywidth = 1,keyheight = 1))
-
-}
-
-Plot_LRT_seg_results_together <- Plot_LRT_together(Segments_LRT_result,"",c("constant","varying HapMap correction"),c("Constant/Constant","HapMap/HapMap"),cbPalette_viridis[1],cbPalette_viridis[12])
-
-Segment_ALD_Model_comparison_results_together <- ggarrange(Plot_LRT_seg_results_together,P_F_Test_results_together,
-                                                  nrow=2,ncol=1,heights = c(0.63,0.37),common.legend = T,legend = 'right')
-ggarrange(P_2_fit_Result,Segment_ALD_Model_comparison_results_together,labels = c("A","B"),
-                                                  nrow=1,ncol=2,widths = c(0.63,0.37))
 
 ```
 
@@ -2292,69 +1674,86 @@ ggarrange(P_2_fit_Result,Segment_ALD_Model_comparison_results_together,labels = 
 
 
 True_segments_supplements <- True_segments %>% filter(recomb!="constant") %>% filter(recomb!="varying HapMap correction")
+True_segments_supplements <- True_segments_supplements %>% filter(td!= 100 & td!= 200 & td!= 400 & td!= 800)
 True_segments_supplements$Data <- "True Segments"
 Inferred_segments_supplements <- Inferred_segments %>% filter(recomb!="constant") %>% filter(recomb!="varying HapMap correction")
+Inferred_segments <- Inferred_segments %>% filter(td!= 100 & td!= 200 & td!= 400 & td!= 800)
 Inferred_segments_supplements$Data <- "Inferred Segments"
 
 Segments_LRT_supplements <- rbind(True_segments_supplements,Inferred_segments_supplements)
 
 Plot_LRT_seg_sup <- Plot_LRT(Segments_LRT_supplements,"",c("varying no correction","varying AAMap correction"),c("HapMap/Constant","HapMap/AAMap"),cbPalette_viridis[3],cbPalette_viridis[9])
 
-Segment_ALD_Model_comparison_supplements <- ggarrange(Plot_LRT_seg_sup,P_F_Test_supplements,labels = c("A","B"),
-                                                  nrow=2,ncol=1,heights = c(0.63,0.37),common.legend = T,legend = 'bottom')
 
-Segment_ALD_Model_comparison_supplements
 ```
 
-```{r eval=T,figResult2_2and3_supplement, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=7.5,fig.height=4,fig.cap="\\label{fig:figResult2_2and3_supplement} "}
+
+## Figure 2 all together
+
+```{r eval=T,figResult2_all_together, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=7.5,fig.height=12,fig.cap="\\label{fig:figResult2_all_together} "}
+# Fig 2.1 2.2 and 2.3 together Results
+
+library(gridExtra)
+library(grid)
+library(ggplot2)
+library(lattice)
 
 
-True_segments_supplements <- True_segments %>%  filter(recomb!="constant") %>% filter(recomb!="varying HapMap correction")
-True_segments_supplements$Data <- "True Segments"
-Inferred_segments_supplements <- Inferred_segments %>%  filter(recomb!="constant") %>% filter(recomb!="varying HapMap correction")
-Inferred_segments_supplements$Data <- "Inferred Segments"
-
-Segments_LRT_supplements <- rbind(True_segments_supplements,Inferred_segments_supplements)
-
-Plot_LRT_seg_sup_together <- Plot_LRT_together(Segments_LRT_supplements,"",c("constant","varying HapMap correction"),c("HapMap/Constant","HapMap/AAMap"),cbPalette_viridis[3],cbPalette_viridis[9])
-
-Segment_ALD_Model_comparison_supplements_together <- ggarrange(Plot_LRT_seg_sup_together,P_F_Test_supplements_together,nrow=2,ncol=1,heights = c(0.63,0.37),common.legend = T,legend = 'right')
-
-
-ggarrange(P_2_fit_Supplements,Segment_ALD_Model_comparison_supplements_together,labels = c("A","B"),
-                                                  nrow=1,ncol=2,widths = c(0.63,0.37))
-```
-# Icelandic segments
-
-```{r eval=F,fig_fit_to_Icelandig_seg, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:fig_fit_to_Icelandig_seg} "}
-
-## this takes several durations and fits them to the data (i.e. tm is the free parameter k is given by td and the "suggested" tm)
-source("~/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Icelandic_fit_new.R")
-
-Fragments <- read.table("~/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/Archaicfragments_Iceland.txt",header = T)
-
-Recomb_Map <- read.table("~/Desktop/Neandertal_Human_Introgression_Project/Paper/Direct_Trat_length_estimation/RecombmapIceland.txt", header = T)
-
-
-Fragments_Filtered <- Fragments[Fragments$archaic=="Vindija" | Fragments$archaic=="Altai",]
-
-Fragments_cM=Assign_Genetic_distance_linear_fn(Recomb_Map, Fragments_Filtered)
-
-t_d=c(1,100,200,400,800,1000,1500,2000,2500)
-cbPalette_viridis <- viridis(length(t_d),option = "D")
-Extended_pulse_est <- c()
-for(t in t_d){
-  Res_Segments_optim_lomax <- fit_extended_pulse_k_fixed(Fragments_cM,truncation = T,t,lower_trunc = 0.005,upper_trunc = 1.2)
-  Extended_pulse_est_x <-   data.frame(tm=Res_Segments_optim_lomax[[1]]$par)
-  Extended_pulse_est_x$ll <- Res_Segments_optim_lomax[[1]]$value
-  Extended_pulse_est_x$k <- (1/((t/(4*Res_Segments_optim_lomax[[1]]$par))^2))
-  Extended_pulse_est <- rbind(Extended_pulse_est,Extended_pulse_est_x)
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
 }
-Extended_pulse_est$duration <- t_d
 
-Plot_Icelandic_segment_fit(Fragments = Fragments_cM,Fit = Extended_pulse_est,t_d = t_d)
+first_legend <- get_legend(myggplot = Plot_LRT_seg_results)
+
+Plot_LRT_seg_results <- Plot_LRT_seg_results + theme(legend.position="none")
+
+Segments_ALD_Results_flipped <- ggarrange(Seg_ald_td_results,Seg_ald_tm_results,
+                                   ncol = 1, nrow = 2,heights  = c(0.33,0.67),common.legend = T,legend = 'bottom')
+
+Segment_ALD_Model_comparison_results <- ggarrange(Plot_LRT_seg_results,P_RSS_comp_results,
+                                                  nrow=2,ncol=1,heights = c(0.63,0.37))
+P_step_1 <- ggarrange(Segment_ALD_Model_comparison_results, Segments_ALD_Results_flipped, ncol = 2, labels = c("A", "B"))
+P_step_2 <- arrangeGrob(P_step_1,first_legend,heights=c(0.93,0.07))
+ggarrange(P_step_2,P_2_fit_Result, 
+          nrow = 2, 
+          labels = c("","C")                                       
+          )
 
 ```
+
+```{r eval=T,figResult2_all_together_Supplements, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=7.5,fig.height=12,fig.cap="\\label{fig:figResult2_all_together_Supplements} "}
+# Fig 2.1 2.2 and 2.3 together Supplements
+
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
+
+first_legend <- get_legend(myggplot = Plot_LRT_seg_sup)
+
+Plot_LRT_seg_sup <- Plot_LRT_seg_sup + theme(legend.position="none")
+
+
+
+Segment_ALD_Model_comparison_supplements <- ggarrange(Plot_LRT_seg_sup,P_RSS_comp_supplements,
+                                                  nrow=2,ncol=1,heights = c(0.63,0.37))
+
+Segments_ALD_supp_flipped <- ggarrange(Seg_ald_td_supp,Seg_ald_tm_supp,
+                                  ncol = 1, nrow = 2,heights  = c(0.33,0.67),common.legend = T,legend = 'bottom')
+
+P_step_1 <- ggarrange(Segment_ALD_Model_comparison_supplements, Segments_ALD_supp_flipped, ncol = 2, labels = c("A", "B"))
+P_step_2 <- arrangeGrob(P_step_1,first_legend,heights=c(0.93,0.07))
+ggarrange(P_step_2,P_2_fit_Supplements, 
+          nrow = 2, 
+          labels = c("","C")                                       
+          )
+```
+
 
 # Wright-Fisher Model for msprime simulations
 
@@ -2514,7 +1913,7 @@ Constant_sampling_time
 
 We included downsampling of the data to test the stability of the ALD estimates. We donwnsampled the data to 5 % of the original amount by randomly deleting SNPs and re-estimating all mean times on downsampled data for all scenarios. We checkd for the total effect of downsampling and the interaction of downsampling and ascertainment scheme.
 
-```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE, cache=T, results='hide'}
+```{r eval=F, message=FALSE, echo=FALSE,warning=FALSE, cache=T, results='hide'}
 
 ##### GLM for the bais on the admixture dates #####
 
@@ -2553,31 +1952,95 @@ Fig_2_4$Demography <- "0_Complex"
 Fig_2_4$Recomb.rate <- "0_varying"
 #Fig_2_4$GF_model <- ifelse(Fig_2_4$Scenario.name=="_Recombination_Map_and_Complex_Demographies_Scenario_3_","EP","SP")
 Fig_2_4$GF_model <- ifelse(Fig_2_4$Scenario.name=="_Recombination_Map_and_Skov_Demographies_Scenario_3_","EP","SP")
+xdata.M.3 <- rbind(Fig_2_1,Fig_2_2,Fig_2_3,Fig_2_4)
 
-######## model with response being the difference between the estimated Admixture time and the true one #####
-# full model with Ascertainement, min dist, Demographi and recombination rate as predictore but no interactions
+```
+
+```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE, cache=T, results='hide'}
+
+## Bothy fits SP and EP ##
+
+##### GLM for the bais on the admixture dates #####
+
+library(rethinking)
+library(rstan)
+### Read in data ###
+Read_GLM_indata <- function(path){
+  file_l=list.files(path = path,full.names = T)
+  Result.names <- c('A.sp', 'tm_sp', 'c.sp', 'RSS_SP','AIC_SP', 'A.ep', 'tm.ep', 'k.ep','c.ep', 'RSS_EP','AIC_EP', 'F_Test','Scenario.name','GF.Start','GF.End','AS','minDist','downsampling')
+  Result.Table=do.call(rbind, lapply(file_l, function(x) read.table(x,header=F,sep = " ",col.names = Result.names)))
+  return(Result.Table)
+}
+
+
+Fig_2_1 <- Read_GLM_indata("/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_A_revision/Result_SP_and_EP_port/")
+Fig_2_1$Demography <- "0_Simple"
+Fig_2_1$Recomb.rate <- "0_constant"
+Fig_2_1$GF_model <- ifelse(Fig_2_1$Scenario.name=="_Scenario_16_","EP","SP")
+Fig_2_1$Sim_ID <- ifelse(Fig_2_1$Scenario.name=="_Scenario_16_",2,1)
+
+#Fig_2_2 <- Read_GLM_indata("/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_B_complex_revision/Result_classic_Exp/")
+  Fig_2_2 <- Read_GLM_indata("/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_B_complex_Skov_revision/Result_SP_and_EP_port/")
+Fig_2_2$Demography <- "0_Complex"
+Fig_2_2$Recomb.rate <- "0_constant"
+#Fig_2_2$GF_model <- ifelse(Fig_2_2$Scenario.name=="_Complex_Demographies_Scenario_3_","EP","SP")
+Fig_2_2$GF_model <- ifelse(Fig_2_2$Scenario.name=="Skov_Complex_Demographies_Scenario_1_","SP","EP")
+Fig_2_2$Sim_ID <- ifelse(Fig_2_2$Scenario.name=="Skov_Complex_Demographies_Scenario_1_",3,4)
+
+Fig_2_3 <- Read_GLM_indata("/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_C_corrected_revision_new/Result_SP_and_EP_port/")
+Fig_2_3$Demography <- "0_Simple"
+Fig_2_3$Recomb.rate <- "0_varying"
+Fig_2_3$GF_model <- ifelse(Fig_2_3$Scenario.name=="_Recombination_Map_Scenario_3_","EP","SP")
+Fig_2_3$Sim_ID <- ifelse(Fig_2_3$Scenario.name=="_Recombination_Map_Scenario_3_",6,5)
+
+#Fig_2_4 <- Read_GLM_indata(path = "/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_D_Complex_corrected_revision_new/Result_Exp/")
+Fig_2_4 <- Read_GLM_indata(path = "/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_D_Complex_Skov_revision/Result_SP_and_EP_port/")
+Fig_2_4$Demography <- "0_Complex"
+Fig_2_4$Recomb.rate <- "0_varying"
+#Fig_2_4$GF_model <- ifelse(Fig_2_4$Scenario.name=="_Recombination_Map_and_Complex_Demographies_Scenario_3_","EP","SP")
+Fig_2_4$GF_model <- ifelse(Fig_2_4$Scenario.name=="_Recombination_Map_and_Skov_Demographies_Scenario_3_","EP","SP")
+Fig_2_4$Sim_ID <- ifelse(Fig_2_4$Scenario.name=="_Recombination_Map_and_Skov_Demographies_Scenario_3_",8,7)
 xdata.M.3 <- rbind(Fig_2_1,Fig_2_2,Fig_2_3,Fig_2_4)
 xdata.M.3$downsampling <- as.factor(xdata.M.3$downsampling)
-xdata.M.3.no_error <- xdata.M.3 %>% filter(status=='no_error')
-
-#xdata.M.3.no_error <- xdata.M.3 %>% filter(status=='no_error') %>% 
-# filter(downsampling!=10) %>% filter(downsampling!=1)
+xdata.M.3.no_error <- xdata.M.3[complete.cases(xdata.M.3),] 
 
 
-xdata.M.3.no_error <- xdata.M.3 %>% filter(status=='no_error') %>% 
+xdata.M.3.no_error <- xdata.M.3.no_error %>% 
  filter(downsampling==100 | downsampling==5)
 
-xdata.M.3.all <- xdata.M.3  %>% 
- filter(downsampling==100 | downsampling==5)
+
+
+xdata.M.3.no_error$td_est <- 4*xdata.M.3.no_error$tm.ep*xdata.M.3.no_error$k.ep^(-(1/2))
 
 xdata.M.3.no_error$True_tm <- (xdata.M.3.no_error$GF.End-xdata.M.3.no_error$GF.Start)/2 + xdata.M.3.no_error$GF.Start
-xdata.M.3.no_error$Diff <- xdata.M.3.no_error$m.exp - xdata.M.3.no_error$True_tm
-xdata.M.3.no_error$Diff_s <- (xdata.M.3.no_error$m.exp - 1500)/sd(xdata.M.3.no_error$m.exp)
+xdata.M.3.no_error$True_td <- (xdata.M.3.no_error$GF.End-xdata.M.3.no_error$GF.Start)
+
+xdata.M.3.no_error$Diff_SP <- xdata.M.3.no_error$tm_sp - xdata.M.3.no_error$True_tm
+xdata.M.3.no_error$Diff_s_SP <- (xdata.M.3.no_error$tm_sp - 1500)/sd(xdata.M.3.no_error$tm_sp)
+
+xdata.M.3.no_error$Diff_EP_tm <- xdata.M.3.no_error$tm.ep - xdata.M.3.no_error$True_tm
+xdata.M.3.no_error$Diff_s_EP_tm <- (xdata.M.3.no_error$tm.ep - 1500)/sd(xdata.M.3.no_error$tm.ep)
+
+xdata.M.3.no_error$Diff_EP_td <- xdata.M.3.no_error$td_est - xdata.M.3.no_error$True_td
+xdata.M.3.no_error$Diff_s_EP_td <- (xdata.M.3.no_error$tm.ep - xdata.M.3.no_error$True_td)/sd(xdata.M.3.no_error$tm.ep)
+
 xdata.M.3.no_error$Sim_id_int <- as.integer(rownames(xdata.M.3.no_error))
 
-Bdata_index<- list(
-  N = length(xdata.M.3.no_error$Diff_s),
-  E = xdata.M.3.no_error$Diff_s,
+
+#xdata.M.3.no_error %>%   group_by(minDist,AS,Recomb.rate,Demography) %>% summarise(mean(tm.ep))
+#xdata.M.3.no_error  %>% group_by(minDist,AS,Recomb.rate,Demography) %>% summarise(mean(tm.ep))
+
+```
+
+```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE, cache=T, results='hide'}
+######## model with response being the difference between the estimated Admixture time and the true one #####
+# full model with Ascertainement, min dist, Demographi and recombination rate as predictore but no interactions
+
+
+Bdata_index_SP<- list(
+  N = length(xdata.M.3.no_error$Diff_s_SP),
+  ID = xdata.M.3.no_error$Sim_ID,
+  E = xdata.M.3.no_error$Diff_s_SP,
   A = ifelse(xdata.M.3.no_error$AS=="I",0,1),
   MD = ifelse(xdata.M.3.no_error$minDist==0.05,0,1),
   D = ifelse(xdata.M.3.no_error$Demography=="0_Simple",0,1),
@@ -2587,127 +2050,449 @@ Bdata_index<- list(
   
 )
 
+Bdata_index_EP_tm<- list(
+  N = length(xdata.M.3.no_error$Diff_s_EP_tm),
+  ID = xdata.M.3.no_error$Sim_ID,
+  E = xdata.M.3.no_error$Diff_s_EP_tm,
+  A = ifelse(xdata.M.3.no_error$AS=="I",0,1),
+  MD = ifelse(xdata.M.3.no_error$minDist==0.05,0,1),
+  D = ifelse(xdata.M.3.no_error$Demography=="0_Simple",0,1),
+  R = ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant",0,1),
+  GF = ifelse(xdata.M.3.no_error$GF_model=="SP",0,1),
+  DS = ifelse(xdata.M.3.no_error$downsampling==100,0,1)
+  
+)
 
-Effect_size_fixed_stan_1 <- ulam(
+Bdata_index_EP_td<- list(
+  N = length(xdata.M.3.no_error$Diff_s_EP_td),
+  ID = xdata.M.3.no_error$Sim_ID,
+  E = xdata.M.3.no_error$Diff_s_EP_td,
+  A = ifelse(xdata.M.3.no_error$AS=="I",0,1),
+  MD = ifelse(xdata.M.3.no_error$minDist==0.05,0,1),
+  D = ifelse(xdata.M.3.no_error$Demography=="0_Simple",0,1),
+  R = ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant",0,1),
+  GF = ifelse(xdata.M.3.no_error$GF_model=="SP",0,1),
+  DS = ifelse(xdata.M.3.no_error$downsampling==100,0,1)
+  
+)
+
+### For simple pulse fit
+
+Effect_size_fixed_stan_0_SP_tm <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
     mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS,
     a ~ dnorm( 0 , 2 ),
     c(bA,bm,bD,bR,bG,bd) ~ dnorm( 0 , 2 ),
-    sigma ~ dexp(1)), data=Bdata_index,chains = 4,iter = 2000,cores = 4)
+    sigma ~ dexp(1)), data=Bdata_index_SP,chains = 4,iter = 2000,cores = 4)
 
-Effect_size_fixed_stan_2 <- ulam(
+Effect_size_fixed_stan_1_SP_tm <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
-    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS,
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bdr*R*D,
     a ~ dnorm( 0 , 2 ),
-    c(bA,bm,bD,bR,bG,bd,bdA) ~ dnorm( 0 , 2 ),
-    sigma ~ dexp(1)), data=Bdata_index,chains = 4,iter = 2000,cores = 4)
+    c(bA,bm,bD,bR,bG,bd,bdA,bdr) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)), data=Bdata_index_SP,chains = 4,iter = 2000,cores = 4)
 
+Effect_size_fixed_stan_2_SP_tm <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bdr*R*D,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bdr) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)), data=Bdata_index_SP,chains = 4,iter = 2000,cores = 4)
+
+Effect_size_fixed_stan_3_SP_tm <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bdr*R*D + bmr*R*MD,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bdr,bmr) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)), data=Bdata_index_SP,chains = 4,iter = 2000,cores = 4)
+
+### For extended pulse fit tm
+
+Effect_size_fixed_stan_0_EP_tm <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)), data=Bdata_index_EP_tm,chains = 4,iter = 2000,cores = 4)
+
+Effect_size_fixed_stan_1_EP_tm <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bdr*R*D,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bdr) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)), data=Bdata_index_EP_tm,chains = 4,iter = 2000,cores = 4)
+
+Effect_size_fixed_stan_2_EP_tm <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bdr*R*D,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bdr) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)), data=Bdata_index_EP_tm,chains = 4,iter = 2000,cores = 4)
+
+Effect_size_fixed_stan_3_EP_tm <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bdr*R*D + bmr*R*MD,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bdr,bmr) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)), data=Bdata_index_EP_tm,chains = 4,iter = 2000,cores = 4)
+
+### For extended pulse fit td
+'
+Effect_size_fixed_stan_1_EP_td <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bdr*R*D,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bdr) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)), data=Bdata_index_EP_td,chains = 4,iter = 2000,cores = 4)
+
+Effect_size_fixed_stan_2_EP_td <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bdr*R*D,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bdr) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)), data=Bdata_index_EP_td,chains = 4,iter = 2000,cores = 4)
+'
 ```
 
 
-```{r figResult_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
-B_model_result1 <- precis(Effect_size_fixed_stan_1,prob = 0.95)
+```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE, cache=T, results='hide'}
 
-post_effect_size_model <- extract.samples(Effect_size_fixed_stan_1,n = 1e5)
-Post_effect_size_est=data.frame(mean=c(
-mean(post_effect_size_model$a),
-mean(post_effect_size_model$a + post_effect_size_model$bG),
-mean(post_effect_size_model$a + post_effect_size_model$bR),
-mean(post_effect_size_model$a + post_effect_size_model$bD),
-mean(post_effect_size_model$a + post_effect_size_model$bm),
-mean(post_effect_size_model$a + post_effect_size_model$bA),
-mean(post_effect_size_model$a + post_effect_size_model$bd)),
-HPDI_lower=c(
-HPDI(post_effect_size_model$a,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[1]),
-HPDI_upper=c(
-HPDI(post_effect_size_model$a,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[2])
-#,row.names = c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
-)
+B_model_result_SP_0 <- precis(Effect_size_fixed_stan_0_SP_tm,prob = 0.95)
+B_model_result_SP_1 <- precis(Effect_size_fixed_stan_1_SP_tm,prob = 0.95)
+B_model_result_SP_2 <- precis(Effect_size_fixed_stan_2_SP_tm,prob = 0.95)
+B_model_result_SP_3 <- precis(Effect_size_fixed_stan_3_SP_tm,prob = 0.95)
 
-Post_effect_size_est_table <- Post_effect_size_est
-row.names(Post_effect_size_est_table) <- c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled")
+B_model_result_EP_0 <- precis(Effect_size_fixed_stan_0_EP_tm,prob = 0.95)
+B_model_result_EP_1 <- precis(Effect_size_fixed_stan_1_EP_tm,prob = 0.95)
+B_model_result_EP_2 <- precis(Effect_size_fixed_stan_2_EP_tm,prob = 0.95)
+B_model_result_EP_3 <- precis(Effect_size_fixed_stan_3_EP_tm,prob = 0.95)
 
-ggplot(Post_effect_size_est,aes(x=row.names(Post_effect_size_est),y=as.numeric(as.character(mean))))+
-      geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F,size=2)+
-    geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(row.names(Post_effect_size_est))),col="black",width=0.2)+
-  geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
-  labs(x = "")+
-  labs(y = "Standardized dif. est./sim. time")+
-  theme(plot.title = element_text(hjust = 0.5,size = 12))+
-  #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
-  scale_x_discrete(labels= c("Standard Model","Extended GF","Variying recombination","Complex Demography","d0=0.02 cM","HES","downsampled")
-                  ,guide = guide_axis(angle = 90))+
-  scale_color_manual("Gene Flow Model",
-                     values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
-                     label=c("Pulse","Continuous"))
+Plot_GLM_model_0 <- function(Model){
+  post_effect_size_model <- extract.samples(Model,n = 1e5)
+  Post_effect_size_est=data.frame(mean=c(
+  mean(post_effect_size_model$a),
+  mean(post_effect_size_model$a + post_effect_size_model$bG),
+  mean(post_effect_size_model$a + post_effect_size_model$bR),
+  mean(post_effect_size_model$a + post_effect_size_model$bD),
+  mean(post_effect_size_model$a + post_effect_size_model$bm),
+  mean(post_effect_size_model$a + post_effect_size_model$bA),
+  mean(post_effect_size_model$a + post_effect_size_model$bd)),
+  HPDI_lower=c(
+  HPDI(post_effect_size_model$a,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[1]),
+  HPDI_upper=c(
+  HPDI(post_effect_size_model$a,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[2])
+  #,row.names = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+  )
+  
+  Post_effect_size_est_table <- Post_effect_size_est
+  row.names(Post_effect_size_est_table) <- c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled")
+  Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
+                levels = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled"),ordered = TRUE)
+  
+  ggplot(Post_effect_size_est,aes(x=Post_effect_size_est_table$Variable,y=as.numeric(as.character(mean))))+
+        geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F,size=2)+
+      geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(Post_effect_size_est_table$Variable)),col="black",width=0.2)+
+    geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+    labs(x = "")+
+    labs(y = "Standardized dif.\n est./sim. time")+
+    theme(plot.title = element_text(hjust = 0.5,size = 12))+
+    #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
+    scale_x_discrete(labels= c("Standard Model","Extended GF","Variying recombination","Complex Demography","d0=0.02 cM","HES","downsampled")
+                    ,guide = guide_axis(angle = 90))+
+    scale_color_manual("Gene Flow Model",
+                       values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
+                       label=c("Pulse","Continuous"))
+}
+
+Plot_GLM_model_1 <- function(Model){
+  post_effect_size_model <- extract.samples(Model,n = 1e5)
+  Post_effect_size_est=data.frame(
+  mean=c(
+  mean(post_effect_size_model$a),
+  mean(post_effect_size_model$a + post_effect_size_model$bG),
+  mean(post_effect_size_model$a + post_effect_size_model$bR),
+  mean(post_effect_size_model$a + post_effect_size_model$bD),
+  mean(post_effect_size_model$a + post_effect_size_model$bm),
+  mean(post_effect_size_model$a + post_effect_size_model$bA),
+  mean(post_effect_size_model$a + post_effect_size_model$bd),
+  mean(post_effect_size_model$a + post_effect_size_model$bdA),
+  mean(post_effect_size_model$a + post_effect_size_model$bdr)),
+  HPDI_lower=c(
+  HPDI(post_effect_size_model$a,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[1]),
+  HPDI_upper=c(
+  HPDI(post_effect_size_model$a,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[2])
+  #,row.names = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+  )
+  
+  Post_effect_size_est_table <- Post_effect_size_est
+  row.names(Post_effect_size_est_table) <- c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+                                             "Interaction downsampled/HES","Interaction Complex D./Varying R.")
+  Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
+                  levels = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+                                           "Interaction downsampled/HES","Interaction Complex D./Varying R."),ordered = TRUE)
+  
+  ggplot(Post_effect_size_est,aes(x=Post_effect_size_est_table$Variable,y=as.numeric(as.character(mean))))+
+        geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F,size=2)+
+      geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(Post_effect_size_est_table$Variable)),col="black",width=0.2)+
+    geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+    labs(x = "")+
+    labs(y = "Standardized dif.\n est./sim. time")+
+    theme(plot.title = element_text(hjust = 0.5,size = 12))+
+    #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
+    scale_x_discrete(labels= c("Standard Model","Extended GF","Variying recombination","Complex Demography","d0=0.02 cM","HES","downsampled",
+                               "Interaction downsampled/HES","Interaction Complex D./Varying R.")
+                    ,guide = guide_axis(angle = 90))+
+    scale_color_manual("Gene Flow Model",
+                       values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
+                       label=c("Pulse","Continuous"))
+}
+
+Plot_GLM_model_2 <- function(Model){
+  post_effect_size_model <- extract.samples(Model,n = 1e5)
+  Post_effect_size_est=data.frame(mean=c(
+  mean(post_effect_size_model$a),
+  mean(post_effect_size_model$a + post_effect_size_model$bG),
+  mean(post_effect_size_model$a + post_effect_size_model$bR),
+  mean(post_effect_size_model$a + post_effect_size_model$bD),
+  mean(post_effect_size_model$a + post_effect_size_model$bm),
+  mean(post_effect_size_model$a + post_effect_size_model$bA),
+  mean(post_effect_size_model$a + post_effect_size_model$bd),
+  mean(post_effect_size_model$a + post_effect_size_model$bdA),
+  mean(post_effect_size_model$a + post_effect_size_model$bdr),
+  mean(post_effect_size_model$a + post_effect_size_model$bmA)),
+  HPDI_lower=c(
+  HPDI(post_effect_size_model$a,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bmA,0.95)[1]),
+  HPDI_upper=c(
+  HPDI(post_effect_size_model$a,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bmA,0.95)[2])
+  #,row.names = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+  )
+  
+  Post_effect_size_est_table <- Post_effect_size_est
+  row.names(Post_effect_size_est_table) <- c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+                                             "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES")
+  Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
+                    levels = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+                                             "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES"),ordered = TRUE)
+  
+  ggplot(Post_effect_size_est_table,aes(x=Post_effect_size_est_table$Variable,y=as.numeric(as.character(mean))))+
+        geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F,size=2)+
+      geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(Post_effect_size_est_table$Variable)),col="black",width=0.2)+
+    geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+    labs(x = "")+
+    labs(y = "Standardized dif.\n est./sim. time")+
+    theme(plot.title = element_text(hjust = 0.5,size = 12))+
+    #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
+    scale_x_discrete(labels= c("Standard Model","Extended GF","Variying recombination","Complex Demography","d0=0.02 cM","HES","downsampled",
+                               "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES")
+                    ,guide = guide_axis(angle = 90))+
+    scale_color_manual("Gene Flow Model",
+                       values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
+                       label=c("Pulse","Continuous"))
+}
+
+Plot_GLM_model_3 <- function(Model,plot_GLM=T){
+  post_effect_size_model <- extract.samples(Model,n = 1e5)
+  Post_effect_size_est=data.frame(mean=c(
+  mean(post_effect_size_model$a),
+  mean(post_effect_size_model$a + post_effect_size_model$bG),
+  mean(post_effect_size_model$a + post_effect_size_model$bR),
+  mean(post_effect_size_model$a + post_effect_size_model$bD),
+  mean(post_effect_size_model$a + post_effect_size_model$bm),
+  mean(post_effect_size_model$a + post_effect_size_model$bA),
+  mean(post_effect_size_model$a + post_effect_size_model$bd),
+  mean(post_effect_size_model$a + post_effect_size_model$bdA),
+  mean(post_effect_size_model$a + post_effect_size_model$bdr),
+  mean(post_effect_size_model$a + post_effect_size_model$bmA),
+  mean(post_effect_size_model$a + post_effect_size_model$bmr)),
+  HPDI_lower=c(
+  HPDI(post_effect_size_model$a,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bmA,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bmr,0.95)[1]),
+  HPDI_upper=c(
+  HPDI(post_effect_size_model$a,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bmA,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bmr,0.95)[2])
+  #,row.names = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+  )
+  
+  Post_effect_size_est_table <- Post_effect_size_est
+  row.names(Post_effect_size_est_table) <- c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+                                             "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.")
+  Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
+                    levels = c("Standard Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+                                             "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R."),ordered = TRUE)
+  
+  P_1 <- ggplot(Post_effect_size_est_table,aes(x=Post_effect_size_est_table$Variable,y=as.numeric(as.character(mean))))+
+        geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F,size=2)+
+      geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(Post_effect_size_est_table$Variable)),col="black",width=0.2)+
+    geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+    labs(x = "")+
+    labs(y = "Standardized dif.\n est./sim. time")+
+    theme(plot.title = element_text(hjust = 0.5,size = 12))+
+    #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
+    scale_x_discrete(labels= c("Standard Model","Extended GF","Variying recombination","Complex Demography","d0=0.02 cM","HES","downsampled",
+                               "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.")
+                    ,guide = guide_axis(angle = 90))+
+    scale_color_manual("Gene Flow Model",
+                       values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
+                       label=c("Pulse","Continuous"))
+  if(plot_GLM==T){
+      return(P_1)
+  } else {
+      return(Post_effect_size_est_table)
+  }
+
+
+}
 
 ```
 
-```{r figResult_3_supplements,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_supplements} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
-B_model_result2 <- precis(Effect_size_fixed_stan_2,prob = 0.95)
+```{r figResult_3_SP_model_0,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_0} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+Plot_GLM_model_0(Effect_size_fixed_stan_0_SP_tm)
 
-post_effect_size_model <- extract.samples(Effect_size_fixed_stan_2,n = 1e5)
-Post_effect_size_est=data.frame(mean=c(
-mean(post_effect_size_model$a),
-mean(post_effect_size_model$a + post_effect_size_model$bG),
-mean(post_effect_size_model$a + post_effect_size_model$bR),
-mean(post_effect_size_model$a + post_effect_size_model$bD),
-mean(post_effect_size_model$a + post_effect_size_model$bm),
-mean(post_effect_size_model$a + post_effect_size_model$bA),
-mean(post_effect_size_model$a + post_effect_size_model$bd),
-mean(post_effect_size_model$a + post_effect_size_model$bdA)),
-HPDI_lower=c(
-HPDI(post_effect_size_model$a,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[1],
-HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[1]),
-HPDI_upper=c(
-HPDI(post_effect_size_model$a,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bR,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bD,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[2],
-HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[2])
-#,row.names = c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
-)
+```
 
-Post_effect_size_est_table <- Post_effect_size_est
-row.names(Post_effect_size_est_table) <- c("Standart Model","Continuous GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled","interaction ds/HES")
+```{r figResult_3_SP_model_1,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_1} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
-ggplot(Post_effect_size_est,aes(x=row.names(Post_effect_size_est),y=as.numeric(as.character(mean))))+
-      geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F,size=2)+
-    geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(row.names(Post_effect_size_est))),col="black",width=0.2)+
-  geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
-  labs(x = "")+
-  labs(y = "Standardized dif. est./sim. time")+
-  theme(plot.title = element_text(hjust = 0.5,size = 12))+
-  #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
-  scale_x_discrete(labels= c("Standard Model","Extended GF","Variying recombination","Complex Demography","d0=0.02 cM","HES","downsampled","interaction ds/HES")
-                  ,guide = guide_axis(angle = 90))+
-  scale_color_manual("Gene Flow Model",
-                     values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
-                     label=c("Pulse","Continuous"))
+Plot_GLM_model_1(Effect_size_fixed_stan_1_SP_tm)
 
+```
+
+```{r figResult_3_SP_model_2,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_2} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_2(Effect_size_fixed_stan_2_SP_tm)
+```
+
+```{r figResult_3_SP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm)
+```
+
+```{r figResult_3_EP_model_0,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_0} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+Plot_GLM_model_0(Effect_size_fixed_stan_0_EP_tm)
+
+```
+
+```{r figResult_3_EP_model_1,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_1} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_1(Effect_size_fixed_stan_1_EP_tm)
+
+```
+
+```{r figResult_3_EP_model_2,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_2} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_2(Effect_size_fixed_stan_2_EP_tm)
+```
+
+```{r figResult_3_EP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm)
+```
+
+## Plot both SP and EP GLM outcomes together
+
+```{r figResult_3_SP_and_EP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_and_EP_model_3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+SP_GLM_m_3 <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
+SP_GLM_m_3$Model <- "SP"
+EP_GLM_m_3 <- Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm,plot_GLM = F)
+EP_GLM_m_3$Model <- "EP"
+
+Model_3_GLM_both <- rbind(SP_GLM_m_3,EP_GLM_m_3)
+Model_3_GLM_both$Model <-  factor(Model_3_GLM_both$Model,
+                    levels = c("SP","EP"),ordered = TRUE)
+ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
+        geom_point(aes(size=1.5,col=Model),show.legend = T,size=2)+
+        facet_grid(~Variable,switch = "x")+
+        geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(Variable)),col="black",width=0.2)+
+        geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+        labs(x = "")+
+        labs(y = "Standardized dif.\n est./sim. time")+
+        theme(plot.title = element_text(hjust = 0.5,size = 12),
+        strip.text.x = element_text(angle = 90,hjust = 1),
+        strip.background = element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
+        #rotate_x_facet_text(angle = 45, align = 0.5)+
+        #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
+        #scale_x_discrete(labels= c("Standard Model","Extended GF","Variying recombination","Complex Demography","d0=0.02 cM","HES","downsampled",
+        #                           "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.")
+        #                ,guide = guide_axis(angle = 90))+
+        scale_color_manual("Model",
+                           values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
+                           label=c("Simple Pulse","Extended Pulse"))
 ```
 
 # Sampling closer to end of GF (ex-result fig 4 now supplement)
@@ -2778,17 +2563,24 @@ Plot_all_together_samples_50_gen_flipped <- function(ggdata,cbPalette_viridis){
                           levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
   ggdata$Name <- factor(ggdata$Name,
                         levels = c("Recent_50_HapMap_HapMap_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_no_correction","Recent_50_constant"),ordered = TRUE)
+  ggdata$True_td_named <- factor(ggdata$True_GF_length,
+                         levels = c("1"  ,  "200" , "400",  "800" , "1000", "1500"),labels = c("td = 1"  ,  "td = 200" , "td = 400",  "td = 800" , "td = 1000", "td = 1500"),ordered = TRUE)
+  ggdata$True_tm_named <- factor(ggdata$True_mean_GF,
+                         levels = c("50.5", "150" , "250"  ,"450" , "550",  "800" ),labels = c("tm = 50.5", "tm = 150" , "tm = 250"  ,"tm = 450" , "tm = 550",  "tm = 800" ),ordered = TRUE)
+    ggdata$ts_named <- factor(ggdata$Sample_Time,
+                         levels = c("50" ),labels = c("ts = 50"),ordered = TRUE)
   ggplot(data = ggdata, aes(y=factor(Name),x=as.numeric(as.character(value)),colour=factor(Name))) +
     geom_boxplot(show.legend = F)+ 
     #facet_grid(as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
-    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    facet_grid(as.factor(ts_named)+as.factor(True_td_named)+as.factor(True_tm_named) ~Model, switch = "y")+
     geom_vline( aes(xintercept = True_mean_GF ))+
     labs(x = "Estimated Admixture Mean Time")+
     #labs(y = "Simulated Admixture Duration \n Simulated Admixture Mean")+
     labs(y = "Sampling Time \n Simulated Admixture Duration \n Simulated Admixture Mean")+
     theme(
       axis.text.y=element_blank(),
-      axis.ticks.y=element_blank())+
+      axis.ticks.y=element_blank(),
+      strip.text.x = element_text(size = 9))+
     coord_cartesian(xlim = c(0,1700), expand = 0)+
     scale_x_continuous(breaks = seq(0, 1600, by = 500))+
     scale_color_manual("Simulations",
@@ -2802,17 +2594,24 @@ Plot_all_together_samples_50_gen_flipped <- function(ggdata,cbPalette_viridis){
 Plot_sampling_50_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis){
   ggdata$Name <- factor(ggdata$Name,
                         levels = c("Recent_50_HapMap_HapMap_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_no_correction","Recent_50_constant"),ordered = TRUE)
+    ggdata$True_td_named <- factor(ggdata$True_GF_length,
+                         levels = c("1"  ,  "200" , "400",  "800" , "1000", "1500"),labels = c("td = 1"  ,  "td = 200" , "td = 400",  "td = 800" , "td = 1000", "td = 1500"),ordered = TRUE)
+  ggdata$True_tm_named <- factor(ggdata$True_mean_GF,
+                         levels = c("50.5", "150" , "250"  ,"450" , "550",  "800" ),labels = c("tm = 50.5", "tm = 150" , "tm = 250"  ,"tm = 450" , "tm = 550",  "tm = 800" ),ordered = TRUE)
+    ggdata$ts_named <- factor(ggdata$Sample_Time,
+                         levels = c("50" ),labels = c("ts = 50"),ordered = TRUE)
   ggplot(ggdata,aes(y=variable,x=as.numeric(as.character(value)),colour=factor(Name)))+
     geom_boxplot(show.legend = F)+
     #facet_grid(as.factor(True_GF_length)+as.factor(True_mean_GF) ~ Model, switch = "y")+
-    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    facet_grid(as.factor(ts_named)+as.factor(True_td_named)+as.factor(True_tm_named) ~Model, switch = "y")+
     geom_vline( aes(xintercept = True_GF_length ))+
     #ggtitle(Ptitle) +
     labs(y = "")+
     labs(x = "Estimated Admixture Duration")+
     theme(
       axis.text.y=element_blank(),
-      axis.ticks.y=element_blank())+
+      axis.ticks.y=element_blank(),
+      strip.text.x = element_text(size = 9),)+
     coord_cartesian(xlim = c(0,4100), expand = 0)+
     scale_x_continuous(breaks = seq(0, 4100, by = 500))+
     scale_color_manual("Simulations",
@@ -2826,10 +2625,16 @@ Plot_all_together_sampling_varying_gen_t_GF <- function(ggdata,cbPalette_viridis
                           levels = c("Simple Pulse","Extended Pulse"),ordered = TRUE)
   ggdata$Name <- factor(ggdata$Name,
                         levels = c("Recent_50_HapMap_HapMap_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_no_correction","Recent_50_constant"),ordered = TRUE)
+    ggdata$True_td_named <- factor(ggdata$True_GF_length,
+                         levels = c( "800" ),labels = c("td = 800" ),ordered = TRUE)
+  ggdata$True_tm_named <- factor(ggdata$True_mean_GF,
+                         levels = c("450" , "500" , "600" , "800" , "1200" ,"1400"),labels = c("tm = 450" , "tm = 500" , "tm = 600" , "tm = 800" , "tm = 1200" ,"tm = 1400"),ordered = TRUE)
+    ggdata$ts_named <- factor(ggdata$Sample_Time,
+                         levels = c("50" ,  "100" , "200" , "400" , "800",  "1000" ),labels = c("ts = 50" ,  "ts = 100" , "ts = 200" , "ts = 400" , "ts = 800",  "ts = 1000"),ordered = TRUE)
   ggplot(data = ggdata, aes(y=factor(Name),x=as.numeric(as.character(value)),colour=factor(Name))) +
     geom_boxplot(show.legend = T)+ 
     #facet_grid(as.factor(Sample_Time)+as.factor(True_mean_GF) ~Model, switch = "y")+
-    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    facet_grid(as.factor(ts_named)+as.factor(True_td_named)+as.factor(True_tm_named) ~Model, switch = "y")+
     geom_vline( aes(xintercept = True_mean_GF ))+
     #ggtitle(Ptitle) +
     labs(x = "Estimated Admixture Mean Time")+
@@ -2850,10 +2655,16 @@ Plot_all_together_sampling_varying_gen_t_GF <- function(ggdata,cbPalette_viridis
 Plot_sampling_varying_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis){
   ggdata$Name <- factor(ggdata$Name,
                         levels = c("Recent_50_HapMap_HapMap_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_no_correction","Recent_50_constant"),ordered = TRUE)
+      ggdata$True_td_named <- factor(ggdata$True_GF_length,
+                         levels = c( "800" ),labels = c("td = 800" ),ordered = TRUE)
+  ggdata$True_tm_named <- factor(ggdata$True_mean_GF,
+                         levels = c("450" , "500" , "600" , "800" , "1200" ,"1400"),labels = c("tm = 450" , "tm = 500" , "tm = 600" , "tm = 800" , "tm = 1200" ,"tm = 1400"),ordered = TRUE)
+    ggdata$ts_named <- factor(ggdata$Sample_Time,
+                         levels = c("50" ,  "100" , "200" , "400" , "800",  "1000" ),labels = c("ts = 50" ,  "ts = 100" , "ts = 200" , "ts = 400" , "ts = 800",  "ts = 1000"),ordered = TRUE)
   ggplot(ggdata,aes(y=variable,x=as.numeric(as.character(value)),colour=factor(Name)))+
     geom_boxplot(show.legend = F)+
     #facet_grid(as.factor(True_GF_length)+as.factor(Sample_Time) ~ Model, switch = "y")+
-    facet_grid(as.factor(Sample_Time)+as.factor(True_GF_length)+as.factor(True_mean_GF) ~Model, switch = "y")+
+    facet_grid(as.factor(ts_named)+as.factor(True_td_named)+as.factor(True_tm_named) ~Model, switch = "y")+
     geom_vline( aes(xintercept = True_GF_length ))+
     #ggtitle(Ptitle) +
     labs(y = "")+
@@ -2910,7 +2721,7 @@ Plot.data_varying<-rbind(
 )
 
 ggdata_t.GF_varying_mean_GF_exp <- melt(Plot.data_varying,measure.vars =  c('tm_sp'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
-ggdata_t.GF_varying_mean_GF_lomax <- melt(Plot.data_varying,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
+ggdata_t.GF_varying_mean_GF_lomax <- melt(Plot.data_varying,measure.vars =  c('tm.ep'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
 ggdata_l.GF_varying <- melt(Plot.data_varying,measure.vars =  c('length_GF'),id.vars = c('True_mean_GF','True_GF_length','Name','Sample_Time'))
 
 # Plot 50 gen from Admixture
@@ -2944,94 +2755,87 @@ Varying_sampling_time <- ggarrange(Mean_GF_F_varying,Duration_GF_F_varying,label
 
 ``` {r figCloser_Sampling_Supplement, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figCloser_Sampling_Supplement} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times after the end of 800 generations of gene flow. D) Duration estimate of the same scenario. All scenarious are simulated either under a constant recombination rate or an empirical (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate, using a different map, using the same map."}
 
-Extended_Pulse_Evaluation <- ggarrange(Constant_sampling_time,Varying_sampling_time,nrow = 2,common.legend = T,legend = 'bottom')
+Sampling_Closer_Supplements <- ggarrange(Constant_sampling_time,Varying_sampling_time,nrow = 2,common.legend = T,legend = 'bottom')
 
-Extended_Pulse_Evaluation
+Sampling_Closer_Supplements
 
 ```
 
 ```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE}
-
-AIC_comp_ts_50=data.frame(AIC_SP=Plot.data_50$AIC_SP,AIC_EP=Plot.data_50$AIC_EP,
-                          Sample_Time=Plot.data_varying$Sample_Time,
-                      GF_duration=Plot.data_50$True_GF_length,Name=Plot.data_50$Name,
-                      True_mean_GF=Plot.data_50$True_tm)
-AIC_comp_ts_50$AIC_SP_rounded <- ifelse(AIC_comp_ts_50$AIC_SP>=20,20,AIC_comp_ts_50$AIC_SP)
-AIC_comp_ts_50$Name <- factor(AIC_comp_ts_50$Name,
+Plot.data_50_complete <- Plot.data_50[complete.cases(Plot.data_50),]
+Plot.data_50_complete$Name <- factor(Plot.data_50_complete$Name,
                     levels = c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction"),ordered = TRUE)
-AIC_comp_ts_50$Data <- "ALD"
+RSS_diff_norm <- Plot.data_50_complete %>% group_by(Name) %>% group_map(~ (0-(log(.x$RSS_SP)-log(.x$RSS_EP))/sd((log(.x$RSS_SP)-log(.x$RSS_EP))) ) )
 
-AIC_comp_ts_varying=data.frame(AIC_SP=Plot.data_varying$AIC_SP,AIC_EP=Plot.data_varying$AIC_EP,
-                      Sample_Time=Plot.data_varying$Sample_Time,GF_duration=Plot.data_50$True_GF_length,Name=Plot.data_varying$Name,
-                      True_mean_GF=Plot.data_50$True_tm)
-AIC_comp_ts_varying$AIC_SP_rounded <- ifelse(AIC_comp_ts_varying$AIC_SP>=20,20,AIC_comp_ts_varying$AIC_SP)
-AIC_comp_ts_varying$Name <- factor(AIC_comp_ts_varying$Name,
+RSS_comp_50=data.frame(RSS_diff=log(Plot.data_50_complete$RSS_SP)-log(Plot.data_50_complete$RSS_EP),
+                       RSS_diff_norm=unlist(RSS_diff_norm),
+                    Sample_Time=Plot.data_50_complete$Sample_Time,
+                    GF_duration=Plot.data_50_complete$True_GF_length,Name=Plot.data_50_complete$Name,
+                    True_mean_GF=Plot.data_50_complete$True_tm)
+
+RSS_comp_50$Name <- factor(RSS_comp_50$Name,
                     levels = c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction"),ordered = TRUE)
-AIC_comp_ts_varying$Data <- "ALD"
+RSS_comp_50$Data <- "ALD"
 
-P_AIC_50 <- ggplot(AIC_comp_ts_50, aes(x=as.factor(Name), y=AIC_SP_rounded,color=as.factor(Name))) + 
+RSS_comp_50$True_td_named <- factor(RSS_comp_50$GF_duration,
+                     levels = c("1"  ,  "200" , "400",  "800" , "1000", "1500"),labels = c("td = 1"  ,  "td = 200" , "td = 400",  "td = 800" , "td = 1000", "td = 1500"),ordered = TRUE)
+RSS_comp_50$True_tm_named <- factor(RSS_comp_50$True_mean_GF,
+                     levels = c("50.5", "150" , "250"  ,"450" , "550",  "800" ),labels = c("tm = 50.5", "tm = 150" , "tm = 250"  ,"tm = 450" , "tm = 550",  "tm = 800" ),ordered = TRUE)
+RSS_comp_50$ts_named <- factor(RSS_comp_50$Sample_Time,
+                     levels = c("50" ),labels = c("ts = 50"),ordered = TRUE)
+
+P_RSS_comp_50 <- ggplot(RSS_comp_50, aes(x=as.factor(Name), y=(RSS_diff_norm),color=as.factor(Name))) + 
                 geom_boxplot()+
-                facet_grid( Data~as.factor(Sample_Time)+as.factor(GF_duration)+as.factor(True_mean_GF),switch = "x")+
-                labs(y = "AIC")+
-                labs(x = "")+
+                facet_grid( Data~as.factor(ts_named)+as.factor(True_td_named)+as.factor(True_tm_named),switch = "x")+
+                geom_hline( aes(yintercept = 0 ))+
+                labs(y = "Standardized\nlog RSS Difference ")+
+                labs(x = "Admixture Duration")+
+                ylim(-2,2)+
                 theme(
                   axis.ticks.y=element_blank(),
                   axis.ticks.x=element_blank(),
                   axis.text.x=element_blank(),
+                  strip.text.x = element_text(size = 9),
                   legend.position="none",
                   plot.margin=unit(c(0.25,0.5,0,0.5), "cm"))+
                 coord_cartesian(expand = 0)+
-               scale_color_manual("Recombination",
+                scale_color_manual("Recombination",
                                    values = c(cbPalette_viridis[1],cbPalette_viridis[3],cbPalette_viridis[9],cbPalette_viridis[12]),
                                    labels = c("Constant/Constant","HapMap/Constant","HapMap/AAMap","HapMap/HapMap"))
 
-
-P_AIC_varying <- ggplot(AIC_comp_ts_varying, aes(x=as.factor(Name), y=AIC_SP_rounded,color=as.factor(Name))) + 
-                geom_boxplot()+
-                facet_grid( Data~as.factor(Sample_Time)+as.factor(GF_duration)+as.factor(True_mean_GF),switch = "x")+
-                labs(y = "AIC")+
-                labs(x = "")+
-                theme(
-                  axis.ticks.y=element_blank(),
-                  axis.ticks.x=element_blank(),
-                  axis.text.x=element_blank(),
-                  legend.position="none",
-                  plot.margin=unit(c(0.25,0.5,0,0.5), "cm"))+
-                coord_cartesian(expand = 0)+
-               scale_color_manual("Recombination",
-                                   values = c(cbPalette_viridis[1],cbPalette_viridis[3],cbPalette_viridis[9],cbPalette_viridis[12]),
-                                   labels = c("Constant/Constant","HapMap/Constant","HapMap/AAMap","HapMap/HapMap"))
-
-
-
-F_Test_comp_ts_50=data.frame(F_Test_p=Plot.data_50$F_Test,
-                      Sample_Time=Plot.data_50$Sample_Time,GF_duration=Plot.data_50$True_GF_length,Name=Plot.data_50$Name,
-                      True_mean_GF=Plot.data_50$True_tm)
-#F_Test_comp$F_Test_p_rounded <- ifelse(F_Test_comp$F_Test_p>=0.1,0.1,F_Test_comp$F_Test_p)
-F_Test_comp_ts_50$F_Test_p_rounded <- F_Test_comp_ts_50$F_Test_p
-F_Test_comp_ts_50$Name <- factor(F_Test_comp_ts_50$Name,
+Plot.data_varying_complete <- Plot.data_varying[complete.cases(Plot.data_varying),]
+Plot.data_varying_complete$Name <- factor(Plot.data_varying_complete$Name,
                     levels = c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction"),ordered = TRUE)
-F_Test_comp_ts_50$Data <- "ALD"
+RSS_diff_norm <- Plot.data_varying_complete %>% group_by(Name) %>% group_map(~ (0-(log(.x$RSS_SP)-log(.x$RSS_EP))/sd((log(.x$RSS_SP)-log(.x$RSS_EP))) ) )
+RSS_comp_varying=data.frame(RSS_diff=log(Plot.data_varying_complete$RSS_SP)-log(Plot.data_varying_complete$RSS_EP),
+                           RSS_diff_norm= unlist(RSS_diff_norm),
+                    Sample_Time=Plot.data_varying_complete$Sample_Time,
+                    GF_duration=Plot.data_varying_complete$True_GF_length,Name=Plot.data_varying_complete$Name,
+                    True_mean_GF=Plot.data_varying_complete$True_tm)
 
-F_Test_comp_ts_varying=data.frame(F_Test_p=Plot.data_varying$F_Test,
-                      Sample_Time=Plot.data_varying$Sample_Time,GF_duration=Plot.data_varying$True_GF_length,Name=Plot.data_varying$Name,
-                      True_mean_GF=Plot.data_varying$True_tm)
-#F_Test_comp$F_Test_p_rounded <- ifelse(F_Test_comp$F_Test_p>=0.1,0.1,F_Test_comp$F_Test_p)
-F_Test_comp_ts_varying$F_Test_p_rounded <- F_Test_comp_ts_varying$F_Test_p
-F_Test_comp_ts_varying$Name <- factor(F_Test_comp_ts_varying$Name,
-                                        levels = c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction"),ordered = TRUE)
-F_Test_comp_ts_varying$Data <- "ALD"
+RSS_comp_varying$Name <- factor(Plot.data_varying_complete$Name,
+                    levels = c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction"),ordered = TRUE)
+RSS_comp_varying$Data <- "ALD"
 
-P_F_Test_50 <- ggplot(F_Test_comp_ts_50, aes(x=as.factor(Name), y=(F_Test_p_rounded),color=as.factor(Name))) + 
+RSS_comp_varying$True_td_named <- factor(RSS_comp_varying$GF_duration,
+                   levels = c( "800" ),labels = c("td = 800" ),ordered = TRUE)
+RSS_comp_varying$True_tm_named <- factor(RSS_comp_varying$True_mean_GF,
+                   levels = c("450" , "500" , "600" , "800" , "1200" ,"1400"),labels = c("tm = 450" , "tm = 500" , "tm = 600" , "tm = 800" , "tm = 1200" ,"tm = 1400"),ordered = TRUE)
+RSS_comp_varying$ts_named <- factor(RSS_comp_varying$Sample_Time,
+                   levels = c("50" ,  "100" , "200" , "400" , "800",  "1000" ),labels = c("ts = 50" ,  "ts = 100" , "ts = 200" , "ts = 400" , "ts = 800",  "ts = 1000"),ordered = TRUE)
+
+P_RSS_varying <- ggplot(RSS_comp_varying, aes(x=as.factor(Name), y=(RSS_diff_norm),color=as.factor(Name))) + 
                 geom_boxplot()+
-                  facet_grid( Data~as.factor(Sample_Time)+as.factor(GF_duration)+as.factor(True_mean_GF),switch = "x")+
-                geom_hline( aes(yintercept = 0.05 ))+
-                labs(y = "p-value")+
-                labs(x = "")+
+                facet_grid( Data~as.factor(ts_named)+as.factor(True_td_named)+as.factor(True_tm_named),switch = "x")+
+                geom_hline( aes(yintercept = 0 ))+
+                labs(y = "Standardized\nlog RSS Difference ")+
+                labs(x = "Admixture Duration")+
+                ylim(-2,2)+
                 theme(
                   axis.ticks.y=element_blank(),
                   axis.ticks.x=element_blank(),
                   axis.text.x=element_blank(),
+                  strip.text.x = element_text(size = 9),
                   legend.position="none",
                   plot.margin=unit(c(0.25,0.5,0,0.5), "cm"))+
                 coord_cartesian(expand = 0)+
@@ -3040,41 +2844,22 @@ P_F_Test_50 <- ggplot(F_Test_comp_ts_50, aes(x=as.factor(Name), y=(F_Test_p_roun
                                    labels = c("Constant/Constant","HapMap/Constant","HapMap/AAMap","HapMap/HapMap"))
 
 
-
-P_F_Test_varying <- ggplot(F_Test_comp_ts_varying, aes(x=as.factor(Name), y=(F_Test_p_rounded),color=as.factor(Name))) + 
-                geom_boxplot()+
-                facet_grid( Data~as.factor(Sample_Time)+as.factor(GF_duration)+as.factor(True_mean_GF),switch = "x")+
-                geom_hline( aes(yintercept = 0.05 ))+
-                labs(y = "p-value")+
-                labs(x = "")+
-                theme(
-                  axis.ticks.y=element_blank(),
-                  axis.ticks.x=element_blank(),
-                  axis.text.x=element_blank(),
-                  legend.position="none",
-                  plot.margin=unit(c(0.25,0.5,0,0.5), "cm"))+
-                coord_cartesian(expand = 0)+
-             scale_color_manual("Recombination",
-                                   values = c(cbPalette_viridis[1],cbPalette_viridis[3],cbPalette_viridis[9],cbPalette_viridis[12]),
-                                   labels = c("Constant/Constant","HapMap/Constant","HapMap/AAMap","HapMap/HapMap"))
-
-
-
 ```
 
-``` {r figCloser_Sampling_F_Test_Supplement, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figCloser_Sampling_F_Test_Supplement} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times after the end of 800 generations of gene flow. D) Duration estimate of the same scenario. All scenarious are simulated either under a constant recombination rate or an empirical (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate, using a different map, using the same map."}
+``` {r figCloser_Sampling_F_Test_Supplement, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=6,fig.height=6,fig.cap="\\label{fig:figCloser_Sampling_F_Test_Supplement} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times after the end of 800 generations of gene flow. D) Duration estimate of the same scenario. All scenarious are simulated either under a constant recombination rate or an empirical (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate, using a different map, using the same map."}
 
-Closer_Sampling_ALD_F_Test <- ggarrange(P_F_Test_50,P_F_Test_varying,nrow = 2,common.legend = T,legend = 'bottom')
+Closer_Sampling_ALD_RSS <- ggarrange(P_RSS_comp_50,P_RSS_varying,nrow = 2,common.legend = T,legend = 'bottom')
 
-Closer_Sampling_ALD_F_Test
+Closer_Sampling_ALD_RSS
 
 ```
 
 # GLM Supplement stuff
 
-```{r figS2_updated, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2_updated} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
+## SP
+```{r figS2_updated_SP, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2_updated_SP} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
 
-Plot_model <- data.frame(table(Diff_s=round(xdata.M.3.no_error$Diff_s,digits = 2),GF=xdata.M.3.no_error$GF_model,Asc=ifelse(xdata.M.3.no_error$AS=="I","LES", "HES"),d0=xdata.M.3.no_error$minDist,True_GF=xdata.M.3.no_error$True_tm,Demo=ifelse(xdata.M.3.no_error$Demography=="0_Simple","Sim", "Com"),Recomb=ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant","Con", "Var"),Downsampling=xdata.M.3.no_error$downsampling))
+Plot_model <- data.frame(table(Diff_s=round(xdata.M.3.no_error$Diff_s_SP,digits = 2),GF=xdata.M.3.no_error$GF_model,Asc=ifelse(xdata.M.3.no_error$AS=="I","LES", "HES"),d0=xdata.M.3.no_error$minDist,True_GF=xdata.M.3.no_error$True_tm,Demo=ifelse(xdata.M.3.no_error$Demography=="0_Simple","Sim", "Com"),Recomb=ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant","Con", "Var"),Downsampling=xdata.M.3.no_error$downsampling))
 Plot_model <- subset(Plot_model,Freq>0)
 Plot_model$Combination_chr <- as.factor(paste(Plot_model$GF,Plot_model$Recomb,Plot_model$Demo,Plot_model$Asc,Plot_model$d0,Plot_model$Downsampling,sep = "\n"))
 #Plot_model$Combination_chr <- factor(Plot_model$Combination_chr,
@@ -3109,20 +2894,112 @@ Plot_Fig_2_A(Plot_model,levels(Plot_model$Combination_chr))
 
 ```
 
-```{r tableS1_1, echo=FALSE,results='asis' }
+```{r table_Supplements_SP_model_0, echo=FALSE,results='asis' }
 
-print_B_model_result <- data.frame(B_model_result1)
+print_B_model_result <- data.frame(B_model_result_SP_0)
 kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
-      caption = "\\label{tab:tableS1} Mean, standart deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r tableS1_2, echo=FALSE,results='asis' }
+```{r table_Supplements_SP_model_1, echo=FALSE,results='asis' }
 
-print_B_model_result <- data.frame(B_model_result2)
+print_B_model_result <- data.frame(B_model_result_SP_1)
 kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
-      caption = "\\label{tab:tableS1} Mean, standart deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_SP_model_2, echo=FALSE,results='asis' }
+
+print_B_model_result <- data.frame(B_model_result_SP_2)
+kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
+      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_SP_model_3, echo=FALSE,results='asis' }
+
+print_B_model_result <- data.frame(B_model_result_SP_3)
+kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
+      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+## EP
+
+```{r figS2_updated_EP, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2_updated_SP} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
+
+Plot_model <- data.frame(table(Diff_s=round(xdata.M.3.no_error$Diff_s_EP_tm,digits = 2),GF=xdata.M.3.no_error$GF_model,Asc=ifelse(xdata.M.3.no_error$AS=="I","LES", "HES"),d0=xdata.M.3.no_error$minDist,True_GF=xdata.M.3.no_error$True_tm,Demo=ifelse(xdata.M.3.no_error$Demography=="0_Simple","Sim", "Com"),Recomb=ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant","Con", "Var"),Downsampling=xdata.M.3.no_error$downsampling))
+Plot_model <- subset(Plot_model,Freq>0)
+Plot_model$Combination_chr <- as.factor(paste(Plot_model$GF,Plot_model$Recomb,Plot_model$Demo,Plot_model$Asc,Plot_model$d0,Plot_model$Downsampling,sep = "\n"))
+#Plot_model$Combination_chr <- factor(Plot_model$Combination_chr,
+#                        levels = c("Hudson_only_sim","Hybrid_sim"),ordered = TRUE)
+Plot_model$Combination <- as.numeric(Plot_model$Combination_chr)
+
+
+Plot_model$Col <- ifelse(Plot_model$GF=='SP','#56B4E9','#D55E00')
+
+
+
+
+Plot_Fig_2_A(Plot_model,levels(Plot_model$Combination_chr))
+
+
+```
+
+```{r table_Supplements_EP_model_0, echo=FALSE,results='asis' }
+
+print_B_model_result <- data.frame(B_model_result_EP_0)
+kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
+      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_EP_model_1, echo=FALSE,results='asis' }
+
+print_B_model_result <- data.frame(B_model_result_EP_1)
+kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
+      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_EP_model_2, echo=FALSE,results='asis' }
+
+print_B_model_result <- data.frame(B_model_result_EP_2)
+kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
+      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_EP_model_3, echo=FALSE,results='asis' }
+
+print_B_model_result <- data.frame(B_model_result_EP_3)
+kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
+      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_EP_and_SP_model_3, echo=FALSE,results='asis' }
+
+print_B_model_SP_result <- data.frame(B_model_result_SP_3)
+print_B_model_SP_result$Model <- "Simple Pulse"
+print_B_model_SP_result$Variable <- rownames(print_B_model_SP_result)
+print_B_model_EP_result <- data.frame(B_model_result_EP_3)
+print_B_model_EP_result$Model <- "Extended Pulse"
+print_B_model_EP_result$Variable <- rownames(print_B_model_EP_result)
+print_B_model_result_both <- rbind(print_B_model_SP_result,print_B_model_EP_result)
+print_B_model_result_both <- print_B_model_result_both[, c(7,8,1, 2, 3, 4, 5, 6)]
+kable(print_B_model_result_both , "latex",row.names=F,col.names = c("model","variable","mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
+      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
 ```
