@@ -848,7 +848,8 @@ Plot_tm <- function(ggdata,main,rr_1,rr_2,col1,col2){
     theme(
       strip.text.y = element_text(size = 9))+
     labs(x = "Estimated Admixture\n Mean Time")+
-    labs(y = "Simulated Admixture Duration \n Simulated Admixture Mean")+
+    labs(y = "")+
+    #labs(y = "Simulated Admixture Duration \n Simulated Admixture Mean")+
     coord_cartesian(xlim = c(0,2500), expand = 0)+
     scale_x_continuous(breaks = seq(0, 5000, by = 500))+
     scale_color_manual("Recombination",
@@ -874,7 +875,7 @@ Plot_td <- function(ggdata,main,rr_1,rr_2,col1,col2){
     facet_grid(as.factor(True_td_named)+as.factor(True_tm_named) ~Model, switch = "y")+
     geom_vline( aes(xintercept = as.numeric(as.character(True_td)) ))+
     labs(y = "")+
-    labs(x = "Estimated Admixture Duration")+
+    labs(x = "Estimated\n Admixture Duration")+
     ggtitle("")+
     coord_cartesian(xlim = c(0,2500), expand = 0)+
     scale_x_continuous(breaks = seq(0, 2500, by = 500))+
@@ -926,7 +927,8 @@ Plot_tm_flipped <- function(ggdata,main,rr_1,rr_2,col1,col2){
     facet_grid( Model~as.factor(True_tm_named)+as.factor(True_td_named),switch = "x")+
     geom_hline( aes(yintercept = as.numeric(as.character(True_tm)) ))+
     labs(y = "Estimated Mean\n Admixture Time")+
-    labs(x = "Simulated Admixture Duration \n Simulated Admixture Mean")+
+    labs(x = "")+
+    #labs(x = "Simulated Admixture Duration \n Simulated Admixture Mean")+
     coord_cartesian(ylim = c(0,2500), expand = 0)+
     scale_y_continuous(breaks = seq(0, 2500, by = 500))+
     theme(axis.text.x = element_text(angle = 90),
@@ -955,7 +957,7 @@ Plot_td_flipped <- function(ggdata,main,rr_1,rr_2,col1,col2){
     geom_boxplot(show.legend = F)+
     facet_grid( Model~as.factor(True_td_named)+as.factor(True_tm_named),switch = "x")+
     geom_hline( aes(yintercept = as.numeric(as.character(True_td)) ))+
-    labs(y = "Estimated Admixture\n Duration")+
+    labs(y = "Estimated\n Admixture Duration")+
     labs(x = "")+
     coord_cartesian(ylim = c(0,2500), expand = 0)+
     scale_y_continuous(breaks = seq(0, 2500, by = 500))+
@@ -1581,7 +1583,8 @@ P_RSS_comp_results <- ggplot(RSS_comp_results, aes(x=as.factor(Name), y=(RSS_dif
                 facet_grid(Data~True_td_named,switch = "x")+
                 geom_hline( aes(yintercept = 0 ))+
                 labs(y = "Standardized\nlog RSS Difference ")+
-                labs(x = "Admixture Duration")+
+                #labs(x = "Admixture Duration")+
+                labs(x = "")+
                 ylim(-1,1)+
                 theme(
                   axis.ticks.y=element_blank(),
@@ -1605,7 +1608,8 @@ P_RSS_comp_supplements <- ggplot(RSS_comp_supplements, aes(x=as.factor(Name), y=
                 facet_grid(Data~True_td_named,switch = "x")+
                 geom_hline( aes(yintercept = 0 ))+
                 labs(y = "Standardized\nlog RSS Difference ")+
-                labs(x = "Admixture Duration")+
+                #labs(x = "Admixture Duration")+
+                labs(x = "")+
                 #ylim(-1,1)+
                 theme(
                   axis.ticks.y=element_blank(),
@@ -1690,7 +1694,7 @@ Plot_LRT_seg_sup <- Plot_LRT(Segments_LRT_supplements,"",c("varying no correctio
 
 ## Figure 2 all together
 
-```{r eval=T,figResult2_all_together, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=7.5,fig.height=12,fig.cap="\\label{fig:figResult2_all_together} "}
+```{r eval=T,figResult2_all_together, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=12,fig.cap="\\label{fig:figResult2_all_together} "}
 # Fig 2.1 2.2 and 2.3 together Results
 
 library(gridExtra)
@@ -1724,7 +1728,7 @@ ggarrange(P_step_2,P_2_fit_Result,
 
 ```
 
-```{r eval=T,figResult2_all_together_Supplements, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=7.5,fig.height=12,fig.cap="\\label{fig:figResult2_all_together_Supplements} "}
+```{r eval=T,figResult2_all_together_Supplements, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=12,fig.cap="\\label{fig:figResult2_all_together_Supplements} "}
 # Fig 2.1 2.2 and 2.3 together Supplements
 
 get_legend<-function(myggplot){
@@ -2145,23 +2149,15 @@ Effect_size_fixed_stan_3_EP_tm <- ulam(
     sigma ~ dexp(1)), data=Bdata_index_EP_tm,chains = 4,iter = 2000,cores = 4)
 
 ### For extended pulse fit td
-'
-Effect_size_fixed_stan_1_EP_td <- ulam(
+Effect_size_fixed_stan_3_EP_td <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
-    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bdr*R*D,
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bdr*R*D + bmr*R*MD,
     a ~ dnorm( 0 , 2 ),
-    c(bA,bm,bD,bR,bG,bd,bdA,bdr) ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bdr,bmr) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_EP_td,chains = 4,iter = 2000,cores = 4)
 
-Effect_size_fixed_stan_2_EP_td <- ulam(
-  alist(
-    E ~ dnorm(mu,sigma),
-    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bdr*R*D,
-    a ~ dnorm( 0 , 2 ),
-    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bdr) ~ dnorm( 0 , 2 ),
-    sigma ~ dexp(1)), data=Bdata_index_EP_td,chains = 4,iter = 2000,cores = 4)
-'
+
 ```
 
 
@@ -2176,6 +2172,8 @@ B_model_result_EP_0 <- precis(Effect_size_fixed_stan_0_EP_tm,prob = 0.95)
 B_model_result_EP_1 <- precis(Effect_size_fixed_stan_1_EP_tm,prob = 0.95)
 B_model_result_EP_2 <- precis(Effect_size_fixed_stan_2_EP_tm,prob = 0.95)
 B_model_result_EP_3 <- precis(Effect_size_fixed_stan_3_EP_tm,prob = 0.95)
+
+B_model_result_EP_3_td <- precis(Effect_size_fixed_stan_3_EP_td,prob = 0.95)
 
 Plot_GLM_model_0 <- function(Model){
   post_effect_size_model <- extract.samples(Model,n = 1e5)
@@ -2461,9 +2459,14 @@ Plot_GLM_model_2(Effect_size_fixed_stan_2_EP_tm)
 Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm)
 ```
 
+```{r figResult_3_EP_model_3_td_ests,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_td)
+```
+
 ## Plot both SP and EP GLM outcomes together
 
-```{r figResult_3_SP_and_EP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_and_EP_model_3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r figResult_3_GLM_SP_and_EP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 SP_GLM_m_3 <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
 SP_GLM_m_3$Model <- "SP"
@@ -2846,7 +2849,7 @@ P_RSS_varying <- ggplot(RSS_comp_varying, aes(x=as.factor(Name), y=(RSS_diff_nor
 
 ```
 
-``` {r figCloser_Sampling_F_Test_Supplement, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=6,fig.height=6,fig.cap="\\label{fig:figCloser_Sampling_F_Test_Supplement} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times after the end of 800 generations of gene flow. D) Duration estimate of the same scenario. All scenarious are simulated either under a constant recombination rate or an empirical (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate, using a different map, using the same map."}
+``` {r figCloser_Sampling_RSS_Supplement, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=6,fig.height=6,fig.cap="\\label{fig:figCloser_Sampling_RSS_Supplement} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times after the end of 800 generations of gene flow. D) Duration estimate of the same scenario. All scenarious are simulated either under a constant recombination rate or an empirical (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate, using a different map, using the same map."}
 
 Closer_Sampling_ALD_RSS <- ggarrange(P_RSS_comp_50,P_RSS_varying,nrow = 2,common.legend = T,legend = 'bottom')
 
@@ -2999,6 +3002,29 @@ print_B_model_EP_result$Variable <- rownames(print_B_model_EP_result)
 print_B_model_result_both <- rbind(print_B_model_SP_result,print_B_model_EP_result)
 print_B_model_result_both <- print_B_model_result_both[, c(7,8,1, 2, 3, 4, 5, 6)]
 kable(print_B_model_result_both , "latex",row.names=F,col.names = c("model","variable","mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
+      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_EP_tm_td_and_SP_model_3, echo=FALSE,results='asis' }
+
+print_B_model_SP_result <- data.frame(B_model_result_SP_3)
+print_B_model_SP_result$Model <- "Simple Pulse"
+print_B_model_SP_result$Variable <- rownames(print_B_model_SP_result)
+
+print_B_model_EP_result <- data.frame(B_model_result_EP_3)
+print_B_model_EP_result$Model <- "Extended Pulse tm"
+print_B_model_EP_result$Variable <- rownames(print_B_model_EP_result)
+
+
+print_B_model_EP_result_td <- data.frame(B_model_result_EP_3_td)
+print_B_model_EP_result_td$Model <- "Extended Pulse td"
+print_B_model_EP_result_td$Variable <- rownames(print_B_model_EP_result_td)
+
+print_B_model_result_all <- rbind(print_B_model_SP_result,print_B_model_EP_result,print_B_model_EP_result_td)
+print_B_model_result_all <- print_B_model_result_all[, c(7,8,1, 2, 3, 4, 5, 6)]
+kable(print_B_model_result_all , "latex",row.names=F,col.names = c("model","variable","mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
       caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
