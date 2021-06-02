@@ -129,7 +129,7 @@ Get_points <- function(input,lval,hval,log){
   dist <- data.sub[,1]		# updated x values
   wcorr <- data.sub[,col]		# updated y values
   if(log==T){
-    xx <- cbind(dist,log(wcorr))
+    xx <- cbind(dist,log10(wcorr))
     xx <- xx[complete.cases(xx),]
     wcorr <- xx[,2]
     wcorr <-c(wcorr,rep(NA,length(data.sub[,1])-length(wcorr)))
@@ -252,7 +252,7 @@ Theoratical_Lomax <- function(Timespan_GF_Models,max_Genetic_distance,Split_time
     Theta=b
     k=a+1
     Lomax_normal <- function(dist,k,theta,A) A*(1 + ((dist/100) /  theta))^-(k)
-    Lomax_log <- function(dist,k,theta,A) -k* log(1 + ((dist/100) /  theta)) + log(A)
+    Lomax_log <- function(dist,k,theta,A) -k* log10(1 + ((dist/100) /  theta)) + log10(A)
     if(log==T){
       ALD <-  Lomax_log(dist=Genetic_length,k = k ,theta = Theta, A=Intercept)
     }
@@ -911,7 +911,7 @@ Segments_ALD_supp <- ggarrange(Seg_ald_tm_supp,Seg_ald_td_supp,
 ```
 
 ```{r figResult2_1_flipped,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figResult2_1} Segments, ALD constant;constant, HapMap;HapMap"}
-Plot_tm_flipped <- function(ggdata,main,rr_1,rr_2,col1,col2){
+Plot_tm_flipped <- function(ggdata,main,rr_1,rr_2,col1,col2,ylim1=800,ylim2=2500){
   ggdata$Model <- factor(ggdata$Model,
                          levels = c("Extended Pulse","Simple Pulse"),ordered = TRUE)
   ggdata$rr <- factor(ggdata$rr,
@@ -932,7 +932,7 @@ Plot_tm_flipped <- function(ggdata,main,rr_1,rr_2,col1,col2){
     labs(x = "")+
     #labs(x = "Simulated Admixture Duration \n Simulated Admixture Mean")+
     #coord_cartesian(ylim = c(0,2500), expand = 0)+
-    coord_cartesian(ylim = c(800,2500), expand = 0)+
+    coord_cartesian(ylim = c(ylim1,ylim2), expand = 0)+
     scale_y_continuous(breaks = seq(0, 2500, by = 500))+
     theme(axis.text.x = element_text(angle = 90),
           strip.text.x = element_text(size = 9),
@@ -989,7 +989,7 @@ Segments_ALD_Results_flipped <- ggarrange(Seg_ald_td_results,Seg_ald_tm_results,
 ```{r figResult2_1_Supplement_flipped,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=9,fig.height=9,fig.cap="\\label{fig:figResult2_1_Supplement_flipped} Segments, ALD HapMap;constant, HapMap;AAMap"}
 ggdata_tm_supp <-  ggdata_tm %>% filter(rr!="Constant/Constant") %>% filter(rr!="HapMap/HapMap")
 ggdata_td_supp <-  ggdata_td %>% filter(rr!="Constant/Constant") %>% filter(rr!="HapMap/HapMap")
-Seg_ald_tm_supp <- Plot_tm_flipped(ggdata_tm_supp,"","HapMap/AAMap","HapMap/Constant",cbPalette_viridis[9],cbPalette_viridis[3])
+Seg_ald_tm_supp <- Plot_tm_flipped(ggdata_tm_supp,"","HapMap/AAMap","HapMap/Constant",cbPalette_viridis[9],cbPalette_viridis[3],ylim1 = 500,ylim2 = 2500)
 Seg_ald_td_supp <- Plot_td_flipped(ggdata_td_supp,"","HapMap/AAMap","HapMap/Constant",cbPalette_viridis[9],cbPalette_viridis[3])
 
 
@@ -1032,7 +1032,7 @@ plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Re
     SP_fit=Fit_data[[1]]
     EP_fit=Fit_data[[2]]
     xx <- hist((l),breaks = 500,plot = F)
-    data_x <- data.frame(M=xx$mids,dens=log(xx$density))
+    data_x <- data.frame(M=xx$mids,dens=log10(xx$density))
     data_x <- data_x[!data_x$dens==-Inf,]
     Fit_Results <- data.frame(x=data_x$M,y=dtlomax_norm(data_x$M,scale=((k)/tm), shape=(k+1)),fit="True")
     #Fit_Results <- data.frame(x=data_x$M,y=dtexp_norm(data_x$M,tm),fit="SP_true")
@@ -1052,12 +1052,12 @@ plot_segment_fit <- function(Path_to_Fragment_File,header,recomb_rate,Path_to_Re
     SP_fit=Fit_data[[1]]
     EP_fit=Fit_data[[2]]
     xx <- hist((l),breaks = 500,plot = F)
-    data_x <- data.frame(M=xx$mids,dens=log(xx$density))
+    data_x <- data.frame(M=xx$mids,dens=log10(xx$density))
     data_x <- data_x[!data_x$dens==-Inf,]
-    Fit_Results <- data.frame(x=data_x$M,y=dtlomax(data_x$M,scale=((k)/tm), shape=(k+1),lower_trunc,upper_trunc),fit="True")
+    Fit_Results <- data.frame(x=data_x$M,y=log10(exp(dtlomax(data_x$M,scale=((k)/tm), shape=(k+1),lower_trunc,upper_trunc))),fit="True")
     #Fit_Results <- data.frame(x=data_x$M,y=dtexp(data_x$M,tm ,lower_trunc,upper_trunc),fit="SP_true")
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtexp(data_x$M,SP_fit[[1]]$par ,lower_trunc,upper_trunc),fit="SP_fit"))
-    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=dtlomax(data_x$M,scale=((1/EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=((1/EP_fit[[1]]$par[2])+1),lower_trunc,upper_trunc),fit="EP_fit"))
+    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=log10(exp(dtexp(data_x$M,SP_fit[[1]]$par ,lower_trunc,upper_trunc))),fit="SP_fit"))
+    Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=log10(exp(dtlomax(data_x$M,scale=((1/EP_fit[[1]]$par[2])/EP_fit[[1]]$par[1]), shape=((1/EP_fit[[1]]$par[2])+1),lower_trunc,upper_trunc))),fit="EP_fit"))
     
     #Fit_Results$fit <- factor(Fit_Results$fit,
     #                    levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)  } 
@@ -1145,7 +1145,7 @@ Get_points <- function(input,lval,hval,log){
   dist <- data.sub[,1]		# updated x values
   wcorr <- data.sub[,col]		# updated y values
   if(log==T){
-    xx <- cbind(dist,log(wcorr))
+    xx <- cbind(dist,log10(wcorr))
     xx <- xx[complete.cases(xx),]
     wcorr <- xx[,2]
     wcorr <-c(wcorr,rep(NA,length(data.sub[,1])-length(wcorr)))
@@ -1163,33 +1163,32 @@ Simple_Pulse_fn <- function(Data,affine,use_log=F){
 
   
   if(use_log==T) {
-    xx$wcorr <- log(xx$wcorr)
+    xx$wcorr <- log10(xx$wcorr)
     xx <- xx[complete.cases(xx),]
     dist=xx$dist
     wcorr=xx$wcorr
     
-    fm1_exp <- function(x) log(x[2])  -((dist/100)*x[1])
+    fm1_exp <- function(x) log10(x[1])  + log10(exp(-(dist/100)*x[2]))
     fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
-    fm3_exp = optim(c(2,2), fm2_exp)
+    fm3_exp = optim(c(10,10), fm2_exp)
     
     par1_exp <- fm3_exp$par
-    names(par1_exp) <- c("tm", "A")
-    fit1_exp <- nls(wcorr ~ log(A) -((dist/100)*tm), start=par1_exp, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+    names(par1_exp) <- c( "A","tm")
+    fit1_exp <- nls(wcorr ~ log10(A) + log10(exp(-(dist/100)*tm)), start=par1_exp, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
   } else {
     
     dist=xx$dist
     wcorr=xx$wcorr
     #Fitting an Exponential
-  
-    fm1_exp <- function(x) x[2]*exp(-(dist/100)*x[1])+x[3]
+    fm1_exp <- function(x) x[1]*exp(-(dist/100)*x[2])+x[3]
     fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
-    fm3_exp <- DEoptim(fm2_exp, lower=c(1,1e-6,-1), upper=c( 5000,1,1), control=list(trace=FALSE))
+    fm3_exp <- DEoptim(fm2_exp, lower=c(1e-6,1,-1), upper=c(1, 5000,1), control=list(trace=FALSE))
     
     par1_exp <- fm3_exp$optim$bestmem
     # parameters for y ~ Ae-mt
-    names(par1_exp) <- c( "tm","A","c")
+    names(par1_exp) <- c("A", "tm","c")
     
-    fit1_exp <- nls(wcorr ~ (A*exp(-(dist/100)*tm)+c), start=par1_exp, control=list(maxiter=10000, warnOnly=TRUE)) 
+    fit1_exp <- nls(wcorr ~ (A*exp(-(dist/100)*tm)+c), start=par1_exp, control=list(maxiter=10000, warnOnly=TRUE))
   }
 
   return(fit1_exp)
@@ -1201,18 +1200,18 @@ Simple_Pulse_fixed_fn <- function(Data,affine,tm,use_log=F){
 
   
   if(use_log==T) {
-    xx$wcorr <- log(xx$wcorr)
+    xx$wcorr <- log10(xx$wcorr)
     xx <- xx[complete.cases(xx),]
     dist=xx$dist
     wcorr=xx$wcorr
     
-    fm1_exp <- function(x) log(x[1])  -((dist/100)*tm)
+    fm1_exp <- function(x) log10(x[1])  + log10(exp(-(dist/100)*tm))
     fm2_exp <- function(x) sum((wcorr-fm1_exp(x))^2)
-    fm3_exp = optim(c(2), fm2_exp)
+    fm3_exp = optim(c(10), fm2_exp)
     
     par1_exp <- fm3_exp$par
     names(par1_exp) <- c("A")
-    fit1_exp <- nls(wcorr ~ log(A) -((dist/100)*tm), start=par1_exp, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+    fit1_exp <- nls(wcorr ~ log10(A) + log10(exp(-(dist/100)*tm)), start=par1_exp, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
   } else {
     
     dist=xx$dist
@@ -1242,29 +1241,28 @@ Extended_Pulse_fn <- function(Data,affine,use_log=F){
   if(use_log==F) {
     fm1_lomax <- function(x) x[4] + x[3]* (1/(1 + (  (x[2] / x[1])*(dist/100) )))^(x[1])
     fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
-    fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1,100,0,-1), upper=c(100,10000,2,1), control=list(trace=FALSE))
+    fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(1,100,0,-1), upper=c(100,5000,2,1), control=list(trace=FALSE))
     
     par1_lomax <- fm3_DEoptim$optim$bestmem
     par1_lomax <- c(par1_lomax[1],par1_lomax[2],par1_lomax[3],par1_lomax[4])
     names(par1_lomax) <- c("k","tm","A","c")
     fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ k) *(dist/100)) ))^(k), start=par1_lomax, algorithm="port", 
-                      lower=c(1,100,0,-1), upper=c(100,10000,2,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+                      lower=c(2,100,1e-6,-1), upper=c(1e8,5000,1,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
   }
-
   
   if(use_log==T) {
-    xx$wcorr <- log(xx$wcorr)
+    xx$wcorr <- log10(xx$wcorr)
     xx <- xx[complete.cases(xx),]
     dist=xx$dist
     wcorr=xx$wcorr
-    fm1_lomax <- function(x) log(x[3]) + (x[2]) * -log(1+ (((1/x[2])*(dist/100))*x[1]))
+    fm1_lomax <- function(x) log10(x[3]) + (x[2]) * -log10(1+ (((1/x[2])*(dist/100))*x[1]))
     fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
     fm3_optim <- optim(c(2,2,2), fm2_lomax_k)
     
     par1_lomax <- fm3_optim$par
     par1_lomax <- c(par1_lomax[1],par1_lomax[2],par1_lomax[3])
     names(par1_lomax) <- c("k","tm","A")
-    fit1_lomax <- nls(wcorr ~ log(A) + k* -log(1 + (((1/k)*(dist/100))*tm)), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+    fit1_lomax <- nls(wcorr ~ log10(A) + k* -log10(1 + (((1/k)*(dist/100))*tm)), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
   }
 
       
@@ -1291,18 +1289,18 @@ Extended_Pulse_fixed_fn <- function(Data,affine,tm,k,use_log=F){
 
   
   if(use_log==T) {
-    xx$wcorr <- log(xx$wcorr)
+    xx$wcorr <- log10(xx$wcorr)
     xx <- xx[complete.cases(xx),]
     dist=xx$dist
     wcorr=xx$wcorr
-    fm1_lomax <- function(x) log(x[1]) + (k) * -log(1+ (((1/k)*(dist/100))*tm))
+    fm1_lomax <- function(x) log10(x[1]) + (k) * -log10(1+ (((1/k)*(dist/100))*tm))
     fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
     fm3_optim <- optim(c(2), fm2_lomax_k)
     
     par1_lomax <- fm3_optim$par
     par1_lomax <- c(par1_lomax[1])
     names(par1_lomax) <- c("A")
-    fit1_lomax <- nls(wcorr ~ log(A) + k* -log(1 + (((1/k)*(dist/100))*tm)), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+    fit1_lomax <- nls(wcorr ~ log10(A) + k* -log10(1 + (((1/k)*(dist/100))*tm)), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
   }
 
       
@@ -1318,9 +1316,8 @@ plot_ALD_fit <- function(input,lval=0.05,hval=0.5,tm,td,use_log=F,main,legend=F,
   SP_tail <- function(dist,x) x[1]*exp(-(dist)*x[2])+x[3]
   
   EP_tail <- function(dist,x) x[4] + x[3]* (1/(1 + (  (x[2] / x[1])*(dist) )))^(x[1])
-  
-  SP_tail_log <- function(dist,x) log(x[2])  -(dist*x[1])
-  EP_tail_log <- function(dist,x) log(x[3]) + (x[2]) * -log(1+ (((1/x[2])*(dist))*x[1]))
+  SP_tail_log <- function(dist,x) log10(x[2]) + log10(exp(-(dist)*x[1]))
+  EP_tail_log <- function(dist,x) log10(x[3]) + (x[2]) * -log10(1+ (((1/x[2])*(dist))*x[1]))
   
   ALD_x <- Get_points(input,lval,hval,log = F)
 
@@ -1332,17 +1329,14 @@ plot_ALD_fit <- function(input,lval=0.05,hval=0.5,tm,td,use_log=F,main,legend=F,
   
   Fit_EP_fixed <-  Extended_Pulse_fixed_fn(ALD_x,affine=T,tm,k,use_log = use_log)
   
-  #plot(ALD_x$dist/100,log(ALD_x$wcorr))
-  #lines(ALD_x$dist/100,log(SP_tail(ALD_x$dist/100,c(coef(Fit_SP)[1],coef(Fit_SP)[2],coef(Fit_SP)[3]))),col="red")
-  #lines(ALD_x$dist/100,(SP_tail_log(ALD_x$dist/100,c(coef(Fit_SP)[2],coef(Fit_SP)[1]))),col="red")
   
-  data_x <- data.frame(M=ALD_x$dist/100,ALD=log(ALD_x$wcorr))
+  data_x <- data.frame(M=ALD_x$dist/100,ALD=log10(ALD_x$wcorr))
   data_x <- data_x[complete.cases(data_x),]
   data_x$Data <- "ALD"
   data_x$td <- td
   Fit_Results <- data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(tm,k,coef(Fit_EP_fixed)[1]))),fit="True")
   #Fit_Results <- data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(tm,coef(Fit_SP_fixed)[1]))),fit="SP_true")
-  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(coef(Fit_SP)[1],coef(Fit_SP)[2]))),fit="SP_fit"))
+  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(coef(Fit_SP)[2],coef(Fit_SP)[1]))),fit="SP_fit"))
   Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(coef(Fit_EP)[2],coef(Fit_EP)[1],coef(Fit_EP)[3]))),fit="EP_fit" ))
   #Fit_Results$fit <- factor(Fit_Results$fit,
   #                levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
@@ -1499,6 +1493,7 @@ P_seg_results <- P_fit_SEG(Seg_Fit_Result,Seg_Data_Result,legend = T)
 P_ALD_results <- P_fit_ALD(ALD_Fit_Result,ALD_Data_Result,legend = T)
 
 P_2_fit_Result <- ggarrange(P_seg_results,P_ALD_results,ncol = 2, nrow = 1,widths = c(0.63,0.37),common.legend = T,legend = 'bottom')
+
 
 ```
 
@@ -2026,12 +2021,15 @@ xdata.M.3.no_error$True_td <- (xdata.M.3.no_error$GF.End-xdata.M.3.no_error$GF.S
 
 xdata.M.3.no_error$Diff_SP <- xdata.M.3.no_error$tm_sp - xdata.M.3.no_error$True_tm
 xdata.M.3.no_error$Diff_s_SP <- (xdata.M.3.no_error$tm_sp - 1500)/sd(xdata.M.3.no_error$tm_sp)
+xdata.M.3.no_error$Diff_var_s_SP <- abs(xdata.M.3.no_error$tm_sp - 1500)/sd(xdata.M.3.no_error$tm_sp)
 
 xdata.M.3.no_error$Diff_EP_tm <- xdata.M.3.no_error$tm.ep - xdata.M.3.no_error$True_tm
 xdata.M.3.no_error$Diff_s_EP_tm <- (xdata.M.3.no_error$tm.ep - 1500)/sd(xdata.M.3.no_error$tm.ep)
+xdata.M.3.no_error$Diff_var_s_EP_tm <- abs(xdata.M.3.no_error$tm.ep - 1500)/sd(xdata.M.3.no_error$tm.ep)
 
 xdata.M.3.no_error$Diff_EP_td <- xdata.M.3.no_error$td_est - xdata.M.3.no_error$True_td
-xdata.M.3.no_error$Diff_s_EP_td <- (xdata.M.3.no_error$tm.ep - xdata.M.3.no_error$True_td)/sd(xdata.M.3.no_error$tm.ep)
+xdata.M.3.no_error$Diff_s_EP_td <- (xdata.M.3.no_error$td_est - xdata.M.3.no_error$True_td)/sd(xdata.M.3.no_error$td_est)
+xdata.M.3.no_error$Diff_var_s_EP_td <- abs(xdata.M.3.no_error$td_est - 1500)/sd(xdata.M.3.no_error$td_est)
 
 xdata.M.3.no_error$Sim_id_int <- as.integer(rownames(xdata.M.3.no_error))
 
@@ -2085,8 +2083,49 @@ Bdata_index_EP_td<- list(
   
 )
 
-### For simple pulse fit
+# Variance GLM 
 
+Bdata_index_SP_var<- list(
+  N = length(xdata.M.3.no_error$Diff_s_SP),
+  ID = xdata.M.3.no_error$Sim_ID,
+  E = xdata.M.3.no_error$Diff_var_s_SP,
+  A = ifelse(xdata.M.3.no_error$AS=="I",0,1),
+  MD = ifelse(xdata.M.3.no_error$minDist==0.05,0,1),
+  D = ifelse(xdata.M.3.no_error$Demography=="0_Simple",0,1),
+  R = ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant",0,1),
+  GF = ifelse(xdata.M.3.no_error$GF_model=="SP",0,1),
+  DS = ifelse(xdata.M.3.no_error$downsampling==100,0,1)
+  
+)
+
+Bdata_index_EP_tm_var<- list(
+  N = length(xdata.M.3.no_error$Diff_s_EP_tm),
+  ID = xdata.M.3.no_error$Sim_ID,
+  E = xdata.M.3.no_error$Diff_var_s_EP_tm,
+  A = ifelse(xdata.M.3.no_error$AS=="I",0,1),
+  MD = ifelse(xdata.M.3.no_error$minDist==0.05,0,1),
+  D = ifelse(xdata.M.3.no_error$Demography=="0_Simple",0,1),
+  R = ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant",0,1),
+  GF = ifelse(xdata.M.3.no_error$GF_model=="SP",0,1),
+  DS = ifelse(xdata.M.3.no_error$downsampling==100,0,1)
+  
+)
+
+Bdata_index_EP_td_var<- list(
+  N = length(xdata.M.3.no_error$Diff_s_EP_td),
+  ID = xdata.M.3.no_error$Sim_ID,
+  E = xdata.M.3.no_error$Diff_var_s_EP_td,
+  A = ifelse(xdata.M.3.no_error$AS=="I",0,1),
+  MD = ifelse(xdata.M.3.no_error$minDist==0.05,0,1),
+  D = ifelse(xdata.M.3.no_error$Demography=="0_Simple",0,1),
+  R = ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant",0,1),
+  GF = ifelse(xdata.M.3.no_error$GF_model=="SP",0,1),
+  DS = ifelse(xdata.M.3.no_error$downsampling==100,0,1)
+  
+)
+
+### For simple pulse fit
+'
 Effect_size_fixed_stan_0_SP_tm <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
@@ -2098,29 +2137,37 @@ Effect_size_fixed_stan_0_SP_tm <- ulam(
 Effect_size_fixed_stan_1_SP_tm <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
-    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bdr*R*D,
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bDR*R*D,
     a ~ dnorm( 0 , 2 ),
-    c(bA,bm,bD,bR,bG,bd,bdA,bdr) ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bDR) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_SP,chains = 4,iter = 2000,cores = 4)
 
 Effect_size_fixed_stan_2_SP_tm <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
-    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bdr*R*D,
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bDR*R*D,
     a ~ dnorm( 0 , 2 ),
-    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bdr) ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bDR) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_SP,chains = 4,iter = 2000,cores = 4)
-
+'
 Effect_size_fixed_stan_3_SP_tm <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
-    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bdr*R*D + bmr*R*MD,
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bDR*R*D + bmR*R*MD,
     a ~ dnorm( 0 , 2 ),
-    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bdr,bmr) ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bmR,bDR) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_SP,chains = 4,iter = 2000,cores = 4)
 
-### For extended pulse fit tm
+Effect_size_fixed_stan_3_SP_tm_var <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bDR*R*D + bmR*R*MD,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bmR,bDR) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)), data=Bdata_index_SP_var,chains = 4,iter = 2000,cores = 4)
 
+### For extended pulse fit tm
+'
 Effect_size_fixed_stan_0_EP_tm <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
@@ -2132,7 +2179,7 @@ Effect_size_fixed_stan_0_EP_tm <- ulam(
 Effect_size_fixed_stan_1_EP_tm <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
-    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bdr*R*D,
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bDR*R*D,
     a ~ dnorm( 0 , 2 ),
     c(bA,bm,bD,bR,bG,bd,bdA,bdr) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_EP_tm,chains = 4,iter = 2000,cores = 4)
@@ -2140,27 +2187,44 @@ Effect_size_fixed_stan_1_EP_tm <- ulam(
 Effect_size_fixed_stan_2_EP_tm <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
-    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bdr*R*D,
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bDR*R*D,
     a ~ dnorm( 0 , 2 ),
-    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bdr) ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bDR) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_EP_tm,chains = 4,iter = 2000,cores = 4)
-
+'
 Effect_size_fixed_stan_3_EP_tm <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
-    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bdr*R*D + bmr*R*MD,
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bDR*R*D + bmR*R*MD,
     a ~ dnorm( 0 , 2 ),
-    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bdr,bmr) ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bDR,bmR) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_EP_tm,chains = 4,iter = 2000,cores = 4)
+
+Effect_size_fixed_stan_3_EP_tm_var <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bDR*R*D + bmR*R*MD,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bDR,bmR) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)), data=Bdata_index_EP_tm_var,chains = 4,iter = 2000,cores = 4)
+
 
 ### For extended pulse fit td
 Effect_size_fixed_stan_3_EP_td <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
-    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bdr*R*D + bmr*R*MD,
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bDR*R*D + bmR*R*MD,
     a ~ dnorm( 0 , 2 ),
-    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bdr,bmr) ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bDR,bmR) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_EP_td,chains = 4,iter = 2000,cores = 4)
+
+Effect_size_fixed_stan_3_EP_td_var <- ulam(
+  alist(
+    E ~ dnorm(mu,sigma),
+    mu <- a + bA*A + bm*MD + bD*D + bR*R + bG*GF + bd*DS + bdA*A*DS + bmA*MD*A + bDR*R*D + bmR*R*MD,
+    a ~ dnorm( 0 , 2 ),
+    c(bA,bm,bD,bR,bG,bd,bdA,bmA,bDR,bmR) ~ dnorm( 0 , 2 ),
+    sigma ~ dexp(1)), data=Bdata_index_EP_td_var,chains = 4,iter = 2000,cores = 4)
 
 
 ```
@@ -2168,17 +2232,20 @@ Effect_size_fixed_stan_3_EP_td <- ulam(
 
 ```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE, cache=T, results='hide'}
 
-B_model_result_SP_0 <- precis(Effect_size_fixed_stan_0_SP_tm,prob = 0.95)
-B_model_result_SP_1 <- precis(Effect_size_fixed_stan_1_SP_tm,prob = 0.95)
-B_model_result_SP_2 <- precis(Effect_size_fixed_stan_2_SP_tm,prob = 0.95)
+#B_model_result_SP_0 <- precis(Effect_size_fixed_stan_0_SP_tm,prob = 0.95)
+#B_model_result_SP_1 <- precis(Effect_size_fixed_stan_1_SP_tm,prob = 0.95)
+#B_model_result_SP_2 <- precis(Effect_size_fixed_stan_2_SP_tm,prob = 0.95)
 B_model_result_SP_3 <- precis(Effect_size_fixed_stan_3_SP_tm,prob = 0.95)
+B_model_result_SP_3_var <- precis(Effect_size_fixed_stan_3_SP_tm_var,prob = 0.95)
 
-B_model_result_EP_0 <- precis(Effect_size_fixed_stan_0_EP_tm,prob = 0.95)
-B_model_result_EP_1 <- precis(Effect_size_fixed_stan_1_EP_tm,prob = 0.95)
-B_model_result_EP_2 <- precis(Effect_size_fixed_stan_2_EP_tm,prob = 0.95)
+#B_model_result_EP_0 <- precis(Effect_size_fixed_stan_0_EP_tm,prob = 0.95)
+#B_model_result_EP_1 <- precis(Effect_size_fixed_stan_1_EP_tm,prob = 0.95)
+#B_model_result_EP_2 <- precis(Effect_size_fixed_stan_2_EP_tm,prob = 0.95)
 B_model_result_EP_3 <- precis(Effect_size_fixed_stan_3_EP_tm,prob = 0.95)
+B_model_result_EP_3_var <- precis(Effect_size_fixed_stan_3_EP_tm_var,prob = 0.95)
 
 B_model_result_EP_3_td <- precis(Effect_size_fixed_stan_3_EP_td,prob = 0.95)
+B_model_result_EP_3_td_var <- precis(Effect_size_fixed_stan_3_EP_td_var,prob = 0.95)
 
 Plot_GLM_model_0 <- function(Model){
   post_effect_size_model <- extract.samples(Model,n = 1e5)
@@ -2241,7 +2308,7 @@ Plot_GLM_model_1 <- function(Model){
   mean(post_effect_size_model$a + post_effect_size_model$bA),
   mean(post_effect_size_model$a + post_effect_size_model$bd),
   mean(post_effect_size_model$a + post_effect_size_model$bdA),
-  mean(post_effect_size_model$a + post_effect_size_model$bdr)),
+  mean(post_effect_size_model$a + post_effect_size_model$bDR)),
   HPDI_lower=c(
   HPDI(post_effect_size_model$a,0.95)[1],
   HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[1],
@@ -2251,7 +2318,7 @@ Plot_GLM_model_1 <- function(Model){
   HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[1],
   HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[1],
   HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[1],
-  HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[1]),
+  HPDI(post_effect_size_model$a + post_effect_size_model$bDR,0.95)[1]),
   HPDI_upper=c(
   HPDI(post_effect_size_model$a,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[2],
@@ -2261,7 +2328,7 @@ Plot_GLM_model_1 <- function(Model){
   HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[2],
-  HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[2])
+  HPDI(post_effect_size_model$a + post_effect_size_model$bDR,0.95)[2])
   #,row.names = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
   )
   
@@ -2299,7 +2366,7 @@ Plot_GLM_model_2 <- function(Model){
   mean(post_effect_size_model$a + post_effect_size_model$bA),
   mean(post_effect_size_model$a + post_effect_size_model$bd),
   mean(post_effect_size_model$a + post_effect_size_model$bdA),
-  mean(post_effect_size_model$a + post_effect_size_model$bdr),
+  mean(post_effect_size_model$a + post_effect_size_model$bDR),
   mean(post_effect_size_model$a + post_effect_size_model$bmA)),
   HPDI_lower=c(
   HPDI(post_effect_size_model$a,0.95)[1],
@@ -2310,7 +2377,7 @@ Plot_GLM_model_2 <- function(Model){
   HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[1],
   HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[1],
   HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[1],
-  HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bDR,0.95)[1],
   HPDI(post_effect_size_model$a + post_effect_size_model$bmA,0.95)[1]),
   HPDI_upper=c(
   HPDI(post_effect_size_model$a,0.95)[2],
@@ -2321,7 +2388,7 @@ Plot_GLM_model_2 <- function(Model){
   HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[2],
-  HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bDR,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bmA,0.95)[2])
   #,row.names = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
   )
@@ -2359,10 +2426,10 @@ Plot_GLM_model_3 <- function(Model,plot_GLM=T){
   mean(post_effect_size_model$a + post_effect_size_model$bm),
   mean(post_effect_size_model$a + post_effect_size_model$bA),
   mean(post_effect_size_model$a + post_effect_size_model$bd),
-  mean(post_effect_size_model$a + post_effect_size_model$bdA),
-  mean(post_effect_size_model$a + post_effect_size_model$bdr),
-  mean(post_effect_size_model$a + post_effect_size_model$bmA),
-  mean(post_effect_size_model$a + post_effect_size_model$bmr)),
+  mean(post_effect_size_model$a + post_effect_size_model$bA + post_effect_size_model$bd + post_effect_size_model$bdA),
+  mean(post_effect_size_model$a + post_effect_size_model$bd + post_effect_size_model$bR + post_effect_size_model$bDR),
+  mean(post_effect_size_model$a + post_effect_size_model$bm + post_effect_size_model$bA + post_effect_size_model$bmA),
+  mean(post_effect_size_model$a + post_effect_size_model$bm + post_effect_size_model$bR + post_effect_size_model$bmR)),
   HPDI_lower=c(
   HPDI(post_effect_size_model$a,0.95)[1],
   HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[1],
@@ -2371,10 +2438,10 @@ Plot_GLM_model_3 <- function(Model,plot_GLM=T){
   HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[1],
   HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[1],
   HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[1],
-  HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[1],
-  HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[1],
-  HPDI(post_effect_size_model$a + post_effect_size_model$bmA,0.95)[1],
-  HPDI(post_effect_size_model$a + post_effect_size_model$bmr,0.95)[1]),
+  HPDI(post_effect_size_model$a + post_effect_size_model$bA + post_effect_size_model$bd + post_effect_size_model$bdA,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bd + post_effect_size_model$bR + post_effect_size_model$bDR,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bm + post_effect_size_model$bA + post_effect_size_model$bmA,0.95)[1],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bm + post_effect_size_model$bR + post_effect_size_model$bmR,0.95)[1]),
   HPDI_upper=c(
   HPDI(post_effect_size_model$a,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bG,0.95)[2],
@@ -2383,10 +2450,10 @@ Plot_GLM_model_3 <- function(Model,plot_GLM=T){
   HPDI(post_effect_size_model$a + post_effect_size_model$bm,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bA,0.95)[2],
   HPDI(post_effect_size_model$a + post_effect_size_model$bd,0.95)[2],
-  HPDI(post_effect_size_model$a + post_effect_size_model$bdA,0.95)[2],
-  HPDI(post_effect_size_model$a + post_effect_size_model$bdr,0.95)[2],
-  HPDI(post_effect_size_model$a + post_effect_size_model$bmA,0.95)[2],
-  HPDI(post_effect_size_model$a + post_effect_size_model$bmr,0.95)[2])
+  HPDI(post_effect_size_model$a + post_effect_size_model$bA + post_effect_size_model$bd + post_effect_size_model$bdA,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bd + post_effect_size_model$bR + post_effect_size_model$bDR,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bm + post_effect_size_model$bA + post_effect_size_model$bmA,0.95)[2],
+  HPDI(post_effect_size_model$a + post_effect_size_model$bm + post_effect_size_model$bR + post_effect_size_model$bmR,0.95)[2])
   #,row.names = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
   )
   
@@ -2420,20 +2487,90 @@ Plot_GLM_model_3 <- function(Model,plot_GLM=T){
 
 }
 
+Plot_GLM_model_3_effect_sizes <- function(Model,plot_GLM=T){
+  post_effect_size_model <- extract.samples(Model,n = 1e5)
+  Post_effect_size_est=data.frame(mean=c(
+  mean(post_effect_size_model$a),
+  mean(post_effect_size_model$bG),
+  mean(post_effect_size_model$bR),
+  mean(post_effect_size_model$bD),
+  mean(post_effect_size_model$bm),
+  mean(post_effect_size_model$bA),
+  mean(post_effect_size_model$bd),
+  mean(post_effect_size_model$bdA),
+  mean(post_effect_size_model$bDR),
+  mean(post_effect_size_model$bmA),
+  mean(post_effect_size_model$bmR)),
+  HPDI_lower=c(
+  HPDI(post_effect_size_model$a,0.95)[1],
+  HPDI(post_effect_size_model$bG,0.95)[1],
+  HPDI(post_effect_size_model$bR,0.95)[1],
+  HPDI(post_effect_size_model$bD,0.95)[1],
+  HPDI(post_effect_size_model$bm,0.95)[1],
+  HPDI(post_effect_size_model$bA,0.95)[1],
+  HPDI(post_effect_size_model$bd,0.95)[1],
+  HPDI(post_effect_size_model$bdA,0.95)[1],
+  HPDI(post_effect_size_model$bDR,0.95)[1],
+  HPDI(post_effect_size_model$bmA,0.95)[1],
+  HPDI(post_effect_size_model$bmR,0.95)[1]),
+  HPDI_upper=c(
+  HPDI(post_effect_size_model$a,0.95)[2],
+  HPDI(post_effect_size_model$bG,0.95)[2],
+  HPDI(post_effect_size_model$bR,0.95)[2],
+  HPDI(post_effect_size_model$bD,0.95)[2],
+  HPDI(post_effect_size_model$bm,0.95)[2],
+  HPDI(post_effect_size_model$bA,0.95)[2],
+  HPDI(post_effect_size_model$bd,0.95)[2],
+  HPDI(post_effect_size_model$bdA,0.95)[2],
+  HPDI(post_effect_size_model$bDR,0.95)[2],
+  HPDI(post_effect_size_model$bmA,0.95)[2],
+  HPDI(post_effect_size_model$bmR,0.95)[2])
+  #,row.names = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
+  )
+  
+  Post_effect_size_est_table <- Post_effect_size_est
+  row.names(Post_effect_size_est_table) <- c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+                                             "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.")
+  Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
+                    levels = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES","downsampled",
+                                             "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R."),ordered = TRUE)
+  
+  P_1 <- ggplot(Post_effect_size_est_table,aes(x=Post_effect_size_est_table$Variable,y=as.numeric(as.character(mean))))+
+        geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F,size=2)+
+      geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(Post_effect_size_est_table$Variable)),col="black",width=0.2)+
+    geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+    labs(x = "")+
+    labs(y = "Standardized dif.\n est./sim. time")+
+    theme(plot.title = element_text(hjust = 0.5,size = 12))+
+    #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
+    scale_x_discrete(labels= c("Standard Model","Extended GF","Variying recombination","Complex Demography","d0=0.02 cM","HES","downsampled",
+                               "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.")
+                    ,guide = guide_axis(angle = 90))+
+    scale_color_manual("Gene Flow Model",
+                       values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
+                       label=c("Pulse","Extended"))
+  if(plot_GLM==T){
+      return(P_1)
+  } else {
+      return(Post_effect_size_est_table)
+  }
+
+
+}
 ```
 
-```{r figResult_3_SP_model_0,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_0} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_SP_model_0,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_0} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 Plot_GLM_model_0(Effect_size_fixed_stan_0_SP_tm)
 
 ```
 
-```{r figResult_3_SP_model_1,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_1} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_SP_model_1,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_1} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_1(Effect_size_fixed_stan_1_SP_tm)
 
 ```
 
-```{r figResult_3_SP_model_2,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_2} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_SP_model_2,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_2} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_2(Effect_size_fixed_stan_2_SP_tm)
 ```
@@ -2443,18 +2580,23 @@ Plot_GLM_model_2(Effect_size_fixed_stan_2_SP_tm)
 Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm)
 ```
 
-```{r figResult_3_EP_model_0,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_0} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r figResult_3_SP_model_3_effect_sizes,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_3_effect_sizes} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm)
+```
+
+```{r eval=F,figResult_3_EP_model_0,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_0} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 Plot_GLM_model_0(Effect_size_fixed_stan_0_EP_tm)
 
 ```
 
-```{r figResult_3_EP_model_1,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_1} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_EP_model_1,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_1} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_1(Effect_size_fixed_stan_1_EP_tm)
 
 ```
 
-```{r figResult_3_EP_model_2,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_2} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_EP_model_2,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_2} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_2(Effect_size_fixed_stan_2_EP_tm)
 ```
@@ -2464,14 +2606,47 @@ Plot_GLM_model_2(Effect_size_fixed_stan_2_EP_tm)
 Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm)
 ```
 
+```{r figResult_3_EP_model_3_effect_sizes,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_effect_sizes} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm)
+```
+
 ```{r figResult_3_EP_model_3_td_ests,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_td)
 ```
 
+```{r figResult_3_EP_model_3_td_ests_effect_sizes,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests_effect_sizes} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_td)
+```
+
+### Var GLM outcomes
+
+```{r figResult_3_EP_model_3_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_var} EP tm var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm_var)
+```
+
+```{r figResult_3_EP_model_3_effect_sizes_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_effect_sizes_var} EP tm var effect sizes GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_var)
+```
+
+
+```{r figResult_3_EP_model_3_td_ests_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests_var} EP td var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_td_var)
+```
+
+```{r figResult_3_EP_model_3_td_ests_effect_sizes_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests_effect_sizes_var} Ep td var effect sizes GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_td_var)
+```
+
 ## Plot both SP and EP GLM outcomes together
 
-```{r figResult_3_GLM_SP_and_EP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r figResult_3_GLM_SP_and_EP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_prediction} GLM predictions and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 SP_GLM_m_3 <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
 SP_GLM_m_3$Model <- "SP"
@@ -2502,6 +2677,72 @@ ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
                            values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
                            label=c("Simple Pulse","Extended Pulse"))
 ```
+
+```{r figResult_3_GLM_SP_and_EP_model_3_effect_sizes,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_effect_sizes} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+SP_GLM_m_3 <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
+SP_GLM_m_3$Model <- "SP"
+EP_GLM_m_3 <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm,plot_GLM = F)
+EP_GLM_m_3$Model <- "EP"
+
+Model_3_GLM_both <- rbind(SP_GLM_m_3,EP_GLM_m_3)
+Model_3_GLM_both$Model <-  factor(Model_3_GLM_both$Model,
+                    levels = c("SP","EP"),ordered = TRUE)
+ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
+        geom_point(aes(size=1.5,col=Model),show.legend = T,size=2)+
+        facet_grid(~Variable,switch = "x")+
+        geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(Variable)),col="black",width=0.2)+
+        geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+        labs(x = "")+
+        labs(y = "Standardized dif.\n est./sim. time")+
+        theme(plot.title = element_text(hjust = 0.5,size = 12),
+        strip.text.x = element_text(angle = 90,hjust = 1),
+        strip.background = element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
+        #rotate_x_facet_text(angle = 45, align = 0.5)+
+        #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
+        #scale_x_discrete(labels= c("Standard Model","Extended GF","Variying recombination","Complex Demography","d0=0.02 cM","HES","downsampled",
+        #                           "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.")
+        #                ,guide = guide_axis(angle = 90))+
+        scale_color_manual("Model",
+                           values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
+                           label=c("Simple Pulse","Extended Pulse"))
+```
+
+
+```{r figResult_3_GLM_SP_and_EP_model_3_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_var} SP and EP var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+SP_GLM_m_3 <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm_var,plot_GLM = F)
+SP_GLM_m_3$Model <- "SP"
+EP_GLM_m_3 <- Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm_var,plot_GLM = F)
+EP_GLM_m_3$Model <- "EP"
+
+Model_3_GLM_both <- rbind(SP_GLM_m_3,EP_GLM_m_3)
+Model_3_GLM_both$Model <-  factor(Model_3_GLM_both$Model,
+                    levels = c("SP","EP"),ordered = TRUE)
+ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
+        geom_point(aes(size=1.5,col=Model),show.legend = T,size=2)+
+        facet_grid(~Variable,switch = "x")+
+        geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(Variable)),col="black",width=0.2)+
+        geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+        labs(x = "")+
+        labs(y = "Standardized dif.\n est./sim. time")+
+        theme(plot.title = element_text(hjust = 0.5,size = 12),
+        strip.text.x = element_text(angle = 90,hjust = 1),
+        strip.background = element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
+        #rotate_x_facet_text(angle = 45, align = 0.5)+
+        #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
+        #scale_x_discrete(labels= c("Standard Model","Extended GF","Variying recombination","Complex Demography","d0=0.02 cM","HES","downsampled",
+        #                           "Interaction downsampled/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.")
+        #                ,guide = guide_axis(angle = 90))+
+        scale_color_manual("Model",
+                           values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
+                           label=c("Simple Pulse","Extended Pulse"))
+```
+
 
 # Sampling closer to end of GF (ex-result fig 4 now supplement)
 
@@ -2906,7 +3147,7 @@ Plot_Fig_2_A(Plot_model,levels(Plot_model$Combination_chr))
 
 ```
 
-```{r table_Supplements_SP_model_0, echo=FALSE,results='asis' }
+```{r eval=F,table_Supplements_SP_model_0, echo=FALSE,results='asis' ,message=F}
 
 print_B_model_result <- data.frame(B_model_result_SP_0)
 kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
@@ -2915,7 +3156,7 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_SP_model_1, echo=FALSE,results='asis' }
+```{r eval=F,table_Supplements_SP_model_1, echo=FALSE,results='asis',message=F }
 
 print_B_model_result <- data.frame(B_model_result_SP_1)
 kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
@@ -2924,7 +3165,7 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_SP_model_2, echo=FALSE,results='asis' }
+```{r eval=F,table_Supplements_SP_model_2, echo=FALSE,results='asis' ,message=F}
 
 print_B_model_result <- data.frame(B_model_result_SP_2)
 kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
@@ -2933,15 +3174,24 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_SP_model_3, echo=FALSE,results='asis' }
+```{r table_Supplements_SP_model_3, echo=FALSE,results='asis',message=F }
 
 print_B_model_result <- data.frame(B_model_result_SP_3)
 kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
-      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+      caption = "\\label{tab:tableS1} table_Supplements_SP_model_3 Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
 ```
 
+```{r table_Supplements_SP_model_3_predictions, echo=FALSE,results='asis' ,message=F}
+
+print_B_model_result <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
+print_B_model_result <- print_B_model_result[,c(1,2,3)]
+kable(print_B_model_result , "latex",col.names = c("mean" , "5.5%"  ,"94.5%" ),digits = 2,
+      caption = "\\label{tab:tableS1} table_Supplements_SP_model_3_predictions  Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
 ## EP
 
 ```{r figS2_updated_EP, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2_updated_SP} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
@@ -2964,7 +3214,7 @@ Plot_Fig_2_A(Plot_model,levels(Plot_model$Combination_chr))
 
 ```
 
-```{r table_Supplements_EP_model_0, echo=FALSE,results='asis' }
+```{r eval=F,table_Supplements_EP_model_0, echo=FALSE,results='asis',message=F ,warning=F}
 
 print_B_model_result <- data.frame(B_model_result_EP_0)
 kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
@@ -2973,7 +3223,7 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_EP_model_1, echo=FALSE,results='asis' }
+```{r eval=F,table_Supplements_EP_model_1, echo=FALSE,results='asis' ,message=F,warning=F}
 
 print_B_model_result <- data.frame(B_model_result_EP_1)
 kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
@@ -2982,7 +3232,7 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_EP_model_2, echo=FALSE,results='asis' }
+```{r eval=F,table_Supplements_EP_model_2, echo=FALSE,results='asis' ,message=F,warning=F}
 
 print_B_model_result <- data.frame(B_model_result_EP_2)
 kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
@@ -2991,16 +3241,16 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_EP_model_3, echo=FALSE,results='asis' }
+```{r table_Supplements_EP_model_3, echo=FALSE,results='asis' ,message=F,warning=F}
 
 print_B_model_result <- data.frame(B_model_result_EP_3)
 kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
-      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+      caption = "\\label{tab:tableS1} table_Supplements_EP_model_3 Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_EP_and_SP_model_3, echo=FALSE,results='asis' }
+```{r table_Supplements_EP_and_SP_model_3, echo=FALSE,results='asis',message=F ,warning=F}
 
 print_B_model_SP_result <- data.frame(B_model_result_SP_3)
 print_B_model_SP_result$Model <- "Simple Pulse"
@@ -3011,12 +3261,12 @@ print_B_model_EP_result$Variable <- rownames(print_B_model_EP_result)
 print_B_model_result_both <- rbind(print_B_model_SP_result,print_B_model_EP_result)
 print_B_model_result_both <- print_B_model_result_both[, c(7,8,1, 2, 3, 4, 5, 6)]
 kable(print_B_model_result_both , "latex",row.names=F,col.names = c("model","variable","mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
-      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+      caption = "\\label{tab:tableS1} table_Supplements_EP_and_SP_model_3 Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_EP_tm_td_and_SP_model_3, echo=FALSE,results='asis' }
+```{r table_Supplements_EP_tm_td_and_SP_model_3, echo=FALSE,results='asis',message=F ,warning=F}
 
 print_B_model_SP_result <- data.frame(B_model_result_SP_3)
 print_B_model_SP_result$Model <- "Simple Pulse"
@@ -3034,7 +3284,380 @@ print_B_model_EP_result_td$Variable <- rownames(print_B_model_EP_result_td)
 print_B_model_result_all <- rbind(print_B_model_SP_result,print_B_model_EP_result,print_B_model_EP_result_td)
 print_B_model_result_all <- print_B_model_result_all[, c(7,8,1, 2, 3, 4, 5, 6)]
 kable(print_B_model_result_all , "latex",row.names=F,col.names = c("model","variable","mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
-      caption = "\\label{tab:tableS1} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+      caption = "\\label{tab:tableS1} table_Supplements_EP_tm_td_and_SP_model_3 Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_EP_model_3_predictions, echo=FALSE,results='asis',message=F,warning=F }
+print_B_model_result <- Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm,plot_GLM = F)
+print_B_model_result <- print_B_model_result[,c(1,2,3)]
+kable(print_B_model_result , "latex",col.names = c("mean" , "5.5%"  ,"94.5%" ),digits = 2,
+      caption = "\\label{tab:tableS1} table_Supplements_EP_model_3_predictions Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_EP_and_SP_model_3_predictions, echo=FALSE,results='asis' ,message=F,warning=F}
+
+print_B_model_SP_result <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
+print_B_model_SP_result <- print_B_model_SP_result[,c(1,2,3)]
+print_B_model_SP_result$Model <- "Simple Pulse"
+print_B_model_SP_result$Variable <- rownames(print_B_model_SP_result)
+print_B_model_EP_result <- Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm,plot_GLM = F)
+print_B_model_EP_result <- print_B_model_EP_result[,c(1,2,3)]
+print_B_model_EP_result$Model <- "Extended Pulse"
+print_B_model_EP_result$Variable <- rownames(print_B_model_EP_result)
+print_B_model_result_both <- rbind(print_B_model_SP_result,print_B_model_EP_result)
+print_B_model_result_both <- print_B_model_result_both[, c(4,5,1,2,3)]
+kable(print_B_model_result_both , "latex",row.names=F,col.names = c( "model","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
+      caption = "\\label{tab:tableS1} table_Supplements_EP_and_SP_model_3_predictions Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_EP_tm_td_and_SP_model_3_predictions, echo=FALSE,results='asis',message=F,warning=F }
+
+print_B_model_SP_result <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
+print_B_model_SP_result <- print_B_model_result[,c(1,2,3)]
+print_B_model_SP_result$Model <- "Simple Pulse"
+print_B_model_SP_result$Variable <- rownames(print_B_model_SP_result)
+
+print_B_model_EP_result <- Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm,plot_GLM = F)
+print_B_model_EP_result <- print_B_model_result[,c(1,2,3)]
+print_B_model_EP_result$Model <- "Extended Pulse tm"
+print_B_model_EP_result$Variable <- rownames(print_B_model_EP_result)
+
+
+print_B_model_EP_result_td <- Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_td,plot_GLM = F)
+print_B_model_EP_result_td <- print_B_model_result[,c(1,2,3)]
+print_B_model_EP_result_td$Model <- "Extended Pulse td"
+print_B_model_EP_result_td$Variable <- rownames(print_B_model_EP_result_td)
+
+print_B_model_result_all <- rbind(print_B_model_SP_result,print_B_model_EP_result,print_B_model_EP_result_td)
+print_B_model_result_both <- print_B_model_result_both[, c(4,5,1,2,3)]
+kable(print_B_model_result_both , "latex",row.names=F,col.names = c( "model","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
+      caption = "\\label{tab:tableS1} table_Supplements_EP_tm_td_and_SP_model_3_predictions Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+# Application to Neandertal data
+
+```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE}
+### Fit both Exponential and Lomax
+
+suppressPackageStartupMessages({
+  library(VGAM)
+  library("DEoptim")
+  library("MASS")
+  library(bbmle)
+})
+
+
+input <- "Real_Data_Analysis/Raw_ALDER_output-ALL_chr_hcNea_YRI_CEU_1k_G_polarized_LES_ascertained_corrected_rr_CEU_specific_map.txt"
+
+
+Get_RSS_fn <- function(SP_fit,EP_fit){
+  SP_rss = sum(resid(SP_fit)^2)
+  EP_rss = sum(resid(EP_fit)^2)
+  return(data.frame(SP_rss=SP_rss,EP_rss=EP_rss))
+  
+}
+
+
+
+AIC_Test_fn <- function(Fit_SP,Fit_EP){
+  AIC_Test = bbmle::AICtab(Fit_SP,Fit_EP)
+  select.exp=attr(AIC_Test,'row.names')=="Fit_SP"
+  if (select.exp[1]==T){
+    SP.AIC=AIC_Test$dAIC[1]
+    EP.AIC=AIC_Test$dAIC[2]
+  }else {
+    SP.AIC=AIC_Test$dAIC[2]
+    EP.AIC=AIC_Test$dAIC[1]
+  }
+  return(data.frame(SP.AIC=SP.AIC,EP.AIC=EP.AIC))
+}
+
+
+Extended_Pulse_fixed_k_fn <- function(Data,affine,td,use_log=F){
+  xx=Data
+  
+  dist=xx$dist
+  wcorr=xx$wcorr
+
+  if(use_log==F) {
+    fm1_lomax <- function(x) x[3] + x[2]* (1/(1 + (  (x[1] / ((1/((td/(4*x[1]))^2))))*(dist/100) )))^(((1/((td/(4*x[1]))^2))))
+    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
+    fm3_DEoptim <- DEoptim(fm2_lomax_k, lower=c(100,1e-6,-1), upper=c(5000,1,1), control=list(trace=FALSE))
+    
+    par1_lomax <- fm3_DEoptim$optim$bestmem
+    par1_lomax <- c(par1_lomax[1],par1_lomax[2],par1_lomax[3])
+    names(par1_lomax) <- c("tm","A","c")
+    fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ ((1/((td/(4*tm))^2)))) *(dist/100)) ))^((1/(((td/(4*tm))^2)))), start=par1_lomax, algorithm="port",
+                      lower=c(100,0,-1), upper=c(5000,1,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+  }
+
+  
+  if(use_log==T) {
+    xx$wcorr <- log10(xx$wcorr)
+    xx <- xx[complete.cases(xx),]
+    dist=xx$dist
+    wcorr=xx$wcorr
+    fm1_lomax <- function(x) log10(x[2]) + ((1/((td/(4*x[1]))^2))) * -log10( ( (1/((1/((td/(4*x[1]))^2))))*(dist/100)) *x[1])
+    fm2_lomax_k <- function(x) sum((wcorr-fm1_lomax(x))^2)
+    fm3_optim <- optim(c(2,2,2), fm2_lomax_k)
+    
+    par1_lomax <- fm3_optim$par
+    par1_lomax <- c(par1_lomax[1],par1_lomax[2])
+    names(par1_lomax) <- c("tm","A")
+    fit1_lomax <- nls(wcorr ~ log10(A) + (1/(((td/(4*tm))^2))) * -log10(1  + (((1/((1/((td/(4*tm))^2)))) *(dist/100)) *tm)), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+
+  }
+
+      
+  return(fit1_lomax)
+}
+
+
+## Plot fn
+ALD_fit_Real_data_log_plotted <- function(input,lval=0.05,hval=0.5,td,use_log=F,Fit){
+  # Fitting functions
+  
+  
+  SP_tail_log <- function(dist,x) log10(x[2]) + log10(exp(-(dist)*x[1]))
+  EP_tail_log <- function(dist,x) log10(x[3]) + (x[2]) * -log10(1+ (((1/x[2])*(dist))*x[1]))
+  
+  ALD_x <- Get_points(input,lval,hval,log = F)
+  
+  
+  data_x <- data.frame(M=ALD_x$dist/100,ALD=log10(ALD_x$wcorr))
+  data_x <- data_x[complete.cases(data_x),]
+  data_x$Data <- "ALD"
+  if(Fit=="SP"){
+    print("fitting SP")
+      Fit_SP <- Simple_Pulse_fn(ALD_x,affine = T,use_log = use_log)
+      Fit_list <- Fit_SP
+      Fit_Results <- data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(coef(Fit_SP)[2],coef(Fit_SP)[1]))),fit="SP_fit")
+    
+  }
+  if(Fit=="EP"){
+    print("fitting EP")
+      Fit_EP <-  Extended_Pulse_fn(ALD_x,affine=T,use_log = use_log)
+      Fit_list <- Fit_EP
+      Fit_Results <- data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(coef(Fit_EP)[2],coef(Fit_EP)[1],coef(Fit_EP)[3]))),fit="EP_fit" )
+    
+  }
+  if(Fit=="EP fixed td"){
+    print("fitting EP fixed td")
+    Extended_Pulse_fixed_k <- Extended_Pulse_fixed_k_fn(ALD_x,affine=T,td,use_log=use_log)
+    Fit_list <- Extended_Pulse_fixed_k
+    k=1/((td/(4*(coef(Extended_Pulse_fixed_k)[1])))^2)
+    Fit_Results <- data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(coef(Extended_Pulse_fixed_k)[1],k,coef(Extended_Pulse_fixed_k)[2]))),fit=paste("EP_fit",td,sep = "_" ))
+}
+
+  return(list(Fit_list,data_x,Fit_Results))
+  
+}
+
+ALD_fit_Real_data_normal_plotted <- function(input,lval=0.05,hval=0.5,td,use_log=F,Fit){
+  # Fitting functions
+  
+  SP_tail <- function(dist,x) x[1]*exp(-(dist)*x[2])+x[3]
+  
+  EP_tail <- function(dist,x) x[4] + x[3]* (1/(1 + (  (x[2] / x[1])*(dist) )))^(x[1])
+  
+  
+  ALD_x <- Get_points(input,lval,hval,log = F)
+  
+  
+  data_x <- data.frame(M=ALD_x$dist/100,ALD=ALD_x$wcorr)
+  data_x$Data <- "ALD"
+  if(Fit=="SP"){
+    print("fitting SP")
+      Fit_SP <- Simple_Pulse_fn(ALD_x,affine = T,use_log = use_log)
+      Fit_list <- Fit_SP
+      Fit_Results <- data.frame(x=data_x$M,y=(SP_tail(data_x$M,c(coef(Fit_SP)[1],coef(Fit_SP)[2],coef(Fit_SP)[3]))),fit="SP_fit")
+    
+  }
+  if(Fit=="EP"){
+    print("fitting EP")
+      Fit_EP <-  Extended_Pulse_fn(ALD_x,affine=T,use_log = use_log)
+      Fit_list <- Fit_EP
+      Fit_Results <- data.frame(x=data_x$M,y=(EP_tail(data_x$M,c(coef(Fit_EP)[1],coef(Fit_EP)[2],coef(Fit_EP)[3],coef(Fit_EP)[4]))),fit="EP_fit" )
+    
+  }
+  if(Fit=="EP fixed td"){
+    print("fitting EP fixed td")
+    Extended_Pulse_fixed_k <- Extended_Pulse_fixed_k_fn(ALD_x,affine=T,td,use_log=use_log)
+    Fit_list <- Extended_Pulse_fixed_k
+    k=1/((td/(4*(coef(Extended_Pulse_fixed_k)[1])))^2)
+    Fit_Results <- data.frame(x=data_x$M,y=(EP_tail(data_x$M,c(k,coef(Extended_Pulse_fixed_k)[1],coef(Extended_Pulse_fixed_k)[2],coef(Extended_Pulse_fixed_k)[3]))),fit=paste("EP_fit",td,sep = "_" ))
+}
+
+  return(list(Fit_list,data_x,Fit_Results))
+  
+}
+
+
+# Execute
+
+# normal fitted normal plotted
+SP_Fit <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,Fit = "SP")
+EP_Fit <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,Fit = "EP")
+EP_Fit_fixed_td_1 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 1,Fit = "EP fixed td")
+EP_Fit_fixed_td_100 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 100,Fit = "EP fixed td")
+EP_Fit_fixed_td_200 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 200,Fit = "EP fixed td")
+EP_Fit_fixed_td_400 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 400,Fit = "EP fixed td")
+EP_Fit_fixed_td_800 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 800,Fit = "EP fixed td")
+EP_Fit_fixed_td_1000 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 1000,Fit = "EP fixed td")
+EP_Fit_fixed_td_1500 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 1500,Fit = "EP fixed td")
+EP_Fit_fixed_td_2000 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 2000,Fit = "EP fixed td")
+EP_Fit_fixed_td_2500 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 2500,Fit = "EP fixed td")
+
+data_x <- rbind(SP_Fit[[2]],EP_Fit[[2]],EP_Fit_fixed_td_1[[2]],EP_Fit_fixed_td_100[[2]],
+                EP_Fit_fixed_td_200[[2]],EP_Fit_fixed_td_400[[2]],
+                EP_Fit_fixed_td_800[[2]],EP_Fit_fixed_td_1000[[2]],
+                EP_Fit_fixed_td_1500[[2]],EP_Fit_fixed_td_2000[[2]],
+                EP_Fit_fixed_td_2500[[2]])
+
+Fit_Results <- rbind(SP_Fit[[3]],EP_Fit[[3]],EP_Fit_fixed_td_1[[3]],EP_Fit_fixed_td_100[[3]],
+                EP_Fit_fixed_td_200[[3]],EP_Fit_fixed_td_400[[3]],
+                EP_Fit_fixed_td_800[[3]],EP_Fit_fixed_td_1000[[3]],
+                EP_Fit_fixed_td_1500[[3]],EP_Fit_fixed_td_2000[[3]],
+                EP_Fit_fixed_td_2500[[3]])
+
+Fit_model_res <- list(EP_Fit_fixed_td_1[[1]],EP_Fit_fixed_td_100[[1]],
+                EP_Fit_fixed_td_200[[1]],EP_Fit_fixed_td_400[[1]],
+                EP_Fit_fixed_td_800[[1]],EP_Fit_fixed_td_1000[[1]],
+                EP_Fit_fixed_td_1500[[1]],EP_Fit_fixed_td_2000[[1]],
+                EP_Fit_fixed_td_2500[[1]])
+
+
+Fit_Results$fit <- factor(Fit_Results$fit,levels = c("SP_fit"  ,  "EP_fit" ,"EP_fit_1" ,"EP_fit_100","EP_fit_200","EP_fit_400","EP_fit_800"
+                                     ,"EP_fit_1000","EP_fit_1500","EP_fit_2000","EP_fit_2500"),ordered = TRUE)
+
+P_fit_normal <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=NULL))+
+  geom_point(data=data_x,aes(x=M,y=ALD,fill=NULL),color="grey",show.legend = F)+
+  geom_line(data=Fit_Results,aes(x = x, y = y,color=fit),size=1.2,show.legend = T)+
+  labs(x = "Genetic distance (M)")+
+  labs(y = "weighted LD")+
+  scale_color_manual("Fit",
+                     values = c(c(cbPalette_viridis[1:11])),
+                    labels = c(c("fitted SP","fitted EP","EP td = 1"
+                                 ,"EP td = 100","EP td = 200","EP td = 400"
+                                 ,"EP td = 800","EP td = 1000","EP td = 1500","EP td = 2000","EP td = 2500")))
+
+# normal fitted log plotted
+SP_Fit <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,Fit = "SP")
+EP_Fit <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,Fit = "EP")
+EP_Fit_fixed_td_1 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 1,Fit = "EP fixed td")
+EP_Fit_fixed_td_100 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 100,Fit = "EP fixed td")
+EP_Fit_fixed_td_200 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 200,Fit = "EP fixed td")
+EP_Fit_fixed_td_400 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 400,Fit = "EP fixed td")
+EP_Fit_fixed_td_800 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 800,Fit = "EP fixed td")
+EP_Fit_fixed_td_1000 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 1000,Fit = "EP fixed td")
+EP_Fit_fixed_td_1500 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 1500,Fit = "EP fixed td")
+EP_Fit_fixed_td_2000 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 2000,Fit = "EP fixed td")
+EP_Fit_fixed_td_2500 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 2500,Fit = "EP fixed td")
+
+data_x <- rbind(SP_Fit[[2]],EP_Fit[[2]],EP_Fit_fixed_td_1[[2]],EP_Fit_fixed_td_100[[2]],
+                EP_Fit_fixed_td_200[[2]],EP_Fit_fixed_td_400[[2]],
+                EP_Fit_fixed_td_800[[2]],EP_Fit_fixed_td_1000[[2]],
+                EP_Fit_fixed_td_1500[[2]],EP_Fit_fixed_td_2000[[2]],
+                EP_Fit_fixed_td_2500[[2]])
+
+Fit_Results <- rbind(SP_Fit[[3]],EP_Fit[[3]],EP_Fit_fixed_td_1[[3]],EP_Fit_fixed_td_100[[3]],
+                EP_Fit_fixed_td_200[[3]],EP_Fit_fixed_td_400[[3]],
+                EP_Fit_fixed_td_800[[3]],EP_Fit_fixed_td_1000[[3]],
+                EP_Fit_fixed_td_1500[[3]],EP_Fit_fixed_td_2000[[3]],
+                EP_Fit_fixed_td_2500[[3]])
+
+
+
+Fit_Results$fit <- factor(Fit_Results$fit,levels = c("SP_fit"  ,  "EP_fit" ,"EP_fit_1" ,"EP_fit_100","EP_fit_200","EP_fit_400","EP_fit_800"
+                                     ,"EP_fit_1000","EP_fit_1500","EP_fit_2000","EP_fit_2500"),ordered = TRUE)
+
+P_fit_log <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=NULL))+
+  geom_point(data=data_x,aes(x=M,y=ALD,fill=NULL),color="grey",show.legend = F)+
+  geom_line(data=Fit_Results,aes(x = x, y = y,color=fit),size=1.2,show.legend = T)+
+  labs(x = "Genetic distance (M)")+
+  labs(y = "log weighted LD")+
+  scale_color_manual("Fit",
+                     values = c(c(cbPalette_viridis[1:11])),
+                    labels = c(c("fitted SP","fitted EP","EP td = 1"
+                                 ,"EP td = 100","EP td = 200","EP td = 400"
+                                 ,"EP td = 800","EP td = 1000","EP td = 1500","EP td = 2000","EP td = 2500")))
+
+```
+
+```{r fig5_Real_data, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:fig5_Real_data} ."}
+ggarrange(P_fit_normal,P_fit_log,ncol = 2,nrow = 1,
+          labels = c("A","B")
+          ,common.legend = T,legend = 'bottom')
+```
+
+
+```{r message=FALSE, echo=FALSE,warning=FALSE}
+Get_CI_tm_approx_fn <- function(fit,i,n_data){
+  org <- coef(fit)[[i]]
+  lwr_approx <- coef(fit)[[i]]*(1-(1.96/sqrt(length(n_data[,1]))))
+  upr_approx <- coef(fit)[[i]]*(1+(1.96/sqrt(length(n_data[,1]))))
+  param_CI <- c(org,lwr_approx,upr_approx)
+  return(param_CI)
+}
+
+Get_CI_other_approx_fn <- function(fit,i,n_data,sigma){
+  org <- coef(fit)[[i]]
+  lwr_approx <- coef(fit)[[i]]-1.96*(sigma/sqrt(length(n_data[,1])))
+  upr_approx <- coef(fit)[[i]]+1.96*(sigma/sqrt(length(n_data[,1])))
+  param_CI <- c(org,lwr_approx,upr_approx)
+  return(param_CI)
+}
+
+A_param=round(Get_CI_other_approx_fn(SP_Fit[[1]],1,SP_Fit[[2]],summary(SP_Fit[[1]])$sigma),3)
+t_m=round(Get_CI_tm_approx_fn(SP_Fit[[1]],2,SP_Fit[[2]]),0)
+c_param=round(Get_CI_other_approx_fn(SP_Fit[[1]],3,SP_Fit[[2]],summary(SP_Fit[[1]])$sigma),6)
+SP_fit_tabel <- c(A_param,t_m,c_param)
+
+A_param=round(Get_CI_other_approx_fn(EP_Fit[[1]],1,EP_Fit[[2]],summary(EP_Fit[[1]])$sigma),3)
+t_m=round(Get_CI_tm_approx_fn(EP_Fit[[1]],2,EP_Fit[[2]]),0)
+c_param=round(Get_CI_other_approx_fn(EP_Fit[[1]],3,EP_Fit[[2]],summary(EP_Fit[[1]])$sigma),6)
+EP_fit_tabel <- c(A_param,t_m,c_param)
+
+
+
+Real_Data_fit_table <- c()
+for(model in Fit_model_res){
+  A_param=round(Get_CI_other_approx_fn(model,2,SP_Fit[[2]],summary(model)$sigma),3)
+  t_m=round(Get_CI_tm_approx_fn(model,1,SP_Fit[[2]]),0)
+  c_param=round(Get_CI_other_approx_fn(model,3,SP_Fit[[2]],summary(model)$sigma),6)
+  Real_Data_fit_table_x <- c(A_param,t_m,c_param)
+  Real_Data_fit_table <- rbind(Real_Data_fit_table,Real_Data_fit_table_x)
+}
+#Real_Data_fit_table_all <- rbind(SP_fit_tabel,EP_fit_tabel,Real_Data_fit_table)
+Real_Data_fit_table_all <- rbind(SP_fit_tabel,Real_Data_fit_table)
+colnames(Real_Data_fit_table_all) <- c("A","A_lower","A_upper","tm","tm_lower","tm_upper","c","c_lower","c_upper")
+row.names(Real_Data_fit_table_all) <- c("Simple Pulse","Extended Pulse (td=1)","Extended Pulse (td=100)",
+                                        "Extended Pulse (td=200)","Extended Pulse (td=400)","Extended Pulse (td=800)",
+                                        "Extended Pulse (td=1000)","Extended Pulse (td=1500)","Extended Pulse (td=2000)",
+                                        "Extended Pulse (td=2500)")
+
+Real_Data_fit_table_all_print <- as.data.frame(Real_Data_fit_table_all)
+Real_Data_fit_table_all_print$A <- paste(Real_Data_fit_table_all_print$A," (",Real_Data_fit_table_all_print$A_lower," - ",Real_Data_fit_table_all_print$A_upper,")",sep = "")
+Real_Data_fit_table_all_print$tm <- paste(Real_Data_fit_table_all_print$tm," (",Real_Data_fit_table_all_print$tm_lower," - ",Real_Data_fit_table_all_print$tm_upper,")",sep = "")
+Real_Data_fit_table_all_print$c <- paste(Real_Data_fit_table_all_print$c," (",Real_Data_fit_table_all_print$c_lower," - ",Real_Data_fit_table_all_print$c_upper,")",sep = "")
+Real_Data_fit_table_all_print$Model <- row.names(Real_Data_fit_table_all_print)
+Real_Data_fit_table_all_print <- Real_Data_fit_table_all_print[,c(10,4,1,7)]
+
+```
+
+```{r table_Supplements_fig3_real_data, echo=FALSE,results='asis' }
+
+
+kable(Real_Data_fit_table_all_print , "latex",col.names = c("Model" , "tm"   , "A"  ,"c"),
+      caption = "\\label{tab:tableS1} Real data est") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
 ```
