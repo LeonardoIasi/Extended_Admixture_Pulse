@@ -104,77 +104,7 @@
             
 
 \end{titlepage}
-\section{Approximation details}
-In this section, we lay out some more detail about some of the approximations we make, and what errors they likely introduce in which cases.
 
-\paragraph{Admixture segments with genetic drift and recombination}
-Our model assumes that Neandertal fragments in the human population always recombine with non-Neandertal haplotypes, and that the effect of genetic drift can be neglected. 
-
-Both of these assumptions may be violated if the admixture fraction is high. Under the single-pulse model, it can be shown that, taking recombination into account under the SMC model \cite{Approximating the coalescent with recombination}  adds a term of $(1-\alpha)$, where $\alpha$ is the total admixture proportion \cite{liang_lengths_2014}
-
-\begin{equation}
-    \mathbb{E}L_i = \left[t_m (1-\alpha) \right]^{-1}
-\end{equation}
-
-Likewise, they showed that using the SMC' model \cite{marjoram_wall} this is
-$$
-\mathbb{E}L_i = \left[2N(1-\alpha)(1-\exp\left(-\frac{t_m}{2N}\right)\right]^{-1} \text{.}
-$$
-Using a Taylor expansion around $N \to \infty$ and ignoring terms of the order $\frac{1}{N^2}$, this can be approximated as 
-\begin{equation}
-  \mathbb{E}L_i \approx  \left[t_m(1-\alpha)\left(1-\frac{t_m}{4N}\right)\right]^{-1},
-\end{equation}
-which makes the similarity to the SMC model more apparent.
-
-This is compared to $\mathbb{E}L_i = \frac{1}{t_m}$ as we obtained from equation \ref{eq:Expected_l_simple_pulse}.
-The $(1-\alpha)$-term models recombination between adjacent recombination tracts; and the $\left(1-\frac{t_m}{4N}\right)$ can be thought of reflecting genetic drift. 
-
-The justification for both of these formulas is that they are geometric mixtures of exponential distributions \citep{liang_lengths_2014}, which are themselves exponential. Under the extended pulse model, the fragment length distribution is no longer exponential, so the fragments will have a more complicated mixture distribution. 
-
-For the case of Neandertal admixture, assuming gene flow happened over a short duration, these equations can be used to estimate the error made from ignoring drift and recombination between Neandertal segments. As $\alpha \approx 0.03$, $t_m \approx 1600$, $N \approx 10,000$, and so the expected combined error of these two terms is on the order of $10\%$.
-\paragraph{Formal motivation for ALD}
-In the main text, we motivate the ALD decay using the intuitive argument of ``adding up'' ALD introduced at different generations in the past. A more formal way to motivate this proceeds as follows:
-
-In one generation, LD changes due to LD-decay through recombination, and through the introduction of new ALD through migration.
-
-\begin{align}
-    D(t+1) &= (1-r-m(t)) D(t) + \Delta_X \Delta_Y m(t)\nonumber\\
-    &\approx (1-r) D(t) + \Delta_X \Delta_Y m(t)
-\end{align}
-where the second line is valid if we assume that LD mainly decays through recombination, and the change due to replacement of introgressed material is small.
-
-This leads to the following linear differential equation:
-\begin{equation}
-    \frac{dD}{dt} = -r D + \Delta_x\Delta_y m(t)\text{.}
-\end{equation}
-
-It is straightforward to veryify that equation \ref{eq:ld_general_bwd} is a solution to this equation:
-
-\begin{align}
-   D(t) &= \Delta_x\Delta_y\int_{-\infty}^t m(s)\exp(-r(t-s)) ds \nonumber \\
-   \frac{d D}{dt} &= \frac{d}{dt}\left[ \Delta_x\Delta_y\int_{-\infty}^t m(s)\exp(-r(t-s)) ds \right]\nonumber\\
-   &= \Delta_x\Delta_y m(t) + \int_{-\infty}^t \left[\frac{d}{dt}\Delta_x\Delta_y m(s)\exp(-r(t-s))\right]ds \nonumber\\
-   &= \Delta_x\Delta_y m(t) - r \int_{-\infty}^t \Delta_x\Delta_y m(s)\exp(-r(t-s))ds \nonumber\\
-   &= \Delta_x\Delta_y m(t) -r D(t)   
-\end{align}
-where the third line follows from Leibniz integral rule.
-
-
-
-\paragraph{Genetic drift under ALD}
-In this section, the goal is to investigate how the ALD decay changes if we incorporate genetic drift.
-
-For all loci introduced at a single generation, LD decays as \cite{loh_inferring_2013}
-$$D = m(1-m)\Delta_x\delta_y\exp(-rt)\exp(-\frac{t}{2N}).$$
-
-This integral has the same form as the one without drift, except that we replace $r$ with $r + \frac{1}{2N}$:
-\begin{align}
-    D_t(r) &= \Delta_x\Delta_y\int_0^t m(s)\exp\left(-\frac{s}{4N}\right)\exp(-rs) ds \nonumber\\
-        &= \Delta_x\Delta_y\int_0^t
-        m(s)\exp\left(-s(r+(2N)^{-1})\right) ds \label{eq:ld_drift}\\
-&= \Delta_x\Delta_y \alpha\left(1 + \frac{t_m}{k} (r+(2N)^{-1})\right) ^{1-k} ,
-\end{align}
-where the second equation gives the general case, and the third equation the ALD-curve under the extended pulse model. 
 
 \section{Extended Pulse Model}
 
