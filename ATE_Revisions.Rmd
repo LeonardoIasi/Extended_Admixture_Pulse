@@ -1722,7 +1722,7 @@ Segment_ALD_Model_comparison_results <- ggarrange(Plot_LRT_seg_results,P_RSS_com
 P_step_1 <- ggarrange(Segment_ALD_Model_comparison_results, Segments_ALD_Results_flipped, ncol = 2, labels = c("A", "B"))
 P_step_2 <- arrangeGrob(P_step_1,first_legend,heights=c(0.93,0.07))
 ggarrange(P_step_2,P_2_fit_Result, 
-          nrow = 2, 
+          nrow = 2, heights = c(0.65,0.35),
           labels = c("","C")                                       
           )
 
@@ -1753,7 +1753,7 @@ Segments_ALD_supp_flipped <- ggarrange(Seg_ald_td_supp,Seg_ald_tm_supp,
 P_step_1 <- ggarrange(Segment_ALD_Model_comparison_supplements, Segments_ALD_supp_flipped, ncol = 2, labels = c("A", "B"))
 P_step_2 <- arrangeGrob(P_step_1,first_legend,heights=c(0.93,0.07))
 ggarrange(P_step_2,P_2_fit_Supplements, 
-          nrow = 2, 
+          nrow = 2, heights = c(0.65,0.35),
           labels = c("","C")                                       
           )
 ```
@@ -2210,6 +2210,7 @@ Effect_size_fixed_stan_3_EP_tm_var <- ulam(
 
 
 ### For extended pulse fit td
+'
 Effect_size_fixed_stan_3_EP_td <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
@@ -2226,7 +2227,7 @@ Effect_size_fixed_stan_3_EP_td_var <- ulam(
     c(bA,bm,bD,bR,bG,bd,bdA,bmA,bDR,bmR) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_EP_td_var,chains = 4,iter = 2000,cores = 4)
 
-
+'
 ```
 
 
@@ -2575,12 +2576,12 @@ Plot_GLM_model_1(Effect_size_fixed_stan_1_SP_tm)
 Plot_GLM_model_2(Effect_size_fixed_stan_2_SP_tm)
 ```
 
-```{r figResult_3_SP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_SP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm)
 ```
 
-```{r figResult_3_SP_model_3_effect_sizes,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_3_effect_sizes} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_SP_model_3_effect_sizes,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_SP_model_3_effect_sizes} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm)
 ```
@@ -2601,52 +2602,52 @@ Plot_GLM_model_1(Effect_size_fixed_stan_1_EP_tm)
 Plot_GLM_model_2(Effect_size_fixed_stan_2_EP_tm)
 ```
 
-```{r figResult_3_EP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_EP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm)
 ```
 
-```{r figResult_3_EP_model_3_effect_sizes,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_effect_sizes} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_EP_model_3_effect_sizes,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_effect_sizes} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm)
 ```
 
-```{r figResult_3_EP_model_3_td_ests,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_EP_model_3_td_ests,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_td)
 ```
 
-```{r figResult_3_EP_model_3_td_ests_effect_sizes,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests_effect_sizes} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_EP_model_3_td_ests_effect_sizes,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests_effect_sizes} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_td)
 ```
 
 ### Var GLM outcomes
 
-```{r figResult_3_EP_model_3_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_var} EP tm var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_EP_model_3_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_var} EP tm var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm_var)
 ```
 
-```{r figResult_3_EP_model_3_effect_sizes_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_effect_sizes_var} EP tm var effect sizes GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_EP_model_3_effect_sizes_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_effect_sizes_var} EP tm var effect sizes GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_var)
 ```
 
 
-```{r figResult_3_EP_model_3_td_ests_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests_var} EP td var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_EP_model_3_td_ests_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests_var} EP td var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_td_var)
 ```
 
-```{r figResult_3_EP_model_3_td_ests_effect_sizes_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests_effect_sizes_var} Ep td var effect sizes GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_EP_model_3_td_ests_effect_sizes_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=4,fig.height=4,fig.cap="\\label{fig:figResult_3_EP_model_3_td_ests_effect_sizes_var} Ep td var effect sizes GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_td_var)
 ```
 
 ## Plot both SP and EP GLM outcomes together
 
-```{r figResult_3_GLM_SP_and_EP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_prediction} GLM predictions and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_GLM_SP_and_EP_model_3,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_prediction} GLM predictions and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 SP_GLM_m_3 <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
 SP_GLM_m_3$Model <- "SP"
@@ -2678,7 +2679,7 @@ ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
                            label=c("Simple Pulse","Extended Pulse"))
 ```
 
-```{r figResult_3_GLM_SP_and_EP_model_3_effect_sizes,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_effect_sizes} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_GLM_SP_and_EP_model_3_effect_sizes,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_effect_sizes} GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 SP_GLM_m_3 <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
 SP_GLM_m_3$Model <- "SP"
@@ -2711,7 +2712,7 @@ ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
 ```
 
 
-```{r figResult_3_GLM_SP_and_EP_model_3_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_var} SP and EP var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r eval=F,figResult_3_GLM_SP_and_EP_model_3_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_var} SP and EP var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 SP_GLM_m_3 <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm_var,plot_GLM = F)
 SP_GLM_m_3$Model <- "SP"
@@ -2743,7 +2744,44 @@ ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
                            label=c("Simple Pulse","Extended Pulse"))
 ```
 
+```{r figResult_3_GLM_SP_and_EP_bias_and_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_var} SP and EP var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
+SP_GLM_m_3_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
+SP_GLM_m_3_bias$Model <- "SP"
+SP_GLM_m_3_bias$GLM <- "bias"
+EP_GLM_m_3_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm,plot_GLM = F)
+EP_GLM_m_3_bias$Model <- "EP"
+EP_GLM_m_3_bias$GLM <- "bias"
+SP_GLM_m_3_var <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_var,plot_GLM = F)
+SP_GLM_m_3_var$Model <- "SP"
+SP_GLM_m_3_var$GLM <- "Variance"
+EP_GLM_m_3_var <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_var,plot_GLM = F)
+EP_GLM_m_3_var$Model <- "EP"
+EP_GLM_m_3_var$GLM <- "Variance"
+
+Model_3_GLM_both <- rbind(SP_GLM_m_3_bias,EP_GLM_m_3_bias,SP_GLM_m_3_var,EP_GLM_m_3_var)
+Model_3_GLM_both$Model <-  factor(Model_3_GLM_both$Model,
+                    levels = c("SP","EP"),ordered = TRUE)
+Model_3_GLM_both$GLM <-  factor(Model_3_GLM_both$GLM ,
+                    levels = c("bias","Variance"),labels = c("difference","abs. difference"),ordered = TRUE)
+ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
+        geom_point(aes(size=1.5,col=Model),show.legend = T,size=2)+
+        facet_grid(GLM~Variable,switch = "x",scales = "free")+
+        geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(Variable)),col="black",width=0.2)+
+        geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+        labs(x = "")+
+        labs(y = "Standardized dif.\n est./sim. time")+
+        theme(plot.title = element_text(hjust = 0.5,size = 12),
+        strip.text.x = element_text(angle = 90,hjust = 1,size=8),
+        strip.background.x = element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        strip.text.y = element_text(size = 8))+
+
+        scale_color_manual("Model",
+                           values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
+                           label=c("Simple Pulse","Extended Pulse"))
+```
 # Sampling closer to end of GF (ex-result fig 4 now supplement)
 
 ```{r eval=T,message=FALSE, echo=FALSE,warning=FALSE}
@@ -3174,7 +3212,7 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_SP_model_3, echo=FALSE,results='asis',message=F }
+```{r eval=F,table_Supplements_SP_model_3, echo=FALSE,results='asis',message=F }
 
 print_B_model_result <- data.frame(B_model_result_SP_3)
 kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
@@ -3183,7 +3221,7 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_SP_model_3_predictions, echo=FALSE,results='asis' ,message=F}
+```{r eval=F,table_Supplements_SP_model_3_predictions, echo=FALSE,results='asis' ,message=F}
 
 print_B_model_result <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
 print_B_model_result <- print_B_model_result[,c(1,2,3)]
@@ -3192,6 +3230,7 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "5.5%"  ,"94.5%" ),d
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
 ```
+
 ## EP
 
 ```{r figS2_updated_EP, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2_updated_SP} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
@@ -3241,7 +3280,7 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_EP_model_3, echo=FALSE,results='asis' ,message=F,warning=F}
+```{r eval=F,table_Supplements_EP_model_3, echo=FALSE,results='asis' ,message=F,warning=F}
 
 print_B_model_result <- data.frame(B_model_result_EP_3)
 kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"94.5%", "n_eff", "Rhat" ),digits = 2,
@@ -3250,7 +3289,7 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "sd"   , "5.5%"  ,"9
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_EP_and_SP_model_3, echo=FALSE,results='asis',message=F ,warning=F}
+```{r eval=F,table_Supplements_EP_and_SP_model_3, echo=FALSE,results='asis',message=F ,warning=F}
 
 print_B_model_SP_result <- data.frame(B_model_result_SP_3)
 print_B_model_SP_result$Model <- "Simple Pulse"
@@ -3266,7 +3305,7 @@ kable(print_B_model_result_both , "latex",row.names=F,col.names = c("model","var
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_EP_tm_td_and_SP_model_3, echo=FALSE,results='asis',message=F ,warning=F}
+```{r eval=F,table_Supplements_EP_tm_td_and_SP_model_3, echo=FALSE,results='asis',message=F ,warning=F}
 
 print_B_model_SP_result <- data.frame(B_model_result_SP_3)
 print_B_model_SP_result$Model <- "Simple Pulse"
@@ -3289,7 +3328,7 @@ kable(print_B_model_result_all , "latex",row.names=F,col.names = c("model","vari
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_EP_model_3_predictions, echo=FALSE,results='asis',message=F,warning=F }
+```{r eval=F,table_Supplements_EP_model_3_predictions, echo=FALSE,results='asis',message=F,warning=F }
 print_B_model_result <- Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm,plot_GLM = F)
 print_B_model_result <- print_B_model_result[,c(1,2,3)]
 kable(print_B_model_result , "latex",col.names = c("mean" , "5.5%"  ,"94.5%" ),digits = 2,
@@ -3298,7 +3337,7 @@ kable(print_B_model_result , "latex",col.names = c("mean" , "5.5%"  ,"94.5%" ),d
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_EP_and_SP_model_3_predictions, echo=FALSE,results='asis' ,message=F,warning=F}
+```{r eval=F,table_Supplements_EP_and_SP_model_3_predictions, echo=FALSE,results='asis' ,message=F,warning=F}
 
 print_B_model_SP_result <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
 print_B_model_SP_result <- print_B_model_SP_result[,c(1,2,3)]
@@ -3316,7 +3355,7 @@ kable(print_B_model_result_both , "latex",row.names=F,col.names = c( "model","va
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r table_Supplements_EP_tm_td_and_SP_model_3_predictions, echo=FALSE,results='asis',message=F,warning=F }
+```{r eval=F,table_Supplements_EP_tm_td_and_SP_model_3_predictions, echo=FALSE,results='asis',message=F,warning=F }
 
 print_B_model_SP_result <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
 print_B_model_SP_result <- print_B_model_result[,c(1,2,3)]
@@ -3337,6 +3376,40 @@ print_B_model_EP_result_td$Variable <- rownames(print_B_model_EP_result_td)
 print_B_model_result_all <- rbind(print_B_model_SP_result,print_B_model_EP_result,print_B_model_EP_result_td)
 print_B_model_result_both <- print_B_model_result_both[, c(4,5,1,2,3)]
 kable(print_B_model_result_both , "latex",row.names=F,col.names = c( "model","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
+      caption = "\\label{tab:tableS1} table_Supplements_EP_tm_td_and_SP_model_3_predictions Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_GLM_EP_SP_tm_effect_size_bias_and_var, echo=FALSE,results='asis',message=F,warning=F }
+
+print_B_model_SP_result <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm,plot_GLM = F)
+print_B_model_SP_result <- print_B_model_SP_result[,c(1,2,3)]
+print_B_model_SP_result$Model <- "Simple Pulse"
+print_B_model_SP_result$Variable <- rownames(print_B_model_SP_result)
+print_B_model_SP_result$GLM <- "difference"
+
+print_B_model_EP_result <- Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm,plot_GLM = F)
+print_B_model_EP_result <- print_B_model_EP_result[,c(1,2,3)]
+print_B_model_EP_result$Model <- "Extended Pulse tm"
+print_B_model_EP_result$Variable <- rownames(print_B_model_EP_result)
+print_B_model_EP_result$GLM <- "difference"
+
+print_B_model_SP_result_var <- Plot_GLM_model_3(Effect_size_fixed_stan_3_SP_tm_var,plot_GLM = F)
+print_B_model_SP_result_var <- print_B_model_SP_result_var[,c(1,2,3)]
+print_B_model_SP_result_var$Model <- "Simple Pulse"
+print_B_model_SP_result_var$Variable <- rownames(print_B_model_SP_result)
+print_B_model_SP_result_var$GLM <- "abs. difference"
+
+print_B_model_EP_result_var <- Plot_GLM_model_3(Effect_size_fixed_stan_3_EP_tm_var,plot_GLM = F)
+print_B_model_EP_result_var <- print_B_model_EP_result_var[,c(1,2,3)]
+print_B_model_EP_result_var$Model <- "Extended Pulse tm"
+print_B_model_EP_result_var$Variable <- rownames(print_B_model_EP_result_var)
+print_B_model_EP_result_var$GLM <-  "abs. difference"
+
+print_B_model_result_all <- rbind(print_B_model_SP_result,print_B_model_EP_result,print_B_model_SP_result_var,print_B_model_EP_result_var)
+print_B_model_result_both <- print_B_model_result_all[, c(4,6,5,1,2,3)]
+kable(print_B_model_result_both , "latex",row.names=F,col.names = c( "model","GLM","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
       caption = "\\label{tab:tableS1} table_Supplements_EP_tm_td_and_SP_model_3_predictions Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
@@ -3505,7 +3578,7 @@ ALD_fit_Real_data_normal_plotted <- function(input,lval=0.05,hval=0.5,td,use_log
 
 # normal fitted normal plotted
 SP_Fit <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,Fit = "SP")
-EP_Fit <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,Fit = "EP")
+#EP_Fit <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,Fit = "EP")
 EP_Fit_fixed_td_1 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 1,Fit = "EP fixed td")
 EP_Fit_fixed_td_100 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 100,Fit = "EP fixed td")
 EP_Fit_fixed_td_200 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 200,Fit = "EP fixed td")
@@ -3516,13 +3589,13 @@ EP_Fit_fixed_td_1500 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval 
 EP_Fit_fixed_td_2000 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 2000,Fit = "EP fixed td")
 EP_Fit_fixed_td_2500 <- ALD_fit_Real_data_normal_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 2500,Fit = "EP fixed td")
 
-data_x <- rbind(SP_Fit[[2]],EP_Fit[[2]],EP_Fit_fixed_td_1[[2]],EP_Fit_fixed_td_100[[2]],
+data_x <- rbind(SP_Fit[[2]],EP_Fit_fixed_td_1[[2]],EP_Fit_fixed_td_100[[2]],
                 EP_Fit_fixed_td_200[[2]],EP_Fit_fixed_td_400[[2]],
                 EP_Fit_fixed_td_800[[2]],EP_Fit_fixed_td_1000[[2]],
                 EP_Fit_fixed_td_1500[[2]],EP_Fit_fixed_td_2000[[2]],
                 EP_Fit_fixed_td_2500[[2]])
 
-Fit_Results <- rbind(SP_Fit[[3]],EP_Fit[[3]],EP_Fit_fixed_td_1[[3]],EP_Fit_fixed_td_100[[3]],
+Fit_Results <- rbind(SP_Fit[[3]],EP_Fit_fixed_td_1[[3]],EP_Fit_fixed_td_100[[3]],
                 EP_Fit_fixed_td_200[[3]],EP_Fit_fixed_td_400[[3]],
                 EP_Fit_fixed_td_800[[3]],EP_Fit_fixed_td_1000[[3]],
                 EP_Fit_fixed_td_1500[[3]],EP_Fit_fixed_td_2000[[3]],
@@ -3534,8 +3607,27 @@ Fit_model_res <- list(EP_Fit_fixed_td_1[[1]],EP_Fit_fixed_td_100[[1]],
                 EP_Fit_fixed_td_1500[[1]],EP_Fit_fixed_td_2000[[1]],
                 EP_Fit_fixed_td_2500[[1]])
 
+AIC_result <- AIC(SP_Fit[[1]],EP_Fit_fixed_td_1[[1]],EP_Fit_fixed_td_100[[1]],
+                EP_Fit_fixed_td_200[[1]],EP_Fit_fixed_td_400[[1]],
+                EP_Fit_fixed_td_800[[1]],EP_Fit_fixed_td_1000[[1]],
+                EP_Fit_fixed_td_1500[[1]],EP_Fit_fixed_td_2000[[1]],
+                EP_Fit_fixed_td_2500[[1]])
 
-Fit_Results$fit <- factor(Fit_Results$fit,levels = c("SP_fit"  ,  "EP_fit" ,"EP_fit_1" ,"EP_fit_100","EP_fit_200","EP_fit_400","EP_fit_800"
+Model_RSS <- c()
+for( model in list(SP_Fit[[1]],EP_Fit_fixed_td_1[[1]],EP_Fit_fixed_td_100[[1]],
+                EP_Fit_fixed_td_200[[1]],EP_Fit_fixed_td_400[[1]],
+                EP_Fit_fixed_td_800[[1]],EP_Fit_fixed_td_1000[[1]],
+                EP_Fit_fixed_td_1500[[1]],EP_Fit_fixed_td_2000[[1]],
+                EP_Fit_fixed_td_2500[[1]])){
+  
+  RSS <- sum(resid(model)^2)
+  Model_RSS <- c(Model_RSS,RSS)
+  
+                }
+
+
+
+Fit_Results$fit <- factor(Fit_Results$fit,levels = c("SP_fit" ,"EP_fit_1" ,"EP_fit_100","EP_fit_200","EP_fit_400","EP_fit_800"
                                      ,"EP_fit_1000","EP_fit_1500","EP_fit_2000","EP_fit_2500"),ordered = TRUE)
 
 P_fit_normal <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=NULL))+
@@ -3544,14 +3636,14 @@ P_fit_normal <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=NULL))+
   labs(x = "Genetic distance (M)")+
   labs(y = "weighted LD")+
   scale_color_manual("Fit",
-                     values = c(c(cbPalette_viridis[1:11])),
-                    labels = c(c("fitted SP","fitted EP","EP td = 1"
+                     values = c(c(cbPalette_viridis[1:10])),
+                    labels = c(c("SP","EP td = 1"
                                  ,"EP td = 100","EP td = 200","EP td = 400"
                                  ,"EP td = 800","EP td = 1000","EP td = 1500","EP td = 2000","EP td = 2500")))
 
 # normal fitted log plotted
 SP_Fit <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,Fit = "SP")
-EP_Fit <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,Fit = "EP")
+#EP_Fit <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,Fit = "EP")
 EP_Fit_fixed_td_1 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 1,Fit = "EP fixed td")
 EP_Fit_fixed_td_100 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 100,Fit = "EP fixed td")
 EP_Fit_fixed_td_200 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 200,Fit = "EP fixed td")
@@ -3562,13 +3654,13 @@ EP_Fit_fixed_td_1500 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0
 EP_Fit_fixed_td_2000 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 2000,Fit = "EP fixed td")
 EP_Fit_fixed_td_2500 <- ALD_fit_Real_data_log_plotted(input,lval = 0.05,hval = 0.5,use_log = F,td = 2500,Fit = "EP fixed td")
 
-data_x <- rbind(SP_Fit[[2]],EP_Fit[[2]],EP_Fit_fixed_td_1[[2]],EP_Fit_fixed_td_100[[2]],
+data_x <- rbind(SP_Fit[[2]],EP_Fit_fixed_td_1[[2]],EP_Fit_fixed_td_100[[2]],
                 EP_Fit_fixed_td_200[[2]],EP_Fit_fixed_td_400[[2]],
                 EP_Fit_fixed_td_800[[2]],EP_Fit_fixed_td_1000[[2]],
                 EP_Fit_fixed_td_1500[[2]],EP_Fit_fixed_td_2000[[2]],
                 EP_Fit_fixed_td_2500[[2]])
 
-Fit_Results <- rbind(SP_Fit[[3]],EP_Fit[[3]],EP_Fit_fixed_td_1[[3]],EP_Fit_fixed_td_100[[3]],
+Fit_Results <- rbind(SP_Fit[[3]],EP_Fit_fixed_td_1[[3]],EP_Fit_fixed_td_100[[3]],
                 EP_Fit_fixed_td_200[[3]],EP_Fit_fixed_td_400[[3]],
                 EP_Fit_fixed_td_800[[3]],EP_Fit_fixed_td_1000[[3]],
                 EP_Fit_fixed_td_1500[[3]],EP_Fit_fixed_td_2000[[3]],
@@ -3576,7 +3668,7 @@ Fit_Results <- rbind(SP_Fit[[3]],EP_Fit[[3]],EP_Fit_fixed_td_1[[3]],EP_Fit_fixed
 
 
 
-Fit_Results$fit <- factor(Fit_Results$fit,levels = c("SP_fit"  ,  "EP_fit" ,"EP_fit_1" ,"EP_fit_100","EP_fit_200","EP_fit_400","EP_fit_800"
+Fit_Results$fit <- factor(Fit_Results$fit,levels = c("SP_fit"  ,"EP_fit_1" ,"EP_fit_100","EP_fit_200","EP_fit_400","EP_fit_800"
                                      ,"EP_fit_1000","EP_fit_1500","EP_fit_2000","EP_fit_2500"),ordered = TRUE)
 
 P_fit_log <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=NULL))+
@@ -3585,10 +3677,12 @@ P_fit_log <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=NULL))+
   labs(x = "Genetic distance (M)")+
   labs(y = "log weighted LD")+
   scale_color_manual("Fit",
-                     values = c(c(cbPalette_viridis[1:11])),
-                    labels = c(c("fitted SP","fitted EP","EP td = 1"
+                     values = c(c(cbPalette_viridis[1:10])),
+                    labels = c(c("SP","EP td = 1"
                                  ,"EP td = 100","EP td = 200","EP td = 400"
                                  ,"EP td = 800","EP td = 1000","EP td = 1500","EP td = 2000","EP td = 2500")))
+
+
 
 ```
 
@@ -3621,10 +3715,10 @@ t_m=round(Get_CI_tm_approx_fn(SP_Fit[[1]],2,SP_Fit[[2]]),0)
 c_param=round(Get_CI_other_approx_fn(SP_Fit[[1]],3,SP_Fit[[2]],summary(SP_Fit[[1]])$sigma),6)
 SP_fit_tabel <- c(A_param,t_m,c_param)
 
-A_param=round(Get_CI_other_approx_fn(EP_Fit[[1]],1,EP_Fit[[2]],summary(EP_Fit[[1]])$sigma),3)
-t_m=round(Get_CI_tm_approx_fn(EP_Fit[[1]],2,EP_Fit[[2]]),0)
-c_param=round(Get_CI_other_approx_fn(EP_Fit[[1]],3,EP_Fit[[2]],summary(EP_Fit[[1]])$sigma),6)
-EP_fit_tabel <- c(A_param,t_m,c_param)
+#A_param=round(Get_CI_other_approx_fn(EP_Fit[[1]],1,EP_Fit[[2]],summary(EP_Fit[[1]])$sigma),3)
+#t_m=round(Get_CI_tm_approx_fn(EP_Fit[[1]],2,EP_Fit[[2]]),0)
+#c_param=round(Get_CI_other_approx_fn(EP_Fit[[1]],3,EP_Fit[[2]],summary(EP_Fit[[1]])$sigma),6)
+#EP_fit_tabel <- c(A_param,t_m,c_param)
 
 
 
@@ -3658,6 +3752,20 @@ Real_Data_fit_table_all_print <- Real_Data_fit_table_all_print[,c(10,4,1,7)]
 
 kable(Real_Data_fit_table_all_print , "latex",col.names = c("Model" , "tm"   , "A"  ,"c"),
       caption = "\\label{tab:tableS1} Real data est") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_fig3_real_data_stats, echo=FALSE,results='asis' }
+
+Fit_stats <- data.frame(model=c("Simple Pulse","Extended Pulse (td=1)","Extended Pulse (td=100)",
+                                        "Extended Pulse (td=200)","Extended Pulse (td=400)","Extended Pulse (td=800)",
+                                        "Extended Pulse (td=1000)","Extended Pulse (td=1500)","Extended Pulse (td=2000)",
+                                        "Extended Pulse (td=2500)"),
+                        AIC=AIC_result$AIC,RSS=Model_RSS)
+
+kable(Fit_stats , "latex",row.names = F,col.names = c("Model" , "AIC"   , "RSS"),
+      caption = "\\label{tab:tableS1} Real data Stats") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
 ```
