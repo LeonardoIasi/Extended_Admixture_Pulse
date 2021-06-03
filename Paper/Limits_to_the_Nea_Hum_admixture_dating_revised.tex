@@ -505,15 +505,45 @@ Overall the bias introduced by the ascertainment and admixture model are small: 
 
 \begin{figure}
 \centering
-\includegraphics[width=12cm,height=16cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figResult_3_GLM_SP_and_EP_model_3_effect_sizes-1.pdf}
+\includegraphics[width=12cm,height=16cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figResult_3_GLM_SP_and_EP_bias_and_var-1.pdf}
 \caption{\label{fig:figGLM} Comparison of the GLM effect size estimates and 95\% C.I. for the parameters between the simple and extended pulse model: gene flow model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM), SNPs used for ALD calculation (100 \% / 5 \%) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated mean admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates.}
 \end{figure}
+
+\subsection{Sampling closer to the admixture event}\label{estimating the Lomax-parameters under different conditions}
+
+In the previous section we established the major sources of biases being the uncertainty in the recombination rates and the optimal parameter settings for analysis on ALD data. Together with the observation in Figure \ref{fig:fig1_1} that the more time elapsed since admixture the harder is it to distinguish the two models, we want to know if we can retrieve the admixture duration using ALD data and optimised settings (ascertainment scheme = LES and  d0 = 0.05 cM) under various recombination scenarios when sampling closer to the end of the admixture event.
+
+In Figure \ref{fig:Closer_sampling}, we show the accuracy of $t_d$ and $t_m$ estimates in two sets of simulations. In panels A and B we increase both $t_m$ and $t_d$ at a similar rate, such that gene flow ends 50 generations before sampling ($t_{end}=50$, where $t_{end}= t_m - \frac{t_d}{2}$). In panels C and D $t_d$ is kept fixed at 800, but we increase $t_m$. We further vary recombination rate settings as i) inference and simulation under constant recombination rate, ii) simulation using the HapMap genetic map \citep{HapMapConsortium_second_2007}, no correction, iii) simulation using HapMap, correction using African-American map (AAMap) \citep{hinch_landscape_2011}, iv) inference and simulation using HapMap. 
+
+Figure \ref{fig:Closer_sampling}A and C show the mean
+time estimates received from the simple and extended pulse model fit. Figure \ref{fig:Closer_sampling}B and D show the corresponding admixture duration estimate. The mean time estimates are more robust for different durations and different sampling times after the end of the admixture event using the extended pulse model under all recombination scenarios compared to the simple pulse. A slight bias is detected for sampling times very close to $t_m$ when recombination distances are uncertain. The Simple pulse displays the downward bias caused by long gene flow and admixture times are biased with uncertainties in the recombination rates. 
+
+%Under constant recombination settings, we find that parameters under the extended pulse are well-estimated in all scenarios, although we observe a small overestimate of both $t_m$ and $t_d$, for very long admixture durations over 1000 generations in the very distant past (more than 600 generations ago). In contrast, inference under the simple pulse model results in a slight underestimate (Figure \ref{fig:Closer_sampling}, \ref{fig:Closer_sampling}A).
+
+%We also find that the simple pulse model is fairly robust to changes in recombination settings, both using the ``correct'' and an empirically similar recombination map. Only when we do not correct for recombination rate variation, we observe a substantial underestimate by almost a factor of two for more distant admixture (Figure \ref{fig:Closer_sampling}A \& C, left panels). 
+
+%In contrast, estimates under the extended pulse model are substantially more spread out under variable recombination maps, but we do not observe the systematic bias towards more recent admixture times as in the simple-pulse model. In contrast, the uncorrected scenario results in extremely poor estimates with very high variation, and is clearly unsuitable for this purpose (Figure \ref{fig:Closer_sampling}A \& C, right panels)
+
+In Figure \ref{fig:Closer_sampling}C we find that sampling closer to the end of the admixture event yields unbiased estimates for $t_d$ with gene flow longer then 800 generations. Using inaccurate recombination distances Figure \ref{fig:Closer_sampling}D demonstrates that accuracy to estimate $t_d$ decreases with increases distance to the admixture event.
+
+We also find that estimates of $t_d$ differ substantially between recombination rate settings. Under constant rates, $t_d$ is well-estimated in all scenarios, and if the recombination rate is known, we get reasonably accurate estimates, at least if admixture is not older than 100 generations. However, under the scenarios where recombination rates differ between simulation and inference, results become more erratic; For the cases of $t_d=200$ and $t_d=400$, many simulations infer an admixture time of near zero; in contrast, very old admixture results in a large overestimate.
+
+\begin{figure}
+\centering
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figCloser_Sampling_Supplement-1.pdf}
+\caption{\label{fig:Closer_sampling} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene
+flow durations $t_d$ all sampled 50 generations after the gene flow ended. B)
+Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times following 800
+generations of gene flow. D) Duration estimate of the same scenario. All scenarios are simulated either under a constant recombination rate or an empirical recombination map (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate (HapMap not corrected), using a different map (HapMap AAMap corrected) and using the same map (HapMap HapMap corrected). All times are given in generations.}
+\end{figure}
+
+
 
 \subsection{Application to Neandertal data}
 
 In the previous section, we have shown using simulations that it might be difficult to distinguish Neandertal admixture scenarios of various durations from present day samples, i.e. estimating an event that happened 1,500 generations ago. To evaluate whether this is also true for real data, we estimated the Neandertal admixture pulse from the 1000 genomes data \cite{the_1000_genomes_project_consortium_global_2015}. For this purpose,  we fit  pulses with durations ranging from one generation up to 2,500 generations to the ALD decay curve (Figure \ref{fig:fig5}, S. Table \ref{tab:tableSReal_data_est}). Plotting these best-fit ALD curves (Figure \ref{fig:fig5}A) on a y-axis in natural scale shows the extremely slight difference predicted under these drastically different gene flow scenarios. The difference between scenarios becomes more apparent if we log-transform the y-axis (Figure \ref{fig:fig5}B), where we see that ongoing gene flow results in a heavier tail in the ALD distributions. However, these LD values are very close to zero, and are thus only very noisily estimated. 
 
-For short gene flows (less than 1,000 generations), our estimates for $t_m$ are very similar and identical to the simple pulse, at around 1,682 (1,526 1,839 $C.I._{95\%}$) generations. Extremely high values of $t_d$ result in slightly higher values of $t_m$ with overlapping compatibility intervals; but all predict that Neandertals would have survived until ~30kya, for which the archaeological evidence is extremely sparse \cite{SOMETHING}.  Therefore, we find that all scenarios are compatible with the observed data, and that there is little power to differentiate these cases from genetics alone. From the residual sum-of-squares and model comparison using AIC, the models perform equal, with longer extended pulses of gene flow achieving marginally better fits (S. Table \ref{tab:tableSReadl_data_AIC_RSS}). 
+For short gene flows (less than 1,000 generations), our estimates for $t_m$ are very similar and identical to the simple pulse, at around 1,682 (1,526 1,839 $C.I._{95\%}$) generations. Extremely high values of $t_d$ result in slightly higher values of $t_m$ with overlapping compatibility intervals; but all predict that Neandertals would have survived until ~30kya, for which the archaeological evidence is extremely sparse \cite{hublin_last_2017}.  Therefore, we find that all scenarios are compatible with the observed data, and that there is little power to differentiate these cases from genetics alone. From the residual sum-of-squares and model comparison using AIC, the models perform equal, with longer extended pulses of gene flow achieving marginally better fits (S. Table \ref{tab:tableSReadl_data_AIC_RSS}). 
 
 
 \begin{figure}
@@ -697,7 +727,7 @@ Both of these assumptions may be violated if the admixture fraction is high. Und
     \mathbb{E}L_i = \left[t_m (1-\alpha) \right]^{-1}
 \end{equation}
 
-Likewise, they showed that using the SMC' model \cite{marjoram_wall} this is
+Likewise, they showed that using the SMC' model \citep{marjoram} this is
 $$
 \mathbb{E}L_i = \left[2N(1-\alpha)(1-\exp\left(-\frac{t_m}{2N}\right)\right]^{-1} \text{.}
 $$
