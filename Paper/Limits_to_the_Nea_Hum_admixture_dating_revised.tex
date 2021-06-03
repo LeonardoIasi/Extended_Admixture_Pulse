@@ -721,13 +721,13 @@ In the appendix, we lay out some more detail about derivations and some of the a
 \paragraph{Admixture segments with genetic drift and recombination}
 Our model assumes that Neandertal fragments in the human population always recombine with non-Neandertal haplotypes, and that the effect of genetic drift can be neglected. 
 
-Both of these assumptions may be violated if the admixture fraction is high. Under the single-pulse model, it can be shown that, taking recombination into account under the SMC model \cite{Approximating the coalescent with recombination}  adds a term of $(1-\alpha)$, where $\alpha$ is the total admixture proportion \cite{liang_lengths_2014}
+Both of these assumptions may be violated if the admixture fraction is high. Under the single-pulse model, it can be shown that, taking recombination into account under the SMC model \cite{mcvean_approximating_2005}  adds a term of $(1-\alpha)$, where $\alpha$ is the total admixture proportion \cite{liang_lengths_2014}
 
 \begin{equation}
     \mathbb{E}L_i = \left[t_m (1-\alpha) \right]^{-1}
 \end{equation}
 
-Likewise, they showed that using the SMC' model \citep{marjor} this is
+Likewise, they showed that using the SMC' model \citep{marjoram_fast_2006} this is
 $$
 \mathbb{E}L_i = \left[2N(1-\alpha)(1-\exp\left(-\frac{t_m}{2N}\right)\right]^{-1} \text{.}
 $$
@@ -759,7 +759,7 @@ This leads to the following linear differential equation:
     \frac{dD}{dt} = -r D + \Delta_x\Delta_y m(t)\text{.}
 \end{equation}
 
-It is straightforward to veryify that equation \ref{eq:ld_general_bwd} is a solution to this equation:
+It is straightforward to verify that equation \ref{eq:ld_general_bwd} is a solution to this equation:
 
 \begin{align}
    D(t) &= \Delta_x\Delta_y\int_{-\infty}^t m(s)\exp(-r(t-s)) ds \nonumber \\
