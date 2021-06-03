@@ -162,89 +162,121 @@ Different sampling times after 800 generations of gene flow.}
 
 \begin{table}[H]
 
-\caption{\label{tab:table_S1_EP_tm_td_and_SP_model_3}\label{tab:table_S1_EP_tm_td_and_SP_model_3} Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.}
+\caption{\label{tab:table_Supplements_GLM_EP_SP_tm_effect_size_bias}Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.} 
 \centering
-\begin{tabular}[t]{l|l|r|r|r|r|r|r}
+
+\begin{tabular}[t]{l|l|l|r|r|r}
 \hline
-model & variable & mean & sd & 5.5\% & 94.5\% & n\_eff & Rhat\\
+model & GLM & variable & mean & 5.5\% & 94.5\%\\
 \hline
- & a & 0.00 & 0.03 & -0.07 & 0.06 & 1973.74 & 1\\
+ & difference & Standard Model & 0.00 & -0.07 & 0.06\\
 
- & bmr & 0.18 & 0.04 & 0.11 & 0.26 & 2614.04 & 1\\
+ & difference & Extended GF & -0.17 & -0.23 & -0.11\\
 
- & bdr & -0.05 & 0.04 & -0.13 & 0.02 & 2297.09 & 1\\
+ & difference & Varying recombination & -1.22 & -1.29 & -1.16\\
 
- & bmA & -0.14 & 0.04 & -0.21 & -0.06 & 2729.26 & 1\\
+ & difference & Complex Demography & -0.28 & -0.34 & -0.21\\
 
- & bdA & 0.01 & 0.04 & -0.06 & 0.09 & 2410.76 & 1\\
+ & difference & d0 = 0.02 & 0.14 & 0.08 & 0.20\\
 
- & bd & 0.00 & 0.03 & -0.05 & 0.05 & 2536.66 & 1\\
+ & difference & HES & -0.16 & -0.22 & -0.09\\
 
- & bG & -0.17 & 0.02 & -0.21 & -0.13 & 4109.31 & 1\\
+ & difference & downsampled & -0.01 & -0.07 & 0.06\\
 
- & bR & -1.22 & 0.03 & -1.29 & -1.16 & 2210.48 & 1\\
+ & difference & Interaction downsampled/HES & -0.15 & -0.21 & -0.08\\
 
- & bD & -0.27 & 0.03 & -0.33 & -0.22 & 2451.29 & 1\\
+ & difference & Interaction Complex D./Varying R. & -1.28 & -1.35 & -1.19\\
 
- & bm & 0.15 & 0.03 & 0.08 & 0.21 & 2366.91 & 1\\
+ & difference & Interaction d0 = 0.02/HES & -0.15 & -0.21 & -0.09\\
 
- & bA & -0.16 & 0.03 & -0.22 & -0.09 & 2125.81 & 1\\
+\multirow{-11}{*}{\raggedright\arraybackslash Simple Pulse} & difference & Interaction d0 = 0.02/Varying R. & -0.89 & -0.96 & -0.83\\
+\cline{1-6}
+ & difference & Standard Model & 0.21 & 0.14 & 0.27\\
 
-\multirow{-12}{*}{\raggedright\arraybackslash Simple Pulse} & sigma & 0.78 & 0.01 & 0.77 & 0.80 & 4405.26 & 1\\
-\cline{1-8}
- & a & 0.14 & 0.04 & 0.07 & 0.21 & 2081.71 & 1\\
+ & difference & Extended GF & 0.10 & 0.04 & 0.16\\
 
- & bmr & 0.46 & 0.04 & 0.38 & 0.54 & 2940.80 & 1\\
+ & difference & Varying recombination & -0.53 & -0.59 & -0.46\\
 
- & bdr & -0.49 & 0.04 & -0.58 & -0.41 & 2567.23 & 1\\
+ & difference & Complex Demography & -0.22 & -0.29 & -0.16\\
 
- & bmA & -0.40 & 0.04 & -0.48 & -0.32 & 3022.05 & 1\\
+ & difference & d0 = 0.02 & 0.59 & 0.53 & 0.66\\
 
- & bdA & 0.07 & 0.04 & -0.01 & 0.15 & 2762.50 & 1\\
+ & difference & HES & 0.03 & -0.03 & 0.10\\
 
- & bd & -0.06 & 0.03 & -0.12 & 0.00 & 2915.63 & 1\\
+ & difference & downsampled & 0.17 & 0.10 & 0.23\\
 
- & bG & -0.12 & 0.02 & -0.16 & -0.08 & 4086.03 & 1\\
+ & difference & Interaction downsampled/HES & 0.04 & -0.03 & 0.10\\
 
- & bR & -0.68 & 0.04 & -0.75 & -0.61 & 2261.48 & 1\\
+ & difference & Interaction Complex D./Varying R. & -1.00 & -1.09 & -0.92\\
 
- & bD & -0.39 & 0.03 & -0.45 & -0.34 & 2534.51 & 1\\
+ & difference & Interaction d0 = 0.02/HES & 0.02 & -0.05 & 0.08\\
 
- & bm & 0.39 & 0.04 & 0.32 & 0.46 & 2681.03 & 1\\
-
- & bA & -0.16 & 0.04 & -0.22 & -0.08 & 2492.02 & 1\\
-
-\multirow{-12}{*}{\raggedright\arraybackslash Extended Pulse tm} & sigma & 0.82 & 0.01 & 0.80 & 0.83 & 4196.78 & 1\\
-\cline{1-8}
- & a & 2.85 & 0.03 & 2.78 & 2.92 & 1924.23 & 1\\
-
- & bmr & 0.46 & 0.04 & 0.38 & 0.54 & 2413.75 & 1\\
-
- & bdr & -0.49 & 0.04 & -0.57 & -0.41 & 2757.21 & 1\\
-
- & bmA & -0.40 & 0.04 & -0.48 & -0.32 & 2705.38 & 1\\
-
- & bdA & 0.07 & 0.04 & -0.01 & 0.15 & 2365.63 & 1\\
-
- & bd & -0.06 & 0.03 & -0.12 & -0.01 & 2606.70 & 1\\
-
- & bG & -2.84 & 0.02 & -2.88 & -2.80 & 3845.33 & 1\\
-
- & bR & -0.68 & 0.04 & -0.75 & -0.61 & 2382.65 & 1\\
-
- & bD & -0.39 & 0.03 & -0.45 & -0.33 & 2713.53 & 1\\
-
- & bm & 0.39 & 0.04 & 0.32 & 0.47 & 2103.45 & 1\\
-
- & bA & -0.15 & 0.04 & -0.22 & -0.08 & 2451.45 & 1\\
-
-\multirow{-12}{*}{\raggedright\arraybackslash Extended Pulse td} & sigma & 0.82 & 0.01 & 0.80 & 0.83 & 4877.42 & 1\\
+\multirow{-11}{*}{\raggedright\arraybackslash Extended Pulse tm} & difference & Interaction d0 = 0.02/Varying R. & 0.31 & 0.25 & 0.38\\
 \hline
 \end{tabular}
 \end{table}
 
+
 \begin{table}[H]
-\caption{\label{tab:tableSReal_data_est} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit to ALD from the 1k Genome data.}
+
+\caption{\label{tab:tableSReadl_data_AIC_RSS} AIC and RSS for the fit  to ALD from the 1k Genome data.}
+
+\centering
+
+\begin{tabular}[t]{l|l|l|r|r|r}
+\hline
+model & GLM & variable & mean & 5.5\% & 94.5\%\\
+\hline
+ & abs. difference & Standard Model & 0.08 & 0.02 & 0.14\\
+
+ & abs. difference & Extended GF & 0.23 & 0.17 & 0.29\\
+
+ & abs. difference & Varying recombination & 1.33 & 1.27 & 1.39\\
+
+ & abs. difference & Complex Demography & 0.25 & 0.20 & 0.31\\
+
+ & abs. difference & d0 = 0.02 & 0.02 & -0.04 & 0.08\\
+
+ & abs. difference & HES & 0.26 & 0.20 & 0.32\\
+
+ & abs. difference & downsampled & 0.09 & 0.03 & 0.15\\
+
+ & abs. difference & Interaction downsampled/HES & 0.27 & 0.21 & 0.32\\
+
+ & abs. difference & Interaction Complex D./Varying R. & 1.38 & 1.31 & 1.45\\
+
+ & abs. difference & Interaction d0 = 0.02/HES & 0.29 & 0.23 & 0.35\\
+
+\multirow{-11}{*}{\raggedright\arraybackslash Simple Pulse} & abs. difference & Interaction d0 = 0.02/Varying R. & 1.05 & 0.99 & 1.11\\
+\cline{1-6}
+ & abs. difference & Standard Model & 0.14 & 0.09 & 0.20\\
+
+ & abs. difference & Extended GF & 0.23 & 0.17 & 0.29\\
+
+ & abs. difference & Varying recombination & 0.97 & 0.91 & 1.02\\
+
+ & abs. difference & Complex Demography & 0.17 & 0.11 & 0.23\\
+
+ & abs. difference & d0 = 0.02 & 0.26 & 0.20 & 0.32\\
+
+ & abs. difference & HES & 0.25 & 0.19 & 0.30\\
+
+ & abs. difference & downsampled & 0.22 & 0.16 & 0.27\\
+
+ & abs. difference & Interaction downsampled/HES & 0.33 & 0.27 & 0.38\\
+
+ & abs. difference & Interaction Complex D./Varying R. & 1.32 & 1.24 & 1.39\\
+
+ & abs. difference & Interaction d0 = 0.02/HES & 0.33 & 0.27 & 0.39\\
+
+\multirow{-11}{*}{\raggedright\arraybackslash Extended Pulse tm} & abs. difference & Interaction d0 = 0.02/Varying R. & 0.67 & 0.61 & 0.73\\
+\hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\caption{\label{tab:tableSReadl_data_AIC_RSS} AIC and RSS for the fit  to ALD from the 1k Genome data.}
 \centering
 \begin{tabular}[t]{l|l|l|l|l}
 \hline
