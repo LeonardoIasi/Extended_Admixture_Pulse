@@ -2975,10 +2975,10 @@ Plot_sampling_varying_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis
 }
 
 
-Result.Table.path_Recent_50 <-'../Close_to_GF_End_Recent_GF_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_no_correction <-'../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_AAMap_correction <-'../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction <-'../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+Result.Table.path_Recent_50 <-'../Close_to_GF_End_Recent_GF_corrected/Result_with_AIC_F_Test_new_port_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_no_correction <-'../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_AAMap_correction <-'../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction <-'../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
 
 Result.Table.path_Recent_Varying <-'../Variyng_Time_of_Recent_sampling_GF_l_fixed_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
 Result.Table.path_Recent_Varying_Recomb_Map_no_correction <-'../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
@@ -3410,9 +3410,27 @@ print_B_model_EP_result_var$Model <- "Extended Pulse tm"
 print_B_model_EP_result_var$Variable <- rownames(print_B_model_EP_result_var)
 print_B_model_EP_result_var$GLM <-  "abs. difference"
 
-print_B_model_result_all <- rbind(print_B_model_SP_result,print_B_model_EP_result,print_B_model_SP_result_var,print_B_model_EP_result_var)
-print_B_model_result_both <- print_B_model_result_all[, c(4,6,5,1,2,3)]
+#print_B_model_result_all <- rbind(print_B_model_SP_result,print_B_model_EP_result,print_B_model_SP_result_var,print_B_model_EP_result_var)
+#print_B_model_result_both <- print_B_model_result_all[, c(4,6,5,1,2,3)]
+#kable(print_B_model_result_both , "latex",row.names=F,col.names = c( "model","GLM","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
+#      caption = "\\label{tab:tableS1} table_Supplements_EP_tm_td_and_SP_model_3_predictions Mean, Standard deviation, 5.5/94.5 compatibility interval of the #posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+#  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+#  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_GLM_EP_SP_tm_effect_size_bias, echo=FALSE,results='asis',message=F,warning=F }
+print_B_model_result_bias <- rbind(print_B_model_SP_result,print_B_model_EP_result)
+print_B_model_result_both <- print_B_model_result_bias[, c(4,6,5,1,2,3)]
 kable(print_B_model_result_both , "latex",row.names=F,col.names = c( "model","GLM","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
+      caption = "\\label{tab:tableS1} table_Supplements_EP_tm_td_and_SP_model_3_predictions Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+```{r table_Supplements_GLM_EP_SP_tm_effect_size_var, echo=FALSE,results='asis',message=F,warning=F }
+print_B_model_result_var <- rbind(print_B_model_SP_result_var,print_B_model_EP_result_var)
+print_B_model_result_var <- print_B_model_result_var[, c(4,6,5,1,2,3)]
+kable(print_B_model_result_var , "latex",row.names=F,col.names = c( "model","GLM","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
       caption = "\\label{tab:tableS1} table_Supplements_EP_tm_td_and_SP_model_3_predictions Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
