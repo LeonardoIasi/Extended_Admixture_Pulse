@@ -104,6 +104,8 @@
             
 
 \end{titlepage}
+
+
 \section{Extended Pulse Model}
 
 In this section, we describe in detail the derivation of the extended pulse model, where the gene flow over time is modeled as a Gamma distribution with shape parameter $k$ and scale parameter $\frac{k}{t_m}$. Here, $L_i$ is the length of a segment entered at time $T_i$. We assume each segment length at time $T_i$ to be described by an exponential distribution.
@@ -299,6 +301,36 @@ bm & 0.13 & 0.02 & 0.09 & 0.18 & 3850.41 & 1\\
 bA & -0.15 & 0.03 & -0.21 & -0.08 & 2335.16 & 1\\
 \cline{1-7}
 sigma & 0.91 & 0.01 & 0.90 & 0.93 & 3894.49 & 1\\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\caption{\label{tab:tableS2} Mean and 2.5/97.5 compatibility interval for every parameter estimated in the model fit}
+\centering
+\begin{tabular}[t]{l|l|l|l|l}
+\hline
+Model & A & $t_m$ & c\\
+\hline
+Simple Pulse & 0.018 (0.018 - 0.018) & 1541 (1487 - 1598) & 1e-05 (6e-06 - 1.5e-05)\\
+\hline
+Extended Pulse (td=1) & 0.018 (0.018 - 0.018) & 1541 (1487 - 1598) & 1e-05 (6e-06 - 1.5e-05)\\
+\hline
+Extended Pulse (td=100) & 0.018 (0.018 - 0.018) & 1541 (1488 - 1599) & 1e-05 (6e-06 - 1.5e-05)\\
+\hline
+Extended Pulse (td=200) & 0.018 (0.018 - 0.018) & 1543 (1490 - 1601) & 1e-05 (6e-06 - 1.5e-05)\\
+\hline
+Extended Pulse (td=400) & 0.018 (0.018 - 0.018) & 1552 (1498 - 1610) & 1e-05 (6e-06 - 1.5e-05)\\
+\hline
+Extended Pulse (td=800) & 0.018 (0.018 - 0.018) & 1586 (1531 - 1646) & 1e-05 (5e-06 1.4e-05)\\
+\hline
+Extended Pulse (td=1000) & 0.018 (0.018 - 0.018) & 1613 (1557 - 1673) & 9e-06 (5e-06 - 1.3e-05)\\
+\hline
+Extended Pulse (td=1500) &  0.018 (0.018 - 0.018) & 1713 (1654 - 1777) & 7e-06 (3e-06 - 1.1e-05)\\
+\hline
+Extended Pulse (td=2000) & 0.018 (0.018 - 0.018) & 1875 (1809 - 1945) & 4e-06 (0 - 8e-06)\\
+\hline
+Extended Pulse (td=2500) & 0.018 (0.018 - 0.018) & 2129 (2055 - 2208) & -1e-06 (-5e-06 - 4e-06)\\
 \hline
 \end{tabular}
 \end{table}
