@@ -718,7 +718,7 @@ Result.Table.paper.parametrization.fn <- function(Result.Table.path,Sampling.tim
 Result.Table.path_ALD_constant <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_ALD/Result_Simple_Extended_Pulse/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccNo_correction.txt'
 
 # constant interpolation
-Result.Table.path_ALD_no_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse//Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccNo_correction.txt'
+Result.Table.path_ALD_no_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccNo_correction.txt'
 Result.Table.path_ALD_AAMap_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccAAMap_correction.txt'
 Result.Table.path_ALD_HapMap_correction <-'/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Segment_ALD_comparison_recombination_map_ALD/Result_Simple_Extended_Pulse/Result_file_SIM_Raw_ALDER-Fit-Segment_ALD_comparison_recombination_map_ALD-GF_Model_IV-min_dist_Fit-0.05-ascertainmentI-downsampled100-ReccHapMap_correction.txt'
 
@@ -1248,6 +1248,7 @@ Extended_Pulse_fn <- function(Data,affine,use_log=F){
     names(par1_lomax) <- c("k","tm","A","c")
     fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ k) *(dist/100)) ))^(k), start=par1_lomax, algorithm="port", 
                       lower=c(2,100,1e-6,-1), upper=c(1e8,5000,1,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+    #fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ k) *(dist/100)) ))^(k), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
   }
   
   if(use_log==T) {
@@ -1285,6 +1286,7 @@ Extended_Pulse_fixed_fn <- function(Data,affine,tm,k,use_log=F){
     names(par1_lomax) <- c("A","c")
     fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ k) *(dist/100)) ))^(k), start=par1_lomax, algorithm="port", 
                       lower=c(1,100,0,-1), upper=c(2,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+    #fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ k) *(dist/100)) ))^(k), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
   }
 
   
@@ -1977,14 +1979,14 @@ Read_GLM_indata <- function(path){
 }
 
 
-Fig_2_1 <- Read_GLM_indata("/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_A_revision/Result_SP_and_EP_port/")
+Fig_2_1 <- Read_GLM_indata("/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_A_revision/Result_SP_and_EP/")
 Fig_2_1$Demography <- "0_Simple"
 Fig_2_1$Recomb.rate <- "0_constant"
 Fig_2_1$GF_model <- ifelse(Fig_2_1$Scenario.name=="_Scenario_16_","EP","SP")
 Fig_2_1$Sim_ID <- ifelse(Fig_2_1$Scenario.name=="_Scenario_16_",2,1)
 
 #Fig_2_2 <- Read_GLM_indata("/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_B_complex_revision/Result_classic_Exp/")
-  Fig_2_2 <- Read_GLM_indata("/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_B_complex_Skov_revision/Result_SP_and_EP_port/")
+  Fig_2_2 <- Read_GLM_indata("/mnt/diversity/leonardo_iasi/Adm_Time_Dating_Sim/Paper_Revisions/Fig_2_B_complex_Skov_revision/Result_SP_and_EP/")
 Fig_2_2$Demography <- "0_Complex"
 Fig_2_2$Recomb.rate <- "0_constant"
 #Fig_2_2$GF_model <- ifelse(Fig_2_2$Scenario.name=="_Complex_Demographies_Scenario_3_","EP","SP")
@@ -2008,11 +2010,14 @@ xdata.M.3 <- rbind(Fig_2_1,Fig_2_2,Fig_2_3,Fig_2_4)
 xdata.M.3$downsampling <- as.factor(xdata.M.3$downsampling)
 xdata.M.3.no_error <- xdata.M.3[complete.cases(xdata.M.3),] 
 
+xdata.M.3_all <- xdata.M.3 %>% 
+ filter(downsampling==100 | downsampling==5)
 
 xdata.M.3.no_error <- xdata.M.3.no_error %>% 
  filter(downsampling==100 | downsampling==5)
 
-
+failed_fits=length(xdata.M.3_all$A.sp)-length(xdata.M.3.no_error$A.sp)
+failed_fitspc=failed_fits/length(xdata.M.3_all$A.sp)
 
 xdata.M.3.no_error$td_est <- 4*xdata.M.3.no_error$tm.ep*xdata.M.3.no_error$k.ep^(-(1/2))
 
@@ -2111,6 +2116,7 @@ Bdata_index_EP_tm_var<- list(
   
 )
 
+'
 Bdata_index_EP_td_var<- list(
   N = length(xdata.M.3.no_error$Diff_s_EP_td),
   ID = xdata.M.3.no_error$Sim_ID,
@@ -2122,7 +2128,7 @@ Bdata_index_EP_td_var<- list(
   GF = ifelse(xdata.M.3.no_error$GF_model=="SP",0,1),
   DS = ifelse(xdata.M.3.no_error$downsampling==100,0,1)
   
-)
+)'
 
 ### For simple pulse fit
 '
@@ -2228,6 +2234,7 @@ Effect_size_fixed_stan_3_EP_td_var <- ulam(
     sigma ~ dexp(1)), data=Bdata_index_EP_td_var,chains = 4,iter = 2000,cores = 4)
 
 '
+
 ```
 
 
@@ -2245,8 +2252,8 @@ B_model_result_SP_3_var <- precis(Effect_size_fixed_stan_3_SP_tm_var,prob = 0.95
 B_model_result_EP_3 <- precis(Effect_size_fixed_stan_3_EP_tm,prob = 0.95)
 B_model_result_EP_3_var <- precis(Effect_size_fixed_stan_3_EP_tm_var,prob = 0.95)
 
-B_model_result_EP_3_td <- precis(Effect_size_fixed_stan_3_EP_td,prob = 0.95)
-B_model_result_EP_3_td_var <- precis(Effect_size_fixed_stan_3_EP_td_var,prob = 0.95)
+#B_model_result_EP_3_td <- precis(Effect_size_fixed_stan_3_EP_td,prob = 0.95)
+#B_model_result_EP_3_td_var <- precis(Effect_size_fixed_stan_3_EP_td_var,prob = 0.95)
 
 Plot_GLM_model_0 <- function(Model){
   post_effect_size_model <- extract.samples(Model,n = 1e5)
@@ -2966,23 +2973,17 @@ Plot_sampling_varying_gen_GF_Length_flipped <- function(ggdata,cbPalette_viridis
                        labels = c("HapMap/HapMap","HapMap/AAMap","HapMap/Constant","Constant/Constant"),
                        guide = guide_legend(reverse=TRUE))
 }
-"
-Result.Table.path_Recent_50 <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_no_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_AAMap_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction <-'Fig_3_Results_corrected/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
-"
 
 
-Result.Table.path_Recent_50 <-'../Close_to_GF_End_Recent_GF_corrected/Result_with_AIC_F_Test/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_no_correction <-'../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_AAMap_correction <-'../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
-Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction <-'../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+Result.Table.path_Recent_50 <-'../Close_to_GF_End_Recent_GF_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_no_correction <-'../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_AAMap_correction <-'../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_50_Recomb_Map_HapMap_Recomb_HapMap_correction <-'../Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Close_to_GF_End_Recent_GF_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
 
-Result.Table.path_Recent_Varying <-'../Variyng_Time_of_Recent_sampling_GF_l_fixed_corrected/Result_with_AIC_F_Test/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_Varying_Recomb_Map_no_correction <-'../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
-Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction <-'../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
-Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction <-'../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
+Result.Table.path_Recent_Varying <-'../Variyng_Time_of_Recent_sampling_GF_l_fixed_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_no_correction <-'../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-No_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_AAMap_correction <-'../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-AAMap_correction.txt'
+Result.Table.path_Recent_Varying_Recomb_Map_HapMap_Recomb_HapMap_correction <-'../Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected/Result_with_AIC_F_Test_new_port/Result_file_SIM_Raw_ALDER-Fit-Variyng_Time_of_Recent_sampling_GF_l_fixed_Recomn_Map_Hap_Map_corrected-GF_Model_IV-min_dist_Fit-0.05-ascertainment-0-HapMap_correction.txt'
 
 
 Plot.data_50<-rbind(
@@ -3049,7 +3050,8 @@ Sampling_Closer_Supplements
 ```
 
 ```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE}
-Plot.data_50_complete <- Plot.data_50[complete.cases(Plot.data_50),]
+#Plot.data_50_complete <- Plot.data_50[complete.cases(Plot.data_50),]
+Plot.data_50_complete <- Plot.data_50
 Plot.data_50_complete$Name <- factor(Plot.data_50_complete$Name,
                     levels = c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction"),ordered = TRUE)
 #RSS_diff_norm <- Plot.data_50_complete %>% group_by(Name) %>% group_map(~ (0-(log(.x$RSS_SP)-log(.x$RSS_EP))/sd((log(.x$RSS_SP)-log(.x$RSS_EP))) ) )
@@ -3092,7 +3094,8 @@ P_RSS_comp_50 <- ggplot(RSS_comp_50, aes(x=as.factor(Name), y=(RSS_diff_norm),co
                                    values = c(cbPalette_viridis[1],cbPalette_viridis[3],cbPalette_viridis[9],cbPalette_viridis[12]),
                                    labels = c("Constant/Constant","HapMap/Constant","HapMap/AAMap","HapMap/HapMap"))
 
-Plot.data_varying_complete <- Plot.data_varying[complete.cases(Plot.data_varying),]
+#Plot.data_varying_complete <- Plot.data_varying[complete.cases(Plot.data_varying),]
+Plot.data_varying_complete <- Plot.data_varying
 Plot.data_varying_complete$Name <- factor(Plot.data_varying_complete$Name,
                     levels = c("Recent_50_constant","Recent_50_HapMap_no_correction","Recent_50_HapMap_AAMap_correction","Recent_50_HapMap_HapMap_correction"),ordered = TRUE)
 #RSS_diff_norm <- Plot.data_varying_complete %>% group_by(Name) %>% group_map(~ (0-(log(.x$RSS_SP)-log(.x$RSS_EP))/sd((log(.x$RSS_SP)-log(.x$RSS_EP))) ) )
@@ -3470,6 +3473,8 @@ Extended_Pulse_fixed_k_fn <- function(Data,affine,td,use_log=F){
     names(par1_lomax) <- c("tm","A","c")
     fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ ((1/((td/(4*tm))^2)))) *(dist/100)) ))^((1/(((td/(4*tm))^2)))), start=par1_lomax, algorithm="port",
                       lower=c(100,0,-1), upper=c(5000,1,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+    fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ ((1/((td/(4*tm))^2)))) *(dist/100)) ))^((1/(((td/(4*tm))^2)))), start=par1_lomax, 
+                          control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
   }
 
   
