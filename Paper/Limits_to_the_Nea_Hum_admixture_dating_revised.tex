@@ -515,16 +515,14 @@ In the previous section we established the major sources of biases being the unc
 
 In Figure \ref{fig:Closer_sampling}, we show the accuracy of $t_d$ and $t_m$ estimates in two sets of simulations. In panels A and B we increase both $t_m$ and $t_d$ at a similar rate, such that gene flow ends 50 generations before sampling ($t_{end}=50$, where $t_{end}= t_m - \frac{t_d}{2}$). In panels C and D $t_d$ is kept fixed at 800, but we increase $t_m$. We further vary recombination rate settings as i) inference and simulation under constant recombination rate, ii) simulation using the HapMap genetic map \citep{HapMapConsortium_second_2007}, no correction, iii) simulation using HapMap, correction using African-American map (AAMap) \citep{hinch_landscape_2011}, iv) inference and simulation using HapMap. 
 
-Figure \ref{fig:Closer_sampling}A and C show the mean
-time estimates received from the simple and extended pulse model fit. Figure \ref{fig:Closer_sampling}B and D show the corresponding admixture duration estimate. The mean time estimates are more robust for different durations and different sampling times after the end of the admixture event using the extended pulse model under all recombination scenarios compared to the simple pulse. A slight bias is detected for sampling times very close to $t_m$ when recombination distances are uncertain. The Simple pulse displays the downward bias caused by long gene flow and admixture times are biased with uncertainties in the recombination rates. 
+Figure \ref{fig:Closer_sampling}A and C show the mean time estimates received from the simple and extended pulse model fit. Figure \ref{fig:Closer_sampling}B and D show the corresponding admixture duration estimate. 
 
-%Under constant recombination settings, we find that parameters under the extended pulse are well-estimated in all scenarios, although we observe a small overestimate of both $t_m$ and $t_d$, for very long admixture durations over 1000 generations in the very distant past (more than 600 generations ago). In contrast, inference under the simple pulse model results in a slight underestimate (Figure \ref{fig:Closer_sampling}, \ref{fig:Closer_sampling}A).
+Under constant recombination settings, we find that parameters under the extended pulse are well-estimated in all scenarios, although we observe a small overestimate of both $t_m$ and $t_d$, for very long admixture durations over 1000 generations in the very distant past (more than 600 generations ago). In contrast, inference under the simple pulse model results in the known underestimate for long admixture durations (Figure  \ref{fig:Closer_sampling}A).
 
-%We also find that the simple pulse model is fairly robust to changes in recombination settings, both using the ``correct'' and an empirically similar recombination map. Only when we do not correct for recombination rate variation, we observe a substantial underestimate by almost a factor of two for more distant admixture (Figure \ref{fig:Closer_sampling}A \& C, left panels). 
+We also find that the simple pulse model is fairly robust to changes in recombination settings, both using the ``correct'' and an empirically similar recombination map. Only when we do not correct for recombination rate variation, we observe a substantial underestimate by almost a factor of two for more distant admixture (Figure \ref{fig:Closer_sampling}A \& C, left panels). 
 
-%In contrast, estimates under the extended pulse model are substantially more spread out under variable recombination maps, but we do not observe the systematic bias towards more recent admixture times as in the simple-pulse model. In contrast, the uncorrected scenario results in extremely poor estimates with very high variation, and is clearly unsuitable for this purpose (Figure \ref{fig:Closer_sampling}A \& C, right panels)
+In contrast, estimates under the extended pulse model are substantially more spread out under variable recombination maps, but we do not observe the systematic bias towards more recent admixture times as in the simple-pulse model. In contrast, the uncorrected scenario results in extremely poor estimates with very high variation, and is clearly unsuitable for this purpose (Figure \ref{fig:Closer_sampling}A \& C, right panels)
 
-In Figure \ref{fig:Closer_sampling}C we find that sampling closer to the end of the admixture event yields unbiased estimates for $t_d$ with gene flow longer then 800 generations. Using inaccurate recombination distances Figure \ref{fig:Closer_sampling}D demonstrates that accuracy to estimate $t_d$ decreases with increases distance to the admixture event.
 
 We also find that estimates of $t_d$ differ substantially between recombination rate settings. Under constant rates, $t_d$ is well-estimated in all scenarios, and if the recombination rate is known, we get reasonably accurate estimates, at least if admixture is not older than 100 generations. However, under the scenarios where recombination rates differ between simulation and inference, results become more erratic; For the cases of $t_d=200$ and $t_d=400$, many simulations infer an admixture time of near zero; in contrast, very old admixture results in a large overestimate.
 
@@ -563,7 +561,7 @@ Our estimate of the $t_m$ for Neandertal gene flow of 1,682 generations correspo
 
 Our finding that the observed data is compatible with models involving hundreds of generations of gene flow means that while substantial amounts of gene flow happened around these mean times, gene flow might have also happened tens of thousands of years before or after. This is of great practical importance, as it makes linking genetic admixture date estimates with biogeographical events much more difficult \citep{sankararaman_date_2012,lazaridis_genomic_2016,douka_age_2019,jacobs_multiple_2019,vyas_analyses_2019}. 
 
-The discovery of early modern human genomes dated to 40,000 - 45,000 ya with very recent Neandertal ancestors less than ten generations ago \citep{fu_genome_2014, hajdinjak_early_2021} illustrates that gene flow likely happened over at least several thousand years.  In general, inference based on ancient genomes \citep{fu_genome_2014, fu_early_2015, moorjani_genetic_2016} promise to resolve some of these dating issues as inference is substantially easier when admixture is more recent, as the time difference between gene flow and sampling time is much lower (\ref{fig:fig1_1}). However, using these genomes for dating leads to further hurdles, particularly pertaining to the spatial distribution of admixture events; whereas we can assume that the spatial structure present in initial upper paleolithic modern humans is largely homogenized in present-day people, the introgression signals observed in Bacho-Kiro and Oase could be partially private to these population, and thus these samples may have a different admixture time distribution than present-day people.
+The discovery of early modern human genomes dated to 40,000 - 45,000 ya with very recent Neandertal ancestors less than ten generations ago \citep{fu_genome_2014, hajdinjak_initial_2021} illustrates that gene flow likely happened over at least several thousand years.  In general, inference based on ancient genomes \citep{fu_genome_2014, fu_early_2015, moorjani_genetic_2016} promise to resolve some of these dating issues as inference is substantially easier when admixture is more recent, as the time difference between gene flow and sampling time is much lower (\ref{fig:fig1_1}). However, using these genomes for dating leads to further hurdles, particularly pertaining to the spatial distribution of admixture events; whereas we can assume that the spatial structure present in initial upper paleolithic modern humans is largely homogenized in present-day people, the introgression signals observed in Bacho-Kiro and Oase could be partially private to these population, and thus these samples may have a different admixture time distribution than present-day people.
 
 The uncertainty over the duration of Neandertal gene flow might also have some implications for selection on introgressed Neandertal haplotypes. Neandertal alleles have been suggested to be deleterious in modern human populations due to an increased mutation load \citep{harris_genetic_2016, juric_strength_2016}. Some details of these models may be slightly affected if migration occurred over a longer time. For example, \cite{harris_genetic_2016} suggested that an initial pulse of gene flow of up to 10\% Neandertal ancestry might be necessary to explain current amounts of Neandertal ancestry, with very high variance in the first few generations after gene flow. More gradual introgression could mean that such high admixture proportions were never achieved, but rather a continuous migration-selection balance process persisted for the contact period, where deleterious Neandertal alleles continually entered the modern human populations, but were selected against immediately. 
 However, in terms of the overall frequencies achieved, there is likely little difference. For example, \cite{juric_strength_2016} showed using a two-locus model that the frequencies of Neandertal haplotypes alone cannot be used to distinguish different admixture histories.
@@ -653,14 +651,14 @@ We consider a set of five parameters:
     \item minimal genetic distance: $M_i$ = $0.02 cM/ 0.05 cM$
     \item demography: $D_i$ = simple/complex
     \item recombination rate: $R_i$ = constant/variable
-    \item n SNPs used: $G_i$ = 100 \%/5 \%
+    \item n SNPs used: $S_i$ = 100 \%/5 \%
     \item gene flow model: $G_i$ = simple/extended
 \end{itemize}
 
 We perform simulations using all possible parameter combinations. For the effect of the amount of SNPs i.e. accuracy of the ALD estimates, we downsampled the data by randomly choosing 5 \% of the overall SNPs for ALD calculation.
 We define a standard model having a constant recombination rate, simple demography and gene flow, LES ascertainment and $d_0 = 0.05$.
 The genetic distance is assigned from the physical  position using the average recombination rate of the African-American genetic map (\emph{i.e.}, assuming the recombination rate is constant over the simulated chromosome given by this value) for simulations under a variable recombination rate.
-For each of the possible sets of parameters, we simulate 100 replicates each and fit ALD decay curves. We excluded a very small number of simulations for which the curve could not be estimated (66 out of 6,400). 
+For each of the possible sets of parameters, we simulate 100 replicates each and fit ALD decay curves. We excluded a small number of simulations for which either the simple pulse or extended pulse  curve could not be estimated (66 out of 6,400). 
 
 
 
@@ -670,26 +668,17 @@ To estimate the effect size of the different parameters (eq.
 \begin{equation}\label{eq:GLM1}
 \begin{split}
 E_i &\sim \text{Normal}(\mu_i,\sigma) \\
-\mu_i &= \alpha + \beta_aA_i + \beta_mM_i + \beta_dD_i + \beta_rR_i + \beta_{s}S_i + \beta_gG_i \\
+\mu_i &= \alpha + \beta_aA_i + \beta_mM_i + \beta_dD_i + \beta_rR_i + \beta_{s}S_i + \\ &\beta_gG_i + \beta_{sa}S_iA_i + \beta_{ma}M_iA_i + \beta_{dr}D_iR_i + \beta_{mr}M_iR_i \\
 \alpha &\sim \text{Normal}(0,2) \\
-\beta_a,\beta_m,\beta_d,\beta_r,\beta_{s},\beta_g &\sim \text{Normal}(0,2) \\
+\beta_a,\beta_m,\beta_d,\beta_r,\beta_{s},\beta_g,\beta_{sa}, \beta_{ma},\beta_{dr}, \beta_{mr} &\sim \text{Normal}(0,2) \\
 \sigma &\sim \text{Exponential}(1)
 \end{split}
 \end{equation}
 
-\begin{equation}\label{eq:GLM2}
-\begin{split}
-E_i &\sim \text{Normal}(\mu_i,\sigma) \\
-\mu_i &= \alpha + \beta_aA_i + \beta_mM_i + \beta_dD_i + \beta_rR_i + \beta_{s}S_i + \beta_gG_i + \beta_{as}S_i A_i\\
-\alpha &\sim \text{Normal}(0,2) \\
-\beta_a,\beta_m,\beta_d,\beta_r,\beta_{s},\beta_g &\sim \text{Normal}(0,2) \\
-\sigma &\sim \text{Exponential}(1)
-\end{split}
-\end{equation}
 
-The response variable $E_i$ for this model are the residuals, \emph{i.e.}, the difference between the estimated admixture time $t_{est}$ and simulated admixture time $t_{sim}$ for each simulation:
-$$E_i = \frac{t_{est} - t_{sim}}{\sigma_{t_{est}}}$$, where $\sigma$ is the standard deviation of $t_{est}$ , and the model variables $A, M, D, R, S$ and $G$ are binary predictors. We also modeled the interaction between number of used SNPs and the ascertainment scheme using the GLM described in \ref{eq:GLM2} with an additional predictor for the interaction $as$.
-We assume a Normal likelihood because it is the maximum entropy distribution in our case. We obtained the posterior probability using a Hamiltonian Monte Carlo MCMC algorithm, as implemented in STAN \citep{carpenter_stan_2017} using an R interface \citep{stan_development_team_rstan_2018,mcelreath_statistical_2020}. The Markov chains converged to the target distribution (Rhat = 1) and efficiently sampled from the posterior (S. Table \ref{tab:tableS1}).  
+The response variable $E_i$ for the two model are the residuals, \emph{i.e.}, the either the difference between the estimated admixture time $t_{est}$ and simulated admixture time $t_{sim}$ for each simulation:
+$$E_i = \frac{t_{est} - t_{sim}}{\sigma_{t_{est}}}$$, or the absolute difference $$E_i = \frac{\mid t_{est} - t_{sim} \mid}{\sigma_{t_{est}}}$$,where $\sigma$ is the standard deviation of $t_{est}$ , and the model variables $A, M, D, R, S$ and $G$ are binary predictors. We also modeled the interaction between number of used SNPs and the ascertainment scheme ($\beta_{sa}$), minimal distance and ascertainment ($\beta_{ma}$), demography and recombination ($\beta_{dr}$) and minimal distance and recombination($\beta_{mr}$).
+We assume a Normal likelihood because it is the maximum entropy distribution in our case. We obtained the posterior probability using a Hamiltonian Monte Carlo MCMC algorithm, as implemented in STAN \citep{carpenter_stan_2017} using an R interface \citep{stan_development_team_rstan_2018,mcelreath_statistical_2020}. The Markov chains converged to the target distribution (Rhat = 1) and efficiently sampled from the posterior (S. Table \ref{tab:table_S1_EP_tm_td_and_SP_model_3}).  
 
 
 \subsection{Estimating admixture time from real data}\label{Estimating admixture time from real data}
