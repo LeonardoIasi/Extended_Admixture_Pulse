@@ -417,7 +417,19 @@ Equation \ref{eq:segments_continuous} differs slighty from eq. 6 in \cite{pool_i
 
 
 \subsubsection{Admixture time estimates}\label{admixture time estimates}
-For inference, either the admixture segment lengths or ALD can be used. In cases where the admixture segment length is known, equation \ref{eq:Likelihood_function_extended_pulse} is the likelihood function and can be used for inference. For inference using ALD,  we follow \cite{moorjani_history_2011} and use the decay of ALD with genetic distance as a statistic, and fit the appropriate version of the LD-decay-function (equation \ref{eq:ld_general}). For fitting the data, following \cite{moorjani_genetic_2016}, we add an intercept $A$ and a constant modelling background LD $c$, to the tail functions. The genetic distance $r$ is measured in centiMorgan (cM). We fitted the distribution to the data with  a non-linear least-square optimization algorithm using the \texttt{nls} function implemented in the R \texttt{stats v.3.6.2} package \citep{R_Core_Team_2019}.
+For inference, either the admixture segment lengths or ALD can be used. In cases where the admixture segment length is known, equation \ref{eq:Likelihood_function_extended_pulse} is the likelihood function and can be used for inference. For inference using ALD,  we follow \cite{moorjani_history_2011} and use the decay of ALD with genetic distance as a statistic. Following \cite{moorjani_genetic_2016}, we add an intercept $A$ and a constant modelling background LD $c$, to the tail functions. The genetic distance $r$ is measured in centiMorgan (cM). 
+
+\begin{equation}
+\label{eq:simple_pulse_tail_inf}
+ALD \sim\ A\,e^{-t_m \:d}+c
+\end{equation}
+
+\begin{equation}
+\label{eq:extended_pulse_tail_inf}
+ALD \sim\ A\,\left( \frac{1}{1 + \frac{t_m}{k} \:d}\right) ^k+c
+\end{equation}
+
+We fitted the distribution to the data with  a non-linear least-square optimization algorithm using the \texttt{nls} function implemented in the R \texttt{stats v.3.6.2} package \citep{R_Core_Team_2019}.
 
 \section{Results}\label{results}
 
