@@ -2154,6 +2154,116 @@ ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
                            values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
                            label=c("Simple Pulse","Extended Pulse"))
 ```
+## GLM Supplement stuff
+
+## SP
+```{r figS2_updated_SP, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2_updated_SP} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
+
+Plot_model <- data.frame(table(Diff_s=round(xdata.M.3.no_error$Diff_s_SP,digits = 2),GF=xdata.M.3.no_error$GF_model,Asc=ifelse(xdata.M.3.no_error$AS=="I","LES", "HES"),d0=xdata.M.3.no_error$minDist,True_GF=xdata.M.3.no_error$True_tm,Demo=ifelse(xdata.M.3.no_error$Demography=="0_Simple","Sim", "Com"),Recomb=ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant","Con", "Var"),Downsampling=xdata.M.3.no_error$downsampling))
+Plot_model <- subset(Plot_model,Freq>0)
+Plot_model$Combination_chr <- as.factor(paste(Plot_model$GF,Plot_model$Recomb,Plot_model$Demo,Plot_model$Asc,Plot_model$d0,Plot_model$Downsampling,sep = "\n"))
+#Plot_model$Combination_chr <- factor(Plot_model$Combination_chr,
+#                        levels = c("Hudson_only_sim","Hybrid_sim"),ordered = TRUE)
+Plot_model$Combination <- as.numeric(Plot_model$Combination_chr)
+
+
+Plot_model$Col <- ifelse(Plot_model$GF=='SP','#56B4E9','#D55E00')
+
+### Supplement Figures ? Tables
+
+Plot_Fig_2_A <- function(Data,x.axes.lables){
+  Px <-  ggplot(Data,aes(x=as.character(Combination_chr),y=as.numeric(as.character(Diff_s)),colour=Col))+
+    geom_point(aes(size = Freq),show.legend = F)+
+    geom_boxplot(show.legend = F)+
+    geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
+    coord_cartesian(ylim = c(-2,1),expand = 0)+
+    labs(x = "Predictor combination")+
+    labs(y = "Standardized difference between true and estimated time")+
+    theme(axis.text.x = element_text(angle = 0),text = element_text(size=5))+
+    scale_x_discrete(labels= x.axes.lables)+
+    scale_color_manual("Gene Flow Model",
+                       values = c(cbPalette_viridis[1],cbPalette_viridis[6]),
+                       labels = c("Pulse","Extended"))
+  return(Px)
+  
+}
+
+
+Plot_Fig_2_A(Plot_model,levels(Plot_model$Combination_chr))
+
+
+```
+
+
+## EP
+
+```{r figS2_updated_EP, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2_updated_SP} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
+
+Plot_model <- data.frame(table(Diff_s=round(xdata.M.3.no_error$Diff_s_EP_tm,digits = 2),GF=xdata.M.3.no_error$GF_model,Asc=ifelse(xdata.M.3.no_error$AS=="I","LES", "HES"),d0=xdata.M.3.no_error$minDist,True_GF=xdata.M.3.no_error$True_tm,Demo=ifelse(xdata.M.3.no_error$Demography=="0_Simple","Sim", "Com"),Recomb=ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant","Con", "Var"),Downsampling=xdata.M.3.no_error$downsampling))
+Plot_model <- subset(Plot_model,Freq>0)
+Plot_model$Combination_chr <- as.factor(paste(Plot_model$GF,Plot_model$Recomb,Plot_model$Demo,Plot_model$Asc,Plot_model$d0,Plot_model$Downsampling,sep = "\n"))
+#Plot_model$Combination_chr <- factor(Plot_model$Combination_chr,
+#                        levels = c("Hudson_only_sim","Hybrid_sim"),ordered = TRUE)
+Plot_model$Combination <- as.numeric(Plot_model$Combination_chr)
+
+
+Plot_model$Col <- ifelse(Plot_model$GF=='SP','#56B4E9','#D55E00')
+
+
+
+
+Plot_Fig_2_A(Plot_model,levels(Plot_model$Combination_chr))
+
+
+```
+
+
+### table bias
+```{r table_Supplements_GLM_EP_SP_tm_effect_size_bias, echo=FALSE,results='asis',message=F,warning=F }
+print_B_model_SP_result_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_bias,plot_GLM = F)
+print_B_model_SP_result_bias <- print_B_model_SP_result_bias[,c(1,2,3)]
+print_B_model_SP_result_bias$Model <- "Simple Pulse"
+print_B_model_SP_result_bias$Variable <- rownames(print_B_model_SP_result_bias)
+print_B_model_SP_result_bias$GLM <- "bias"
+
+print_B_model_EP_result_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_bias,plot_GLM = F)
+print_B_model_EP_result_bias <- print_B_model_EP_result_bias[,c(1,2,3)]
+print_B_model_EP_result_bias$Model <- "Extended Pulse tm"
+print_B_model_EP_result_bias$Variable <- rownames(print_B_model_EP_result_bias)
+print_B_model_EP_result_bias$GLM <- "bias"
+
+
+
+print_B_model_result_bias <- rbind(print_B_model_SP_result_bias,print_B_model_EP_result_bias)
+print_B_model_result_bias <- print_B_model_result_bias[, c(4,6,5,1,2,3)]
+kable(print_B_model_result_bias , "latex",row.names=F,col.names = c( "model","GLM","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
+      caption = "\\label{tab:tableS1}  Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+### table absolute deviation
+
+```{r table_Supplements_GLM_EP_SP_tm_effect_size_deviation, echo=FALSE,results='asis',message=F,warning=F }
+print_B_model_SP_result_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_deviation,plot_GLM = F)
+print_B_model_SP_result_deviation <- print_B_model_SP_result_deviation[,c(1,2,3)]
+print_B_model_SP_result_deviation$Model <- "Simple Pulse"
+print_B_model_SP_result_deviation$Variable <- rownames(print_B_model_SP_result_deviation)
+print_B_model_SP_result_deviation$GLM <- "abs. deviation"
+
+print_B_model_EP_result_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_deviation,plot_GLM = F)
+print_B_model_EP_result_deviation <- print_B_model_EP_result_deviation[,c(1,2,3)]
+print_B_model_EP_result_deviation$Model <- "Extended Pulse tm"
+print_B_model_EP_result_deviation$Variable <- rownames(print_B_model_EP_result_deviation)
+print_B_model_EP_result_deviation$GLM <-  "abs. deviation"
+print_B_model_result_deviation <- rbind(print_B_model_SP_result_deviation,print_B_model_EP_result_deviation)
+print_B_model_result_deviation <- print_B_model_result_deviation[, c(4,6,5,1,2,3)]
+kable(print_B_model_result_deviation , "latex",row.names=F,col.names = c( "model","GLM","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
+      caption = "\\label{tab:tableS1} table_Supplements_EP_tm_td_and_SP_model_3_predictions Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
 # Sampling closer to end of GF (ex-result fig 4 now supplement)
 
 ```{r eval=T,message=FALSE, echo=FALSE,warning=FALSE}
@@ -2454,18 +2564,18 @@ RSS_comp_50$ts_named <- factor(RSS_comp_50$Sample_Time,
 
 P_RSS_comp_50 <- ggplot(RSS_comp_50, aes(x=as.factor(Name), y=(RSS_diff_norm),color=as.factor(Name))) + 
                 geom_boxplot()+
-                facet_grid( Data~as.factor(ts_named)+as.factor(True_td_named)+as.factor(True_tm_named),switch = "x")+
+                facet_grid( Data~as.factor(True_td_named)+as.factor(True_tm_named),switch = "x")+
                 geom_hline( aes(yintercept = 0 ))+
                 labs(y = "Normalized\n RSS Difference ")+
-                labs(x = "Admixture Duration")+
+                labs(x = "")+
                 #coord_cartesian(ylim=c(-2, 2),expand = 0)+
                 theme(
                   axis.ticks.y=element_blank(),
                   axis.ticks.x=element_blank(),
                   axis.text.x=element_blank(),
                   strip.text.x = element_text(size = 9),
-                  legend.position="none",
-                  plot.margin=unit(c(0.25,0.5,0,0.5), "cm")
+                  #legend.position="none",
+                  #plot.margin=unit(c(0.25,0.5,0,0.5), "cm")
                   )+
                   scale_color_manual("Recombination",
                                    values = c(cbPalette_viridis[1],cbPalette_viridis[12],cbPalette_viridis[9],cbPalette_viridis[3]),
@@ -2500,18 +2610,18 @@ RSS_comp_varying$ts_named <- factor(RSS_comp_varying$Sample_Time,
 
 P_RSS_varying <- ggplot(RSS_comp_varying, aes(x=as.factor(Name), y=(RSS_diff_norm),color=as.factor(Name))) + 
                 geom_boxplot()+
-                facet_grid( Data~as.factor(ts_named)+as.factor(True_td_named)+as.factor(True_tm_named),switch = "x")+
+                facet_grid( Data~as.factor(True_td_named)+as.factor(True_tm_named),switch = "x")+
                 geom_hline( aes(yintercept = 0 ))+
                 labs(y = "Normalized\n RSS Difference ")+
-                labs(x = "Admixture Duration")+
+                labs(x = "")+
                 #coord_cartesian(ylim=c(-2, 2),expand = 0)+
                 theme(
                   axis.ticks.y=element_blank(),
                   axis.ticks.x=element_blank(),
                   axis.text.x=element_blank(),
                   strip.text.x = element_text(size = 9),
-                  legend.position="none",
-                  plot.margin=unit(c(0.25,0.5,0,0.5), "cm")
+                  #legend.position="none",
+                  #plot.margin=unit(c(0.25,0.5,0,0.5), "cm")
                   )+
                   scale_color_manual("Recombination",
                                    values = c(cbPalette_viridis[1],cbPalette_viridis[12],cbPalette_viridis[9],cbPalette_viridis[3]),
@@ -2528,115 +2638,6 @@ Closer_Sampling_ALD_RSS
 
 ```
 
-# GLM Supplement stuff
-
-## SP
-```{r figS2_updated_SP, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2_updated_SP} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
-
-Plot_model <- data.frame(table(Diff_s=round(xdata.M.3.no_error$Diff_s_SP,digits = 2),GF=xdata.M.3.no_error$GF_model,Asc=ifelse(xdata.M.3.no_error$AS=="I","LES", "HES"),d0=xdata.M.3.no_error$minDist,True_GF=xdata.M.3.no_error$True_tm,Demo=ifelse(xdata.M.3.no_error$Demography=="0_Simple","Sim", "Com"),Recomb=ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant","Con", "Var"),Downsampling=xdata.M.3.no_error$downsampling))
-Plot_model <- subset(Plot_model,Freq>0)
-Plot_model$Combination_chr <- as.factor(paste(Plot_model$GF,Plot_model$Recomb,Plot_model$Demo,Plot_model$Asc,Plot_model$d0,Plot_model$Downsampling,sep = "\n"))
-#Plot_model$Combination_chr <- factor(Plot_model$Combination_chr,
-#                        levels = c("Hudson_only_sim","Hybrid_sim"),ordered = TRUE)
-Plot_model$Combination <- as.numeric(Plot_model$Combination_chr)
-
-
-Plot_model$Col <- ifelse(Plot_model$GF=='SP','#56B4E9','#D55E00')
-
-### Supplement Figures ? Tables
-
-Plot_Fig_2_A <- function(Data,x.axes.lables){
-  Px <-  ggplot(Data,aes(x=as.character(Combination_chr),y=as.numeric(as.character(Diff_s)),colour=Col))+
-    geom_point(aes(size = Freq),show.legend = F)+
-    geom_boxplot(show.legend = F)+
-    geom_abline(intercept = 0,slope = 0,linetype=2,aes(colour='grey'))+
-    coord_cartesian(ylim = c(-2,1),expand = 0)+
-    labs(x = "Predictor combination")+
-    labs(y = "Standardized difference between true and estimated time")+
-    theme(axis.text.x = element_text(angle = 0),text = element_text(size=5))+
-    scale_x_discrete(labels= x.axes.lables)+
-    scale_color_manual("Gene Flow Model",
-                       values = c(cbPalette_viridis[1],cbPalette_viridis[6]),
-                       labels = c("Pulse","Extended"))
-  return(Px)
-  
-}
-
-
-Plot_Fig_2_A(Plot_model,levels(Plot_model$Combination_chr))
-
-
-```
-
-
-## EP
-
-```{r figS2_updated_EP, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:figS2_updated_SP} Comparison of the standardized difference between true and estimated admixture time for all combinations of parameters: ascertainment scheme = LES/HES,  $d_{0}$ = 0.02/0.05 cM, demography = simple/complex, recombination = constant/variable and the gene flow model = pulse/continuous, with 100 replicates respectively. Dotted horizontal line indicates no difference between true and estimated time."}
-
-Plot_model <- data.frame(table(Diff_s=round(xdata.M.3.no_error$Diff_s_EP_tm,digits = 2),GF=xdata.M.3.no_error$GF_model,Asc=ifelse(xdata.M.3.no_error$AS=="I","LES", "HES"),d0=xdata.M.3.no_error$minDist,True_GF=xdata.M.3.no_error$True_tm,Demo=ifelse(xdata.M.3.no_error$Demography=="0_Simple","Sim", "Com"),Recomb=ifelse(xdata.M.3.no_error$Recomb.rate=="0_constant","Con", "Var"),Downsampling=xdata.M.3.no_error$downsampling))
-Plot_model <- subset(Plot_model,Freq>0)
-Plot_model$Combination_chr <- as.factor(paste(Plot_model$GF,Plot_model$Recomb,Plot_model$Demo,Plot_model$Asc,Plot_model$d0,Plot_model$Downsampling,sep = "\n"))
-#Plot_model$Combination_chr <- factor(Plot_model$Combination_chr,
-#                        levels = c("Hudson_only_sim","Hybrid_sim"),ordered = TRUE)
-Plot_model$Combination <- as.numeric(Plot_model$Combination_chr)
-
-
-Plot_model$Col <- ifelse(Plot_model$GF=='SP','#56B4E9','#D55E00')
-
-
-
-
-Plot_Fig_2_A(Plot_model,levels(Plot_model$Combination_chr))
-
-
-```
-
-
-## table bias
-```{r table_Supplements_GLM_EP_SP_tm_effect_size_bias, echo=FALSE,results='asis',message=F,warning=F }
-print_B_model_SP_result_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_bias,plot_GLM = F)
-print_B_model_SP_result_bias <- print_B_model_SP_result_bias[,c(1,2,3)]
-print_B_model_SP_result_bias$Model <- "Simple Pulse"
-print_B_model_SP_result_bias$Variable <- rownames(print_B_model_SP_result_bias)
-print_B_model_SP_result_bias$GLM <- "bias"
-
-print_B_model_EP_result_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_bias,plot_GLM = F)
-print_B_model_EP_result_bias <- print_B_model_EP_result_bias[,c(1,2,3)]
-print_B_model_EP_result_bias$Model <- "Extended Pulse tm"
-print_B_model_EP_result_bias$Variable <- rownames(print_B_model_EP_result_bias)
-print_B_model_EP_result_bias$GLM <- "bias"
-
-
-
-print_B_model_result_bias <- rbind(print_B_model_SP_result_bias,print_B_model_EP_result_bias)
-print_B_model_result_bias <- print_B_model_result_bias[, c(4,6,5,1,2,3)]
-kable(print_B_model_result_bias , "latex",row.names=F,col.names = c( "model","GLM","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
-      caption = "\\label{tab:tableS1}  Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
-  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
-  kable_styling(latex_options = "HOLD_position")
-```
-
-## table absolute deviation
-
-```{r table_Supplements_GLM_EP_SP_tm_effect_size_deviation, echo=FALSE,results='asis',message=F,warning=F }
-print_B_model_SP_result_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_deviation,plot_GLM = F)
-print_B_model_SP_result_deviation <- print_B_model_SP_result_deviation[,c(1,2,3)]
-print_B_model_SP_result_deviation$Model <- "Simple Pulse"
-print_B_model_SP_result_deviation$Variable <- rownames(print_B_model_SP_result_deviation)
-print_B_model_SP_result_deviation$GLM <- "abs. deviation"
-
-print_B_model_EP_result_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_deviation,plot_GLM = F)
-print_B_model_EP_result_deviation <- print_B_model_EP_result_deviation[,c(1,2,3)]
-print_B_model_EP_result_deviation$Model <- "Extended Pulse tm"
-print_B_model_EP_result_deviation$Variable <- rownames(print_B_model_EP_result_deviation)
-print_B_model_EP_result_deviation$GLM <-  "abs. deviation"
-print_B_model_result_deviation <- rbind(print_B_model_SP_result_deviation,print_B_model_EP_result_deviation)
-print_B_model_result_deviation <- print_B_model_result_deviation[, c(4,6,5,1,2,3)]
-kable(print_B_model_result_deviation , "latex",row.names=F,col.names = c( "model","GLM","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
-      caption = "\\label{tab:tableS1} table_Supplements_EP_tm_td_and_SP_model_3_predictions Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
-  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
-  kable_styling(latex_options = "HOLD_position")
-```
 
 # Application to Neandertal data
 
