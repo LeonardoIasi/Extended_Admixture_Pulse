@@ -54,7 +54,7 @@
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
- \setcounter{secnumdepth}{0}
+\setcounter{secnumdepth}{0}
 % Redefines (sub)paragraphs to behave more like sections
 \ifx\paragraph\undefined\else
 \let\oldparagraph\paragraph
@@ -203,7 +203,7 @@ Conceptually, identifying an extended pulse requires us to establish that the le
 
 %\subsection{What we want to do}\label{what-we-want-to-do}
 
-Here, we first define the extended admixture pulse model and derive the resulting segment length and ALD distributions, and introduce inference schemes for either data. We then evaluate under which scenarios these two models can be distinguished, using  perfectly known data and more realistic population genetic simulations.  We show that power to distingush these scenario is higher for more recent events and longer pulses, but that high-quality data is required for accurate inference. Based on these results, we use  data from European genomes  \citep{the_1000_genomes_project_consortium_global_2015} to that  for the  case of Neandertal admixture, a simple pulses cannot be distinguished from continuous admixture over an extended period of time, and the data are consistent with a multitude of durations, up to several tens of thousand of years.
+Here, we first define the extended admixture pulse model and derive the resulting segment length and ALD distributions, and introduce inference schemes for either data. We then evaluate under which scenarios these two models can be distinguished, using  perfectly known data and more realistic population genetic simulations.  We show that power to distinguish these scenario is higher for more recent events and longer pulses, but that high-quality data is required for accurate inference. Based on these results, we use  data from European genomes  \citep{the_1000_genomes_project_consortium_global_2015} to that  for the  case of Neandertal admixture, a simple pulses cannot be distinguished from continuous admixture over an extended period of time, and the data are consistent with a multitude of durations, up to several tens of thousand of years.
 
 \begin{figure}
 \centering
@@ -248,12 +248,13 @@ Given $T_i$, the segment length $L_i$ is then exponentially distributed with rat
 	
 %For simplicity, we measure the length of each segment $L_i$ in the recombination distance Morgan so that $r=1$ Morgan per generation, and can be omitted.
 	
-The unconditional distribution of admixture segment lengths is obtained by integrating over $T$:
+The unconditional distribution of admixture segment lengths is obtained by integrating over $T$ as:
 	
-\begin{equation}
-\label{eq:standard_likelihood_definintion}
-    P(L_i=l)=\int_{0}^{\infty} P(T_i=t) P(L_i=l | T_i=t) \ dt \text{,}
-\end{equation}
+\begin{align}
+P(L_i=l) &= \int_{0}^{\infty} P(T_i=t) P(L_i=l | T_i=t) \ dt \text{,}\nonumber\\
+&=\frac{1}{\alpha \mathbb{E}[m(t)]}\int_{0}^{\infty} t^2 m(t) e^{-trl}dt
+    \label{eq:standard_likelihood_definintion}
+\end{align}
 	
 	
 and we can think of $L$ as an exponential mixture distribution with mixture density $T$ \citep{ralph_geography_2013, zhou_modeling_2017}.
@@ -285,7 +286,7 @@ To connect this more directly to the backward-in-time formulation we used for th
 
 Thus, $D$ can be thought of as the tail function of an exponential mixture, but with mixture density $m$ instead of $T$. Alternatively, the integral in equation \ref{eq:ald_general} is also the moment-generating function of $m$ with argument $-r$. 
 
-Both for the ALD and segments we use simplistic models that ignore the effects of genetic drift and recombination between introgressed segments. In the appendix section \ref{Appendix_1}, we discuss these approximations and show that their impact is small in the parameter range of interest.
+Both for the ALD and segments we use simplistic models that ignore the effects of genetic drift and recombination between introgressed segments. In the appendix section \textbf{\nameref{Appendix_1}}, we discuss these approximations and show that their impact is small in the parameter range of interest.
 
 
 %For ongoing migration, we modify this as
@@ -421,7 +422,7 @@ Setting $t_m = \frac{2}{m}, k=2$, we obtain
     m(t) &= m \exp(-mt) \sim \Gamma(1, m)\\
     P(T_i=t) &\sim \Gamma\left(2, m\right)\\
 	P(L_i=l) &= \frac{2m^2}{(m+l)^3}\label{eq:segments_continuous}\\
-	D(t) &= \Delta_X\Delta_Y \frac{m}{m + r}
+	D(r) &= \Delta_X\Delta_Y \frac{m}{m + r}
 \end{align}
 \end{subequations}
 	
@@ -503,12 +504,12 @@ Uncertainties in the recombination map have a pronounced downward bias when esti
 
 For real data application ALD seems more suitable since it produces unbiased estimates compared to inferred segments, but we also observed a slight bias. As the effect of ongoing gene flow is relatively minor, we evaluate its relative importance for inference compared to other common assumptions made in the inference of admixture times, under both the simple and extended pulse model in the ALD framework.
 
-We contrast the effect of extended gene flow on admixture time inference with  the effects of a complex demographic history (Supplement Figure \ref{fig:figS1}B) and a variable recombination map (\emph{i.e.} using an empirical map for simulations but assuming a constant rate for the analysis), as well as the impact of the ascertainment scheme used to amplify Neandertal introgressed variants in the analysis, the minimum genetic distance between variants ,$d_0$, in the ALD estimation and the accuracy of the ALD estimates using a simple and complex setting for each of these parameters. 
+We contrast the effect of extended gene flow on admixture time inference with the effects of a simple/complex demographic history (Supplement Figure \ref{fig:figS1}) and a variable recombination map (\emph{i.e.} using an empirical map for simulations but assuming a constant rate for the analysis), as well as the impact of the ascertainment scheme used to amplify Neandertal introgressed variants in the analysis, the minimum genetic distance between variants ,$d_0$, in the ALD estimation and the accuracy of the ALD estimates using a simple and complex setting for each of these parameters. 
 
 
-In Figure \ref{fig:figGLM}, we present the admixture time model effect sizes for these six variables and four interactions. We report the effect sizes on the standardized difference between the true and estimated mean admixture time as well as on the standardized absolute differences. The first can inform us if a variable causes a systematic bias, whereas the latter is informative about a variable increasing uncertainty in our estimates. These effect sizes are estimated using a GLM on simulations under all possible parameter combinations on a scenario with admixture happening 1,500 generations ago. (Supplement Figure \ref{fig:figSGLM_data_SP} and \ref{fig:figSGLM_data_EP}, Supplement Table \ref{tab:table_S1_EP_tm_td_and_SP_model_3}).
+In Figure \ref{fig:figGLM}, we present the admixture time model effect sizes for these six variables and four interactions. We report the effect sizes on the standardized difference between the true and estimated mean admixture time as well as on the standardized absolute differences. The first can inform us if a variable causes a systematic bias (Supplement Table \ref{tab:table_S1_EP_tm_td_and_SP_model_3}), whereas the latter is informative about a variable increasing uncertainty in our estimates (Supplement Table \ref{tab:table_S1_EP_tm_td_and_SP_model_3}). These effect sizes are estimated using a GLM on simulations under all possible parameter combinations on a scenario with admixture happening 1,500 generations ago. (Supplement Figure \ref{fig:figSGLM_data_SP} and \ref{fig:figSGLM_data_EP}).
 
-As a baseline, for comparison, we define a standard model as one using the lower-enrichment ascertainment scheme (LES), $d_{0}$ = 0.05 cM, all SNPs used for ALD estimation, simple demography and constant recombination rate over the chromosome. This baseline model results in a good estimate under the single pulse model with low variation, and a slight upward bias 0.21 (0.14 0.27 $C.I._{95\%}$) and slightly more variation in the estimates for the extended pulse model (0.14, 0.09 -- 0.20).
+As a baseline, for comparison, we define a standard model as one using the lower-enrichment ascertainment scheme (LES), $d_{0}$ = 0.05 cM, all SNPs used for ALD estimation, simple demography (Supplement Figure \ref{fig:figS1}A) and constant recombination rate over the chromosome. This baseline model results in a good estimate under the single pulse model with low variation, and a slight upward bias 0.21 (0.14 -- 0.27 $C.I._{95\%}$) and slightly more variation in the estimates for the extended pulse model (0.14, 0.09 -- 0.20).
 
 The effect of an extended period of gene flow is one of the weakest effects with -0.17 (-0.23 -0.11 $C.I._{95\%}$) for the simple pulse and also a minor effect of 0.10 (0.04  0.16 $C.I._{95\%}$) for the extended pulse model. For both models uncertainty in the genetic distances causes a substantial overall downward bias (-1.22, -1.29 -- -1.16 SP; -0.53, -0.59 -- -0.46 EP), as well as highly increased variance in the estimates (1.33, 1.27 -- 1.39 SP; 0.97, 0.91 -- 1.02 EP). Including short-range LD causes and upward bias which is more pronounced in the extended pulse model ( 0.14, 0.08 -- 0.20 SP; 0.59, 0.53 -- 0.66 EP), with no differences in variance for the simple pulse but an increase in the estimates under the extended pulse model (0.26, 0.20 -- 0.32). A more complex demography similarly downward biases the estimates (-0.28, -0.33 -- 0.22 SP; -0.22, --0.29 -- - 0.16 EP) with some minor increases in estimate variance (0.25, -0.20 -- 0.31 SP; 0.17, 0.11 -- 0.23 EP). The ALD estimates seem unbiased since the overall effect of downsampling also with changing ascertainment scheme have only minor effects for both models and fairly robust since the overall introduced variance are (0.09, 0.03 -- 0.15 SP; 0.22, 0.16 -- 0.27). An increasing effect on the variance can be detected for the ascertainment scheme (0.26, 0.20 -- 0.32 SP; 0.25, 0.19 -- 0.30 EP )(Supplement Table \ref{tab:table_S1_EP_tm_td_and_SP_model_3}).
 
@@ -589,17 +590,17 @@ To further refine admixture timing, time series data from more admixed early mod
 
 \section{Material \& Methods}\label{methods}
 
-\subsection{Power Analysis}\label{power analysis}
+\subsection{Power analysis under the model}\label{power analysis}
 
-To test the power of distinguishing the simple from an extended pulse we simulated 100, 1000, 10000 and 100000 unique times $t$ form a Gamma distribution implemented in the R \texttt{stats v.3.6.2} package \citep{R_Core_Team_2019}, with shape parameter $k$ and scale being $k/t_m$. Where $t_m$ is 1500 generations ago. We defined $k$ for different durations as $k=1/((t_d/(4t_m))^2)$. Segment length are obtained by sampled for each $t$ from an exponential distribution (\texttt{stats v.3.6.2} package) with rate parameter $t$ for present day samples and $t_{closer}= t - t_m - t_d/2 -50$ for sampling 50 generations after the end of gene flow.
-We fit the simple (\ref{xx}) and extended pulse (\ref{xx}) using the \texttt{optim} function implemented in the R \texttt{stats v.3.6.2} package. The log likelihoods are compared using a log likelihood ratio test.
+To test the power of distinguishing the simple from an extended pulse we simulated 100, 1000, 10000 and 100000 unique times $T_i$ form a Gamma distribution implemented in the R \texttt{stats v.3.6.2} package \citep{R_Core_Team_2019}, with shape parameter $k+1$ and scale  $k/t_m$, setting $t_m$ to 1500 generations ago.  Segment lengths $L_i$ are obtained by sampling for each $T_i$ from an exponential distribution (\texttt{stats v.3.6.2} package) with rate parameter $T_i$ for present day samples and $T_i^{(closer)}= T_i - t_m - t_d/2 - 50$ for sampling 50 generations after the end of gene flow.
+We fit the simple (\ref{eq:}) and extended pulse (\ref{eq:Likelihood_function_extended_pulse}) using the \texttt{optim} function implemented in the R \texttt{stats v.3.6.2} package.
 
 \subsection{Coalescent Simulations}\label{coalescent simulations}
 
 We test our approach with coalescence simulations using  \texttt{msprime} 
 \citep{kelleher_efficient_2016}. We focus on scenarios mimicking Neandertal admixture, and choose sample sizes to reflect those available from the 1000 Genomes data \citep{the_1000_genomes_project_consortium_global_2015}. For ALD simulations we simulate 176 diploid
 African individuals and 170 diploid non-Africans, corresponding to the
-number of Yoruba (YRI) and Central Europeans from Utah (CEU). For segment simulations we simulated 50 diploid diploid non-Africans.
+number of Yoruba (YRI) and Central Europeans from Utah (CEU). For inference based on segments we simulated 50 diploid diploid non-Africans.
 Since three high coverage Neandertal genomes are available \citep{prufer_complete_2013,prufer_high-coverage_2017,mafessoni_high_coverage_2020} we  simulate three diploid Neandertal genomes. For each individual we simulate 20
 chromosomes with a length of 150 Mb each. The mutation rate is set to
  \(1*10^{-8}\) per base per generation for the ``simple'' demographic model and to  \(1.2*10^{-8}\) per base per generation for the ``complex''. The
@@ -613,24 +614,25 @@ split time between modern humans and Neandertals is 10,000 generations
 ago and the split between Africans and non-Africans is 2,550
 generations ago. The migration rate from Neandertals into non-Africans
 was set to zero before the split from Africans, to ensure that there is no Neandertal
-ancestry in Africans. Each simulation was repeated 100 times. For a more complex scenario of human population history, we followed the demographic model simulation setup of \cite{skov_detecting_2018}, but only simulated the Europeans. The split time of  non-Africans are kept the same as in the ALD simulations (2550 generations ago) (S. Figure \ref{fig:figS1}B).  
+ancestry in Africans.  For a more complex scenario of human population history, we followed the demographic model simulation setup of \cite{skov_detecting_2018}, but only simulated the Europeans. The split time of  non-Africans are kept the same as in the ALD simulations (2550 generations ago) (S. Figure \ref{fig:figS1}B). Since inferring archaic tracts is slow, we use 25 replicates for scenarios where we compare segment-based and ALD-based inference, and use 100 replicates when we only perform ALD-based inference. 
 
 
 \subsubsection{Simulating admixture}\label{Simulating the expanded pulse}
-We specify simulations under the extended pulse model using the mean admixture time $t_m$ and the duration $t_d$. We recover the simple pulse model by setting $t_d=1$. To obtain the migration rates in each generation, we use a discretized version of the migration density (eq \ref{eq:RV_extended_pulse}), which we then scale to the total amount of Neandertal ancestry in modern humans (here 0.03). 
+We specify simulations under the extended pulse model using the mean admixture time $t_m$ and the duration $t_d$. We recover the simple pulse model by setting $t_d=1$, up to errors due to discrete generations. To obtain the migration rates in each generation, we use a discretized version of the migration density (eq \ref{eq:RV_extended_pulse}), which we then scale to the approximate amount of Neandertal ancestry in non-Africans ($\alpha = 0.03$). 
 
 \subsubsection{Recombination maps}\label{recombination map}
 Uncertainties in the recombination map were previously shown to influence admixture time estimates \citep{sankararaman_date_2012,fu_genome_2014,sankararaman_combined_2016}. To investigate the effect of more realistic
-recombination rate variation, we perform simulations using empirical recombination maps. We use the  African-American map \citep{hinch_landscape_2011} for simulations to evaluate the relative importance of simulation and modeling parameters for admixture time estimates. The HapMap phase 3 map \citep{HapMapConsortium_second_2007} is used for evaluating inference using the extended pulse model. For simplicity, we use the same
+recombination rate variation, we perform simulations using empirical recombination maps. For the GLM, we use the  African-American map \citep{hinch_landscape_2011} for simulations and for the remaining simulations we use he HapMap phase 3 map \citep{HapMapConsortium_second_2007}. For simplicity, we use the same
 recombination map (150 Mb of chromosome 1, excluding the first 10 Mb)
 for all simulated chromosomes. When simulating under an empirical map, with the analysis assuming a constant rate (\emph{i.e.} no correction), we use the mean recombination rate from the respective map to calculate the genetic distance from the physical distance for each SNP. The mean recombination rate is
 calculated from the 150 Mb map (\(1.017 \, \frac{cM}{Mb}\) AAMap,
 \(0.992 \, \frac{cM}{Mb}\) HapMap.
 
+For inference, each segment is either assigned a lengths based on its physical length (``constant''), the African-American map or HapMap recombination map, depending on the inference scenario.
+
 \subsection{Estimating admixture time from simulated segment data}\label{Estimating admixture time from simulated segment data}
 
-For estimating admixture time and duration from introgressed segments, we used the true segment length obtained from \texttt{msprime} or inferred the segments using the HMM from \cite{skov_detecting_2018}. We only considered inferred segments with a posterior decoding of 0.9 or higher. Furthermore, we use an upper and lower cutoff for inferred segment length of 0.05 cM and 1.2 cM. The genetic length are assigned using the true constant recombination rate for segments simulated under a constant rate. For simulations under an empirical map (HapMap map) we either used the mean recombination rate of the HapMap, the AAMap or the HapMap.
-We fit the simple (\ref{xx}) and extended pulse (\ref{xx}) using the \texttt{optim} function implemented in the R \texttt{stats v.3.6.2} package (method="L-BFGS-B") with lower and upper constrains being $1/5000$ for $t_m$ and $2/1e8$ for $k$. The log likelihoods for the two fits are compared using a log likelihood ratio test.
+For estimating admixture time and duration from introgressed segments, we used the true segment length obtained from \texttt{msprime} or inferred the segments using the HMM from \cite{skov_detecting_2018}. We only considered inferred segments with an average posterior probability of 0.9 or higher. Furthermore, we use an upper and lower cutoff for inferred segment length of 0.05 cM and 1.2 cM. We fit the simple (\ref{xx}) and extended pulse (\ref{xx}) using the \texttt{optim} function implemented in the R \texttt{stats v.3.6.2} package (method="L-BFGS-B") with lower and upper constrains being $1,5000$ for $t_m$ and $2,1e8$ for $k$, respectively. 
 
 \subsection{Estimating admixture time from ALD data}\label{Estimating admixture time from ALD data}
 
@@ -646,28 +648,25 @@ ascertainment scheme (HES) is more restrictive in that it further excludes all s
 
 The pairwise weighted LD between the ascertained SNPs a certain genetic
 distance \(d\) apart is calculated using ALDER
-\citep{loh_inferring_2013}. We assigned a genetic distance between SNPs using the same constant rate as in the simulation or for simulations under an empirical map (HapMap map) we either used the mean recombination rate of the HapMap, the AAMap or the HapMap. A minimal genetic distance \(d_0\) between
+\citep{loh_inferring_2013}.  A minimal genetic distance \(d_0\) between
 SNPs is set either to 0.02 cM and 0.05 cM. This minimal distance cutoff
 removes extremely short-range LD, which might also be due to inheritance of segments from the ancestral population (incomplete lineage sorting ILS) and not gene flow. 
 
-\subsubsection{Parameter estimate}\label{Parameter estimate}
+\subsubsection{Parameter estimates}\label{Parameter estimate}
 
-We fit the ancestry LD decay with the tail function of the simple and extended pulse using a non-linear least square approach implemented in the  \texttt{nls} function in  R \texttt{stats v.3.6.2} package (algorithm="port") with lower and upper constrains being $1/5000$ for $t_m$ and $2/1e8$ for $k$. To achieve better conversion we pre-fit the functions using the estimates of the \texttt{DEoptim} optimization  \citep{ardia_deoptim_2016} as starting parameters for the \texttt{nls} function.
-
-
-
+We estimate parameters by fitting the ALD-curve to equations \ref{eq:simple_pulse_tail_inf} and \ref{eq:extended_pulse_tail_inf}  using a non-linear least square approach implemented in the  \texttt{nls} function in \texttt{R 3.6.2} (algorithm="port") with lower and upper constrains being $1$ and $5000$ for $t_m$ and $1/1e10$ and $1/2$ for $1/k$, respectively. To achieve better conversion we pre-fit the functions using the estimates of the \texttt{DEoptim} optimization  \citep{ardia_deoptim_2016} as starting parameters for the \texttt{nls} function. To improve estimates for $t_d$, we run the fitting using 10 iterations to avoid local optima. We select the model with the lowest residual-sum-of-squares. 
 
 
 \subsection{Modeling parameter effect sizes}\label{modeling prameter effect sizes}
 
-We consider a set of five parameters:
+We consider a set of six parameters:
 \begin{itemize} 
     \item ascertainment scheme: $A_i$ = LES/HES
     \item minimal genetic distance: $M_i$ = $0.02 cM/ 0.05 cM$
     \item demography: $D_i$ = simple/complex
     \item recombination rate: $R_i$ = constant/variable
     \item n SNPs used: $S_i$ = 100 \%/5 \%
-    \item gene flow model: $G_i$ = simple/extended
+    \item gene flow model: $G_i$ = simple pulse (SP)/extended pulse (EP)
 \end{itemize}
 
 We perform simulations using all possible parameter combinations. For the effect of the amount of SNPs i.e. accuracy of the ALD estimates, we downsampled the data by randomly choosing 5 \% of the overall SNPs for ALD calculation.
@@ -678,7 +677,7 @@ For each of the possible sets of parameters, we simulate 100 replicates each and
 
 
 To estimate the effect size of the different parameters (eq.
-\ref{eq:GLM1}) we use a Bayesian Generalized Linear Model (GLM):
+\ref{eq:GLM1}) we use a Bayesian Generalized Linear Model (GLM), where $E$ is the response, and $A, M, D, R, S$ and $G$ are binary predictors:
 
 \begin{equation}\label{eq:GLM1}
 \begin{split}
@@ -691,9 +690,9 @@ E_i &\sim \text{Normal}(\mu_i,\sigma) \\
 \end{equation}
 
 
-The response variable $E_i$ for the two model are the residuals, \emph{i.e.}, the either the difference between the estimated admixture time $t_{est}$ and simulated admixture time $t_{sim}$ for each simulation:
-$$E_i = \frac{t_{est} - t_{sim}}{\sigma_{t_{est}}}$$, or the absolute difference $$E_i = \frac{\mid t_{est} - t_{sim} \mid}{\sigma_{t_{est}}}$$,where $\sigma$ is the standard deviation of $t_{est}$ , and the model variables $A, M, D, R, S$ and $G$ are binary predictors. We also modeled the interaction between number of used SNPs and the ascertainment scheme ($\beta_{sa}$), minimal distance and ascertainment ($\beta_{ma}$), demography and recombination ($\beta_{dr}$) and minimal distance and recombination($\beta_{mr}$).
-We assume a Normal likelihood because it is the maximum entropy distribution in our case. We obtained the posterior probability using a Hamiltonian Monte Carlo MCMC algorithm, as implemented in STAN \citep{carpenter_stan_2017} using an R interface \citep{stan_development_team_rstan_2018,mcelreath_statistical_2020}. The Markov chains converged to the target distribution (Rhat = 1) and efficiently sampled from the posterior (S. Table \ref{tab:table_S1_EP_tm_td_and_SP_model_3}).  
+We fit two models, one aimed at investigating the bias of our estimate, and one aimed at investigating the deviation. In the first case, the response variable $E_i$ is
+$$E_i = \frac{t_{est} - t_{sim}}{\sigma_{t_{est}}}$$, and in the second case we use the absolute error $$E_i = \frac{\mid t_{est} - t_{sim} \mid}{\sigma_{t_{est}}}$$,where $\sigma$ is the standard deviation of $t_{est}$. We also modeled the interaction between number of used SNPs and the ascertainment scheme ($\beta_{sa}$), minimal distance and ascertainment ($\beta_{ma}$), demography and recombination ($\beta_{dr}$) and minimal distance and recombination($\beta_{mr}$).
+We assume a Normal likelihood because it is the maximum entropy distribution in our case. We obtained the posterior probability using a Hamiltonian Monte Carlo MCMC algorithm, as implemented in STAN \citep{carpenter_stan_2017} using an R interface \citep{stan_development_team_rstan_2018,mcelreath_statistical_2020}. The Markov chains converged to the target distribution (Rhat = 1) and efficiently sampled from the posterior (S. Table \ref{tab:table_Supplements_GLM_EP_SP_tm_effect_size_bias} and \ref{tab:table_Supplements_GLM_EP_SP_tm_effect_size_deviation}).  
 
 
 \subsection{Estimating admixture time from real data}\label{Estimating admixture time from real data}
@@ -718,6 +717,8 @@ The authors declare that they have no competing interests.
 
 \appendix
 \section{Appendix: Derivation and Approximation details}
+\setcounter{equation}{0}
+\renewcommand{\theequation}{A\arabic{equation}}
 In the appendix, we lay out some more detail about derivations and some of the approximations we make, and what errors they likely introduce in which cases.
 
 \subsection{Admixture segments with genetic drift and recombination}\label{Appendix_1}
@@ -769,8 +770,8 @@ It is straightforward to verify that equation \ref{eq:ld_general_bwd} is a solut
    \frac{d D}{dt} &= \frac{d}{dt}\left[ \Delta_x\Delta_y\int_{-\infty}^t m(s)\exp(-r(t-s)) ds \right]\nonumber\\
    &= \Delta_x\Delta_y m(t) + \int_{-\infty}^t \left[\frac{d}{dt}\Delta_x\Delta_y m(s)\exp(-r(t-s))\right]ds \nonumber\\
    &= \Delta_x\Delta_y m(t) - r \int_{-\infty}^t \Delta_x\Delta_y m(s)\exp(-r(t-s))ds \nonumber\\
-   &= \Delta_x\Delta_y m(t) -r D(t)   
-\end{align}
+   &= \Delta_x\Delta_y m(t) -r D(t) 
+  \end{align}
 where the third line follows from Leibniz integral rule.
 
 
@@ -789,8 +790,56 @@ which has solution
     D(t) = \Delta_x\Delta_y\int_{-\infty}^t \exp\big[-r(t -s) - M(s,t)\big] m(s) ds
 \end{align}
 
-where $$M(s,t) = \int_s^t m(x)dx$$, 
+where $$M(s,t) = \int_s^t m(x)dx \text{,}$$
+
 which can be interpreted as contributing how much LD has decayed from introgression time $s$ to the observation time $t$ due to replacement from new introgressed material.
+
+This follows from 
+\begin{align}
+   D(t) &= \Delta_x\Delta_y\int_{-\infty}^t m(s)\exp\left[-r(t-s) - \int_{s}^tm(x)dx\right] ds \nonumber \\
+   \frac{d D}{dt} &= \frac{d}{dt}\left[ \Delta_x\Delta_y\int_{-\infty}^t m(s)\exp\left(-r(t-s)-\int_{s}^tm(x)dx\right) ds \right]\nonumber\\
+   &= \Delta_x\Delta_y m(t) + \int_{-\infty}^t \Delta_x\Delta_y m(s)\left[\frac{d}{dt}\exp\left(-r(t-s)\right)\exp\left(-\int_{s}^tm(x)dx\right)\right]ds \nonumber\\
+&= \Delta_x\Delta_y m(t) - (r + m(t)) \int_{-\infty}^t \Delta_x\Delta_y m(s)\exp\left(-r(t-s)\right)\exp\left(-\int_{s}^tm(x)dx\right)ds \nonumber\\   
+&= \Delta_x\Delta_y m(t) - (r + m(t)) D
+  \end{align}
+  
+where the derivative can be evaluated using the product rule:
+\begin{align}
+    \frac{d}{dt}\exp\left(-r(t-s)\right) & =  -r\exp(-r(t-s)) \nonumber\\
+    \frac{d}{dt}\exp\left(-\int_{s}^tm(x)dx\right) &=
+    -m(t)\exp\left(-\int_{s}^tm(x)dx\right)\nonumber
+\end{align}
+
+Changing the flow of time and setting $t=0$ as in the main text, times,  this results in
+\begin{align}
+    D(l) = \Delta_X\Delta_Y\int_0^\infty \exp[-lrt] \exp[-M_b(t)] m_b(t) dt
+\end{align}
+
+where again $m_b(t) = m(-t)$ and $$M_b(t) = \int_0^t m_b(x)dx\text{.}$$
+
+This motivates the ``last'' migration rate $$m_e(t) = m_b(t) \exp[M_b(T)]\text{;}$$ for the 
+case of constant migration, $M_b(t) = mt$ and $m_b(t)= m e^{-mt}$, which is the exponential density expected e.g. under this model \citep{pool_inference_2009}.
+
+\subsection{Reduced ``effective'' recombination}\label{Appendix_3}
+
+In the previous section, we showed that we can motivate an ``last'' migration rate that models when a particular locus migrated last. In a similar vein, we can motivate an ``effective'' recombination rate that takes into account that during the pulse, recombination becomes less efficient at shortening blocks as they start to recombine with each other. 
+
+In our simple introgression model, We can approximate this using the following equation
+
+\begin{equation}
+    \frac{dD}{dt} = -(r(1-\alpha(t)) - m(t) D + \Delta_x\Delta_y m(t)\text{.}
+\end{equation}
+
+where $\alpha(t)$ is the total ancestry proportion due to introgression
+
+\begin{equation}
+    \alpha(t) = e^{-M(-\infty, t)}
+\end{equation}
+
+\begin{align}
+    D(t) = \Delta_x\Delta_y\int_{-\infty}^t \exp\big[-r(t -s) - M(s,t)\big] m(s) ds
+\end{align}
+
 
 
 \subsection{Genetic drift under ALD}\label{Appendix_3}
@@ -798,7 +847,7 @@ which can be interpreted as contributing how much LD has decayed from introgress
 In this section, the goal is to investigate how the ALD decay changes if we incorporate genetic drift.
 
 For all loci introduced at a single generation, LD decays as \cite{loh_inferring_2013}
-$$D = m(1-m)\Delta_x\delta_y\exp(-rt)\exp(-\frac{t}{2N}).$$
+$$D = m(1-m)\Delta_x\Delta_y\exp(-rt)\exp(-\frac{t}{2N}).$$
 
 This integral has the same form as the one without drift, except that we replace $r$ with $r + \frac{1}{2N}$:
 \begin{align}

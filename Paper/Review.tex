@@ -85,15 +85,27 @@ We thank the editor and all three reviewers for their very constructive feedback
 In particular, we made the following major changes:
 \begin{itemize}
     \item We completely reworked the \textbf{theory section}, and now derive the theory for segments and ALD independently to remove the disconnect between the theory and applications noted particularly by reviewer 1. 
-    \item We also added an \textbf{Appendix} where we detail the effect of the simplifications we made, and how the theory were to change if one incorporated e.g. genetic drift.
+    \item We also added an \textbf{Appendix} where we detail the effect of the simplifications we made, and how the theory were to change if one incorporated e.g. genetic drift, particularly to address concerns raised by reviewer 3.
     \item We now focus more on model choice, as suggested by reviewer 1. For this purpose, we added a new \textbf{Figure 2}, with model-choice results under an idealized scenario. 
     \item We completely reworked \textbf{Figure 3}, to also include model choice between the simple and extended pulse model, and comparisons between segment-based inference and ALD inference (as suggested by reviewer 1), changed the parameter setting to one more directly relevant to Neandertal gene flow (as suggested by reviewer 2), and, in panel C adding curves showing the fit of the data to the predictions (as suggested by reviewer 3).
+    \item We redid all simulations, in an attempt to improve the efficiency of segment-based inference. We also updated the fitting function (following a comment by reviewer 3).
+    \item We changed the \textbf{Comparing Effect Size estimates} section based on feedback from reviewer 3. We added a downsampling scenario (just 5\% of SNPs), and added a second GLM investigating the accuracy of our ALD estimates (not just the bias). 
     \item We removed the old figure 2, which discussed the accuracy of estimated admixture times (using ALD) for simulations under both models. This information is now contained in the much more comprehensive Figure 3. 
 \end{itemize}
 
 We also made a large number of smaller changes based on the reviewer feedback. Please see our detailed responses below.
 
 \section{Reviewer 1}\label{Reviewer 1}
+Comments to the Author
+Overall Summary 
+
+The authors propose a statistical model to better characterize the dynamics of introgression, with an empirical focus to the challenge of better understanding the Neandertal introgression into modern humans. The extension allows for a more relaxed model, accounting for not only the mean time of introgression but the duration over which this introgression occurred. This extension moves beyond the commonly used assumption of a single “pulse” of admixture in the literature and retains an analytical tractability that has not previously been applied in the field. 
+
+The authors focus a substantial amount of effort to characterize the ability to infer the mean admixture time as well as the admixture duration in their model, finding that the mean time to admixture can be reliably estimated in the simulations performed to mimic the scenario of Neanderthal admixture into humans. The authors highlight that the duration over which admixture occurred (their novel contribution) is less reliably inferred. Through their simulations the authors also quantify the impact of mis-specified recombination rate estimates and their contribution to estimation error of the mean admixture time. This technical impact of the recombination map has been shown previously, but the authors here describe it in tandem with numerous other technical covariates.  The authors also apply their method to admixture LD data from Neanderthals and modern European individuals from the 1000 Genomes project,  concluding that there is little power to distinguish between an admixture duration of 2500 generations and a pulse admixture event. 
+
+Overall, I do believe that the authors have brought a useful and tractable model to bear on the problem of inferring the dynamics of admixture from multi-locus population genetic data. However, as much of the argumentation (and motivation) in the paper is focused on being able to distinguish between the “pulse” and “extended pulse” models, I believe that more formal model comparisons between these two scenarios is warranted (see Major comments below). A secondary concern is that in the manuscript the model is derived for admixture segments as well as admixture LD, but almost no attention is placed on the admixture segment -based estimation in the subsequent sections to compare the relative value of each of these data summaries.
+
+While I believe the paper in its current form has intellectual merit and would be valuable to publish, it has a number of major shortcomings that are worth addressing prior to being accepted. Therefore, my recommendation would be that major revisions are required and the manuscript be resubmitted. Please see my detailed comments and considerations below: 
 
 \paragraph{1.}
 A key contribution that I would have hoped to get out of the manuscript is the power to reject the model of ``pulse admixture’’ given data simulated under a non-pulse model. To evaluate the power to detect a difference from $t_d$ = 1 (which is equivalent to the pulse model) in a likelihood-ratio test framework. This would assume a best-case scenario of no noise in the estimation of segment lengths, but would help inform the reader of the parameter regimes that are identifiable in the model. In my view this analysis is essential because it provides statistical evidence for how seriously I should take the claims made in the real data analysis.
@@ -153,6 +165,10 @@ One suggestion would be to provide an example input for these functions within t
 I would suggest a “requirements.md” or “requirements.txt” file in the main directory of the code to inform the user of the libraries required to import (and their versions if possible).
 
 \section{Reviewer 2}\label{Reviewer 2}
+Comments to the Author
+In their manuscript, Iasi & Peter introduce an extended admixture pulse model that allows for joint estimation of the timing and duration of gene flow. Using simulations, the authors show how the estimates of timing and duration of gene flow are affected by different model assumptions and convincingly show that the estimates for the mean time of admixture are largely robust to details of the gene flow models. Authors then apply their method to Neandertal data and conclude that all tested scenarios (with different admixture durations) are compatible with observed data.
+
+In addition to the careful examination of the extended admixture pulse model with simulations, one of the strongest aspects of this work is the discussion about the implications of their findings to the interpretation of previous dates for the Neandertal-Human introgression and for the understanding of selection on introgressed Neandertal haplotypes. I thoroughly enjoyed reading this manuscript and believe the implications of their work are relevant for the advance of our understanding of Neandertal introgression, in addition to representing a theoretical advance over previous admixture models. Below I list my concerns with this manuscript. 
 
 \paragraph{1.}
 My main concern relates to the “Application to Neandertal data.” My understanding of the manuscript title (An extended admixture pulse model reveals the limits to the dating of Human-Neandertal introgression) is that the extended model provides the limits (or bounds) for the dating of introgression. I do not think that this manuscript shows that. Instead, it seems like the application to Neandertal data shows that there is little power to differentiate tested scenarios (with varying gene flow durations). Perhaps the word “limits” in the title refers to the *limitations* of the model? I would like to hear from the authors about their intent and, if my understanding of the title is correct (i.e., limits == bounds), then I would like to see a more detailed discussion about this issue in the manuscript see comments below.
@@ -174,14 +190,14 @@ Our estimate of the tm for Neandertal gene flow of 1,682 generations corresponds
 \paragraph{3.}
 I would also like to hear from the authors the reasons why the specific scenarios were chosen for the simulations. Since the paper focuses on Neandertal-Human introgression and the range for the dating of this event is well known (37-86kya, 41-54kya, or 50-60kya as reported by the authors), then I would expect the simulations to cover this range. Perhaps I missed something, but the simulated scenarios seem to include mostly very recent dates for introgression. The few examples where mean time of admixture match what is known for the Neandertal-Human introgression use the same duration of gene flow (800 generations). How does the inference work for shorter durations? It would be great to see with simulations if the estimates for the duration of admixture are robust for an admixture time that matches the expected range for Neanderthal introgression. Perhaps the application to the data does that already, but still, it is good to see how good the inferences for plausible scenarios are especially considering different admixture durations.
 
-\paragraph{Answer to 2.3}
-We agree that the scenarios chosen for simulations in the previous version of the manuscript did not reflect a scenario of Neandertal admixture very well. We now changed this to scenarios of a mean gene flow of 1,500 generations throughout, with various gene flow durations (\textbf{Figures 2 and 3}), and moved the previous scenarios with much more recent gene flow to the supplement (\textbf{Supplementary figure XX})
-
 \paragraph{4.}
 Generally speaking, I miss some discussion about the applicability of this model to the study of other events in human history/evolution and beyond humans.
 
-\paragraph{Answer to 2.4}
-We agree that the discussion could be expanded in this direction. We changed the first paragraph of the introduction to reflect this:
+
+\paragraph{Answer to 2.3 and 2.4}
+We agree that the scenarios chosen for simulations in the previous version of the manuscript did not reflect a scenario of Neandertal admixture very well. We now changed this that we first study a scenario directly relevant to Neandertal gene flow $t_m=1,500$  with various gene flow durations (\textbf{Figures 2 and 3}). The previous Figure 4 (now \textbf{Figure 6}) was moved further back to emphasize that there we study parameter settings where parameter inference works much better, but, as pointed out, is not directly applicable to Neandertal admixture.
+
+We also expanded  the discussion towards this, with the  first paragraph of the introduction now reading:
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=grey!20]
 In this paper, we develop a new population genetic model for dating extended pulses of gene flow. One appealing feature of our model is that it has just two parameters, that can be interpreted as the mean time and duration of gene flow; which leads to simple closed form solutions, and we show that both an instantaneous pulse and continuous migration models can be thought of as special cases where the duration is extremely short or long, respectively. This makes this model generally applicable beyond gene flow between Neandertals and humans, which was the motivation and focus of this study. In fact, we find that we have much more power to investigate recent gene flow, so that this model should be particularly powerful if gene flow has been very recent. One restriction is that we assume that the overall amount of introduced material is low, and that we ignore the effects of genetic drift and selection.\end{mdframed}
@@ -240,21 +256,24 @@ References to supplementary figures lack the word “Figure.”
 
 \section{Reviewer 3}\label{Reviewer 3}
 
+Comments to the Author
+Iasi and Peter developed a new method to estimate the duration of admixture using ancestral LD and segment length information. They investigated the accuracy of their method under different demographic models and applied it to human Neanderthal introgression. This is an interesting work touching a less studied direction, which I very much enjoy reading. The writing is clear and easy to follow. That said, I have multiple comments on the technical aspects of this work, which I wish to see addressed. 
+
 \paragraph{1.}
 As shown in their figures, the current version of this method is a biased method. Therefore, the single major concern I have about their paper is that it lacks explanations and investigations on the bias and variance of this newly proposed method. Hence some improvements are needed. In particular, why is it a biased method, and is it possible to improve on it further?
 
 \paragraph{Answer to 3.1}
-We agree that the biases in the estimates of $t_d$ and $t_m$ are unfortunate, and we note that the entire section \textbf{Comparing effect sizes for technical covariates} deals with investigating the various (technical) sources of bias of $t_m$. 
+We agree that the biases in the estimates of $t_d$ and $t_m$ are unfortunate, and we note that the section \textbf{Comparing effect sizes for technical covariates} deals with investigating the various (technical) sources of bias of $t_m$. 
 
 \paragraph{2.}
 Simulation: the basic version of msPrime does not shine at simulating long-range LD in recent generations, and therefore it was recommended, when long-range correlations are used, the msPrime with Wright-Fisher extension should be used instead to overcome the biases in especially the recent time scale (see Nelson et al. 2020, PLoS genetics). When the admixture duration is long and extends to very recent time as in some of the simulations for the extended pulse model, and long-range information (LD, segment length) is used in inference, it might be essential to incorporate the WF extension in the simulation.Some of the biases perhaps would disappear with better simulation. It is also possible that a more realistic simulation would lead to even larger bias, which would also be essential to know.
 
 \paragraph{Answer to 3.2}
-We verified that we are outside the parameter range that this is a concern by redoing the most extreme scenario we use using either simulation scheme. We do not find any difference between the two models (see attached figure), so we feel confident that this is a very unlikely source of bias.
+We verified that we are outside the parameter range where this is a concern by redoing the most extreme scenario we use using either simulation scheme. We do not find any difference between the two models (see attached figure), so we feel confident that this is a very unlikely source of bias.
 
 \begin{figure}
 \centering
-\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figR4-1.pdf}
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figR}
 \caption{\label{fig:fig_R} }
 \end{figure}
 
@@ -288,9 +307,9 @@ Taken together, we hope that these clarifications as well as the appendix show t
 Inference: It seems the parameter inference is made by non-linear least-square optimization when alternatively, some maximum likelihood optimizations could be used. Could the authors provide more information about how good the fitting is per simulation? In particular, if the simulated parameters may actually give a higher likelihood.
 
 \paragraph{Answer to 3.4}
-We are not aware of any likelihood-based inference framework based on ALD, as the resulting summary statistic is an (approximated) LD-decay curve. We  note that all state-of-the-art methods for this purpose use least-squares techniques similar to what we are using here (ALDER; Loh et al. 2013, DATES Narasimhan et al 2018, Globetrotter, Hellenthal et al. 2014). If admixture segments were perfectly known, then likelihood-based inference can be performed, but the issue is in identifying the fragments, and to propagate the uncertainty in fragment estimation.
+We are not aware of any likelihood-based inference framework based on ALD, as the resulting summary statistic is an (approximated) LD-decay curve. We note that all state-of-the-art methods for this purpose use least-squares techniques similar to what we are using here (ALDER; Loh et al. 2013, DATES Narasimhan et al 2018, Globetrotter, Hellenthal et al. 2014). If admixture segments were perfectly known, then likelihood-based inference can be performed, but the issue is in identifying the fragments, and to propagate the uncertainty in fragment estimation.
 
-In \textbf{Figure 3C}, we now show the fitted curves for both true segments, inferred segments as well as the raw ALD data. We think this shows that the fitting itself is unlikely to be a source of major bias. However, in the section \textbf{Comparing effect sizes for technical covariates} we show that many seemingly innocuous choices of inference settings can lead to some biases.
+In \textbf{Figure 3C}, we now show the fitted curves for both true segments, inferred segments as well as the raw ALD data, to show that the fits are reasonable. We did also change the algorithm used in \texttt{nls} for \textbf{Figure 3 and 6} to include upper and lower boundaries. As the extended pulse model converges to the single pulse model when $k \to \infty$, there are some numerical issues to be considered. 
 
 \paragraph{5.} 
 Data: As primarily a new method paper, it would be nice to provide guidance about how much data is needed to make these inferences. 
@@ -305,7 +324,7 @@ We address these concern in \textbf{Figure 4} and section \textbf{Compariong eff
 Discussion: I wonder if the first paragraph of the discussion could be rephrased a little bit. It seems obvious that the previous estimates are the CI rather than the bounds of the duration of gene flow. Is there any paper stating or interpreting them as the bounds of the duration of gene flow? It is also good to acknowledge and discuss that a method based on ALD or length of the segment might not be the ultimate method for addressing the admixture duration. An extended admixture affects coalescence time, site frequency spectrum, etc. Various aspects could be explored in the future.
 
 \paragraph{Answer to 3.6}
-We do agree that this should be phrased carefully, as it is a rather subtle point. However, the point we want to make here is that if the single pulse model were correct, then the bounds on the estimates of $t_m$ are  the bounds of when gene flow happened. So this is not a statistical error, but rather a case where the model is interpreted to literally. 
+We do agree that this should be phrased carefully, as it is a rather subtle point. What we were trying to say here is that if the single pulse model were correct, then the bounds on the estimates of $t_m$ are, in fact,  the bounds of when gene flow happened. So this is not a statistical error, but rather a case where the model is interpreted to literally. 
 
 We found numerous papers that based their interpretations (partially) on this, in our eyes, flawed interpretation (see below).
 
