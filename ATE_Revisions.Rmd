@@ -2986,10 +2986,9 @@ kable(Real_Data_fit_table_all_print , "latex",col.names = c("Model" , "tm"   , "
 Fit_stats <- data.frame(model=c("Simple Pulse","Extended Pulse (td=1)","Extended Pulse (td=100)",
                                         "Extended Pulse (td=200)","Extended Pulse (td=400)","Extended Pulse (td=800)",
                                         "Extended Pulse (td=1000)","Extended Pulse (td=1500)","Extended Pulse (td=2000)",
-                                        "Extended Pulse (td=2500)"),
-                        AIC=AIC_result$AIC,RSS=Model_RSS)
+                                        "Extended Pulse (td=2500)"),RSS=Model_RSS)
 
-kable(Fit_stats , "latex",row.names = F,col.names = c("Model" , "AIC"   , "RSS"),
+kable(Fit_stats , "latex",row.names = F,col.names = c("Model"  , "RSS"),
       caption = "\\label{tab:tableS1} Real data Stats") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
   kable_styling(latex_options = "HOLD_position")
