@@ -1927,7 +1927,7 @@ xdata.M.3.no_error$Sim_id_int <- as.integer(rownames(xdata.M.3.no_error))
 
 ```
 
-```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE, cache=T, results='hide'}
+```{r eval=F, message=FALSE, echo=FALSE,warning=FALSE, cache=T, results='hide'}
 ######## model with response being the difference between the estimated Admixture time and the true one #####
 # full model with Ascertainement, min dist, Demographi and recombination rate as predictore but no interactions
 
@@ -2000,6 +2000,8 @@ Effect_size_fixed_stan_3_SP_tm_bias <- ulam(
     c(bA,bm,bD,bR,bG,bd,bdA,bmA,bmR,bDR) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_SP,chains = 4,iter = 2000,cores = 4)
 
+save(Effect_size_fixed_stan_3_SP_tm_bias,file = "Effect_size_fixed_stan_3_SP_tm_bias.RData")
+
 Effect_size_fixed_stan_3_SP_tm_deviation <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
@@ -2008,6 +2010,7 @@ Effect_size_fixed_stan_3_SP_tm_deviation <- ulam(
     c(bA,bm,bD,bR,bG,bd,bdA,bmA,bmR,bDR) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_SP_var,chains = 4,iter = 2000,cores = 4)
 
+save(Effect_size_fixed_stan_3_SP_tm_deviation,file = "Effect_size_fixed_stan_3_SP_tm_deviation.RData")
 ### For extended pulse fit tm
 
 Effect_size_fixed_stan_3_EP_tm_bias <- ulam(
@@ -2018,6 +2021,8 @@ Effect_size_fixed_stan_3_EP_tm_bias <- ulam(
     c(bA,bm,bD,bR,bG,bd,bdA,bmA,bDR,bmR) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_EP_tm,chains = 4,iter = 2000,cores = 4)
 
+save(Effect_size_fixed_stan_3_EP_tm_bias,file = "Effect_size_fixed_stan_3_EP_tm_bias.RData")
+
 Effect_size_fixed_stan_3_EP_tm_deviation <- ulam(
   alist(
     E ~ dnorm(mu,sigma),
@@ -2026,86 +2031,120 @@ Effect_size_fixed_stan_3_EP_tm_deviation <- ulam(
     c(bA,bm,bD,bR,bG,bd,bdA,bmA,bDR,bmR) ~ dnorm( 0 , 2 ),
     sigma ~ dexp(1)), data=Bdata_index_EP_tm_var,chains = 4,iter = 2000,cores = 4)
 
-
+save(Effect_size_fixed_stan_3_EP_tm_deviation,file = "Effect_size_fixed_stan_3_EP_tm_deviation.RData")
 
 ```
 
 
 
 ```{r eval=T, message=FALSE, echo=FALSE,warning=FALSE, cache=T, results='hide'}
+load("Effect_size_fixed_stan_3_SP_tm_bias.RData")
+load("Effect_size_fixed_stan_3_SP_tm_deviation.RData")
+load("Effect_size_fixed_stan_3_EP_tm_bias.RData")
+load("Effect_size_fixed_stan_3_EP_tm_deviation.RData")
+B_model_result_SP_3_bias <- precis(Effect_size_fixed_stan_3_SP_tm_bias,prob = 0.95)
+B_model_result_SP_3_deviation <- precis(Effect_size_fixed_stan_3_SP_tm_deviation,prob = 0.95)
 
+B_model_result_EP_3_bias <- precis(Effect_size_fixed_stan_3_EP_tm_bias,prob = 0.95)
+B_model_result_EP_3_deviation <- precis(Effect_size_fixed_stan_3_EP_tm_deviation,prob = 0.95)
 
-B_model_result_SP_3 <- precis(Effect_size_fixed_stan_3_SP_tm_bias,prob = 0.95)
-B_model_result_SP_3_var <- precis(Effect_size_fixed_stan_3_SP_tm_deviation,prob = 0.95)
-
-B_model_result_EP_3 <- precis(Effect_size_fixed_stan_3_EP_tm_bias,prob = 0.95)
-B_model_result_EP_3_var <- precis(Effect_size_fixed_stan_3_EP_tm_deviation,prob = 0.95)
-
-Plot_GLM_model_3_effect_sizes <- function(Model,plot_GLM=T){
+Plot_GLM_model_3_effect_sizes <- function(Model,sigma=F){
   post_effect_size_model <- extract.samples(Model,n = 1e5)
-  Post_effect_size_est=data.frame(mean=c(
-  mean(post_effect_size_model$a),
-  mean(post_effect_size_model$bG),
-  mean(post_effect_size_model$bR),
-  mean(post_effect_size_model$bD),
-  mean(post_effect_size_model$bm),
-  mean(post_effect_size_model$bA),
-  mean(post_effect_size_model$bd),
-  mean(post_effect_size_model$bdA),
-  mean(post_effect_size_model$bDR),
-  mean(post_effect_size_model$bmA),
-  mean(post_effect_size_model$bmR)),
-  HPDI_lower=c(
-  HPDI(post_effect_size_model$a,0.95)[1],
-  HPDI(post_effect_size_model$bG,0.95)[1],
-  HPDI(post_effect_size_model$bR,0.95)[1],
-  HPDI(post_effect_size_model$bD,0.95)[1],
-  HPDI(post_effect_size_model$bm,0.95)[1],
-  HPDI(post_effect_size_model$bA,0.95)[1],
-  HPDI(post_effect_size_model$bd,0.95)[1],
-  HPDI(post_effect_size_model$bdA,0.95)[1],
-  HPDI(post_effect_size_model$bDR,0.95)[1],
-  HPDI(post_effect_size_model$bmA,0.95)[1],
-  HPDI(post_effect_size_model$bmR,0.95)[1]),
-  HPDI_upper=c(
-  HPDI(post_effect_size_model$a,0.95)[2],
-  HPDI(post_effect_size_model$bG,0.95)[2],
-  HPDI(post_effect_size_model$bR,0.95)[2],
-  HPDI(post_effect_size_model$bD,0.95)[2],
-  HPDI(post_effect_size_model$bm,0.95)[2],
-  HPDI(post_effect_size_model$bA,0.95)[2],
-  HPDI(post_effect_size_model$bd,0.95)[2],
-  HPDI(post_effect_size_model$bdA,0.95)[2],
-  HPDI(post_effect_size_model$bDR,0.95)[2],
-  HPDI(post_effect_size_model$bmA,0.95)[2],
-  HPDI(post_effect_size_model$bmR,0.95)[2])
-  #,row.names = c("Standard Model","Extended GF","Varying recombination","Complex Demography","d0 = 0.02","HES")
-  )
-  
-  Post_effect_size_est_table <- Post_effect_size_est
+  if(sigma==F){
+    Post_effect_size_est=data.frame(mean=c(
+    mean(post_effect_size_model$a),
+    mean(post_effect_size_model$bG),
+    mean(post_effect_size_model$bR),
+    mean(post_effect_size_model$bD),
+    mean(post_effect_size_model$bm),
+    mean(post_effect_size_model$bA),
+    mean(post_effect_size_model$bd),
+    mean(post_effect_size_model$bdA),
+    mean(post_effect_size_model$bDR),
+    mean(post_effect_size_model$bmA),
+    mean(post_effect_size_model$bmR)),
+    HPDI_lower=c(
+    HPDI(post_effect_size_model$a,0.95)[1],
+    HPDI(post_effect_size_model$bG,0.95)[1],
+    HPDI(post_effect_size_model$bR,0.95)[1],
+    HPDI(post_effect_size_model$bD,0.95)[1],
+    HPDI(post_effect_size_model$bm,0.95)[1],
+    HPDI(post_effect_size_model$bA,0.95)[1],
+    HPDI(post_effect_size_model$bd,0.95)[1],
+    HPDI(post_effect_size_model$bdA,0.95)[1],
+    HPDI(post_effect_size_model$bDR,0.95)[1],
+    HPDI(post_effect_size_model$bmA,0.95)[1],
+    HPDI(post_effect_size_model$bmR,0.95)[1]),
+    HPDI_upper=c(
+    HPDI(post_effect_size_model$a,0.95)[2],
+    HPDI(post_effect_size_model$bG,0.95)[2],
+    HPDI(post_effect_size_model$bR,0.95)[2],
+    HPDI(post_effect_size_model$bD,0.95)[2],
+    HPDI(post_effect_size_model$bm,0.95)[2],
+    HPDI(post_effect_size_model$bA,0.95)[2],
+    HPDI(post_effect_size_model$bd,0.95)[2],
+    HPDI(post_effect_size_model$bdA,0.95)[2],
+    HPDI(post_effect_size_model$bDR,0.95)[2],
+    HPDI(post_effect_size_model$bmA,0.95)[2],
+    HPDI(post_effect_size_model$bmR,0.95)[2])
+    )
+    
+    Post_effect_size_est_table <- Post_effect_size_est
+    row.names(Post_effect_size_est_table) <- c("Standard Model","Extended Pulse","Varying recombination","Complex Demography","d0 = 0.02","HES","n SNP = 5%",
+                                               "Interaction n SNP = 5%/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.")
+    Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
+                      levels = c("Standard Model","Extended Pulse","Varying recombination","Complex Demography","d0 = 0.02","HES","n SNP = 5%",
+                                               "Interaction n SNP = 5%/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R."),ordered = TRUE)
+
+
+      return(Post_effect_size_est_table)
+  } else {
+      Post_effect_size_est=data.frame(mean=c(
+        mean(post_effect_size_model$a),
+        mean(post_effect_size_model$bG),
+        mean(post_effect_size_model$bR),
+        mean(post_effect_size_model$bD),
+        mean(post_effect_size_model$bm),
+        mean(post_effect_size_model$bA),
+        mean(post_effect_size_model$bd),
+        mean(post_effect_size_model$bdA),
+        mean(post_effect_size_model$bDR),
+        mean(post_effect_size_model$bmA),
+        mean(post_effect_size_model$bmR),
+        mean(post_effect_size_model$sigma)),
+        HPDI_lower=c(
+        HPDI(post_effect_size_model$a,0.95)[1],
+        HPDI(post_effect_size_model$bG,0.95)[1],
+        HPDI(post_effect_size_model$bR,0.95)[1],
+        HPDI(post_effect_size_model$bD,0.95)[1],
+        HPDI(post_effect_size_model$bm,0.95)[1],
+        HPDI(post_effect_size_model$bA,0.95)[1],
+        HPDI(post_effect_size_model$bd,0.95)[1],
+        HPDI(post_effect_size_model$bdA,0.95)[1],
+        HPDI(post_effect_size_model$bDR,0.95)[1],
+        HPDI(post_effect_size_model$bmA,0.95)[1],
+        HPDI(post_effect_size_model$bmR,0.95)[1],
+        HPDI(post_effect_size_model$sigma,0.95)[1]),
+        HPDI_upper=c(
+        HPDI(post_effect_size_model$a,0.95)[2],
+        HPDI(post_effect_size_model$bG,0.95)[2],
+        HPDI(post_effect_size_model$bR,0.95)[2],
+        HPDI(post_effect_size_model$bD,0.95)[2],
+        HPDI(post_effect_size_model$bm,0.95)[2],
+        HPDI(post_effect_size_model$bA,0.95)[2],
+        HPDI(post_effect_size_model$bd,0.95)[2],
+        HPDI(post_effect_size_model$bdA,0.95)[2],
+        HPDI(post_effect_size_model$bDR,0.95)[2],
+        HPDI(post_effect_size_model$bmA,0.95)[2],
+        HPDI(post_effect_size_model$bmR,0.95)[2],
+        HPDI(post_effect_size_model$sigma,0.95)[2])
+        )
+        Post_effect_size_est_table <- Post_effect_size_est
   row.names(Post_effect_size_est_table) <- c("Standard Model","Extended Pulse","Varying recombination","Complex Demography","d0 = 0.02","HES","n SNP = 5%",
-                                             "Interaction n SNP = 5%/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.")
+                                             "Interaction n SNP = 5%/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.", "Sigma")
   Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
                     levels = c("Standard Model","Extended Pulse","Varying recombination","Complex Demography","d0 = 0.02","HES","n SNP = 5%",
-                                             "Interaction n SNP = 5%/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R."),ordered = TRUE)
-  
-  P_1 <- ggplot(Post_effect_size_est_table,aes(x=Post_effect_size_est_table$Variable,y=as.numeric(as.character(mean))))+
-        geom_point(aes(size=1.5,col=c(cbPalette_viridis[1],cbPalette_viridis[6],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1],cbPalette_viridis[1])),show.legend = F,size=2)+
-      geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(Post_effect_size_est_table$Variable)),col="black",width=0.2)+
-    geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
-    labs(x = "")+
-    labs(y = "Standardized dif.\n est./sim. time")+
-    theme(plot.title = element_text(hjust = 0.5,size = 12))+
-    #scale_x_discrete(labels= c("Int","G","R","D","d0","A"))+
-    scale_x_discrete(labels= c("Standard Model","Extended Pulse","Varying recombination","Complex Demography","d0 = 0.02","HES","n SNP = 5%",
-                                             "Interaction n SNP = 5%/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.")
-                    ,guide = guide_axis(angle = 90))+
-    scale_color_manual("Gene Flow Model",
-                       values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
-                       label=c("Pulse","Extended"))
-  if(plot_GLM==T){
-      return(P_1)
-  } else {
+                                             "Interaction n SNP = 5%/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.", "Sigma"),ordered = TRUE)
       return(Post_effect_size_est_table)
   }
 
@@ -2118,16 +2157,16 @@ Plot_GLM_model_3_effect_sizes <- function(Model,plot_GLM=T){
 
 ```{r figResult_3_GLM_SP_and_EP_bias_and_var,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_var} SP and EP var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
-SP_GLM_m_3_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_bias,plot_GLM = F)
+SP_GLM_m_3_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_bias,sigma = F)
 SP_GLM_m_3_bias$Model <- "SP"
 SP_GLM_m_3_bias$GLM <- "bias"
-EP_GLM_m_3_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_bias,plot_GLM = F)
+EP_GLM_m_3_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_bias,sigma = F)
 EP_GLM_m_3_bias$Model <- "EP"
 EP_GLM_m_3_bias$GLM <- "bias"
-SP_GLM_m_3_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_deviation,plot_GLM = F)
+SP_GLM_m_3_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_deviation,sigma = F)
 SP_GLM_m_3_deviation$Model <- "SP"
 SP_GLM_m_3_deviation$GLM <- "Variance"
-EP_GLM_m_3_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_deviation,plot_GLM = F)
+EP_GLM_m_3_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_deviation,sigma = F)
 EP_GLM_m_3_deviation$Model <- "EP"
 EP_GLM_m_3_deviation$GLM <- "Variance"
 
@@ -2220,48 +2259,58 @@ Plot_Fig_2_A(Plot_model,levels(Plot_model$Combination_chr))
 
 ### table bias
 ```{r table_Supplements_GLM_EP_SP_tm_effect_size_bias, echo=FALSE,results='asis',message=F,warning=F }
-print_B_model_SP_result_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_bias,plot_GLM = F)
+print_B_model_SP_result_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_bias,sigma = T)
 print_B_model_SP_result_bias <- print_B_model_SP_result_bias[,c(1,2,3)]
 print_B_model_SP_result_bias$Model <- "Simple Pulse"
 print_B_model_SP_result_bias$Variable <- rownames(print_B_model_SP_result_bias)
 print_B_model_SP_result_bias$GLM <- "bias"
+print_B_model_SP_result_bias$n_eff <- round(B_model_result_SP_3_bias$n_eff,0)
+print_B_model_SP_result_bias$Rhat <- round(B_model_result_SP_3_bias$Rhat4,1)
 
-print_B_model_EP_result_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_bias,plot_GLM = F)
+print_B_model_EP_result_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_bias,sigma = T)
 print_B_model_EP_result_bias <- print_B_model_EP_result_bias[,c(1,2,3)]
 print_B_model_EP_result_bias$Model <- "Extended Pulse tm"
 print_B_model_EP_result_bias$Variable <- rownames(print_B_model_EP_result_bias)
 print_B_model_EP_result_bias$GLM <- "bias"
-
+print_B_model_EP_result_bias$n_eff <- round(B_model_result_EP_3_bias$n_eff,0)
+print_B_model_EP_result_bias$Rhat <- round(B_model_result_EP_3_bias$Rhat4,1)
 
 
 print_B_model_result_bias <- rbind(print_B_model_SP_result_bias,print_B_model_EP_result_bias)
-print_B_model_result_bias <- print_B_model_result_bias[, c(4,6,5,1,2,3)]
-kable(print_B_model_result_bias , "latex",row.names=F,col.names = c( "model","GLM","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
+print_B_model_result_bias <- print_B_model_result_bias[, c(4,6,5,1,2,3,7,8)]
+kable(print_B_model_result_bias , "latex",row.names=F,col.names = c( "model","GLM","variable","mean" , "5.5%"  ,"94.5%"  ,"n eff", "Rhat"  ),digits = 2,
       caption = "\\label{tab:tableS1}  Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
-  kable_styling(latex_options = "HOLD_position")
+  kable_styling(latex_options = "HOLD_position",font_size = 7)
 ```
 
 ### table absolute deviation
 
 ```{r table_Supplements_GLM_EP_SP_tm_effect_size_deviation, echo=FALSE,results='asis',message=F,warning=F }
-print_B_model_SP_result_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_deviation,plot_GLM = F)
+print_B_model_SP_result_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_deviation,sigma = T)
 print_B_model_SP_result_deviation <- print_B_model_SP_result_deviation[,c(1,2,3)]
 print_B_model_SP_result_deviation$Model <- "Simple Pulse"
 print_B_model_SP_result_deviation$Variable <- rownames(print_B_model_SP_result_deviation)
 print_B_model_SP_result_deviation$GLM <- "abs. deviation"
+print_B_model_SP_result_deviation$n_eff <- round(B_model_result_SP_3_deviation$n_eff,0)
+print_B_model_SP_result_deviation$Rhat <- round(B_model_result_SP_3_deviation$Rhat4,1)
 
-print_B_model_EP_result_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_deviation,plot_GLM = F)
+print_B_model_EP_result_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_deviation,sigma = T)
 print_B_model_EP_result_deviation <- print_B_model_EP_result_deviation[,c(1,2,3)]
 print_B_model_EP_result_deviation$Model <- "Extended Pulse tm"
 print_B_model_EP_result_deviation$Variable <- rownames(print_B_model_EP_result_deviation)
 print_B_model_EP_result_deviation$GLM <-  "abs. deviation"
+print_B_model_EP_result_deviation$n_eff <- round(B_model_result_EP_3_deviation$n_eff,0)
+print_B_model_EP_result_deviation$Rhat <- round(B_model_result_EP_3_deviation$Rhat4,1)
+
 print_B_model_result_deviation <- rbind(print_B_model_SP_result_deviation,print_B_model_EP_result_deviation)
-print_B_model_result_deviation <- print_B_model_result_deviation[, c(4,6,5,1,2,3)]
-kable(print_B_model_result_deviation , "latex",row.names=F,col.names = c( "model","GLM","variable","mean" , "5.5%"  ,"94.5%"  ),digits = 2,
+
+
+print_B_model_result_deviation <- print_B_model_result_deviation[, c(4,6,5,1,2,3,7,8)]
+kable(print_B_model_result_deviation , "latex",row.names=F,col.names = c( "model","GLM","variable","mean" , "5.5%"  ,"94.5%" ,"n eff", "Rhat" ),digits = 2,
       caption = "\\label{tab:tableS1} table_Supplements_EP_tm_td_and_SP_model_3_predictions Mean, Standard deviation, 5.5/94.5 compatibility interval of the posterior distribution for every parameter effect on the standardized difference between true and estimated admixture time.") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
-  kable_styling(latex_options = "HOLD_position")
+  kable_styling(latex_options = "HOLD_position",font_size = 7)
 ```
 
 # Sampling closer to end of GF (ex-result fig 4 now supplement)
@@ -2979,7 +3028,7 @@ Real_Data_fit_table_all_print <- Real_Data_fit_table_all_print[,c(10,4,1,7)]
 kable(Real_Data_fit_table_all_print , "latex",col.names = c("Model" , "tm"   , "A"  ,"c"),
       caption = "\\label{tab:tableS1} Real data est") %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle")%>%
-  kable_styling(latex_options = "HOLD_position")
+  kable_styling(latex_options = "HOLD_position",font_size = 7)
 ```
 
 ```{r table_Supplements_fig3_real_data_stats, echo=FALSE,results='asis' }
