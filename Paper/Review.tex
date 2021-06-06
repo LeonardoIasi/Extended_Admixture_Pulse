@@ -146,15 +146,15 @@ Page 2 – line 52: avoid starting a sentence with “It” as it obscures the s
 
 There is an error in notation on page 11- line 3: should be “tm” instead of “td” I believe.
 
-\textbf{Answer:} changed to "td"
+\textbf{Answer:} The section where the error occurred is replaced by the new section "Population genetic model comparison"
 
 A typo in the caption for Table S1: “standart” vs. “standard”
 
-\textbf{Answer:} changed to "standard"
+\textbf{Answer:} This table is updated and the error is corrected for both tables (Supplement Table 1 and 2) it reads "Standard Model"
 
 A suggestion on the formatting for Table S2 would be to include the model estimates as the columns (and the different scenarios as rows), and the confidence intervals as part of the entries for the estimates in brackets / parentheses. The reader should be able to readily compare the same parameter across these fits by just looking at a single column. 
 
-\textbf{Answer:} the table format was changed as suggested and can be found in the supplements as table 2.
+\textbf{Answer:} We restructured the table (now Supplement Table 3) as suggested.
 
 There are several comments with regards to the structure and layout of the provided software code:
 
@@ -163,6 +163,8 @@ There are several comments with regards to the structure and layout of the provi
 Improve documentation for the `fit-extended-pulse` and `fit-simple-pulse` functions to better describe the inputs. I would recommend using the `roxygen` formatting for documentation to make the code more readable and useable. 
 One suggestion would be to provide an example input for these functions within the repository to help the end user understand more clearly the required data table format. 
 I would suggest a “requirements.md” or “requirements.txt” file in the main directory of the code to inform the user of the libraries required to import (and their versions if possible).
+
+\textbf{Answer:} 
 
 \section{Reviewer 2}\label{Reviewer 2}
 Comments to the Author
@@ -209,50 +211,49 @@ In this paper, we develop a new population genetic model for dating extended pul
 Minor comments:
 Consider adding “on average” to the first sentence of the abstract (referring to the percentage of Neandertal DNA).
 
-\textbf{Answer:} changed to "Neandertal DNA makes up 2-3\% of the genomes of all non-African individuals on average."
+\textbf{Answer:} 
 
 Page 6, line 20. “Ti represents the time when segment Li entered the population” Would it be segment i instead of Li? 
 
-\textbf{Answer:}
+\textbf{Answer:} Yes we changed it to: "We enumerate the admixture segments in a sample $i=1...n$. We denote the length of the $i$-th segment as $L_i$ and the time in the past when segment $i$ entered the population as $T_i$. We assume that the $L_i$ and $T_i$ are both realizations from more general distributions $L$ and $T$ that reflect the overall segment length and admixture time distributions, respectively."
 
 Page 10, first line. Is it supposed to be tm=500 instead of td=500?
 
-\textbf{Answer:} changed to "(i.e. if $t_m= 500$ generations, then $t_d = 250$ and most gene flow occurs between  375 and 625
-generations ago)."
+\textbf{Answer:} The section where the error occurred is replaced by the new section "Population genetic model comparison".
 
 
 I do not follow what is described on page 13, first and second paragraphs. Would it be left panels instead of right? If that’s the case, then I can see that for panel C, not for panel A. If my reasoning is correct, then also change the reference to the right panels (not left) in the next paragraph.
 
-\textbf{Answer:} 
+\textbf{Answer:} The section where the error occurred is replaced by an updated version "Sampling closer to the admixture event". It reads now: "In panels A and B we increase both $t_m$ and $t_d$ at a similar rate, such that gene flow ends 50 generations before sampling ($t_{end}=50$, where $t_{end}= t_m - \frac{t_d}{2}$). In panels C and D $t_d$ is kept fixed at 800, but we increase $t_m$. We use the same four recombination scenarios as above, with one scenario of inference and simulation under constant recombination rate, and three scenarios with simulations using a variable recombination map, with inference using the same, a slightly different and non recombination map, respectively."
 
 Page 12, line 56: I believe this is supposed to be Figure 4A. 
 
-\textbf{Answer:} changed to "Figure 4A"
+\textbf{Answer:} The section where the error occurred is replaced by an updated version "Sampling closer to the admixture event".
 
 Typo? page 18, line 40/41 The effective… *and are* based on estimates…” 
 
-\textbf{Answer:} changed to "are"
+\textbf{Answer:} This sentence is not in the manuscript anymore since we chenged the complex demographic model to the Skov et al. 2018 model.
 
 Figure 2, panel A: Please use “Single pulse” instead of “Pulse.”
 
-\textbf{Answer:} changed to "simple pulse"
+\textbf{Answer:} Figure 2 is replaced by Figure \ref{fig:figResult2}. The two admixture models are refert to as "simple pulse" and "extended pulse".
 
 
 Figure 2, panel B: It seems like the color legend is redundant. Admixture duration is shown at the bottom of each column already, so no need to use the different colors. Also, it could be a bit distracting since you use the same colors for Figure 4. 
 
-\textbf{Answer:} The figure is updated and the colores are changed.
+\textbf{Answer:} Figure 2 is replaced by Figure \ref{fig:figResult2}. The two color legend now are refering to the recombination map used for simulation and inference and which model is fitted to the curve.
 
 Figure 3: why only the second dot is green?
 
-\textbf{Answer:} The second dot is the one for the effect size of the gene flow model to easier compare it since the gene flow model is the main concern of the paper.
+\textbf{Answer:} 
 
 Add units for time in figure 4. I suppose it is generations.
 
-\textbf{Answer:} 
+\textbf{Answer:} We included the sentence "All times are given in generations" in the legends of Figure \ref{fig:figResult2} and \ref{fig:Closer_sampling}.
 
 References to supplementary figures lack the word “Figure.” 
 
-\textbf{Answer:} "Figure" was added.
+\textbf{Answer:} We changed it and now throughout the paper it refers to as Supplement Figure or Supplement Table.
 
 \section{Reviewer 3}\label{Reviewer 3}
 
@@ -273,7 +274,7 @@ We verified that we are outside the parameter range where this is a concern by r
 
 \begin{figure}
 \centering
-\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figR}
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figResult_WF_H_comp-1.pdf}
 \caption{\label{fig:fig_R} }
 \end{figure}
 
@@ -330,7 +331,7 @@ We found numerous papers that based their interpretations (partially) on this, i
 
 Douka et al. 2019 "Denisovans at the site appear to have survived later than Neanderthals. Our modelled date estimate for the most recent Denisovan fossil (Denisova 3, 51,600–76,200 years ago) is earlier than published estimates of the date of Denisovan admixture into modern humans (44,000–54,00015 and 31,000–50,000 years ago16). If these admixture estimates are robust, then the Altai Denisovans may not have been the latest-surviving population."
 
-Jacobs et al. 2019: "While the median block lengths of D1 and D2 are similar in Papuans (238 and 236 kb), their distributions are significantly different (Kolmogorov-Smirnov statistic = 0.15, p = $2.2 \times 10−6$). Exponential fitting of D1 and D2 haplotype lengths yields introgression dates of 29.8 kya (95 \% CI 14.4–50.4) and 45.7 kya (95 \% CI 31.9–60.7), respectively, which are younger, though overlapping with, previously suggested estimates for Denisovan introgression () (Malaspinas et al., 2016). The maximum likelihood introgression date for D2 introgression is 50 \% more ancient than the date for D1. Based on simulations, and given the greater statistical challenge of identifying shorter introgression blocks, we consider these dates to be probable lower bounds on introgression times, but with true dates no more than 15 \% more ancient.
+Jacobs et al. 2019: "While the median block lengths of D1 and D2 are similar in Papuans (238 and 236 kb), their distributions are significantly different (Kolmogorov-Smirnov statistic = 0.15, p = $2.2 \times 10−6$). Exponential fitting of D1 and D2 haplotype lengths yields introgression dates of 29.8 kya (95 \% CI 14.4–50.4) and 45.7 kya (95 \% CI 31.9–60.7), respectively, which are younger, though overlapping with, previously suggested estimates for Denisovan introgression  (Malaspinas et al., 2016). The maximum likelihood introgression date for D2 introgression is 50 \% more ancient than the date for D1. Based on simulations, and given the greater statistical challenge of identifying shorter introgression blocks, we consider these dates to be probable lower bounds on introgression times, but with true dates no more than 15 \% more ancient.
 
 D1 and D2 introgression times that overlap the timescale of modern human arrival and their variable dispersal across Papua raise the possibility that Denisovan introgression occurred after local populations of modern humans had differentiated."
 

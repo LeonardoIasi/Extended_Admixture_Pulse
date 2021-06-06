@@ -25,7 +25,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={Title: Limitations to the Human Neandertal Admixture dating Supplements},
+            pdftitle={Title: An extended admixture pulse model reveals the limitations to Human-Neandertal introgression dating},
             pdfauthor={Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary Anthropology, MPI EVA), Dr.~Benjamin Marco Peter (MPI EVA, benjamin\_peter@eva.mpg.de)},
             pdfborder={0 0 0},
             breaklinks=true}
@@ -103,11 +103,11 @@
     \begin{center}       
         \large
         \vspace{1cm}
-        An extended admixture pulse model reveals the limits to the dating of Human-Neandertal introgression
+        An extended admixture pulse model reveals the limitations to Human-Neandertal introgression dating
         
        \vspace{1.0cm}
         \large
-        Iasi, Leonardo N. M. \textsuperscript{1,2} and Peter , Benjamin M. \textsuperscript{1,3} \\ 
+        Iasi, Leonardo N. M., Ringbauer, Harald  and Peter , Benjamin M. \\ 
         
         \vspace{1.0cm}
             \Huge
@@ -131,7 +131,7 @@
 \begin{figure}
 \centering
 \includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figResult2_all_together_Supplements-1.pdf}
-\caption{\label{fig:figResult2_sup} Comparison between the simple and extended pulse one true and inferred segment length and ALD decay estimates using an empirical recombination map (HapMap) for simulations with a fixed mean time ($t_m$) of 1500 generations ago and varying durations ($t_d$). Genetic distances are assigned either using a constant rate or the AAMap . A) log likelihood ratios between the two models for segment data and normalized difference between the residual sum-of-squares between the two models for ALD data. B) Mean time estimates of admixture and extended pulse estimate for admixture duration. Solid black line indicates true $t_m$ and $t_d$, red dotted line indicates migration corrected admixture time ($t_m$(1-m)). C) Comparison of the fit to data between the simple and extended pulse using true and estimated parameters. }
+\caption{\label{fig:figResult2_sup} Comparison between the simple and extended pulse one true and inferred segment length and ALD decay estimates using an empirical recombination map (HapMap) for simulations with a fixed mean time ($t_m$) of 1500 generations ago and varying durations ($t_d$). Genetic distances are assigned either using a constant rate (HapMap/Constant) or the AAMap (HapMap/AAMap). All times are given in generations. A) log likelihood ratios between the two models for segment data and normalized difference between the residual sum-of-squares between the two models for ALD data. B) Mean time estimates of admixture and extended pulse estimate for admixture duration. Solid black line indicates true $t_m$ and $t_d$, red dotted line indicates migration corrected admixture time ($t_m$(1-m)). C) Comparison of the fit to data between the simple and extended pulse using true and estimated parameters. }
 \end{figure}
 
 
@@ -161,119 +161,127 @@
 
 
 \begin{table}[H]
-
+\fontsize{8}{9}\selectfont
 \caption{\label{tab:table_Supplements_ests_bias}Comparing effect sizes for technical covariates: GLM parameter estimates on the bias between the true and estimated mean admixture time}
 \centering
 
-\begin{tabular}[t]{l|l|l|r|r|r}
+\begin{tabular}[t]{l|l|l|r|r|r|r|r}
 \hline
-model & GLM & covariate & mean & 5.5\% & 94.5\%\\
+model & GLM & variable & mean & 5.5\% & 94.5\% & n eff & Rhat\\
 \hline
- & bias & Standard Model & 0.00 & -0.07 & 0.06\\
+ & bias & Standard Model & 0.00 & -0.07 & 0.06 & 1922 & 1\\
 
- & bias & Extended Pulse & -0.17 & -0.21 & -0.13\\
+ & bias & Extended Pulse & -0.17 & -0.21 & -0.13 & 2439 & 1\\
 
- & bias & Varying recombination & -1.22 & -1.29 & -1.16\\
+ & bias & Varying recombination & -1.22 & -1.29 & -1.16 & 2521 & 1\\
 
- & bias & Complex Demography & -0.27 & -0.33 & -0.22\\
+ & bias & Complex Demography & -0.27 & -0.33 & -0.22 & 2488 & 1\\
 
- & bias & d0 = 0.02 & 0.15 & 0.08 & 0.21\\
+ & bias & d0 = 0.02 & 0.15 & 0.08 & 0.21 & 2282 & 1\\
 
- & bias & HES & -0.15 & -0.22 & -0.09\\
+ & bias & HES & -0.15 & -0.22 & -0.09 & 2507 & 1\\
 
- & bias & n SNP = 5\% & 0.00 & -0.06 & 0.05\\
+ & bias & n SNP = 5\% & 0.00 & -0.06 & 0.05 & 3171 & 1\\
 
- & bias & Interaction n SNP = 5\%/HES & 0.01 & -0.06 & 0.09\\
+ & bias & Interaction n SNP = 5\%/HES & 0.01 & -0.06 & 0.09 & 2169 & 1\\
 
- & bias & Interaction Complex D./Varying R. & -0.05 & -0.13 & 0.03\\
+ & bias & Interaction Complex D./Varying R. & -0.05 & -0.13 & 0.03 & 2386 & 1\\
 
- & bias & Interaction d0 = 0.02/HES & -0.14 & -0.21 & -0.06\\
+ & bias & Interaction d0 = 0.02/HES & -0.14 & -0.21 & -0.06 & 2032 & 1\\
 
-\multirow{-11}{*}{\raggedright\arraybackslash Simple Pulse} & bias & Interaction d0 = 0.02/Varying R. & 0.18 & 0.10 & 0.26\\
-\cline{1-6}
- & bias & Standard Model & 0.21 & 0.15 & 0.28\\
+ & bias & Interaction d0 = 0.02/Varying R. & 0.18 & 0.10 & 0.26 & 2086 & 1\\
 
- & bias & Extended Pulse & -0.11 & -0.15 & -0.07\\
+\multirow{-12}{*}{\raggedright\arraybackslash Simple Pulse} & bias & Sigma & 0.79 & 0.77 & 0.80 & 4267 & 1\\
+\cline{1-8}
+ & bias & Standard Model & 0.21 & 0.15 & 0.28 & 1876 & 1\\
 
- & bias & Varying recombination & -0.74 & -0.80 & -0.67\\
+ & bias & Extended Pulse & -0.11 & -0.15 & -0.07 & 2650 & 1\\
 
- & bias & Complex Demography & -0.43 & -0.49 & -0.38\\
+ & bias & Varying recombination & -0.74 & -0.80 & -0.67 & 2284 & 1\\
 
- & bias & d0 = 0.02 & 0.38 & 0.31 & 0.45\\
+ & bias & Complex Demography & -0.43 & -0.49 & -0.38 & 2678 & 1\\
 
- & bias & HES & -0.18 & -0.25 & -0.11\\
+ & bias & d0 = 0.02 & 0.38 & 0.31 & 0.45 & 2330 & 1\\
 
- & bias & n SNP = 5\% & -0.04 & -0.10 & 0.01\\
+ & bias & HES & -0.18 & -0.25 & -0.11 & 2556 & 1\\
 
- & bias & Interaction n SNP = 5\%/HES & 0.05 & -0.03 & 0.13\\
+ & bias & n SNP = 5\% & -0.04 & -0.10 & 0.01 & 3891 & 1\\
 
- & bias & Interaction Complex D./Varying R. & -0.44 & -0.52 & -0.36\\
+ & bias & Interaction n SNP = 5\%/HES & 0.05 & -0.03 & 0.13 & 2196 & 1\\
 
- & bias & Interaction d0 = 0.02/HES & -0.40 & -0.48 & -0.32\\
+ & bias & Interaction Complex D./Varying R. & -0.44 & -0.52 & -0.36 & 2375 & 1\\
 
-\multirow{-11}{*}{\raggedright\arraybackslash Extended Pulse tm} & bias & Interaction d0 = 0.02/Varying R. & 0.46 & 0.38 & 0.54\\
+ & bias & Interaction d0 = 0.02/HES & -0.40 & -0.48 & -0.32 & 2312 & 1\\
+
+ & bias & Interaction d0 = 0.02/Varying R. & 0.46 & 0.38 & 0.54 & 2110 & 1\\
+
+\multirow{-12}{*}{\raggedright\arraybackslash Extended Pulse tm} & bias & Sigma & 0.81 & 0.79 & 0.82 & 4128 & 1\\
 \hline
 \end{tabular}
 \end{table}
 
 
 \begin{table}[H]
-
+\fontsize{8}{9}\selectfont
 \caption{\label{tab:table_Supplements_ests_deviation}Comparing effect sizes for technical covariates: GLM parameter estimates on absolute deviation between  the true and estimated mean admixture time}
 \centering
-\begin{tabular}[t]{l|l|l|r|r|r}
+\begin{tabular}[t]{l|l|l|r|r|r|r|r}
 \hline
-model & GLM & covariate & mean & 5.5\% & 94.5\%\\
+model & GLM & variable & mean & 5.5\% & 94.5\% & n eff & Rhat\\
 \hline
- & abs. deviation & Standard Model & 0.08 & 0.02 & 0.14\\
+ & abs. deviation & Standard Model & 0.08 & 0.02 & 0.14 & 1880 & 1\\
 
- & abs. deviation & Extended Pulse & 0.15 & 0.12 & 0.19\\
+ & abs. deviation & Extended Pulse & 0.15 & 0.12 & 0.19 & 2456 & 1\\
 
- & abs. deviation & Varying recombination & 1.26 & 1.19 & 1.32\\
+ & abs. deviation & Varying Recombination & 1.26 & 1.19 & 1.32 & 3091 & 1\\
 
- & abs. deviation & Complex Demography & 0.17 & 0.12 & 0.22\\
+ & abs. deviation & Complex Demography & 0.17 & 0.12 & 0.22 & 2621 & 1\\
 
- & abs. deviation & d0 = 0.02 & -0.06 & -0.12 & 0.00\\
+ & abs. deviation & d0 = 0.02 & -0.06 & -0.12 & 0.00 & 2293 & 1\\
 
- & abs. deviation & HES & 0.18 & 0.12 & 0.24\\
+ & abs. deviation & HES & 0.18 & 0.12 & 0.24 & 2347 & 1\\
 
- & abs. deviation & n SNP = 5\% & 0.01 & -0.04 & 0.06\\
+ & abs. deviation & n SNP = 5\% & 0.01 & -0.04 & 0.06 & 3529 & 1\\
 
- & abs. deviation & Interaction n SNP = 5\%/HES & 0.00 & -0.07 & 0.07\\
+ & abs. deviation & Interaction n SNP = 5\%/HES & 0.00 & -0.07 & 0.07 & 2086 & 1\\
 
- & abs. deviation & Interaction Complex D./Varying R. & 0.03 & -0.03 & 0.11\\
+ & abs. deviation & Interaction Complex D./Varying R. & 0.03 & -0.03 & 0.11 & 2728 & 1\\
 
- & abs. deviation & Interaction d0 = 0.02/HES & 0.10 & 0.03 & 0.17\\
+ & abs. deviation & Interaction d0 = 0.02/HES & 0.10 & 0.03 & 0.17 & 2336 & 1\\
 
-\multirow{-11}{*}{\raggedright\arraybackslash Simple Pulse} & abs. deviation & Interaction d0 = 0.02/Varying R. & -0.23 & -0.30 & -0.16\\
-\cline{1-6}
- & abs. deviation & Standard Model & 0.15 & 0.09 & 0.20\\
+ & abs. deviation & Interaction d0 = 0.02/Varying R. & -0.23 & -0.30 & -0.16 & 2206 & 1\\
 
- & abs. deviation & Extended Pulse & 0.09 & 0.05 & 0.12\\
+\multirow{-12}{*}{\raggedright\arraybackslash Simple Pulse} & abs. deviation & Sigma & 0.71 & 0.70 & 0.72 & 4341 & 1\\
+\cline{1-8}
+ & abs. deviation & Standard Model & 0.15 & 0.09 & 0.20 & 2138 & 1\\
 
- & abs. deviation & Varying recombination & 0.82 & 0.76 & 0.88\\
+ & abs. deviation & Extended Pulse & 0.09 & 0.05 & 0.12 & 3011 & 1\\
 
- & abs. deviation & Complex Demography & 0.02 & -0.03 & 0.07\\
+ & abs. deviation & Varying Recombination & 0.82 & 0.76 & 0.88 & 2697 & 1\\
 
- & abs. deviation & d0 = 0.02 & 0.11 & 0.05 & 0.17\\
+ & abs. deviation & Complex Demography & 0.02 & -0.03 & 0.07 & 2665 & 1\\
 
- & abs. deviation & HES & 0.10 & 0.04 & 0.16\\
+ & abs. deviation & d0 = 0.02 & 0.11 & 0.05 & 0.17 & 2746 & 1\\
 
- & abs. deviation & n SNP = 5\% & 0.07 & 0.02 & 0.12\\
+ & abs. deviation & HES & 0.10 & 0.04 & 0.16 & 2804 & 1\\
 
- & abs. deviation & Interaction n SNP = 5\%/HES & 0.01 & -0.06 & 0.08\\
+ & abs. deviation & n SNP = 5\% & 0.07 & 0.02 & 0.12 & 4095 & 1\\
 
- & abs. deviation & Interaction Complex D./Varying R. & 0.28 & 0.21 & 0.35\\
+ & abs. deviation & Interaction n SNP = 5\%/HES & 0.01 & -0.06 & 0.08 & 2698 & 1\\
 
- & abs. deviation & Interaction d0 = 0.02/HES & -0.03 & -0.10 & 0.04\\
+ & abs. deviation & Interaction Complex D./Varying R. & 0.28 & 0.21 & 0.35 & 2705 & 1\\
 
-\multirow{-11}{*}{\raggedright\arraybackslash Extended Pulse tm} & abs. deviation & Interaction d0 = 0.02/Varying R. & -0.41 & -0.48 & -0.34\\
+ & abs. deviation & Interaction d0 = 0.02/HES & -0.03 & -0.10 & 0.04 & 2535 & 1\\
+
+ & abs. deviation & Interaction d0 = 0.02/Varying R. & -0.41 & -0.48 & -0.34 & 2392 & 1\\
+
+\multirow{-12}{*}{\raggedright\arraybackslash Extended Pulse tm} & abs. deviation & Sigma & 0.71 & 0.70 & 0.72 & 4063 & 1\\
 \hline
 \end{tabular}
 \end{table}
 
 \begin{table}[H]
-\tiny
+\fontsize{8}{9}\selectfont
 \caption{\label{tab:table_Supplements_Application_to_Neandertal_data_Estimates} Application to Neandertal data: Estimates}
 \centering
 \begin{tabular}[t]{l|l|l|l|l}
