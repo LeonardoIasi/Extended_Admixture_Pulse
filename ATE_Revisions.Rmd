@@ -1168,8 +1168,8 @@ Extended_Pulse_fn <- function(Data,affine,use_log=F){
     par1_lomax <- fm3_DEoptim$optim$bestmem
     par1_lomax <- c(par1_lomax[1],par1_lomax[2],par1_lomax[3],par1_lomax[4])
     names(par1_lomax) <- c("k","tm","A","c")
-    fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ k) *(dist/100)) ))^(k), start=par1_lomax, algorithm="port", 
-                      lower=c(2,100,1e-6,-1), upper=c(1e8,5000,1,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
+    fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ (1/k)) *(dist/100)) ))^(1/k), start=par1_lomax, algorithm="port", 
+                      lower=c(1/1e10,100,1e-6,-1), upper=c(1/2,5000,1,1),control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
     #fit1_lomax <- nls(wcorr ~ c+A*(1/(1  + ((tm/ k) *(dist/100)) ))^(k), start=par1_lomax, control=list(maxiter=100000, warnOnly=TRUE,minFactor=0.0004))
   }
   
@@ -1233,26 +1233,29 @@ Extended_Pulse_fixed_fn <- function(Data,affine,tm,k,use_log=F){
 
 plot_ALD_fit <- function(input,lval=0.05,hval=0.5,tm,td,use_log=F,main,legend=F,margins=c(0.25,0.5,0,0.5)){
   tm=tm
+  print(tm)
   td=td
   k=1/((td/(4*tm))^2)
+  print(k)
   # Fitting functions
   
-  SP_tail <- function(dist,x) x[1]*exp(-(dist)*x[2])+x[3]
+  SP_tail <- function(dist,x) x[2]*exp(-(dist)*x[1])+x[3]
   
-  EP_tail <- function(dist,x) x[4] + x[3]* (1/(1 + (  (x[2] / x[1])*(dist) )))^(x[1])
+  EP_tail <- function(dist,x) x[4] + x[3]* (1/(1 + (  (x[1] / (x[2]))*(dist) )))^(x[2])
+  
   SP_tail_log <- function(dist,x) log10(x[2]) + log10(exp(-(dist)*x[1]))
-  EP_tail_log <- function(dist,x) log10(x[3]) + (x[2]) * -log10(1+ (((1/x[2])*(dist))*x[1]))
+  EP_tail_log <- function(dist,x) log10(x[3]) + (x[2]) * -log10(1+ (((1/(x[2]))*(dist))*x[1]))
   
   ALD_x <- Get_points(input,lval,hval,log = F)
 
   Fit_SP <- Simple_Pulse_fn(ALD_x,affine = T,use_log = use_log)
-  
+  #print(summary(Fit_SP))
   Fit_EP <-  Extended_Pulse_fn(ALD_x,affine=T,use_log = use_log)
-  
+  #print(summary(Fit_EP))
   Fit_SP_fixed <- Simple_Pulse_fixed_fn(ALD_x,affine = T,tm,use_log = use_log)
-  
+  #print(summary(Fit_SP_fixed))
   Fit_EP_fixed <-  Extended_Pulse_fixed_fn(ALD_x,affine=T,tm,k,use_log = use_log)
-  
+  #print(summary(Fit_EP_fixed))
   
   data_x <- data.frame(M=ALD_x$dist/100,ALD=log10(ALD_x$wcorr))
   data_x <- data_x[complete.cases(data_x),]
@@ -1262,6 +1265,15 @@ plot_ALD_fit <- function(input,lval=0.05,hval=0.5,tm,td,use_log=F,main,legend=F,
   #Fit_Results <- data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(tm,coef(Fit_SP_fixed)[1]))),fit="SP_true")
   Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(SP_tail_log(data_x$M,c(coef(Fit_SP)[2],coef(Fit_SP)[1]))),fit="SP_fit"))
   Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail_log(data_x$M,c(coef(Fit_EP)[2],coef(Fit_EP)[1],coef(Fit_EP)[3]))),fit="EP_fit" ))
+ ' 
+  data_x <- data.frame(M=ALD_x$dist/100,ALD=(ALD_x$wcorr))
+  data_x <- data_x[complete.cases(data_x),]
+  data_x$Data <- "ALD"
+  data_x$td <- td
+  Fit_Results <- data.frame(x=data_x$M,y=(EP_tail(data_x$M,c(tm,k,coef(Fit_EP_fixed)[1],coef(Fit_EP_fixed)[2]))),fit="True")
+  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(SP_tail(data_x$M,c(coef(Fit_SP)[2],coef(Fit_SP)[1],coef(Fit_SP)[3]))),fit="SP_fit"))
+  Fit_Results <- rbind(Fit_Results,data.frame(x=data_x$M,y=(EP_tail(data_x$M,c(coef(Fit_EP)[2],coef(Fit_EP)[1],coef(Fit_EP)[3],coef(Fit_SP)[4]))),fit="EP_fit" ))
+  '
   #Fit_Results$fit <- factor(Fit_Results$fit,
   #                levels = c("SP_true","SP_fit","EP_true","EP_fit"),ordered = TRUE)
   Fit_Results$fit <- factor(Fit_Results$fit,
@@ -1313,7 +1325,7 @@ P_fit_SEG <- function(Fit_res,Data_res,legend=F){
                         levels = c("True Segments \ntd = 1","True Segments \ntd = 2000","Inferred Segments \ntd = 1",
                                    "Inferred Segments \ntd = 2000"),ordered = TRUE)
   Fit_res$fit <- factor(Fit_res$fit ,
-                        levels = c("SP_fit","EP_fit","True"),ordered = TRUE)
+                        levels = c("True","SP_fit","EP_fit"),ordered = TRUE)
   P_fit <- ggplot(data=Fit_res,aes(x = x, y = y,color=as.factor(fit),fill=NULL))+
   geom_point(data=Data_res,aes(x=M,y=dens,fill=NULL),color="grey",show.legend = F)+
   geom_line(data=Fit_res,aes(x = x, y = y,color=fit,linetype=fit),size=1.2,show.legend = legend)+
@@ -1321,16 +1333,17 @@ P_fit_SEG <- function(Fit_res,Data_res,legend=F){
   theme(strip.text.y = element_blank(),
         axis.text.x = element_text( size=10, angle=90),
         strip.text.x = element_text(size = 7))+
-    ylim(min(Data_res$dens),max(Data_res$dens))+
-    scale_linetype_manual("Fit",
-                        values=c( "solid", "solid","dashed"),
-                        labels = c(c("fitted SP","fitted EP","True")))+
-    scale_size_manual("Fit",
-                    values=c(1, 1.2,1.2),
-                    labels = c(c("fitted SP","fitted EP","True")))+
+    coord_cartesian(ylim = c(2,max(Data_res$dens)),
+                    xlim=c(0.0005,0.003))+
+  scale_linetype_manual("Fit",
+                        values=c( "solid", "dashed","twodash"),
+                        labels = c(c("True","fitted SP","fitted EP")))+
+  scale_size_manual("Fit",
+                    values=c(1.1, 1,1),
+                    labels = c(c("True","fitted SP","fitted EP")))+
   scale_color_manual("Fit",
                      values = c(c(cbPalette_viridis[6],cbPalette_viridis[12],cbPalette_viridis[1])),
-                     labels = c(c("fitted SP","fitted EP","True")))+
+                     labels = c(c("True","fitted SP","fitted EP")))+
   #theme(legend.position="none")+
   labs(x = "Genetic distance (M)")+
   labs(y = "log density")
@@ -1345,22 +1358,25 @@ P_fit_ALD <- function(Fit_res,Data_res,legend=T){
     Data_res$Data2 <- factor(Data_res$Data2 ,
                         levels = c("ALD \ntd = 1","ALD \ntd = 2000"),ordered = TRUE)
   Fit_res$fit <- factor(Fit_res$fit ,
-                        levels = c("SP_fit","EP_fit","True"),ordered = TRUE)
+                        levels = c("True","SP_fit","EP_fit"),ordered = TRUE)
   P_fit <- ggplot(data=Fit_res,aes(x = x, y = y,color=fit,fill=NULL))+
   geom_point(data=Data_res,aes(x=M,y=ALD,fill=NULL),color="grey",show.legend = F)+
   geom_line(data=Fit_res,aes(x = x, y = y,color=fit,linetype=fit,size=fit),show.legend = legend)+
+  #geom_line(data=Fit_res,aes(x = x, y = y),show.legend = legend)+
   facet_grid(vars(as.factor(RR)),vars(as.factor(Data2)))+
   theme(axis.text.x = element_text(size=10, angle=90),
         strip.text.x = element_text(size = 7))+
+  coord_cartesian(ylim = c(-4,max(Data_res$ALD)),
+                    xlim=c(0.0005,0.003))+
   scale_linetype_manual("Fit",
-                        values=c( "solid", "solid","dashed"),
-                        labels = c(c("fitted SP","fitted EP","True")))+
+                        values=c( "solid", "dashed","twodash"),
+                        labels = c(c("True","fitted SP","fitted EP")))+
   scale_size_manual("Fit",
-                    values=c(1, 1.2,1.2),
-                    labels = c(c("fitted SP","fitted EP","True")))+
+                    values=c(1.1, 1,1),
+                    labels = c(c("True","fitted SP","fitted EP")))+
   scale_color_manual("Fit",
                      values = c(c(cbPalette_viridis[6],cbPalette_viridis[12],cbPalette_viridis[1])),
-                     labels = c(c("fitted SP","fitted EP","True")))+
+                     labels = c(c("True","fitted SP","fitted EP")))+
   #theme(legend.position="none")+
   labs(x = "Genetic distance (M)")+
   labs(y = "log weighted LD")
@@ -2090,11 +2106,11 @@ Plot_GLM_model_3_effect_sizes <- function(Model,sigma=F){
     )
     
     Post_effect_size_est_table <- Post_effect_size_est
-    row.names(Post_effect_size_est_table) <- c("Standard Model","Extended Pulse","Varying recombination","Complex Demography","d0 = 0.02","HES","n SNP = 5%",
-                                               "Interaction n SNP = 5%/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.")
+    row.names(Post_effect_size_est_table) <- c("Standard Model","Extended Pulse","Varying\nRecombination","Complex\nDemography","d0 = 0.02","HES","n SNP = 5%",
+                                             "Interaction\nn SNP = 5%/HES","Interaction\nComplex D./Varying R.", "Interaction\nd0 = 0.02/HES","Interaction\nd0 = 0.02/Varying R.")
     Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
-                      levels = c("Standard Model","Extended Pulse","Varying recombination","Complex Demography","d0 = 0.02","HES","n SNP = 5%",
-                                               "Interaction n SNP = 5%/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R."),ordered = TRUE)
+                      levels = c("Standard Model","Extended Pulse","Varying\nRecombination","Complex\nDemography","d0 = 0.02","HES","n SNP = 5%",
+                                             "Interaction\nn SNP = 5%/HES","Interaction\nComplex D./Varying R.", "Interaction\nd0 = 0.02/HES","Interaction\nd0 = 0.02/Varying R."),ordered = TRUE)
 
 
       return(Post_effect_size_est_table)
@@ -2140,10 +2156,10 @@ Plot_GLM_model_3_effect_sizes <- function(Model,sigma=F){
         HPDI(post_effect_size_model$sigma,0.95)[2])
         )
         Post_effect_size_est_table <- Post_effect_size_est
-  row.names(Post_effect_size_est_table) <- c("Standard Model","Extended Pulse","Varying recombination","Complex Demography","d0 = 0.02","HES","n SNP = 5%",
+  row.names(Post_effect_size_est_table) <- c("Standard Model","Extended Pulse","Varying Recombination","Complex Demography","d0 = 0.02","HES","n SNP = 5%",
                                              "Interaction n SNP = 5%/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.", "Sigma")
   Post_effect_size_est_table$Variable <- factor(row.names(Post_effect_size_est_table),
-                    levels = c("Standard Model","Extended Pulse","Varying recombination","Complex Demography","d0 = 0.02","HES","n SNP = 5%",
+                    levels = c("Standard Model","Extended Pulse","Varying Recombination","Complex Demography","d0 = 0.02","HES","n SNP = 5%",
                                              "Interaction n SNP = 5%/HES","Interaction Complex D./Varying R.", "Interaction d0 = 0.02/HES","Interaction d0 = 0.02/Varying R.", "Sigma"),ordered = TRUE)
       return(Post_effect_size_est_table)
   }
@@ -2187,12 +2203,82 @@ ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
         strip.background.x = element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
-        strip.text.y = element_text(size = 8))+
-
+        strip.text.y = element_text(size = 8),
+        legend.position="top", 
+        legend.direction="horizontal")+
         scale_color_manual("Model",
                            values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
                            label=c("Simple Pulse","Extended Pulse"))
 ```
+
+```{r figResult_3_GLM_SP_and_EP_bias,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_var} SP and EP var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+SP_GLM_m_3_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_bias,sigma = F)
+SP_GLM_m_3_bias$Model <- "SP"
+SP_GLM_m_3_bias$GLM <- "bias"
+EP_GLM_m_3_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_bias,sigma = F)
+EP_GLM_m_3_bias$Model <- "EP"
+EP_GLM_m_3_bias$GLM <- "bias"
+
+
+Model_3_GLM_both <- rbind(SP_GLM_m_3_bias,EP_GLM_m_3_bias)
+Model_3_GLM_both$Model <-  factor(Model_3_GLM_both$Model,
+                    levels = c("SP","EP"),ordered = TRUE)
+ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
+        geom_point(aes(size=1.5,col=Model),show.legend = T,size=2)+
+        facet_grid(GLM~Variable,switch = "x",scales = "free")+
+        geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(Variable)),col="black",width=0.2)+
+        geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+        labs(x = "")+
+        labs(y = "Standardized dif.\n est./sim. time")+
+        theme(plot.title = element_text(hjust = 0.5,size = 12),
+        strip.text.x = element_text(angle = 90,hjust = 1,size=8),
+        strip.background.x = element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        strip.text.y = element_text(size = 8),
+        legend.position="top", 
+        legend.direction="horizontal")+
+        scale_color_manual("Model",
+                           values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
+                           label=c("Simple Pulse","Extended Pulse"))
+```
+
+```{r figResult_3_GLM_SP_and_EP_deviation,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_var} SP and EP var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+
+
+SP_GLM_m_3_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_deviation,sigma = F)
+SP_GLM_m_3_deviation$Model <- "SP"
+SP_GLM_m_3_deviation$GLM <- "Variance"
+EP_GLM_m_3_deviation <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_EP_tm_deviation,sigma = F)
+EP_GLM_m_3_deviation$Model <- "EP"
+EP_GLM_m_3_deviation$GLM <- "Variance"
+
+Model_3_GLM_both <- rbind(SP_GLM_m_3_deviation,EP_GLM_m_3_deviation)
+Model_3_GLM_both$Model <-  factor(Model_3_GLM_both$Model,
+                    levels = c("SP","EP"),ordered = TRUE)
+Model_3_GLM_both$GLM <-  factor(Model_3_GLM_both$GLM ,
+                    levels = c("Variance"),labels = c("abs. deviation"),ordered = TRUE)
+ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
+        geom_point(aes(size=1.5,col=Model),show.legend = T,size=2)+
+        facet_grid(GLM~Variable,switch = "x",scales = "free")+
+        geom_errorbar(aes(ymin=HPDI_lower,ymax=HPDI_upper,pos=as.numeric(Variable)),col="black",width=0.2)+
+        geom_hline(yintercept = 0,linetype=2,aes(colour='grey'))+
+        labs(x = "")+
+        labs(y = "Standardized dif.\n est./sim. time")+
+        theme(plot.title = element_text(hjust = 0.5,size = 12),
+        strip.text.x = element_text(angle = 90,hjust = 1,size=8),
+        strip.background.x = element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        strip.text.y = element_text(size = 8),
+        legend.position="top", 
+        legend.direction="horizontal")+
+        scale_color_manual("Model",
+                           values = c(cbPalette_viridis[6],cbPalette_viridis[1]),
+                           label=c("Simple Pulse","Extended Pulse"))
+```
+
 ## GLM Supplement stuff
 
 ## SP
@@ -2612,7 +2698,7 @@ RSS_comp_50$ts_named <- factor(RSS_comp_50$Sample_Time,
                      levels = c("50" ),labels = c("ts = 50"),ordered = TRUE)
 
 P_RSS_comp_50 <- ggplot(RSS_comp_50, aes(x=as.factor(Name), y=(RSS_diff_norm),color=as.factor(Name))) + 
-                geom_boxplot()+
+                geom_boxplot(show.legend = T)+
                 facet_grid( Data~as.factor(True_td_named)+as.factor(True_tm_named),switch = "x")+
                 geom_hline( aes(yintercept = 0 ))+
                 labs(y = "Normalized\n RSS Difference ")+
@@ -2623,8 +2709,8 @@ P_RSS_comp_50 <- ggplot(RSS_comp_50, aes(x=as.factor(Name), y=(RSS_diff_norm),co
                   axis.ticks.x=element_blank(),
                   axis.text.x=element_blank(),
                   strip.text.x = element_text(size = 9),
-                  #legend.position="none",
-                  #plot.margin=unit(c(0.25,0.5,0,0.5), "cm")
+                  legend.title = element_text( size = 8),
+                  legend.text = element_text(size = 8)
                   )+
                   scale_color_manual("Recombination",
                                    values = c(cbPalette_viridis[1],cbPalette_viridis[12],cbPalette_viridis[9],cbPalette_viridis[3]),
@@ -2658,7 +2744,7 @@ RSS_comp_varying$ts_named <- factor(RSS_comp_varying$Sample_Time,
                    levels = c("50" ,  "100" , "200" , "400" , "800",  "1000" ),labels = c("ts = 50" ,  "ts = 100" , "ts = 200" , "ts = 400" , "ts = 800",  "ts = 1000"),ordered = TRUE)
 
 P_RSS_varying <- ggplot(RSS_comp_varying, aes(x=as.factor(Name), y=(RSS_diff_norm),color=as.factor(Name))) + 
-                geom_boxplot()+
+                geom_boxplot(show.legend = T)+
                 facet_grid( Data~as.factor(True_td_named)+as.factor(True_tm_named),switch = "x")+
                 geom_hline( aes(yintercept = 0 ))+
                 labs(y = "Normalized\n RSS Difference ")+
@@ -2669,8 +2755,8 @@ P_RSS_varying <- ggplot(RSS_comp_varying, aes(x=as.factor(Name), y=(RSS_diff_nor
                   axis.ticks.x=element_blank(),
                   axis.text.x=element_blank(),
                   strip.text.x = element_text(size = 9),
-                  #legend.position="none",
-                  #plot.margin=unit(c(0.25,0.5,0,0.5), "cm")
+                  legend.title = element_text( size = 8),
+                  legend.text = element_text(size = 8)
                   )+
                   scale_color_manual("Recombination",
                                    values = c(cbPalette_viridis[1],cbPalette_viridis[12],cbPalette_viridis[9],cbPalette_viridis[3]),
