@@ -123,7 +123,7 @@
 
 Here we describe how the admixture segment length distribution $P(l)$ and the ALD function $D(l)$ are interconnected and in fact determine each other.
 
-Following the models outlined in the main text, throughout we assume that admixture is rare and that consequently admixture blocks do not interact. Using these assumptions, we first describe how the admixture segment length distribution determines the ALD function, and second how the LD function also determines the admixture segment length distribution.
+Following the models outlined in the main text, throughout we assume that admixture is rare and that consequently admixture blocks do not interact. Using these assumptions, we first describe how the admixture segment length distribution uniquely determines the ALD function, and second how the LD function in reverse uniquely determines the admixture segment length distribution.
 
 \subsection{From the admixture segment length distribution to the LD function}
 Without loss of generality, we assume that derived allele frequencies are 0 in the target and 1 in the admixture source population, otherwise the resulting LD curve can be re-weighted with a constant factor as in Eq.~X. We use that two-point LD between two loci can be written as: 
@@ -154,19 +154,19 @@ D(l) = \frac{\mathbb{E}[K]}{G} \int_l^\infty P(x) (x-l) \diff x.
 \label{func_rel1}
 \end{equation}
 
-Eq.~\ref{func_rel1} now allows one to directly derive $D(l)$ from $P(l)$. 
+Eq.~\ref{func_rel1} now allows one to directly calculate $D(l)$ from $P(l)$, showing that $P(l)$ uniquely determines $D(l)$. 
 
 \subsection{From the LD function to the admixture segment length distribution}
-To derive an inverse relationship, we now derive D(l) two times with respect to l ($\frac{\diff}{\diff L}$). Using Eq.~\ref{func_rel1} and the Leibnitz rule yields:
+To derive an inverse relationship, we start by deriving $D(l)$ two times with respect to l ($\frac{\diff}{\diff L}$). Using Eq.~\ref{func_rel1} and the Leibnitz rule yields:
 
 \begin{align}
 D'(l) &= -\frac{\mathbb{E}[K]}{G} \int_l^\infty P(x) \diff x \\
 D''(l) &= \frac{\mathbb{E}[K]}{G} P(l). \label{eq_hr2}
 \end{align}
-This equation shows that $P(L)$ can be derived by differentiating $D(L)$ twice and thus $D(L)$ uniquely determines $P(L)$.
+This equation shows that $P(l)$ can be derived by differentiating $D(l)$ twice and thus $D(l)$ uniquely determines $P(l)$.
 
 \subsection{For the continuous admixture model}
-For the case of the continuous admixture model the relationship the main text derived (Eq.~X and Eq.~Y). W.l.o.g. assume $\Delta_x = \Delta_y = 1$.:
+For the concrete case of the continuous admixture model the relationship the main text derived (Eq.~X and Eq.~Y). W.l.o.g. assume $\Delta_x = \Delta_y = 1$.:
 
 \begin{align}
 P(L) &= \frac{G}{n}\int_{0}^{\infty} t^2 m(t) \exp(-Lt) \diff t \label{eq_mt1} \\
