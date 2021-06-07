@@ -121,26 +121,28 @@
 
 \section{Connection between ALD function and admixture segment length distribution}
 
-Here we describe how the admixture segment length distribution $P(l)$ and the ALD function $D(l)$ are interconnected and in fact determine each other.
+Here we describe how under the assumptions of this work the admixture segment length distribution $P(l)$ and the ALD function $D(l)$ are interconnected and in fact uniquely determine each other as claimed in the main text (Eq.~ and Eq.~).
 
 Following the models outlined in the main text, throughout we assume that admixture is rare and that consequently admixture blocks do not interact. Using these assumptions, we first describe how the admixture segment length distribution uniquely determines the ALD function, and second how the LD function in reverse uniquely determines the admixture segment length distribution.
 
 \subsection{From the admixture segment length distribution to the LD function}
-Without loss of generality, we assume that derived allele frequencies are 0 in the target and 1 in the admixture source population, otherwise the resulting LD curve can be re-weighted with a constant factor as in Eq.~X. We use that two-point LD between two loci can be written as: 
+Without loss of generality, we assume that derived allele frequencies are 0 in the target and 1 in the admixture source population, otherwise the resulting LD curve can be re-weighted with a constant factor $A$ as in Eq.~X.
 
-\begin{equation}
+We start by noting that two-point LD between two loci can be written as: 
+
+\begin{equation*}
 D = x_{11} - p \cdot q,
-\end{equation}
-where $x_{11}$ denotes the frequency of $11$-haplotypes and $p$ and $q$ are the allele frequencies at these two loci. Under the assumption that introgressed blocks do not interact with each other, the genome-wide number of excess $11$ haplotypes beyond random association ($p\cdot q$ for each pair of loci) originates from pairs of markers on the same introgressed blocks. To get the genome-wide average $D$ we therefore have to simply sum over the contribution of $11$ haplotypes from all introgressed blocks.
+\end{equation*}
+where $x_{11}$ denotes the frequency of $11$-haplotypes and $p$ and $q$ are the allele frequencies at these two loci. Under the assumption that introgressed blocks do not interact with each other, genome-wide excess $11$ haplotypes beyond random association ($p\cdot q$ for each pair of loci) originate from pairs of markers on the same introgressed blocks. To get the genome-wide average $D$ we therefore have to sum over the contribution of $11$ haplotypes from all introgressed blocks.
 
-For all pairs of markers a map distance $l$ apart, only blocks of length $x>l$ contribute pairs of markers at distance $l$.Let us assume a single introgressed segment of length $x$. In the limit of long chromosome (of length $G$) and of high marker density a fraction of $(x-l)/G$ of all pairs of markers at distance $L$ fall both onto this segment. Then, denoting the expected number of segments of length $x$ as $E(x)$, we sum over all segment lengths $x>l$ to get:
+For all pairs of markers a map distance $l$ apart, only blocks of length $x>l$ contribute pairs of markers at distance $l$.Let us assume such a single introgressed segment of length $x$. In the limit of long chromosome (of length $G$) and of high marker density a fraction of $(x-l)/G$ of all pairs of markers at distance $L$ fall both onto this segment. Then, denoting the expected number of segments of length $x$ as $E(x)$, we sum over all segment lengths $x>l$ to get:
 
 \begin{equation}
 D(l) = \frac{1}{G} \int_l^\infty E(x) (x-l) \diff x
 \label{eq_hr01}
 \end{equation}
 
-The expected number of segments of a given length $E(x)$ can be directly derived from the block length distribution when using $\mathbb{E}[K]$, the total number of all introgressed blocks:
+The expected number of segments of a given length $E(x)$ can be directly derived from the block length distribution via $\mathbb{E}[K]$, the total number of all introgressed blocks:
 
 \begin{equation}
 E(x) = P(x) \mathbb{E}[K]
@@ -154,24 +156,54 @@ D(l) = \frac{\mathbb{E}[K]}{G} \int_l^\infty P(x) (x-l) \diff x.
 \label{func_rel1}
 \end{equation}
 
-Eq.~\ref{func_rel1} now allows one to directly calculate $D(l)$ from $P(l)$, showing that $P(l)$ uniquely determines $D(l)$. 
+Eq.~\ref{func_rel1} now allows one to directly calculate $D(l)$ from $P(l)$, which shows that $P(l)$ uniquely determines $D(l)$. 
 
 \subsection{From the LD function to the admixture segment length distribution}
-To derive an inverse relationship, we start by deriving $D(l)$ two times with respect to l ($\frac{\diff}{\diff L}$). Using Eq.~\ref{func_rel1} and the Leibnitz rule yields:
+To derive an inverse relationship, we start by deriving $D(l)$ two times with respect to l ($\frac{\diff}{\diff l}$). Using Eq.~\ref{func_rel1} and the Leibnitz rule yields:
 
-\begin{align}
+\begin{align*}
 D'(l) &= -\frac{\mathbb{E}[K]}{G} \int_l^\infty P(x) \diff x \\
-D''(l) &= \frac{\mathbb{E}[K]}{G} P(l). \label{eq_hr2}
-\end{align}
-This equation shows that $P(l)$ can be derived by differentiating $D(l)$ twice and thus $D(l)$ uniquely determines $P(l)$.
+D''(l) &= \frac{\mathbb{E}[K]}{G} P(l). 
+\end{align*}
+
+Simple rearrangement and plugging in the re-weighting of LD with A that we omitted above yields:
+\begin{equation}
+P(l) = \frac{1}{A}\frac{G}{\mathbb{E}[K]} D''(l)
+\label{func_rel2}
+\end{equation}
+
+This equation shows that $P(l)$ can be derived by differentiating $D(l)$ twice. Thus, $D(l)$ uniquely determines $P(l)$.
 
 \subsection{For the continuous admixture model}
-For the concrete case of the continuous admixture model the relationship the main text derived (Eq.~X and Eq.~Y). W.l.o.g. assume $\Delta_x = \Delta_y = 1$.:
+For the concrete case of the continuous admixture model we derived explicit formulas for ALD function and the admixture segment length distribution (Eq.~X and (Eq.~Y). For these formulas, we can check the above derived functional relationships Eq.~\ref{func_rel1} directly and show that the more general derivation above holds for the formulas used in this work. 
+
+To check the relationships, we start with formulas (Eq.~X) and (Eq.~Y):
+
+% W.l.o.g. assume $\Delta_x = \Delta_y = 1$.:
 
 \begin{align}
-P(L) &= \frac{G}{n}\int_{0}^{\infty} t^2 m(t) \exp(-Lt) \diff t \label{eq_mt1} \\
-    D(L) &= \int_0^{\infty} m(t)\exp(-Lt) \diff t \text{.} \label{eq_mt2}
+P(l) &= \frac{G}{\mathbb{E}[K]}\int_{0}^{\infty} t^2 m(t) \exp(-lt) \diff t \label{eq_mt1} \\
+    D(l) &= A\int_0^{\infty} m(t)\exp(-lt) \diff t \text{.} \label{eq_mt2}
 \end{align}
 
- In this case the above derived functional relationships can be directly checked:  The the functional relationship Eq.~\ref{eq_hr2} holds by simple plugging in. Conversely, plugging Eq.~\ref{eq_mt1} into the functional relationship Eq.~\ref{func_rel1} yields Eq.~\ref{eq_mt2} using integration by parts.
+First, plugging Eq.~\ref{eq_mt1} into the functional relationship Eq.~\ref{func_rel1} yields:
+
+\begin{align*}
+\frac{\mathbb{E}[K]}{G} \int_l^\infty P(x) (x-l)  &= \int_l^\infty \diff x \int_{0}^{\infty} \diff t\ t^2 m(t) \exp(-lt) \diff t (x-l)  \\
+&=  \int_{0}^{\infty} \diff t\ t^2 m(t) \underbrace{\int_l^\infty \diff x \exp(-lt) (x-l)}_{\frac{1}{t^2}\exp(-lt)} \\
+&= \int_{0}^{\infty} \diff t\ m(t) \exp(-lt)
+\end{align*}
+
+If we reweight the right-hand side with the allele-frequency differences A, it is D(l) from Eq.~\ref{eq_mt2} indeed, showing that Eq.~\ref{func_rel1} holds.
+
+
+To prove the second functional relationship (Eq.~\ref{func_rel2}) we derive $D(l)$ two times and multiply with $\frac{1}{A}\frac{G}{\mathbb{E}[K]}$:
+
+\begin{equation*}
+\frac{1}{A}\frac{G}{\mathbb{E}[K]} D''(l) = 
+\frac{G}{\mathbb{E}[K]} \int_0^{\infty} m(t) \frac{\diff^2}{\diff l^2} \exp(-lt) \diff t = 
+\frac{G}{\mathbb{E}[K]}\int_0^{\infty} t^2 m(t) \exp(-lt) \diff t = P(l)
+\end{equation*}
+    
+
 \end{document}
