@@ -9,7 +9,7 @@
 %% E-mail: daly@mps.mpg.de
 %%
 
-%% this file is the contains the abbrvnat style with the modification that if there are more then 10 authors the refernece will print out the first 10 and after it only et al.
+%% this file contains the abbrvnat style with the modification that if there are more then 10 authors the refernece will print out the first 10 and after it only et al.
 ENTRY
   { address
     author
