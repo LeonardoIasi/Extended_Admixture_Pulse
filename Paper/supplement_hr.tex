@@ -191,7 +191,7 @@ First, plugging Eq.~\ref{eq_mt1} into the functional relationship Eq.~\ref{func_
 \begin{align*}
 \frac{\mathbb{E}[K]}{G} \int_l^\infty P(x) (x-l)  &= \int_l^\infty \diff x \int_{0}^{\infty} \diff t\ t^2 m(t) \exp(-lt) \diff t (x-l)  \\
 &=  \int_{0}^{\infty} \diff t\ t^2 m(t) \underbrace{\int_l^\infty \diff x \exp(-lt) (x-l)}_{\frac{1}{t^2}\exp(-lt)} \\
-&= \int_{0}^{\infty} \diff t\ m(t) \exp(-lt)
+&= \int_{0}^{\infty} m(t) \exp(-lt) \diff t\
 \end{align*}
 
 If we reweight the right-hand side with the allele-frequency differences A, it is D(l) from Eq.~\ref{eq_mt2} indeed, showing that Eq.~\ref{func_rel1} holds.
