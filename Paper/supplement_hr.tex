@@ -121,9 +121,9 @@
 
 \section{Connection between ALD function and admixture segment length distribution}
 
-Here we describe how the admixture segment length distribution $P(L)$ and the ALD function $D(L)$ are interconnected and determine each other.
+Here we describe how the admixture segment length distribution $P(l)$ and the ALD function $D(l)$ are interconnected and in fact determine each other.
 
-Following the models outlined in the main text, throughout we assume that admixture is rare and that consequently admixture blocks do not interact with each other. For this case, we first describe how the admixture segment length distribution then determines the ALD function, and then second how the LD function also determines the admixture segment length distribution.
+Following the models outlined in the main text, throughout we assume that admixture is rare and that consequently admixture blocks do not interact. Using these assumptions, we first describe how the admixture segment length distribution determines the ALD function, and second how the LD function also determines the admixture segment length distribution.
 
 \subsection{From the admixture segment length distribution to the LD function}
 Without loss of generality, we assume that derived allele frequencies are 0 in the target and 1 in the admixture source population, otherwise the resulting LD curve can be re-weighted with a constant factor as in Eq.~X. We use that two-point LD between two loci can be written as: 
@@ -131,28 +131,37 @@ Without loss of generality, we assume that derived allele frequencies are 0 in t
 \begin{equation}
 D = x_{11} - p \cdot q,
 \end{equation}
-where $x_{11}$ denotes the frequency of $11$-haplotypes and $p$ and $q$ are the allele frequencies at these two loci. Under the assumption that introgressed blocks do not interact with each other, the genome-wide number of excess $11$ haplotypes beyond random association ($p\cdot q$ for each pair of loci) comes from pairs of markers on the same introgressed blocks. To get the genome-wide average $D$ we therefore have to simply sum over the contribution of all introgressed blocks.
+where $x_{11}$ denotes the frequency of $11$-haplotypes and $p$ and $q$ are the allele frequencies at these two loci. Under the assumption that introgressed blocks do not interact with each other, the genome-wide number of excess $11$ haplotypes beyond random association ($p\cdot q$ for each pair of loci) originates from pairs of markers on the same introgressed blocks. To get the genome-wide average $D$ we therefore have to simply sum over the contribution of $11$ haplotypes from all introgressed blocks.
 
-For all pairs of markers a genomic distance $L$ apart, only blocks of length $l>L$ contain pairs of markers at distance $L$. More precisely, in the limit of long chromosome of length $G$ and of infinitely many markers, a fraction of $(l-L)/G$ of all pairs of markers at distance $L$ fall both onto the same single introgressed segment of length $l$. Denoting the number of segments of length $L$ as $E(L)$ we sum over all segments $l>L$ to get:
+For all pairs of markers a map distance $l$ apart, only blocks of length $x>l$ contribute pairs of markers at distance $l$.Let us assume a single introgressed segment of length $x$. In the limit of long chromosome (of length $G$) and of high marker density a fraction of $(x-l)/G$ of all pairs of markers at distance $L$ fall both onto this segment. Then, denoting the expected number of segments of length $x$ as $E(x)$, we sum over all segment lengths $x>l$ to get:
 
 \begin{equation}
-D(L) = \frac{1}{G} \int_L^\infty E(l) (l-L) \diff l
+D(l) = \frac{1}{G} \int_l^\infty E(x) (x-l) \diff x
+\label{eq_hr01}
 \end{equation}
 
-The number of segments of a given length $E(l)$ can be directly derived from the block length distribution when using the total number of all introgressed blocks $n$: $E(l) = P(l) n$ and therefore:
+The expected number of segments of a given length $E(x)$ can be directly derived from the block length distribution when using $\mathbb{E}[K]$, the total number of all introgressed blocks:
 
 \begin{equation}
-D(L) = \frac{n}{G} \int_L^\infty P(l) (l-L) \diff l.
+E(x) = P(x) \mathbb{E}[K]
+\label{eq_hr02}
+\end{equation} 
+
+Plugging \ref{eq_hr02} into Eq.~\ref{eq_hr01} yields:
+
+\begin{equation}
+D(l) = \frac{\mathbb{E}[K]}{G} \int_l^\infty P(x) (x-l) \diff x.
 \label{func_rel1}
 \end{equation}
-Using this function relationship, one can directly calculate $D(L)$ from $P(L)$. 
+
+This function relationship now allows one to directly derive $D(l)$ from $P(l)$. 
 
 \subsection{From the LD function to the admixture segment length distribution}
-We now derive D(L) with respect to L ($\frac{\diff}{\diff L}$). Using Eq.~\ref{func_rel1} and the Leibnitz rule yields:
+To derive an inverse relationship, we now derive D(l) two times with respect to l ($\frac{\diff}{\diff L}$). Using Eq.~\ref{func_rel1} and the Leibnitz rule yields:
 
 \begin{align}
-D'(L) &= -\frac{n}{G} \int_L^\infty P(l) \diff l \\
-D''(L) &= \frac{n}{G} P(L). \label{eq_hr2}
+D'(l) &= -\frac{\mathbb{E}[K]}{G} \int_l^\infty P(x) \diff x \\
+D''(l) &= \frac{\mathbb{E}[K]}{G} P(l). \label{eq_hr2}
 \end{align}
 This equation shows that $P(L)$ can be derived by differentiating $D(L)$ twice and thus $D(L)$ uniquely determines $P(L)$.
 
