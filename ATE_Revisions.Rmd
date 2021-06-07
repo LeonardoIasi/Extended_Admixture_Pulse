@@ -379,7 +379,7 @@ save(Sim_2,n_seg,file = "Paper_Revision_Poweranalysis_all_estimates_k_corrected.
 
 
 
-```{r eval=T,figR1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figR1} Liklihood ratios between the simple pulse and extended pulse model for different durations of admixture for 100, 1000, 10000 and 100000 segments sampled at time 0 and 50 generations after the end of admixture. Boxplots from 100 replications."}
+```{r dpi = 350,eval=T,figR1,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figR1} Liklihood ratios between the simple pulse and extended pulse model for different durations of admixture for 100, 1000, 10000 and 100000 segments sampled at time 0 and 50 generations after the end of admixture. Boxplots from 100 replications."}
 #load("Paper_Revision_Poweranalysis_2.RData")
 #load("Paper_Revision_Poweranalysis_all_estimates.RData")
 load("Paper_Revision_Poweranalysis_all_estimates_k_corrected.RData")
@@ -457,7 +457,7 @@ Plot_power_analysis(Sim_2_ggplot_all_red,Sim_2_ggplot_all_sig_cutoff,cbPalette_v
 
 ```
 
-```{r eval=T,figR1_error_ests,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figR1_error_ests} Liklihood ratios between the simple pulse and extended pulse model for different durations of admixture for 100, 1000, 10000 and 100000 segments sampled at time 0 and 50 generations after the end of admixture. Boxplots from 100 replications."}
+```{r eval=F,figR1_error_ests,message=FALSE, echo=FALSE,warning=FALSE,fig1.pos="H",fig.width=7,fig.height=4,fig.cap="\\label{fig:figR1_error_ests} Liklihood ratios between the simple pulse and extended pulse model for different durations of admixture for 100, 1000, 10000 and 100000 segments sampled at time 0 and 50 generations after the end of admixture. Boxplots from 100 replications."}
 
 Error_plot <- data.frame(
                          Est_error_norm=c(Sim_2_ggplot_all$tm_SP_est_error_norm,Sim_2_ggplot_all$tm_EP_est_error_norm,
@@ -1637,7 +1637,7 @@ Plot_LRT_seg_sup <- Plot_LRT(Segments_LRT_supplements,"",c("varying no correctio
 
 ## Figure 2 all together
 
-```{r eval=T,figResult2_all_together, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=12,fig.cap="\\label{fig:figResult2_all_together} "}
+```{r dpi = 350,eval=T,figResult2_all_together, message=FALSE, echo=FALSE,warning=FALSE,fig2.pos="H",fig.width=9,fig.height=12,fig.cap="\\label{fig:figResult2_all_together} "}
 # Fig 2.1 2.2 and 2.3 together Results
 
 library(gridExtra)
@@ -2211,7 +2211,7 @@ ggplot(Model_3_GLM_both,aes(x=Model,y=as.numeric(as.character(mean))))+
                            label=c("Simple Pulse","Extended Pulse"))
 ```
 
-```{r figResult_3_GLM_SP_and_EP_bias,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_var} SP and EP var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
+```{r dpi = 350,figResult_3_GLM_SP_and_EP_bias,message=FALSE, echo=FALSE,warning=FALSE,fig3.1.pos="H",fig.width=6,fig.height=4,fig.cap="\\label{fig:figResult_3_GLM_SP_and_EP_model_3_var} SP and EP var GLM effect size estimates and 95% C.I. for the parameters: admixture model (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM) and ascertainment scheme (LES/HES), on the standardized difference between simulated and estimated admixture time. Estimates are calculated across all possible combinations of parameters and are given as the estimate of the standard model plus the respective parameter estimate. Dotted horizontal line indicates unbiased admixture estimates."}
 
 SP_GLM_m_3_bias <- Plot_GLM_model_3_effect_sizes(Effect_size_fixed_stan_3_SP_tm_bias,sigma = F)
 SP_GLM_m_3_bias$Model <- "SP"
@@ -2660,7 +2660,7 @@ Varying_sampling_time <- ggarrange(Mean_GF_F_varying,Duration_GF_F_varying,label
 
 ```
 
-``` {r figCloser_Sampling_Supplement, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figCloser_Sampling_Supplement} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times after the end of 800 generations of gene flow. D) Duration estimate of the same scenario. All scenarious are simulated either under a constant recombination rate or an empirical (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate, using a different map, using the same map."}
+``` {r dpi = 350,figCloser_Sampling, message=FALSE, echo=FALSE,warning=FALSE,fig4.pos="H",fig.width=9,fig.height=10,fig.cap="\\label{fig:figCloser_Sampling_Supplement} Comparison of parameter inference under the simple and extended pulse model  A) Mean time estimates $t_m$ for different gene flow durations $t_d$ all sampled 50 generations after the gene flow ended. B) Duration estimate $t_d$ of the same scenario C) Mean time estimates for different sampling times after the end of 800 generations of gene flow. D) Duration estimate of the same scenario. All scenarious are simulated either under a constant recombination rate or an empirical (HapMap). Genetic distances for simulations under an empirical map are assigned by: assuming a constant rate, using a different map, using the same map."}
 
 Sampling_Closer_Supplements <- ggarrange(Constant_sampling_time,Varying_sampling_time,nrow = 2,common.legend = T,legend = 'bottom')
 
@@ -3047,7 +3047,7 @@ P_fit_log <- ggplot(data=Fit_Results,aes(x = x, y = y,color=fit,fill=NULL))+
 
 ```
 
-```{r fig5_Real_data, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:fig5_Real_data} ."}
+```{r dpi = 350,fig5_Real_data, message=FALSE, echo=FALSE,warning=FALSE,fig.width=12,fig.height=8,fig.cap="\\label{fig:fig5_Real_data} ."}
 ggarrange(P_fit_normal,P_fit_log,ncol = 2,nrow = 1,
           labels = c("A","B")
           ,common.legend = T,legend = 'bottom')
