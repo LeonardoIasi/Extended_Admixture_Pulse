@@ -29,7 +29,8 @@
 
 \hypersetup{unicode=true,
             pdftitle={Title: An extended admixture pulse model reveals the limitations to Human-Neandertal introgression dating},
-            pdfauthor={Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary Anthropology, MPI EVA), Dr.~Harald  Ringbauer (MPI EVA),Dr.~Benjamin Marco Peter (MPI EVA, benjamin\_peter@eva.mpg.de)},
+            pdfauthor={Leonardo Nicola Martin Iasi (Max Planck Institute for Evolutionary Anthropology, MPI EVA), Dr.~Harald  Ringbauer (MPI EVA),
+            Dr.~Benjamin Marco Peter (MPI EVA, benjamin\_peter@eva.mpg.de)},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -477,11 +478,11 @@ The resulting log-likelihood ratios are given in Figure \ref{fig:fig1_1}. In gen
 \begin{figure}
 \centering
 \includegraphics[width=16cm,height=10cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figR1-1.pdf}
-\caption{\label{fig:fig1_1} Log-likelihood ratio of the simple and extended pulse. Segments are either sampled at the present (purple) or 50 generations after the end of gene flow (turquoise). Log-likelihood ratios bigger than ten are rounded to ten.}
+\caption{\label{fig:fig1_1} Log-likelihood ratio of the simple and extended pulse under the model. Segments are either sampled at the present (purple) or 50 generations after the end of gene flow (turquoise). Log-likelihood ratios bigger than ten are rounded to ten.}
 \end{figure}
 
 
-\subsection{Comparing Population Genetic Models}\label{Model comparison}
+\subsection{Population Genetic Model Comparisons}\label{Model comparison}
 In the previous section, we have shown that we can distinguish long pulses from instantenous gene flow under idealized conditions. As a more realistic scenario, we perform population genetic simulations using  \texttt{msprime}  \citep{kelleher_efficient_2016}. 
 
 Throughout, we simulation 3 \% Neandertal admixture into non-Africans using a demographic model of archaic introgression (Supplementary Figure \ref{fig:figS1}B) with a mean admixture time of 1,500 generations ago and varying durations.  We simulate 20 chromosomes of length 150MB, using either a constant recombination map, or using the HapMap recombination map \citep{HapMapConsortium_second_2007}. This results in $\approx$ 10,000 introgressed segments. We then perform inference either using the ``true'' simulated segments, segments inferred from the data \citep{skov_detecting_2018}, or ALD calculated using ALDER \citep{loh_inferring_2013}. We further vary recombination rate settings as i) inference and simulation under constant recombination rate (Constant/Constant), ii) simulation using the HapMap genetic map \citep{HapMapConsortium_second_2007}, no correction (HapMap/Constant), iii) simulation using HapMap, correction using African-American map (HapMap/AAMap) \citep{hinch_landscape_2011}, iv) inference and simulation using HapMap (HapMap/HapMap). To enrich for Neandertal informative sites when using ALD, we only consider sites that are fixed for the ancestral state in Africans and polymorphic or fixed derived in Neandertals (lower-enrichment ascertainment scheme (LES)). Pairs of SNPs or segments with a minimal distance smaller 0.05 cM are excluded.
