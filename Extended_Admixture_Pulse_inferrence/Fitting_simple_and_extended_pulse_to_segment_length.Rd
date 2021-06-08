@@ -22,7 +22,8 @@ suppressPackageStartupMessages({
 #' @param k_lower gives the lowest values the optimization considers for the shape parameter k
 #' @param k_upper gives the highest values the optimization considers for the shape parameter k
 #' @examples
-#' fit_simple_pulse(Segments=read.table("Example_seg.txt",stringsAsFactors = F,header=T,fill = T),truncation=T,lower_trunc=0.05,lower_trunc=1.2,tm_lower=100,tm_upper=5000)
+#' Segments <- read.table("Example_seg.txt",stringsAsFactors = F,header=T,fill = T)
+#' fit_simple_pulse(Segments=Segments,truncation=T,lower_trunc=0.05,lower_trunc=1.2,tm_lower=100,tm_upper=5000)
 
 
 fit_simple_pulse=function(Segments,truncation=F,lower_trunc=NA,upper_trunc=NA,tm_lower,tm_upper){
@@ -66,7 +67,8 @@ fit_simple_pulse=function(Segments,truncation=F,lower_trunc=NA,upper_trunc=NA,tm
 #' @param tm_upper gives the highest values the optimization considers for the mean admixture time
 #' @param k_lower gives the lowest values the optimization considers for the shape parameter k
 #' @param k_upper gives the highest values the optimization considers for the shape parameter k
-#' fit_extended_pulse(Segments=read.table("Example_seg.txt",stringsAsFactors = F,header=T,fill = T),truncation=T,lower_trunc=0.05,lower_trunc=1.2,tm_lower=100,tm_upper=5000,k_lower=2,k_upper=1e10)
+#' Segments <- read.table("Example_seg.txt",stringsAsFactors = F,header=T,fill = T)
+#' fit_extended_pulse(Segments=Segments,truncation=T,lower_trunc=0.05,lower_trunc=1.2,tm_lower=100,tm_upper=5000,k_lower=2,k_upper=1e10)
 
 fit_extended_pulse=function(Segments,truncation=F,lower_trunc=NA,upper_trunc=NA,tm_lower,tm_upper,k_lower,k_upper){
   if(truncation==T){
