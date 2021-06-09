@@ -174,7 +174,6 @@ If this individual has offspring in a largely modern human population, in each g
 
 This inverse relationship between admixture time and either segment length or ALD is commonly used to infer the timing of gene flow \citep{pool_inference_2009,moorjani_history_2011,pugach_dating_2011,gravel_population_2012,sankararaman_date_2012,loh_inferring_2013,hellenthal_genetic_2014,liang_lengths_2014,sankararaman_combined_2016,pugach_gateway_2018,jacobs_multiple_2019}. Most commonly, it is assumed that gene flow occurs over a very short duration, referred to as an \textit{admixture pulse}, which is typically modelled as a single generation of gene flow \citep[e.g][]{moorjani_history_2011}. This model has the advantage that both the length distribution of admixture segments and the decay of ALD with distance will follow an exponential distribution, whose parameter is directly informative about the time of gene flow \citep{pool_inference_2009, gravel_population_2012, liang_lengths_2014}.
 
-%\subsection{The two approaches and their application to find archaic admixture dates}\label{the-two-approaches-and-their-application-to-find-archaic-admixture-dates}
 In segment-based approaches, dating starts by identifying all admixture segments, which can be done using a variety of methods \citep{seguin_orlando_paleogenomics_2014,sankararaman_combined_2016,vernot_excavating_2016,racimo_signatures_2017,skov_detecting_2018}. The length distribution of inferred segments is then used as a summary for dating when gene flow happened.
 
 Alternatively, ALD-based methods use linkage disequilibrium (LD) patterns, without explicitly inferring the segments \citep{chimusa_dating_2018} (Figure \ref{fig:fig1} B). Instead, admixture dates are estimated by fitting a decay curve of pairwise LD as a function of genetic distance, implicitly summing over all compatible segment lengths \citep{moorjani_history_2011,loh_inferring_2013}. 
@@ -206,7 +205,8 @@ Here, we first define the extended admixture pulse model and derive the resultin
 
 \begin{figure}
 \centering
-\includegraphics[width=16cm,height=18cm,keepaspectratio]{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig1-1.pdf}
+%\includegraphics[width=16cm,height=18cm,keepaspectratio]{Admixture_Time_Inference_Paper_Draft_files/figure-latex/fig1-1.pdf}
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{Fig_1_MBE-21-0164_R1_Peter_Iasi.pdf}
 \caption{\label{fig:fig1} A) Neandertal introgression into non-Africans with a multitude of potential admixture durations. B) The time and duration of admixture results in different length distributions of introgressed chromosomal segments (grey) containing  Neandertal variants (green circles)  in high LD to each other
 compared to the background (human variants white stars). The ALD approach estimates linkage
 between the introgressed variants (green circles), whereas the haplotype approach tries
@@ -245,8 +245,6 @@ Given $T_i$, the segment length $L_i$ is exponentially distributed with rate par
  \label{eq:generall_length_distribution}
     P(L_i=l|T_i=t) = t e^{-t l}  \text{.}
 \end{equation}
-	
-%For simplicity, we measure the length of each segment $L_i$ in the recombination distance Morgan so that $r=1$ Morgan per generation, and can be omitted.
 	
 Integrating over $T$ yields the unconditional distribution of admixture segment lengths:
 	
@@ -309,15 +307,6 @@ Both for the segment and ALD models we use simplifying assumptions that ignore t
 which can be interpreted as the probability of the event that migration happened at time $t$, and no more migration happened later on.
 
 
-%For ongoing migration, we modify this as
-%\begin{equation}
-%    \frac{D(t)}{dt} = - r D(t) + m(t)\text{.}
-%\end{equation}
-%For $m(t) = 0$, this yields the exponential decay of LD. In general, the %solution is
-%\begin{equation}
-%    D(t) = e^{-rt}\left[D(0) + \int_0^t e^{rx} m(x)dx\right]
-%\end{equation}
-
 
 \subsubsection{The Simple Pulse Model}\label{The Simple Pulse Model}
 	
@@ -363,7 +352,7 @@ and the variance by
 \end{subequations}	
 
 \subsubsection{The Extended Pulse Model}\label{The Extended Pulse Model}
-%We now introduce a new extended admixture pulse model. Under this model, we assume ...	
+
 For the new extended pulse model, we assume that the migration rate $m(t)$ follows a rescaled Gamma distribution so that the total contribution of migrant alleles is $\alpha$.  It is convenient to parameterize the migration rate as $\Gamma(k,\frac{t_m}{k})$.
 for $t \geq 0$ and $k \geq 1$. 
 
@@ -406,14 +395,9 @@ The distribution  in equation \ref{eq:Likelihood_function_extended_pulse} is kno
     \mathbb{E}[L] = \frac{k}{t_m}\frac{1}{(k+1)-1} = \frac{1}{t_{m}}
 \end{equation}
 	
-%The fraction $\frac{k}{k-1}$ will be larger for low $k$, which fits previous results that the longest (\emph{i.e.} most recently introgressed) admixture segments have a disproportionate impact on inference, and thus  admixture time estimates from ongoing gene flow are biased towards more recent events \citep{moorjani_history_2011,moorjani_genetic_2016}.
 	
 but the variance is larger:
 	
-%\begin{equation}
-%\label{eq:Var_l_extended_pulse}
-%	Var[L] = \frac{k^3}{(k-1)^2 (k-2)} %\frac{1}{(t_m r)^2}\text{.}
-%\end{equation}
 
 \begin{equation}
 \label{eq:Var_l_extended_pulse}
@@ -459,21 +443,19 @@ ALD \sim\ A\,\left( 1 + \frac{t_m}{k} \:l\right) ^{-k}+c
 
 \section{Results}\label{results}
 
-%\subsection{Introduction to results}\label{introduction to result}
-
 Here, we investigate under which scenarios we can distinguish the simple and extended pulse models, and when we can infer parameters under either model. 
 We start with an idealized scenario of simulations under the model, and then continue with more realistic coalescent simulations using \texttt{msprime} \citep{kelleher_efficient_2016}. 
 
 \subsection{Power Analysis under the Model}\label{Power Analysis}
 In the easiest case, we assume that segments are  known and we simulate directly under the model (Eq. \ref{eq:Likelihood_function_extended_pulse}) and evaluate under which conditions we can tell the two models apart using likelihood-ratio tests on the simulated segments. For this purpose, we compare two scenarios, one where gene flow happened 1,500 generations ago, which reflects Neandertal gene flow inferred from present-day individuals. In the second scenario, which reflects inference from ancient modern human data, the samples are taken 50 generations after gene flow ended. We vary pulse durations from one to 2,500 generations, and sample between 100 and 100,000 unique segments. As the simple pulse model is an edge case of the extended pulse model with $k\to \infty$, standard likelihood theory does not apply, and we use empirical significance cutoffs \citep{Kozubowski_Testing_2008}.
 
-%the corresponding parameter estimates are depicted in Supplement Figure \ref{fig:figSR1_error_ests_norm}.%
 
 The resulting log-likelihood ratios are given in Figure \ref{fig:fig1_1}. In general, we find that power to distinguish the model increases with pulse duration and the amount of data, and that it is easier to distinguish the models when gene flow had been more recent.  For example, with 10,000 unique segments we need an event lasting around 1,000 generations before we are able to confidently distinguish an extended from a simple pulse (Figure \ref{fig:fig1_1}) using present-day data. In contrast, by sampling closer to the admixture event we are able to distinguish an extended pulse already with a duration of 40-60 generations.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=16cm,height=10cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figR1-1.pdf}
+%\includegraphics[width=16cm,height=10cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figR1-1.pdf}
+\includegraphics[width=16cm,height=10cm,keepaspectratio]{Fig_2_MBE-21-0164_R1_Peter_Iasi.pdf}
 \caption{\label{fig:fig1_1} Model comparisons on perfect data. Segments are either sampled at the present (purple) or 50 generations after the end of gene flow (turquoise). Log-likelihood ratios bigger than ten are rounded to ten.}
 \end{figure}
 
@@ -496,7 +478,8 @@ In Figure \ref{fig:figResult2}C we show examples of the estimated segment length
 
 \begin{figure}
 \centering
-\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figResult2_all_together-1.pdf}
+%\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figResult2_all_together-1.pdf}
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{Fig_3_MBE-21-0164_R1_Peter_Iasi.pdf}
 \caption{\label{fig:figResult2} Model Choice, Model Fit and Parameter Estimates. A) Log-likelihood ratios and RSS difference between the simple and extended pulse models for segment data and ALD, respectively. Simulation and inference were done using constant(purple) and an empirical (teal) recombination map. B) Estimates of $t_m$ and $t_d$. Solid black line indicate simulation values, the red dotted line adds a migration corrected ($t_m(1-\alpha)$). C) Model fit for a single simulation in each scenario. Estimated segment density or weighted LD (grey) is compared with the expected (turquoise) and fitted single pulse (yellow) and extended pulse (purple). }
 \end{figure}
 
@@ -516,7 +499,8 @@ The effect of simulating an extended-pulse gene flow only results in a slight bi
 
 \begin{figure}
 \centering
-\includegraphics[width=12cm,height=16cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figResult_3_GLM_SP_and_EP_bias-1.pdf}
+%\includegraphics[width=12cm,height=16cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figResult_3_GLM_SP_and_EP_bias-1.pdf}
+\includegraphics[width=12cm,height=16cm,keepaspectratio]{Fig_4_MBE-21-0164_R1_Peter_Iasi.pdf}
 \caption{\label{fig:figGLM} GLM effect sizes for the bias between simulated and estimated mean admixture time  and 95\% C.I. for the parameters between the simple and extended pulse model: gene flow (simple/extended), recombination rate (constant/varying), demography (simple/complex), minimal genetic distance (0.02/0.05 cM), SNPs used for ALD calculation (100 \% / 5 \%) and ascertainment scheme (LES/HES). Estimates are calculated across all possible combinations of parameters. Dotted horizontal line indicates unbiased admixture estimates.}
 \end{figure}
 
@@ -529,7 +513,8 @@ For short gene flows (less than 1,000 generations), our estimates for $t_m$ are 
 
 \begin{figure}
 \centering
-\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/fig5_Real_data-1.pdf}
+%\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/fig5_Real_data-1.pdf}
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{Fig_5_MBE-21-0164_R1_Peter_Iasi.pdf}
 \caption{\label{fig:fig5} Neandertal Gene Flow in Modern Humans. We fit models with fixed $t_d$ from one to 2,500 generations of gene flow to the ALD-curve calculated from  CEU individuals on A) natural and B) log-scale.}
 \end{figure}
 
@@ -546,7 +531,8 @@ In \ref{fig:Closer_sampling} C and D, we keep the pulse duration constant at $t_
 
 \begin{figure}
 \centering
-\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figCloser_Sampling_Supplement-1.pdf}
+%\includegraphics[width=16cm,height=18cm,keepaspectratio]{ATE_Revisions_files/figure-latex/figCloser_Sampling_Supplement-1.pdf}
+\includegraphics[width=16cm,height=18cm,keepaspectratio]{Fig_6_MBE-21-0164_R1_Peter_Iasi.pdf}
 \caption{\label{fig:Closer_sampling} Parameter estimation using ALD from recent admixture pulses.  We show estimates of $t_m$ (panels A, C) and $t_d$ for a series of simulations with increasing $t_d$ and $t_m$ such that we sample 50 generations after gene flow (top) and a series of simulations with a increasingly older extended pulse (bottom).  All times are given in generations.}
 \end{figure}
 
