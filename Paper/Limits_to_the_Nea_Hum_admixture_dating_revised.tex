@@ -25,7 +25,7 @@
 \usepackage[margin=1in]{geometry}
 
 \usepackage{hyperref}
-%\newcommand*\referencetitle[1]{\def\@currentlabelname{#1}}
+\newcommand*\referencetitle[1]{\def\@currentlabelname{#1}}
 
 \hypersetup{unicode=true,
             pdftitle={Title: An extended admixture pulse model reveals the limitations to Human-Neandertal introgression dating},
@@ -37,7 +37,7 @@
  
 \usepackage{natbib}
 %\bibliographystyle{References/my_abbrvnat}
-\bibliographystyle{my_abbrvnatI can }
+\bibliographystyle{my_abbrvnat}
 \setcitestyle{authoryear,open={(},close={)}}
 
 \usepackage{graphicx,grffile}
@@ -77,23 +77,23 @@
 \def\footnote{\protect\rmarkdownfootnote}
 
 %%% HELPER CODE FOR DEALING WITH EXTERNAL REFERENCES
-%\usepackage{xr}
-%\makeatletter
-%\newcommand*{\addFileDependency}[1]{
-%  \typeout{(#1)}
-%  \@addtofilelist{#1}
-%  \IfFileExists{#1}{}{\typeout{No file #1.}}
-%}
-%\makeatother
+\usepackage{xr}
+\makeatletter
+\newcommand*{\addFileDependency}[1]{
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\makeatother
 
-%\newcommand*{\myexternaldocument}[1]{
-%    \externaldocument{#1}
-%    \addFileDependency{#1.tex}
-%    \addFileDependency{#1.aux}
-%}
+\newcommand*{\myexternaldocument}[1]{
+    \externaldocument{#1}
+    \addFileDependency{#1.tex}
+    \addFileDependency{#1.aux}
+}
 %%% END HELPER CODE
 
-%\myexternaldocument{Paper/Supplements_Review}
+\myexternaldocument{Paper/Supplements_Review}
 
 \usepackage{setspace}
 \onehalfspacing
