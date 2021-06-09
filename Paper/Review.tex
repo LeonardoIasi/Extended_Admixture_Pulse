@@ -69,7 +69,7 @@
 \usepackage{setspace}
 \onehalfspacing
 \usepackage[left]{lineno}
-\linenumbers
+%\linenumbers
 \usepackage[none]{hyphenat}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -79,6 +79,7 @@
 
 \floatplacement{figure}{H}
 \begin{document}
+Dear editor, dear reviewers,
 
 We thank the editor and all three reviewers for their very constructive feedback. While working on the revised manuscript, we substantially altered, extended and fixed the derivation and presentation of the theoretical results. This was done with substantial contributions from \textbf{Harald Ringbauer}, whom we therefore added as a co-author. As a result, we feel that the current version of the manuscript is much improved, has a much clearer presentation and  we hope we satisfactorily address all major issues raised during the review process.
 
@@ -240,7 +241,7 @@ Figure 2, panel A: Please use “Single pulse” instead of “Pulse.”
 
 Figure 2, panel B: It seems like the color legend is redundant. Admixture duration is shown at the bottom of each column already, so no need to use the different colors. Also, it could be a bit distracting since you use the same colors for Figure 4. 
 
-\textbf{Answer:} Figure 2 is replaced by Figure \ref{fig:figResult2}. The two color legend now are refering to the recombination map used for simulation and inference and which model is fitted to the curve.
+\textbf{Answer:} Figure 2 is replaced by Figure \ref{fig:figResult2}. The two color legend now are referring to the recombination map used for simulation and inference and which model is fitted to the curve.
 
 Figure 3: why only the second dot is green?
 
@@ -320,19 +321,10 @@ Discussion: I wonder if the first paragraph of the discussion could be rephrased
 \paragraph{Answer to 3.6}
 We do agree that this should be phrased carefully, as it is a rather subtle point. What we were trying to say here is that if the single pulse model were correct, then the bounds on the estimates of $t_m$ are, in fact,  the bounds of when gene flow happened. So this is not a statistical error, but rather a case where the model is interpreted to literally. 
 
-We found numerous papers that based their interpretations (partially) on this, in our eyes, flawed interpretation (see below).
-
-Douka et al. 2019 "Denisovans at the site appear to have survived later than Neanderthals. Our modelled date estimate for the most recent Denisovan fossil (Denisova 3, 51,600–76,200 years ago) is earlier than published estimates of the date of Denisovan admixture into modern humans (44,000–54,00015 and 31,000–50,000 years ago16). If these admixture estimates are robust, then the Altai Denisovans may not have been the latest-surviving population."
-
-Jacobs et al. 2019: "While the median block lengths of D1 and D2 are similar in Papuans (238 and 236 kb), their distributions are significantly different (Kolmogorov-Smirnov statistic = 0.15, p = $2.2 \times 10−6$). Exponential fitting of D1 and D2 haplotype lengths yields introgression dates of 29.8 kya (95 \% CI 14.4–50.4) and 45.7 kya (95 \% CI 31.9–60.7), respectively, which are younger, though overlapping with, previously suggested estimates for Denisovan introgression  (Malaspinas et al., 2016). The maximum likelihood introgression date for D2 introgression is 50 \% more ancient than the date for D1. Based on simulations, and given the greater statistical challenge of identifying shorter introgression blocks, we consider these dates to be probable lower bounds on introgression times, but with true dates no more than 15 \% more ancient.
-
-D1 and D2 introgression times that overlap the timescale of modern human arrival and their variable dispersal across Papua raise the possibility that Denisovan introgression occurred after local populations of modern humans had differentiated."
-
-Lazaridis et al. 2016: "The finding of little if any Neanderthal ancestry in Basal Eurasians could be explained if the Neanderthal admixture into modern humans 50,000-60,000 years ago11 largely occurred after the splitting of the Basal Eurasians from other non-Africans."
 
 To make this point more clear (and hopefully non-controversial), we rephrased this section as follows:
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=grey!20]
-Previous approaches to date Neandertal-human gene flow have focused almost entirely on the mean time of gene flow using a simple pulse model, for which reasonably tight credible intervals can be estimated \citep{sankararaman_date_2012, moorjani_genetic_2016}. Under this model, the credible intervals of this time are bounds of when gene flow between Neandertals and early modern humans could have happened. 
+Previous approaches to date Neandertal-human gene flow have focused almost entirely on the mean time of gene flow using a simple pulse model, for which reasonably tight credible intervals can be estimated (Sankararaman 2012, Moorjani 2016). Under this model, the credible intervals of this time are bounds of when gene flow between Neandertals and early modern humans could have happened. 
 \end{mdframed}
 \end{document}
