@@ -1,0 +1,249 @@
+---
+title: "Fitting Simple and extended admixture pulses to segment data"
+author: "Leonardo N. M Iasi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Fitting the simple and extended pulse to segment length data
+
+In this documentation we will discuss two ways of modeling the length distribution of introgressed segments after a certain time t. The simple pulse model assumes that all the introgressed materia entered in just one generation (i.e. the duration of gene flow was one gneneration) a time $t_m$ ago. The extended pulse relaxes this assumption. here, the introgressed material can enter over an extended period of time with a mean time of that period being $t_m$. The duration ($t_d$) is defined by the parameter k, wherease $t_d = 4 t_m k^{(-\frac{1}{2})}$. 
+
+We will follow an example of an extended period of gene flow between Neandertal and Non-Africans around 50,000 years ago. We use simulated data generated using msprime coalescent simulations. The simulation used an emperical map to simulate realistic recombination patterns. In this simulation $t_m = 1,500$ generations ago and $t_d = 2000$ generations. The simulated segments are given in the Example_seg.txt file.
+
+
+# Fitting the simple to segment length data
+
+First, we want to fit the simple pulse model, which assumes implicitly a duration $t_d = 1$. The simple pulse will give us the estimate for the mean time of admixture $t_m$.
+
+## Parameters
+
+This are the parameters used for the function which fitts the simple pulse model.
+
+### The path to the segment file
+
+
+The segment file is read in using the [input] parameter (file_path). The file must at least contain one column giving the length of each unique segment in cM. The column must be named [length_cM].
+
+```{r}
+suppressPackageStartupMessages({
+  library(VGAM)
+  library(tidyverse)
+  library("DEoptim")
+  library("MASS")
+  library(bbmle)
+  library(rethinking)
+  library(DPQ)
+  library(viridis)
+})
+
+input <- "Example_seg.txt"
+```
+
+
+### truncation
+
+Somtimes it is necessery to truncate the segment length distribution, especially if the segments are inferred you might want to exclude extremly short segments (e.g. smaller than 0.05 cM) since they are usually inferred with low confidence. You might also exclude very long segments wich might be wrongly inferred by some approaches where two segments close by are accedently joined to one long segment. The upper length cutoff is highly dependent on your scenario you are interrested in. For Neandertal gene flow we do not expect segments to be longer then 1 cM.
+
+Parameter (truncation = TRUE/FALSE) to define if you want to exclude segments given a ceartain threshold lengtn in cM from the fitting (defined by upper and lower trunc parameters)
+
+```{r}
+truncation <-  T
+```
+
+### upper and lower thresholds
+
+Only used if truncation = T. Numeric parameter to define lower (lower_trunc) and upper (upper_trunc) cutoff for the segment length given in cM 
+
+```{r}
+lower_trunc <- 0.05	
+upper_trunc <- 1
+```
+
+### tm upper and lower boundries
+
+To limit the searchspace, especially for the extended pulse model fit you must give an upper and lower boundry for the $t_m$ parameter. In our example we know from Archaeological records that no Neandertal remains were found to be younger than 35,000 years so we can set a very loose lower boundry at 100 generations ago (3000 years ago) and an upper boundry 5000 generations ago, which is a roughly double the estimated  split time between Africans and Non-Africans. You need to adjust these boundrys to your model organism. At least give a lower boundry at 1 generation and a finite value for the upper since the time of gene flow can not be negative.
+
+```{r}
+tm_lower <-  100
+tm_upper <-  5000
+```
+
+## Running the function
+
+Now we define all our parameters. All we need to doo now is executing the function.
+
+```{r, echo=F}
+fit_simple_pulse=function(input,truncation=F,lower_trunc=NA,upper_trunc=NA,tm_lower,tm_upper){
+  Segments <- read.table(input,header = T)
+  
+  if(truncation==T){
+    l=Segments$length_cM[Segments$length_cM>=lower_trunc & Segments$length_cM<=upper_trunc]
+  } else {
+    l=Segments$length_cM[Segments$length_cM>0]
+  }
+  
+  dtexp <- function(x, rate=1, lower_trunc, upper_trunc){
+    dexp(x, rate, log=T) - logspace.sub(pexp(lower_trunc, rate, lower=F, log=T),pexp(upper_trunc, rate, lower=F, log=T))}
+  
+  dtexp_norm <- function(x, rate=1, lower_trunc, upper_trunc){dexp(x, rate, log=T)} 
+  
+  try({
+    
+    if(truncation==T){
+      f = function(par) -sum(dtexp(l/100, par[1], lower_trunc=lower_trunc/100,upper_trunc = upper_trunc/100))
+    } else {
+      f = function(par) -sum(dtexp_norm(l/100, par[1]))
+      
+    }
+    
+    res = optim(c(500), f, method="L-BFGS-B",lower = c(tm_lower),upper = c(tm_upper))
+    par =res$par
+    tm = par
+    if(truncation==T){
+      l_p <- hist(l,breaks = 500,plot = F)
+      f_predict = dtexp(l_p$mids/100, tm, lower_trunc=lower_trunc/100,upper_trunc = upper_trunc/100)
+      f_predict = data.frame(seg_len_M = l_p$mids, log_dens = f_predict)
+    } else {
+      l_p <-  hist(l,breaks = 500,plot = F)
+      f_predict = dtexp_norm(l_p$mids/100, tm)
+      f_predict = data.frame(seg_len_M = l_p$mids, log_dens = f_predict)
+    }
+          
+    return(list(res,data.frame(tm=tm, ll_sp = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc),l,f_predict))
+  }, silent=F)
+  return(list(NA,data.frame(tm=NA, ll_sp=NA ,lower_trunc=lower_trunc,upper_trunc=upper_trunc),l,NA))
+}
+```
+
+```{r}
+
+SP_Fit <- fit_simple_pulse(input = input,truncation = truncation,
+                           lower_trunc =lower_trunc,upper_trunc = upper_trunc,
+                           tm_lower = tm_lower,tm_upper = tm_upper)
+
+
+```
+
+Let's have a look ate the output. The function returns a list with four objects. 1st The list object from the optim function, 2nd a data frame with the estimate of maximum likelihood estimate of $t_m$, the log likelihood and lower and upper truncations on the segments used. The 3rd object is the data used i.e. the truncated segments used for fitting. The last object is the models prediction of the log density for segments length in Morgen. The MLE for $t_m$ using the simple pulse model is `r SP_Fit[[2]]$tm` with a log likelihood of `r SP_Fit[[2]]$ll_sp`.
+
+## Visualize the fit to the data
+
+We can visualize the data using the objects from the simple pulse function. We are going to plot the log density of segment length in cM. We can get the (truncated) input segments from the list object the simple pulse function returns. We can transform the data from Morgan to centiMorgan (which is the more common measure used). To get a nice density plot we can use the hist function with parameter plot = F, with 500 breaks and save it to the plot_data object.
+
+```{r}
+input_segments_M = SP_Fit[[3]]
+input_segments_cM = input_segments_M/100
+plot_data <- hist(input_segments_cM,breaks = 500,plot = F)
+```
+
+Now we can plot the input log density of the input segments. We can plot our prediction using object four returned by the simple pulse function.
+
+```{r,fig.height=6,fig.width=6}
+plot(x=plot_data$mids,y=log(plot_data$density),ylab = "log density", xlab = "segment length in cM")
+lines(SP_Fit[[4]]$seg_len_M/100,SP_Fit[[4]]$log_dens,col="red",lty=2,lwd=2)
+legend("topright", legend=c("simple pulse model"),
+       col=c("red"), lty=2, cex=0.8)
+text(x = 0.008, y = 6 , labels = paste("SP: ","tm = ",round(SP_Fit[[2]]$tm,0),"/","ll = ",round(SP_Fit[[2]]$ll_sp,0)),cex = 0.7)
+```
+
+# Fitting the extended to segment length data
+ 
+We use the same setup and data as before but now we want to fit the extended pulse which has one additional parameter $k$. This parameter is related to the duration of admixture such that $t_d = 4 t_m k^{(-\frac{1}{2})}$. 
+
+## Parameters
+
+The extended pulse function takes the same parameter with two additional ones setting the boundries for k.
+
+### k upper and lower boundries
+
+This is only needed for the extended pulse model. The parameter k is defined for a parameter space between 2 (continuous gene flow) and infinity (pulse gene flow). Realistically the parameter will not go to infinity and will fit in a one generation pulse with a high number at least  bigger than 100. here we choose 1e8. Our lower value is 2, since k is not defined for a value smaller than 2.
+```{r}
+k_lower <- 2
+k_upper <- 1e8
+```
+
+
+```{r, echo=F}
+fit_extended_pulse=function(input,truncation=F,lower_trunc=NA,upper_trunc=NA,tm_lower,tm_upper,k_lower,k_upper){
+  Segments <- read.table(input,header = T)
+  if(truncation==T){
+    l=Segments$length_cM[Segments$length_cM>=lower_trunc & Segments$length_cM<=upper_trunc]
+  } else {
+    l=Segments$length_cM[Segments$length_cM>0]
+  }
+  
+  dtlomax <- function(x, scale, shape, lower_trunc, upper_trunc){
+    VGAM::dlomax(x, shape3.q = shape,scale = scale, log=T) -
+      logspace.sub(VGAM::plomax(lower_trunc, scale = scale, shape3.q = shape, lower=F, log=T),VGAM::plomax(upper_trunc, scale = scale, shape3.q = shape, lower=F, log=T))}
+  
+  dtlomax_norm <- function(x, scale, shape)
+    VGAM::dlomax(x, shape3.q = shape,scale = scale, log=T) 
+  
+  
+  try({
+    if(truncation==T){
+      f = function(par)-sum(dtlomax(l/100, scale=((1/par[2])/par[1]), shape=((1/par[2])+1), lower_trunc=lower_trunc/100,upper_trunc=upper_trunc/100))
+    } else {
+      f = function(par)-sum(dtlomax_norm(l/100, scale=((1/par[2])/par[1]), shape=((1/par[2])+1) ))
+    }
+    
+    res = optim(par = c(500,(1/20)), f, method="L-BFGS-B",lower = c(tm_lower,1/k_upper),upper = c(tm_upper,1/k_lower))
+    tm = res$par[1]
+    k = 1/res$par[2]
+    if(truncation==T){
+      l_p <- hist(l,breaks = 500,plot = F)
+      f_predict = dtlomax(l_p$mids/100, scale=(k/tm), shape=(k+1), lower_trunc=lower_trunc/100,upper_trunc=upper_trunc/100)
+      f_predict = data.frame(seg_len_M = l_p$mids, log_dens = f_predict)
+    } else {
+      l_p <-  hist(l,breaks = 500,plot = F)
+      f_predict = dtlomax_norm(l/100, scale=(k/tm), shape=(k+1) )
+      f_predict = data.frame(seg_len_M = l_p$mids, log_dens = f_predict)
+    }
+    return(list(res,data.frame(k=k,tm=tm, ll_ep = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc),l,f_predict))
+  }, silent=F)
+  return(list(NA,data.frame(k=NA,tm=NA, ll_ep=NA,lower_trunc=lower_trunc,upper_trunc=upper_trunc),l,NA))
+}
+```
+
+```{r}
+EP_Fit <- fit_extended_pulse(input=input ,truncation = truncation,
+                             lower_trunc = lower_trunc,upper_trunc = upper_trunc,
+                             tm_lower = tm_lower,tm_upper = tm_upper,
+                             k_lower = k_lower,k_upper = k_upper)
+
+```
+
+The function returns the same list as the simple pulse function, with four objects. The difference now is that we estimated one parameter more $k$, which is included in the data frame (object two) with the estimate of maximum likelihood estimate of $t_m$  and $k$ and the corresponding log likelihood.. The MLE for $t_m$ using the extended pulse model is `r EP_Fit[[2]]$tm` with a log likelihood of `r EP_Fit[[2]]$ll_ep`. The MLE for $k$ is `r EP_Fit[[2]]$k`. This number is not straight forward to interpret, but we can plug it in in our definition of the gene flow duration $t_d = 4 t_m k^{(-\frac{1}{2})}$, `r EP_Fit[[2]]$tm*EP_Fit[[2]]$k^(-1/2)`
+
+## Visualize the fit to the data
+
+We can visualize the data the same way as we did for the simple pulse.
+
+```{r}
+input_segments_M = EP_Fit[[3]]
+input_segments_cM = input_segments_M/100
+plot_data <- hist(input_segments_cM,breaks = 500,plot = F)
+```
+
+Now we can plot the input log density of the input segments. We can plot our prediction using object four returned by the simple pulse function.
+
+```{r,fig.height=6,fig.width=6}
+plot(x=plot_data$mids,y=log(plot_data$density),ylab = "log density", xlab = "segment length in cM")
+lines(SP_Fit[[4]]$seg_len_M/100,SP_Fit[[4]]$log_dens,col="red",lty=2,lwd=2)
+lines(EP_Fit[[4]]$seg_len_M/100,EP_Fit[[4]]$log_dens,col="green",lty=2,lwd=3)
+legend("topright", legend=c("simple pulse model","extended pulse model"),
+       col=c("red","green"), lty=2, cex=0.8)
+text(x = 0.007, y = 6 , labels = paste("SP: ","tm = ",round(SP_Fit[[2]]$tm,0),"/","ll = ",round(SP_Fit[[2]]$ll_sp,0),"\n","EP: ","tm = ",round(EP_Fit[[2]]$tm,0),"/","td = ",round(EP_Fit[[2]]$tm*EP_Fit[[2]]$k^(-1/2),0),"/","ll = ",round(EP_Fit[[2]]$ll_ep,0)),cex = 0.7)
+```
