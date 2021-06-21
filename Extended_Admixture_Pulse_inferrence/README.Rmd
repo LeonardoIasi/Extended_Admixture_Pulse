@@ -192,7 +192,7 @@ plot(x=input_ALD_cM$dist,y=input_ALD_cM$LD,ylab = "ALD", xlab = "distance betwee
 lines(SP_Fit_ALD[[4]]$dist_M*100,SP_Fit_ALD[[4]]$ALD,col="red",lty=2,lwd=2)
 legend("topright", legend=c("simple pulse model"),
        col=c("red"), lty=2, cex=0.8)
-text(x = 0.4, y = 0.0013 , labels = paste("SP: ","tm = ",round(SP_Fit_ALD[[2]]$tm,0),"/","RSS = ",round(SP_Fit_ALD[[2]]$RSS,0)),cex = 0.7)
+text(x = 0.4, y = 0.0013 , labels = paste("SP: ","tm = ",round(SP_Fit_ALD[[2]]$tm,0),"/","RSS = ",round(SP_Fit_ALD[[2]]$RSS,5)),cex = 0.7)
 ```
 
 ### Fitting the extended to segment length data
@@ -274,7 +274,7 @@ lines(SP_Fit_ALD[[4]]$dist_M*100,SP_Fit_ALD[[4]]$ALD,col="red",lty=2,lwd=2)
 lines(EP_Fit_ALD[[4]]$dist_M*100,EP_Fit_ALD[[4]]$ALD,col="green",lty=2,lwd=3)
 legend("topright", legend=c("simple pulse model","extended pulse model"),
        col=c("red","green"), lty=2, cex=0.8)
-text(x = 0.4, y = 0.0013 , labels = paste("SP: ","tm = ",round(SP_Fit_ALD[[2]]$tm,0),"/","RSS = ",round(SP_Fit_ALD[[2]]$RSS,0),"\n","EP: ","tm = ",round(EP_Fit_ALD[[2]]$tm,0),"/","td = ",round(EP_Fit_ALD[[2]]$tm*EP_Fit_ALD[[2]]$k^(-1/2),0),"/","RSS = ",round(EP_Fit_ALD[[2]]$RSS,0)),cex = 0.7)
+text(x = 0.4, y = 0.0013 , labels = paste("SP: ","tm = ",round(SP_Fit_ALD[[2]]$tm,0),"/","RSS = ",round(SP_Fit_ALD[[2]]$RSS,5),"\n","EP: ","tm = ",round(EP_Fit_ALD[[2]]$tm,0),"/","td = ",round(EP_Fit_ALD[[2]]$tm*EP_Fit_ALD[[2]]$k^(-1/2),0),"/","RSS = ",round(EP_Fit_ALD[[2]]$RSS,5)),cex = 0.7)
 ```
 
 # Fitting using segment length

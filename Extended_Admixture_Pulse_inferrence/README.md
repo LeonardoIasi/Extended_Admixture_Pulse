@@ -177,8 +177,8 @@ For compatibility intervals we can use the *Get\_CI\_fn*.
 tm_CI_SP <- Get_CI_fn(est = SP_Fit_ALD[[2]]$tm,n_data = SP_Fit_ALD[[3]]$dist)
 ```
 
-The estimate for \(t_m\) using the simple pulse model is 1204.4155669,
-1093.2566874, 1315.5744464 with a RSS is 2.876584310^{-6}.
+The estimate for \(t_m\) using the simple pulse model is 1204.417776,
+1093.2586926, 1315.5768594 with a RSS is 2.876584310^{-6}.
 
 ##### Visualize the fit to the data
 
@@ -195,7 +195,7 @@ plot(x=input_ALD_cM$dist,y=input_ALD_cM$LD,ylab = "ALD", xlab = "distance betwee
 lines(SP_Fit_ALD[[4]]$dist_M*100,SP_Fit_ALD[[4]]$ALD,col="red",lty=2,lwd=2)
 legend("topright", legend=c("simple pulse model"),
        col=c("red"), lty=2, cex=0.8)
-text(x = 0.4, y = 0.0013 , labels = paste("SP: ","tm = ",round(SP_Fit_ALD[[2]]$tm,0),"/","RSS = ",round(SP_Fit_ALD[[2]]$RSS,0)),cex = 0.7)
+text(x = 0.4, y = 0.0013 , labels = paste("SP: ","tm = ",round(SP_Fit_ALD[[2]]$tm,0),"/","RSS = ",round(SP_Fit_ALD[[2]]$RSS,5)),cex = 0.7)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
@@ -248,11 +248,11 @@ choose the best fitting model with the smallest RSS. The
 is that we estimated one parameter more \(k\), which is included in the
 data frame (object two) with the estimate of \(t_m\) and \(k\) and the
 corresponding RSS. The estimate for \(t_m\) using the extended pulse
-model is 1204.6208273, 1093.4430037, 1315.7986508 with a RSS of
-2.876584710^{-6}. The estimate for \(k\) is 9.890552510^{7},
-8.977725810^{7}, 1.080337910^{8}. This number is not straightforward to
-interpret, but we can plug it in in our definition of the gene flow
-duration \[t_d = 4 t_m k^-(1/2)\], 0.1211268
+model is 1202.2684072, 1091.307695, 1313.2291193 with a RSS of
+2.876615110^{-6}. The estimate for \(k\) is 10^{8}, 9.07707210^{7},
+1.092292810^{8}. This number is not straightforward to interpret, but we
+can plug it in in our definition of the gene flow duration
+\[t_d = 4 t_m k^-(1/2)\], 0.1202268
 
 ### Visualize the fit to the data
 
@@ -265,7 +265,7 @@ lines(SP_Fit_ALD[[4]]$dist_M*100,SP_Fit_ALD[[4]]$ALD,col="red",lty=2,lwd=2)
 lines(EP_Fit_ALD[[4]]$dist_M*100,EP_Fit_ALD[[4]]$ALD,col="green",lty=2,lwd=3)
 legend("topright", legend=c("simple pulse model","extended pulse model"),
        col=c("red","green"), lty=2, cex=0.8)
-text(x = 0.4, y = 0.0013 , labels = paste("SP: ","tm = ",round(SP_Fit_ALD[[2]]$tm,0),"/","RSS = ",round(SP_Fit_ALD[[2]]$RSS,0),"\n","EP: ","tm = ",round(EP_Fit_ALD[[2]]$tm,0),"/","td = ",round(EP_Fit_ALD[[2]]$tm*EP_Fit_ALD[[2]]$k^(-1/2),0),"/","RSS = ",round(EP_Fit_ALD[[2]]$RSS,0)),cex = 0.7)
+text(x = 0.4, y = 0.0013 , labels = paste("SP: ","tm = ",round(SP_Fit_ALD[[2]]$tm,0),"/","RSS = ",round(SP_Fit_ALD[[2]]$RSS,5),"\n","EP: ","tm = ",round(EP_Fit_ALD[[2]]$tm,0),"/","td = ",round(EP_Fit_ALD[[2]]$tm*EP_Fit_ALD[[2]]$k^(-1/2),0),"/","RSS = ",round(EP_Fit_ALD[[2]]$RSS,5)),cex = 0.7)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
