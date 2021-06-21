@@ -23,19 +23,8 @@ suppressPackageStartupMessages({
   library(viridis)
 })
 
-input <- "Example_seg.txt"
-
-Output_prefix <- as.character("Example_seg_output")  		
-truncation <-  T
-lower_trunc <- 0.05	
-upper_trunc <- 1
-tm_lower <-  100
-tm_upper <-  5000
-k_lower <- 2
-k_upper <- 1e8
-
-fit_simple_pulse=function(Segments,truncation=F,lower_trunc=NA,upper_trunc=NA,tm_lower,tm_upper){
-  Segments <- read.table(Segments,header = T)
+Simple_Pulse_Segments_fn=function(input,truncation=F,lower_trunc=NA,upper_trunc=NA,tm_lower,tm_upper){
+  Segments <- read.table(input,header = T)
   
   if(truncation==T){
     l=Segments$length_cM[Segments$length_cM>=lower_trunc & Segments$length_cM<=upper_trunc]
@@ -54,18 +43,31 @@ fit_simple_pulse=function(Segments,truncation=F,lower_trunc=NA,upper_trunc=NA,tm
       f = function(par) -sum(dtexp(l/100, par[1], lower_trunc=lower_trunc/100,upper_trunc = upper_trunc/100))
     } else {
       f = function(par) -sum(dtexp_norm(l/100, par[1]))
+      
     }
     
     res = optim(c(500), f, method="L-BFGS-B",lower = c(tm_lower),upper = c(tm_upper))
     par =res$par
-    t_m = par
-    return(list(res,data.frame(t_m=t_m, ll_exp = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc)))
+    tm = par
+    if(truncation==T){
+      l_p <- hist(l,breaks = 500,plot = F)
+      f_predict = dtexp(l_p$mids/100, tm, lower_trunc=lower_trunc/100,upper_trunc = upper_trunc/100)
+      f_predict = data.frame(seg_len_M = l_p$mids, log_dens = f_predict)
+    } else {
+      l_p <-  hist(l,breaks = 500,plot = F)
+      f_predict = dtexp_norm(l_p$mids/100, tm)
+      f_predict = data.frame(seg_len_M = l_p$mids, log_dens = f_predict)
+    }
+    
+    return(list(res,data.frame(tm=tm, ll_sp = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc),l,f_predict))
   }, silent=F)
-  return(list(NA,data.frame(t_m=NA, ll_exp=NA ,lower_trunc=lower_trunc,upper_trunc=upper_trunc)))
+  return(list(NA,data.frame(tm=NA, ll_sp=NA ,lower_trunc=lower_trunc,upper_trunc=upper_trunc),l,NA))
 }
 
-fit_extended_pulse=function(Segments,truncation=F,lower_trunc=NA,upper_trunc=NA,tm_lower,tm_upper,k_lower,k_upper){
-  Segments <- read.table(Segments,header = T)
+
+
+Extended_Pulse_Segments_fn=function(input,truncation=F,lower_trunc=NA,upper_trunc=NA,tm_lower,tm_upper,k_lower,k_upper){
+  Segments <- read.table(input,header = T)
   if(truncation==T){
     l=Segments$length_cM[Segments$length_cM>=lower_trunc & Segments$length_cM<=upper_trunc]
   } else {
@@ -90,41 +92,24 @@ fit_extended_pulse=function(Segments,truncation=F,lower_trunc=NA,upper_trunc=NA,
     res = optim(par = c(500,(1/20)), f, method="L-BFGS-B",lower = c(tm_lower,1/k_upper),upper = c(tm_upper,1/k_lower))
     tm = res$par[1]
     k = 1/res$par[2]
-    return(list(res,data.frame(k=k,tm=tm, ll_lomax = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc)))
+    if(truncation==T){
+      l_p <- hist(l,breaks = 500,plot = F)
+      f_predict = dtlomax(l_p$mids/100, scale=(k/tm), shape=(k+1), lower_trunc=lower_trunc/100,upper_trunc=upper_trunc/100)
+      f_predict = data.frame(seg_len_M = l_p$mids, log_dens = f_predict)
+    } else {
+      l_p <-  hist(l,breaks = 500,plot = F)
+      f_predict = dtlomax_norm(l/100, scale=(k/tm), shape=(k+1) )
+      f_predict = data.frame(seg_len_M = l_p$mids, log_dens = f_predict)
+    }
+    return(list(res,data.frame(k=k,tm=tm, ll_ep = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc),l,f_predict))
   }, silent=F)
-  return(list(NA,data.frame(k=NA,tm=NA, ll_lomax=NA,lower_trunc=lower_trunc,upper_trunc=upper_trunc)))
+  return(list(NA,data.frame(k=NA,tm=NA, ll_ep=NA,lower_trunc=lower_trunc,upper_trunc=upper_trunc),l,NA))
 }
 
-
-# Fitting the simple pulse
-
-SP_Fit <- fit_simple_pulse(input,truncation ,lower_trunc,upper_trunc,tm_lower,tm_upper)
-
-tm_SP_est <- SP_Fit[[2]]$t_m
-ll_SP_est <- SP_Fit[[2]]$ll_exp
-lower_trunc_tm_SP_est <- SP_Fit[[2]]$lower_trunc
-upper_trunc_tm_SP_est <- SP_Fit[[2]]$upper_trunc
-
-
-
-Fit_simple_pulse_df <- data.frame(tm = tm_SP_est,log_likelihood = ll_SP_est,lower_trunc=lower_trunc_tm_SP_est,upper_trunc=upper_trunc_tm_SP_est)
-
-
-write.csv(Fit_simple_pulse_df,file = paste(Output_prefix,"_simple_pulse.txt",sep = ""),quote = F,row.names = F)
-
-
-
-# Fit the extended pulse
-
-EP_Fit <- fit_extended_pulse(input,truncation,lower_trunc,upper_trunc,tm_lower,tm_upper,k_lower,k_upper)
-
-tm_EP_est <- EP_Fit[[2]]$tm
-k_EP_est <- EP_Fit[[2]]$k
-ll_EP_est <- EP_Fit[[2]]$ll_lomax
-lower_trunc_tm_EP_est <- EP_Fit[[2]]$lower_trunc
-upper_trunc_tm_EP_est <- EP_Fit[[2]]$upper_trunc
-
-Fit_extended_pulse_df <- data.frame(tm = tm_EP_est,k = k_EP_est,log_likelihood = ll_EP_est,lower_trunc=lower_trunc_tm_EP_est,upper_trunc=upper_trunc_tm_EP_est)
-
-write.csv(Fit_extended_pulse_df,file = paste(Output_prefix,"_extended_pulse.txt",sep = ""),quote = F,row.names = F)
-
+Get_CI_fn <- function(est,n_data){
+  org <- est
+  lwr_approx <- est*(1-(1.96/sqrt(length(n_data))))
+  upr_approx <- est*(1+(1.96/sqrt(length(n_data))))
+  param_CI <- c(org,lwr_approx,upr_approx)
+  return(param_CI)
+}
