@@ -1,7 +1,7 @@
 Fitting the simple and extended pulse models
 ================
 Leonardo N. M Iasi
-2021-06-17
+2021-06-21
 
 The descriptions of the models can be found here
 (<https://www.biorxiv.org/content/10.1101/2021.04.04.438357v2>). In
@@ -53,9 +53,225 @@ lower and upper boundaries for the optimization are currently hard coded
 and are reasonable boundaries for Neandertal introgression, but one
 might want to change them for other scenarios.
 
+## Example
+
+In this documentation we will discuss two ways of modeling the Ancestry
+Linkage Disequilibrium between introgressed SNPs after a certain time t.
+The simple pulse model assumes that all the introgressed material
+entered in just one generation (i.e. the duration of gene flow was one
+generation) a time \(t_m\) ago. The extended pulse relaxes this
+assumption. here, the introgressed material can enter over an extended
+period of time with a mean time of that period being \(t_m\). The
+duration (\(t_d\)) is defined by the parameter k, whereas
+\[t_d = 4 t_m k^{(-\frac{1}{2})}\].
+
+We will follow an example of an extended period of gene flow between
+Neandertal and Non-Africans around 50,000 years ago. We use simulated
+data generated using msprime coalescent simulations. The simulation used
+an empirical map to simulate realistic recombination patterns. In this
+simulation \(t_m = 1,500\) generations ago and \(t_d = 2000\)
+generations. We obtained the SNPs from Africans Non-Africans and
+Neandertals from our simulation. To enrich for introgressed sites we
+ascertained the data. Here, all Africans must have the ancestral allele
+and Neandertals must be polymorphic for the derived one. We used the
+ALDER program to calculate the weighted LD in the admixed population
+(Non-Africans) given the two reference populations (Africans and
+Neandertals).
+
+### Fitting the simple pulse to ALD data
+
+First, we want to fit the simple pulse model, which assumes implicitly a
+duration \(t_d = 1\). The simple pulse will give us the estimate for the
+mean time of admixture \(t_m\).
+
+#### Parameters
+
+This are the parameters used for the function which fitts the simple
+pulse model.
+
+##### The path to the segment file
+
+We use the raw ALDER output file for the fitting. The file contains of 3
+columns. Distance, weighted LD and
+
+``` r
+suppressPackageStartupMessages({
+  library(VGAM)
+  library(tidyverse)
+  library("DEoptim")
+  library("MASS")
+  library(bbmle)
+  library(rethinking)
+  library(DPQ)
+  library(viridis)
+})
+
+input <- "Example_ALD.txt"
+```
+
+##### upper and lower thresholds for truncation
+
+For ALD data we must provide length thresholds, since LD for a distant 0
+between to SNPs is not defined. To give an upper and lower distance we
+use the parameters lower\_trunc and upper\_trunc. Numeric parameter to
+define lower (lower\_trunc) and upper (upper\_trunc) cutoff for the
+segment length given in cM.
+
+``` r
+lower_trunc <- 0.05 
+upper_trunc <- 0.5
+```
+
+##### Using a constant to model background LD
+
+This is a logical parameter (True/False) if a constant should be used to
+model background LD when fitting ALD data. We recommend to do it.
+
+``` r
+constant <- T   
+```
+
+##### tm upper and lower boundries
+
+To limit the search space, especially for the extended pulse model fit
+you must give an upper and lower boundary for the \(t_m\) parameter. In
+our example we know from Archaeological records that no Neandertal
+remains were found to be younger than 35,000 years so we can set a very
+loose lower boundary at 100 generations ago (3000 years ago) and an
+upper boundary 5000 generations ago, which is a roughly double the
+estimated split time between Africans and Non-Africans. You need to
+adjust these boundaries to your model organism. At least give a lower
+boundary at 1 generation and a finite value for the upper since the time
+of gene flow can not be negative.
+
+``` r
+tm_lower <-  100
+tm_upper <-  5000
+```
+
+#### Running the function
+
+Now we define all our parameters. First we need to read in the ALD data
+using the *Get\_points* function. After that we can execute
+*Simple\_Pulse\_ALD\_fn*.
+
+``` r
+
+ALD_data <- Get_points(input = input,lower_trunc = lower_trunc, upper_trunc = upper_trunc)
+
+SP_Fit_ALD <- Simple_Pulse_ALD_fn(Data = ALD_data,constant = constant,
+                           tm_lower = tm_lower,tm_upper = tm_upper)
+```
+
+Let’s have a look ate the output. The function returns a list with four
+objects. 1st The list object from the nls function, 2nd a data frame
+with the estimate of the best fitting \(t_m\), the
+residual-sum-of-squares (RSS) and lower and upper truncations on the ALD
+data used. The 3rd object is the data used i.e. the truncated ALD used
+for fitting. The last object is the models prediction of the ALD for
+SNPs a certain genetic distance in Morgans apart.
+
+For compatibility intervals we can use the *Get\_CI\_fn*.
+
+``` r
+tm_CI_SP <- Get_CI_fn(est = SP_Fit_ALD[[2]]$tm,n_data = SP_Fit_ALD[[3]]$dist)
+```
+
+The estimate for \(t_m\) using the simple pulse model is 1204.4177655,
+1093.2586831, 1315.576848 with a RSS is 2.876584310^{-6}.
+
+##### Visualize the fit to the data
+
+We can visualize the data using the objects from the simple pulse
+function. We are going to plot the ALD as a function of genetic distance
+between SNPs in centiMorgan. We can get the (truncated) input ALD data
+from the list object the simple pulse function returns. We can plot our
+prediction using object four returned by the simple pulse function.
+
+``` r
+input_ALD_cM = SP_Fit_ALD[[3]]
+
+plot(x=input_ALD_cM$dist,y=input_ALD_cM$LD,ylab = "ALD", xlab = "distance between SNPs in cM")
+lines(SP_Fit_ALD[[4]]$dist_M*100,SP_Fit_ALD[[4]]$ALD,col="red",lty=2,lwd=2)
+legend("topright", legend=c("simple pulse model"),
+       col=c("red"), lty=2, cex=0.8)
+text(x = 0.4, y = 0.0013 , labels = paste("SP: ","tm = ",round(SP_Fit_ALD[[2]]$tm,0),"/","RSS = ",round(SP_Fit_ALD[[2]]$RSS,0)),cex = 0.7)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+### Fitting the extended to segment length data
+
+We use the same setup and data as before but now we want to fit the
+extended pulse which has one additional parameter \(k\). This parameter
+is related to the duration of admixture such that
+\[t_d = 4 t_m k^{(-\frac{1}{2})}\].
+
+#### Parameters
+
+The extended pulse function takes the same parameter with two additional
+ones setting the boundaries for k.
+
+##### k upper and lower boundries
+
+This is only needed for the extended pulse model. The parameter k is
+defined for a parameter space between 2 (continuous gene flow) and
+infinity (pulse gene flow). Realistically the parameter will not go to
+infinity and will fit in a one generation pulse with a high number at
+least bigger than 100. here we choose 1e8. Our lower value is 2, since k
+is not defined for a value smaller than 2.
+
+``` r
+k_lower <- 2
+k_upper <- 1e8
+```
+
+#### Running the function
+
+``` r
+
+EP_Fit_ALD <- Extended_Pulse_ALD_fn(Data = ALD_data,constant = constant,
+                           tm_lower = tm_lower,tm_upper = tm_upper,
+                           k_lower = k_lower,k_upper = k_upper)
+#> Warning in nls(wcorr ~ c + A * (1/(1 + ((tm/(1/k)) * (dist/100))))^((1/k)), :
+#> Convergence failure: false convergence (8)
+
+tm_CI_EP <- Get_CI_fn(est = EP_Fit_ALD[[2]]$tm,n_data = EP_Fit_ALD[[3]]$dist)
+k_CI_EP <- Get_CI_fn(est = EP_Fit_ALD[[2]]$k,n_data = EP_Fit_ALD[[3]]$dist)
+```
+
+The nls function sometimes gives a warning message. Especially for the
+extended pulse model we recommend to run the function iteratively and
+choose the best fitting model with the smallest RSS. The function
+returns the same list as the simple pulse function, with four objects.
+The difference now is that we estimated one parameter more \(k\), which
+is included in the data frame (object two) with the estimate of \(t_m\)
+and \(k\) and the corresponding RSS. The estimate for \(t_m\) using the
+extended pulse model is 1201.3595045, 1090.4826775, 1312.2363315 with a
+RSS of 2.876646610^{-6}. The estimate for \(k\) is 9.855157510^{7},
+8.945597510^{7}, 1.076471810^{8}. This number is not straightforward to
+interpret, but we can plug it in in our definition of the gene flow
+duration \[t_d = 4 t_m k^-(1/2)\], 0.1210156
+
+### Visualize the fit to the data
+
+We can visualize the data the same way as we did for the simple pulse
+and plot everything together.
+
+``` r
+plot(x=input_ALD_cM$dist,y=input_ALD_cM$LD,ylab = "ALD", xlab = "distance between SNPs in cM")
+lines(SP_Fit_ALD[[4]]$dist_M*100,SP_Fit_ALD[[4]]$ALD,col="red",lty=2,lwd=2)
+lines(EP_Fit_ALD[[4]]$dist_M*100,EP_Fit_ALD[[4]]$ALD,col="green",lty=2,lwd=3)
+legend("topright", legend=c("simple pulse model","extended pulse model"),
+       col=c("red","green"), lty=2, cex=0.8)
+text(x = 0.4, y = 0.0013 , labels = paste("SP: ","tm = ",round(SP_Fit_ALD[[2]]$tm,0),"/","RSS = ",round(SP_Fit_ALD[[2]]$RSS,0),"\n","EP: ","tm = ",round(EP_Fit_ALD[[2]]$tm,0),"/","td = ",round(EP_Fit_ALD[[2]]$tm*EP_Fit_ALD[[2]]$k^(-1/2),0),"/","RSS = ",round(EP_Fit_ALD[[2]]$RSS,0)),cex = 0.7)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
 # Fitting using segment length
 
-To fit the simple and extended pulse using segment data one can inferre
+To fit the simple and extended pulse using segment data one can infer
 segments using many approaches. In our paper we used the method of Skov
 et al 2018. We only consider high probability segments with a posterior
 probability of 0.9 or higher and not shorter or longer than 0.05.1.2 cM.
@@ -70,28 +286,13 @@ the R optim function (method=“L-BFGS-B”) to fit the data to an
 exponential or lomax pdf. The input data must at least contain one
 column (length\_cM) giving the length of unique segments in centiMorgan.
 There are two additional parameters lower and upper cutoffs which
-indicates the bounds in which segments can be relaiably be called (we
-recomend 0.05/1.2 cM for data from present-day individuals). If you use
-cutoff, a truncated version of the pdf’s will be fitted.
+indicates the bounds in which segments can be reliably be called. If you
+use cutoff, a truncated version of the pdf’s will be fitted.
 
 ## Example
 
-In this documentation we will discuss two ways of modeling the length
-distribution of introgressed segments after a certain time t. The simple
-pulse model assumes that all the introgressed materia entered in just
-one generation (i.e. the duration of gene flow was one gneneration) a
-time \(t_m\) ago. The extended pulse relaxes this assumption. here, the
-introgressed material can enter over an extended period of time with a
-mean time of that period being \(t_m\). The duration (\(t_d\)) is
-defined by the parameter k, wherease \(t_d = 4 t_m k^{(-\frac{1}{2})}\).
-
-We will follow an example of an extended period of gene flow between
-Neandertal and Non-Africans around 50,000 years ago. We use simulated
-data generated using msprime coalescent simulations. The simulation used
-an emperical map to simulate realistic recombination patterns. In this
-simulation \(t_m = 1,500\) generations ago and \(t_d = 2000\)
-generations. The simulated segments are given in the Example\_seg.txt
-file.
+We use the same example as before but now with segment data. The
+simulated segments are given in the Example\_seg.txt file.
 
 ### Fitting the simple to segment length data
 
@@ -101,7 +302,7 @@ mean time of admixture \(t_m\).
 
 #### Parameters
 
-This are the parameters used for the function which fitts the simple
+This are the parameters used for the function which fits the simple
 pulse model.
 
 ##### The path to the segment file
@@ -159,15 +360,15 @@ upper_trunc <- 1
 ##### tm upper and lower boundries
 
 To limit the searchspace, especially for the extended pulse model fit
-you must give an upper and lower boundry for the \(t_m\) parameter. In
+you must give an upper and lower boundary for the \(t_m\) parameter. In
 our example we know from Archaeological records that no Neandertal
 remains were found to be younger than 35,000 years so we can set a very
-loose lower boundry at 100 generations ago (3000 years ago) and an upper
-boundry 5000 generations ago, which is a roughly double the estimated
-split time between Africans and Non-Africans. You need to adjust these
-boundrys to your model organism. At least give a lower boundry at 1
-generation and a finite value for the upper since the time of gene flow
-can not be negative.
+loose lower boundary at 100 generations ago (3000 years ago) and an
+upper boundary 5000 generations ago, which is a roughly double the
+estimated split time between Africans and Non-Africans. You need to
+adjust these boundaries to your model organism. At least give a lower
+boundary at 1 generation and a finite value for the upper since the time
+of gene flow can not be negative.
 
 ``` r
 tm_lower <-  100
@@ -181,7 +382,7 @@ the function.
 
 ``` r
 
-SP_Fit <- fit_simple_pulse(input = input,truncation = truncation,
+SP_Fit_Seg <- Simple_Pulse_Segments_fn(input = input,truncation = truncation,
                            lower_trunc =lower_trunc,upper_trunc = upper_trunc,
                            tm_lower = tm_lower,tm_upper = tm_upper)
 ```
@@ -192,8 +393,16 @@ with the estimate of maximum likelihood estimate of \(t_m\), the log
 likelihood and lower and upper truncations on the segments used. The 3rd
 object is the data used i.e. the truncated segments used for fitting.
 The last object is the models prediction of the log density for segments
-length in Morgen. The MLE for \(t_m\) using the simple pulse model is
-1213.8525853 with a log likelihood of 4.85937610^{4}.
+length in Morgen.
+
+For compatibility intervals we can use the *Get\_CI\_fn*.
+
+``` r
+tm_CI_SP <- Get_CI_fn(est = SP_Fit_Seg[[2]]$tm,n_data = SP_Fit_Seg[[3]])
+```
+
+The MLE for \(t_m\) using the simple pulse model is 1213.8525853,
+1187.1928156, 1240.512355 with a log likelihood of 4.85937610^{4}.
 
 ##### Visualize the fit to the data
 
@@ -206,7 +415,7 @@ density plot we can use the hist function with parameter plot = F, with
 500 breaks and save it to the plot\_data object.
 
 ``` r
-input_segments_M = SP_Fit[[3]]
+input_segments_M = SP_Fit_Seg[[3]]
 input_segments_cM = input_segments_M/100
 plot_data <- hist(input_segments_cM,breaks = 500,plot = F)
 ```
@@ -216,15 +425,15 @@ our prediction using object four returned by the simple pulse function.
 
 ``` r
 plot(x=plot_data$mids,y=log(plot_data$density),ylab = "log density", xlab = "segment length in cM")
-lines(SP_Fit[[4]]$seg_len_M/100,SP_Fit[[4]]$log_dens,col="red",lty=2,lwd=2)
+lines(SP_Fit_Seg[[4]]$seg_len_M/100,SP_Fit_Seg[[4]]$log_dens,col="red",lty=2,lwd=2)
 legend("topright", legend=c("simple pulse model"),
        col=c("red"), lty=2, cex=0.8)
-text(x = 0.008, y = 6 , labels = paste("SP: ","tm = ",round(SP_Fit[[2]]$tm,0),"/","ll = ",round(SP_Fit[[2]]$ll_sp,0)),cex = 0.7)
+text(x = 0.008, y = 6 , labels = paste("SP: ","tm = ",round(SP_Fit_Seg[[2]]$tm,0),"/","ll = ",round(SP_Fit_Seg[[2]]$ll_sp,0)),cex = 0.7)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
-## Fitting the extended to segment length data
+### Fitting the extended to segment length data
 
 We use the same setup and data as before but now we want to fit the
 extended pulse which has one additional parameter \(k\). This parameter
@@ -234,7 +443,7 @@ is related to the duration of admixture such that
 #### Parameters
 
 The extended pulse function takes the same parameter with two additional
-ones setting the boundries for k.
+ones setting the boundaries for k.
 
 ##### k upper and lower boundries
 
@@ -253,28 +462,32 @@ k_upper <- 1e8
 #### Running the function
 
 ``` r
-EP_Fit <- fit_extended_pulse(input=input ,truncation = truncation,
+EP_Fit_Seg <- Extended_Pulse_Segments_fn(input=input ,truncation = truncation,
                              lower_trunc = lower_trunc,upper_trunc = upper_trunc,
                              tm_lower = tm_lower,tm_upper = tm_upper,
                              k_lower = k_lower,k_upper = k_upper)
+
+tm_CI_EP <- Get_CI_fn(est = EP_Fit_Seg[[2]]$tm,n_data = EP_Fit_Seg[[3]])
+k_CI_EP <- Get_CI_fn(est = EP_Fit_Seg[[2]]$k,n_data = EP_Fit_Seg[[3]])
 ```
 
 The function returns the same list as the simple pulse function, with
 four objects. The difference now is that we estimated one parameter more
 \(k\), which is included in the data frame (object two) with the
 estimate of maximum likelihood estimate of \(t_m\) and \(k\) and the
-corresponding log likelihood.. The MLE for \(t_m\) using the extended
-pulse model is 1307.9921821 with a log likelihood of 4.863936910^{4}.
-The MLE for \(k\) is 7.9692029. This number is not straight forward to
-interpret, but we can plug it in in our definition of the gene flow
-duration \(t_d = 4 t_m k^{(-\frac{1}{2})}\), 463.3377726
+corresponding log likelihood. The MLE for \(t_m\) using the extended
+pulse model is 1307.9921821, 1279.2648303, 1336.719534 with a log
+likelihood of 4.863936910^{4}. The MLE for \(k\) is 7.9692029,
+7.7941758, 8.14423. This number is not straight forward to interpret,
+but we can plug it in in our definition of the gene flow duration
+\(t_d = 4 t_m k^-(1/2)\), 463.3377726
 
 ### Visualize the fit to the data
 
 We can visualize the data the same way as we did for the simple pulse.
 
 ``` r
-input_segments_M = EP_Fit[[3]]
+input_segments_M = EP_Fit_Seg[[3]]
 input_segments_cM = input_segments_M/100
 plot_data <- hist(input_segments_cM,breaks = 500,plot = F)
 ```
@@ -284,11 +497,11 @@ our prediction using object four returned by the simple pulse function.
 
 ``` r
 plot(x=plot_data$mids,y=log(plot_data$density),ylab = "log density", xlab = "segment length in cM")
-lines(SP_Fit[[4]]$seg_len_M/100,SP_Fit[[4]]$log_dens,col="red",lty=2,lwd=2)
-lines(EP_Fit[[4]]$seg_len_M/100,EP_Fit[[4]]$log_dens,col="green",lty=2,lwd=3)
+lines(SP_Fit_Seg[[4]]$seg_len_M/100,SP_Fit_Seg[[4]]$log_dens,col="red",lty=2,lwd=2)
+lines(EP_Fit_Seg[[4]]$seg_len_M/100,EP_Fit_Seg[[4]]$log_dens,col="green",lty=2,lwd=3)
 legend("topright", legend=c("simple pulse model","extended pulse model"),
        col=c("red","green"), lty=2, cex=0.8)
-text(x = 0.007, y = 6 , labels = paste("SP: ","tm = ",round(SP_Fit[[2]]$tm,0),"/","ll = ",round(SP_Fit[[2]]$ll_sp,0),"\n","EP: ","tm = ",round(EP_Fit[[2]]$tm,0),"/","td = ",round(EP_Fit[[2]]$tm*EP_Fit[[2]]$k^(-1/2),0),"/","ll = ",round(EP_Fit[[2]]$ll_ep,0)),cex = 0.7)
+text(x = 0.007, y = 6 , labels = paste("SP: ","tm = ",round(SP_Fit_Seg[[2]]$tm,0),"/","ll = ",round(SP_Fit_Seg[[2]]$ll_sp,0),"\n","EP: ","tm = ",round(EP_Fit_Seg[[2]]$tm,0),"/","td = ",round(EP_Fit_Seg[[2]]$tm*EP_Fit_Seg[[2]]$k^(-1/2),0),"/","ll = ",round(EP_Fit_Seg[[2]]$ll_ep,0)),cex = 0.7)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
