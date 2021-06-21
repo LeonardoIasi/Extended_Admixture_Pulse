@@ -177,8 +177,8 @@ For compatibility intervals we can use the *Get\_CI\_fn*.
 tm_CI_SP <- Get_CI_fn(est = SP_Fit_ALD[[2]]$tm,n_data = SP_Fit_ALD[[3]]$dist)
 ```
 
-The estimate for \(t_m\) using the simple pulse model is 1204.4177655,
-1093.2586831, 1315.576848 with a RSS is 2.876584310^{-6}.
+The estimate for \(t_m\) using the simple pulse model is 1204.4155669,
+1093.2566874, 1315.5744464 with a RSS is 2.876584310^{-6}.
 
 ##### Visualize the fit to the data
 
@@ -209,8 +209,8 @@ is related to the duration of admixture such that
 
 #### Parameters
 
-The extended pulse function takes the same parameter with two additional
-ones setting the boundaries for k.
+The *Extended\_Pulse\_ALD\_fn* function takes the same parameter with
+two additional ones setting the boundaries for k.
 
 ##### k upper and lower boundries
 
@@ -242,16 +242,17 @@ k_CI_EP <- Get_CI_fn(est = EP_Fit_ALD[[2]]$k,n_data = EP_Fit_ALD[[3]]$dist)
 
 The nls function sometimes gives a warning message. Especially for the
 extended pulse model we recommend to run the function iteratively and
-choose the best fitting model with the smallest RSS. The function
-returns the same list as the simple pulse function, with four objects.
-The difference now is that we estimated one parameter more \(k\), which
-is included in the data frame (object two) with the estimate of \(t_m\)
-and \(k\) and the corresponding RSS. The estimate for \(t_m\) using the
-extended pulse model is 1201.3595045, 1090.4826775, 1312.2363315 with a
-RSS of 2.876646610^{-6}. The estimate for \(k\) is 9.855157510^{7},
-8.945597510^{7}, 1.076471810^{8}. This number is not straightforward to
+choose the best fitting model with the smallest RSS. The
+*Extended\_Pulse\_ALD\_fn* function returns the same list as the
+*Simple\_Pulse\_ALD\_fn* function, with four objects. The difference now
+is that we estimated one parameter more \(k\), which is included in the
+data frame (object two) with the estimate of \(t_m\) and \(k\) and the
+corresponding RSS. The estimate for \(t_m\) using the extended pulse
+model is 1204.6208273, 1093.4430037, 1315.7986508 with a RSS of
+2.876584710^{-6}. The estimate for \(k\) is 9.890552510^{7},
+8.977725810^{7}, 1.080337910^{8}. This number is not straightforward to
 interpret, but we can plug it in in our definition of the gene flow
-duration \[t_d = 4 t_m k^-(1/2)\], 0.1210156
+duration \[t_d = 4 t_m k^-(1/2)\], 0.1211268
 
 ### Visualize the fit to the data
 
@@ -292,7 +293,7 @@ use cutoff, a truncated version of the pdf’s will be fitted.
 ## Example
 
 We use the same example as before but now with segment data. The
-simulated segments are given in the Example\_seg.txt file.
+simulated segments are given in the *Example\_seg.txt* file.
 
 ### Fitting the simple to segment length data
 
@@ -330,16 +331,16 @@ input <- "Example_seg.txt"
 
 Somtimes it is necessery to truncate the segment length distribution,
 especially if the segments are inferred you might want to exclude
-extremly short segments (e.g. smaller than 0.05 cM) since they are
+extremely short segments (e.g. smaller than 0.05 cM) since they are
 usually inferred with low confidence. You might also exclude very long
-segments wich might be wrongly inferred by some approaches where two
+segments which might be wrongly inferred by some approaches where two
 segments close by are accedently joined to one long segment. The upper
-length cutoff is highly dependent on your scenario you are interrested
+length cutoff is highly dependent on your scenario you are interested
 in. For Neandertal gene flow we do not expect segments to be longer then
 1 cM.
 
 Parameter (truncation = TRUE/FALSE) to define if you want to exclude
-segments given a ceartain threshold lengtn in cM from the fitting
+segments given a certain threshold length in cM from the fitting
 (defined by upper and lower trunc parameters)
 
 ``` r
@@ -378,7 +379,7 @@ tm_upper <-  5000
 #### Running the function
 
 Now we define all our parameters. All we need to doo now is executing
-the function.
+the *Simple\_Pulse\_Segments\_fn* function.
 
 ``` r
 
@@ -387,13 +388,13 @@ SP_Fit_Seg <- Simple_Pulse_Segments_fn(input = input,truncation = truncation,
                            tm_lower = tm_lower,tm_upper = tm_upper)
 ```
 
-Let’s have a look ate the output. The function returns a list with four
-objects. 1st The list object from the optim function, 2nd a data frame
-with the estimate of maximum likelihood estimate of \(t_m\), the log
-likelihood and lower and upper truncations on the segments used. The 3rd
-object is the data used i.e. the truncated segments used for fitting.
-The last object is the models prediction of the log density for segments
-length in Morgen.
+Let’s have a look ate the output. The *Simple\_Pulse\_Segments\_fn*
+returns a list with four objects. 1st The list object from the optim
+function, 2nd a data frame with the estimate of maximum likelihood
+estimate of \(t_m\), the log likelihood and lower and upper truncations
+on the segments used. The 3rd object is the data used i.e. the truncated
+segments used for fitting. The last object is the models prediction of
+the log density for segments length in Morgen.
 
 For compatibility intervals we can use the *Get\_CI\_fn*.
 
@@ -406,13 +407,13 @@ The MLE for \(t_m\) using the simple pulse model is 1213.8525853,
 
 ##### Visualize the fit to the data
 
-We can visualize the data using the objects from the simple pulse
-function. We are going to plot the log density of segment length in cM.
-We can get the (truncated) input segments from the list object the
-simple pulse function returns. We can transform the data from Morgan to
-centiMorgan (which is the more common measure used). To get a nice
-density plot we can use the hist function with parameter plot = F, with
-500 breaks and save it to the plot\_data object.
+We can visualize the data using the objects from the
+*Simple\_Pulse\_Segments\_fn*. We are going to plot the log density of
+segment length in cM. We can get the (truncated) input segments from the
+list object the simple pulse function returns. We can transform the data
+from Morgan to centiMorgan (which is the more common measure used). To
+get a nice density plot we can use the hist function with parameter plot
+= F, with 500 breaks and save it to the plot\_data object.
 
 ``` r
 input_segments_M = SP_Fit_Seg[[3]]
@@ -438,12 +439,12 @@ text(x = 0.008, y = 6 , labels = paste("SP: ","tm = ",round(SP_Fit_Seg[[2]]$tm,0
 We use the same setup and data as before but now we want to fit the
 extended pulse which has one additional parameter \(k\). This parameter
 is related to the duration of admixture such that
-\(t_d = 4 t_m k^{(-\frac{1}{2})}\).
+\(t_d = 4 t_m k^-(1/2)\).
 
 #### Parameters
 
-The extended pulse function takes the same parameter with two additional
-ones setting the boundaries for k.
+The *Extended\_Pulse\_Segments\_fn* takes the same parameter with two
+additional ones setting the boundaries for k.
 
 ##### k upper and lower boundries
 
@@ -471,16 +472,16 @@ tm_CI_EP <- Get_CI_fn(est = EP_Fit_Seg[[2]]$tm,n_data = EP_Fit_Seg[[3]])
 k_CI_EP <- Get_CI_fn(est = EP_Fit_Seg[[2]]$k,n_data = EP_Fit_Seg[[3]])
 ```
 
-The function returns the same list as the simple pulse function, with
-four objects. The difference now is that we estimated one parameter more
-\(k\), which is included in the data frame (object two) with the
-estimate of maximum likelihood estimate of \(t_m\) and \(k\) and the
-corresponding log likelihood. The MLE for \(t_m\) using the extended
-pulse model is 1307.9921821, 1279.2648303, 1336.719534 with a log
-likelihood of 4.863936910^{4}. The MLE for \(k\) is 7.9692029,
-7.7941758, 8.14423. This number is not straight forward to interpret,
-but we can plug it in in our definition of the gene flow duration
-\(t_d = 4 t_m k^-(1/2)\), 463.3377726
+The *Extended\_Pulse\_Segments\_fn* returns the same list as the
+*Simple\_Pulse\_Segments\_fn*, with four objects. The difference now is
+that we estimated one parameter more \(k\), which is included in the
+data frame (object two) with the estimate of maximum likelihood estimate
+of \(t_m\) and \(k\) and the corresponding log likelihood. The MLE for
+\(t_m\) using the extended pulse model is 1307.9921821, 1279.2648303,
+1336.719534 with a log likelihood of 4.863936910^{4}. The MLE for \(k\)
+is 7.9692029, 7.7941758, 8.14423. This number is not straight forward to
+interpret, but we can plug it in in our definition of the gene flow
+duration \(t_d = 4 t_m k^-(1/2)\), 463.3377726
 
 ### Visualize the fit to the data
 
