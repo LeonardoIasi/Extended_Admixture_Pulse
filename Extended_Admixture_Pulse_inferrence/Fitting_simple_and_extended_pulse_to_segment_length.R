@@ -1,3 +1,17 @@
+#' Fitting the simple to segment length data
+#'
+#' This function takes the length of segments and estimate the time since the gene flow 
+#' under the assumption of a one generation pulse.
+#'
+# param: input = Segments filepath with at least one column containing the length of each unique segment in cM named [length_cM]
+# param: truncation = optional parameter (TRUE/FALSE) to define if you want to exclude segments given a ceartain threshold lengtn in cM from the fitting (defined yu upper and lower trunc)
+# param: lower_trunc = (if truncation = T) numeric parameter to define lower cutoff for the segment length given in cM
+# param: upper_trunc = (if truncation = T) numeric parameter to define upper cutoff for the segment length given in cM
+# param: tm_lower = gives the lowest values (numeric) the optimization considers for the mean admixture time
+# param: tm_upper = gives the highest values (numeric) the optimization considers for the mean admixture time
+# param: k_lower = (only for fitting the extended pulse) gives the lowest values (numeric) the optimization considers for the shape parameter k
+# param: k_upper = (only for fitting the extended pulse) gives the highest values (numeric) the optimization considers for the shape parameter k
+
 suppressPackageStartupMessages({
   library(VGAM)
   library(tidyverse)
@@ -9,23 +23,8 @@ suppressPackageStartupMessages({
   library(viridis)
 })
 
-#' Fitting the simple to segment length data
-#'
-#' This function takes the length of segments and estimate the time since the gene flow 
-#' under the assumption of a one generation pulse.
-#'
-#' @param Segments file at least one column containing the length of each unique segment in cM named [length_cM]
-#' @param lower_trunc optional parameter to define lower cutoff for the segment length given in cM
-#' @param upper_trunc optional parameter to define upper cutoff for the segment length given in cM
-#' @param tm_lower gives the lowest values the optimization considers for the mean admixture time
-#' @param tm_upper gives the highest values the optimization considers for the mean admixture time
-#' @param k_lower gives the lowest values the optimization considers for the shape parameter k
-#' @param k_upper gives the highest values the optimization considers for the shape parameter k
-#' @examples
-#' fit_simple_pulse(Segments=read.table("Example_seg.txt",stringsAsFactors = F,header=T,fill = T),truncation=T,lower_trunc=0.05,lower_trunc=1.2,tm_lower=100,tm_upper=5000)
-
-
-fit_simple_pulse=function(Segments,truncation=F,lower_trunc=NA,upper_trunc=NA,tm_lower,tm_upper){
+Simple_Pulse_Segments_fn=function(input,truncation=F,lower_trunc=NA,upper_trunc=NA,tm_lower,tm_upper){
+  Segments <- read.table(input,header = T)
   
   if(truncation==T){
     l=Segments$length_cM[Segments$length_cM>=lower_trunc & Segments$length_cM<=upper_trunc]
@@ -44,31 +43,31 @@ fit_simple_pulse=function(Segments,truncation=F,lower_trunc=NA,upper_trunc=NA,tm
       f = function(par) -sum(dtexp(l/100, par[1], lower_trunc=lower_trunc/100,upper_trunc = upper_trunc/100))
     } else {
       f = function(par) -sum(dtexp_norm(l/100, par[1]))
+      
     }
     
     res = optim(c(500), f, method="L-BFGS-B",lower = c(tm_lower),upper = c(tm_upper))
     par =res$par
-    t_m = par
-    return(list(res,data.frame(t_m=t_m, ll_exp = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc)))
+    tm = par
+    if(truncation==T){
+      l_p <- hist(l,breaks = 500,plot = F)
+      f_predict = dtexp(l_p$mids/100, tm, lower_trunc=lower_trunc/100,upper_trunc = upper_trunc/100)
+      f_predict = data.frame(seg_len_M = l_p$mids, log_dens = f_predict)
+    } else {
+      l_p <-  hist(l,breaks = 500,plot = F)
+      f_predict = dtexp_norm(l_p$mids/100, tm)
+      f_predict = data.frame(seg_len_M = l_p$mids, log_dens = f_predict)
+    }
+    
+    return(list(res,data.frame(tm=tm, ll_sp = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc),l,f_predict))
   }, silent=F)
-  return(list(NA,data.frame(t_m=NA, ll_exp=NA ,lower_trunc=lower_trunc,upper_trunc=upper_trunc)))
+  return(list(NA,data.frame(tm=NA, ll_sp=NA ,lower_trunc=lower_trunc,upper_trunc=upper_trunc),l,NA))
 }
 
-#' Fitting the extended pulse to segment length data
-#'
-#' This function takes the length of segments and estimate the time since the gene flow 
-#' with gene flow potentially between 1 generation and a constant gene flow
-#'
-#' @param Segments file at least one column containing the length of each unique segment in cM named [length_cM]
-#' @param lower_trunc optional parameter to define lower cutoff for the segment length given in cM
-#' @param upper_trunc optional parameter to define upper cutoff for the segment length given in cM
-#' @param tm_lower gives the lowest values the optimization considers for the mean admixture time
-#' @param tm_upper gives the highest values the optimization considers for the mean admixture time
-#' @param k_lower gives the lowest values the optimization considers for the shape parameter k
-#' @param k_upper gives the highest values the optimization considers for the shape parameter k
-#' fit_extended_pulse(Segments=read.table("Example_seg.txt",stringsAsFactors = F,header=T,fill = T),truncation=T,lower_trunc=0.05,lower_trunc=1.2,tm_lower=100,tm_upper=5000,k_lower=2,k_upper=1e10)
 
-fit_extended_pulse=function(Segments,truncation=F,lower_trunc=NA,upper_trunc=NA,tm_lower,tm_upper,k_lower,k_upper){
+
+Extended_Pulse_Segments_fn=function(input,truncation=F,lower_trunc=NA,upper_trunc=NA,tm_lower,tm_upper,k_lower,k_upper){
+  Segments <- read.table(input,header = T)
   if(truncation==T){
     l=Segments$length_cM[Segments$length_cM>=lower_trunc & Segments$length_cM<=upper_trunc]
   } else {
@@ -90,10 +89,27 @@ fit_extended_pulse=function(Segments,truncation=F,lower_trunc=NA,upper_trunc=NA,
       f = function(par)-sum(dtlomax_norm(l/100, scale=((1/par[2])/par[1]), shape=((1/par[2])+1) ))
     }
     
-    res = optim(par = c(500,(1/20)), f, method="L-BFGS-B",lower = c(tm_lower,1/k_upper),upper = c(tm_lower,1/k_lower))
+    res = optim(par = c(500,(1/20)), f, method="L-BFGS-B",lower = c(tm_lower,1/k_upper),upper = c(tm_upper,1/k_lower))
     tm = res$par[1]
     k = 1/res$par[2]
-    return(list(res,data.frame(k=k,tm=tm, ll_lomax = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc)))
+    if(truncation==T){
+      l_p <- hist(l,breaks = 500,plot = F)
+      f_predict = dtlomax(l_p$mids/100, scale=(k/tm), shape=(k+1), lower_trunc=lower_trunc/100,upper_trunc=upper_trunc/100)
+      f_predict = data.frame(seg_len_M = l_p$mids, log_dens = f_predict)
+    } else {
+      l_p <-  hist(l,breaks = 500,plot = F)
+      f_predict = dtlomax_norm(l/100, scale=(k/tm), shape=(k+1) )
+      f_predict = data.frame(seg_len_M = l_p$mids, log_dens = f_predict)
+    }
+    return(list(res,data.frame(k=k,tm=tm, ll_ep = -res$value,lower_trunc=lower_trunc,upper_trunc=upper_trunc),l,f_predict))
   }, silent=F)
-  return(list(NA,data.frame(k=NA,tm=NA, ll_lomax=NA,lower_trunc=lower_trunc,upper_trunc=upper_trunc)))
+  return(list(NA,data.frame(k=NA,tm=NA, ll_ep=NA,lower_trunc=lower_trunc,upper_trunc=upper_trunc),l,NA))
+}
+
+Get_CI_fn <- function(est,n_data){
+  org <- est
+  lwr_approx <- est*(1-(1.96/sqrt(length(n_data))))
+  upr_approx <- est*(1+(1.96/sqrt(length(n_data))))
+  param_CI <- c(org,lwr_approx,upr_approx)
+  return(param_CI)
 }
