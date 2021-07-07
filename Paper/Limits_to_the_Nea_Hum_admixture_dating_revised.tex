@@ -267,11 +267,11 @@ Alternatively, the impact of gene flow is often characterized using ALD, particu
 
 where $m$ is the fraction of immigrants and $\Delta_x, \Delta_y$ are the differences in allele frequencies between markers in the admixing populations. We assume that terms of the order of $m^2$ can be ignored and that migration is low enough that changes in the allele frequencies in the admixing populations can also be neglected (i.e. $A=\Delta_x\Delta_y$ remains a constant). 
 
-At a later generation $t$, the expected LD between two markers a distance $l$ apart is
+At a later generation $s$, the expected LD between two markers a distance $l$ apart is
 \begin{equation}
     D_s \approx D_t \exp(-l(s-t))\text{,}
 \end{equation}
-due to the decay of LD \cite[e.g.][]{sankararaman_date_2012}. If the  migration rate $m_f$ is a function of time, we can add up the LD introduced at each time $s$ in the past and approximate $D$ as 
+due to the decay of LD \cite[e.g.][]{sankararaman_date_2012}. If the  migration rate $m_f$ is a function of time, we can add up the LD introduced at each time $t$ in the past and approximate $D$ as 
 \begin{equation}
     D_s = A\int_{-\infty}^s m_f(t)\exp(-l(s-t)) dt \text{.} \label{eq:ld_general_bwd}
 \end{equation}
@@ -854,7 +854,7 @@ P(l) &= \frac{G}{\mathbb{E}[K]}\int_{0}^{\infty} t^2 m(t) \exp(-lt) \diff t \lab
 First, plugging Eq.~\ref{eq_mt1} into the functional relationship Eq.~\ref{func_rel1} yields:
 
 \begin{align*}
-\frac{\mathbb{E}[K]}{G} \int_l^\infty P(x) (x-l)  &= \int_l^\infty \diff x \int_{0}^{\infty} \diff t\ t^2 m(t) \exp(-xt) (x-l)  \\
+\frac{\mathbb{E}[K]}{G} \int_l^\infty P(x) (x-l) dx &= \int_l^\infty \diff x \int_{0}^{\infty} \diff t\ t^2 m(t) \exp(-xt) (x-l)  \\
 &=  \int_{0}^{\infty} \diff t\ t^2 m(t) \underbrace{\int_l^\infty \diff x \exp(-xt) (x-l)}_{\frac{1}{t^2}\exp(-lt)} \\
 &= \int_{0}^{\infty} m(t) \exp(-lt) \diff t\
 \end{align*}
