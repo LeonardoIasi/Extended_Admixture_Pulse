@@ -3,8 +3,9 @@ Fitting the simple and extended pulse models
 Leonardo N. M Iasi
 2021-06-21
 
-The descriptions of the models can be found here
-(<https://www.biorxiv.org/content/10.1101/2021.04.04.438357v2>). In
+For questions please contact: leonardo_iasi@eva.mpg.de
+
+The publication with the descriptions of the models can be found [here](https://academic.oup.com/mbe/advance-article/doi/10.1093/molbev/msab210/6319725). In
 brief, one approach to learn about admixture dates from genetic data
 uses a recombination clock model: Conceptually, admixture segments are
 the result of the introduced chromosomes being broken down by
