@@ -2,9 +2,11 @@
 
 This repository contains the scripts, pipelines and analysis steps used in this project. 
 
+For questions don't hesitate to drop me a mail: leonardo_iasi@eva.mpg.de
+
 ## Extended Admixture Pulse Inferrence
 This folder contains the a short description of the simple and extended pulse model and the R scripts to fit the model to data.
-A full descriptions of the models can be found here (https://www.biorxiv.org/content/10.1101/2021.04.04.438357v2)
+A publication with the full descriptions of the models can be found [here](https://academic.oup.com/mbe/advance-article/doi/10.1093/molbev/msab210/6319725).
 The script [Fitting_simple_and_extended_pulse_to_ALD.R](Extended_Admixture_Pulse_inferrence/Fitting_simple_and_extended_pulse_to_ALD.R) contains the functions to fit the two models to ALD data.
 The script [Fitting_simple_and_extended_pulse_to_segment_length.R](Extended_Admixture_Pulse_inferrence/Fitting_simple_and_extended_pulse_to_segment_length.R) contains the functions to fit the two models to segment data.
 
